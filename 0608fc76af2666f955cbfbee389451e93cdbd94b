@@ -69,6 +69,24 @@
       "parentUuid": "c83485dc_b5355a52",
       "revId": "0608fc76af2666f955cbfbee389451e93cdbd94b",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6b3aaeb_bfcc5015",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1178490
+      },
+      "writtenOn": "2026-01-05T08:34:08Z",
+      "side": 1,
+      "message": "Jordan, would it be possible to change the vulnerability scanner and add another field (e.g. \"Maintained by Chromium: True/False\" or something like that)?\n\nI think it is much more clear compared to having a magic string.",
+      "parentUuid": "059430c1_49ca4f67",
+      "revId": "0608fc76af2666f955cbfbee389451e93cdbd94b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
