@@ -37,6 +37,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "84e6868a_ea6661da",
+        "filename": "BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 396,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-01-05T19:24:25Z",
+      "side": 1,
+      "message": "This TODO comment was originally added to the libyuv_unittest target in libyuv_test.gyp in commit 94e3d5a3be662050310f21c596c219a22c5e0361 (I also included the related change to libyuv.gyp):\n\n```\ndiff --git a/libyuv.gyp b/libyuv.gyp\nindex 3f06d419..d4ad4390 100644\n--- a/libyuv.gyp\n+++ b/libyuv.gyp\n@@ -122,6 +122,9 @@\n           \u0027dependencies\u0027: [\n             \u0027libyuv_neon\u0027,\n           ],\n+          \u0027defines\u0027: [\n+            \u0027LIBYUV_NEON\u0027,\n+          ],\n         }],\n         # MemorySanitizer does not support assembly code yet.\n         # http://crbug.com/344505\ndiff --git a/libyuv_test.gyp b/libyuv_test.gyp\nindex 54d2790f..6b69d612 100644\n--- a/libyuv_test.gyp\n+++ b/libyuv_test.gyp\n@@ -76,6 +76,16 @@\n             \u0027HAVE_JPEG\u0027,\n           ],\n         }],\n+        # TODO(YangZhang): These lines can be removed when high accuracy\n+        # YUV to RGB to Neon is ported.\n+        [ \u0027(target_arch \u003d\u003d \"armv7\" or target_arch \u003d\u003d \"armv7s\" \\\n+          or (target_arch \u003d\u003d \"arm\" and arm_version \u003e\u003d 7) \\\n+          or target_arch \u003d\u003d \"arm64\") \\\n+          and (arm_neon \u003d\u003d 1 or arm_neon_optional \u003d\u003d 1)\u0027, {\n+          \u0027defines\u0027: [\n+            \u0027LIBYUV_NEON\u0027\n+          ],\n+       }],\n       ], # conditions\n     },\n \n```\n\nThe commit message is:\n\n```\ncommit 94e3d5a3be662050310f21c596c219a22c5e0361\nAuthor: yang.zhang@arm.com \u003cyang.zhang@arm.com\u003e\nDate:   Wed Feb 25 06:51:29 2015 +0000\n    \n    Improve the accuracy YUV to RGB for ARMv7 NEON\n    \n    NEON version of YUV422TORGB is updated based on C algorithm. Accuracy YUV to RGB\n    of NEON is also updated according to test result. Macro LIBYUV_NEON is added to\n    identify accuracy YUV to RGB for ARM platform.\n    Except TestJ420 and TestYUV, all the other tests are passed.\n    \n    BUG\u003d324\n    TESTED\u003dlibyuvTest on ARMv7 with Android\n    R\u003dfbarchard@google.com\n    \n    Change-Id: I492ca628679940534f40341721dc5b6dc2d7a5b6\n    \n    Review URL: https://webrtc-codereview.appspot.com/40609004\n    \n    git-svn-id: http://libyuv.googlecode.com/svn/trunk@1296 16f28f9a-4ce2-e073-06de-1de4eb20be90\n```\n\nSo \"these lines\" refer to the entire change to libyuv_test.gyp. There is a corresponding change in unit_test/color_test.cc in that commit:\n\n```\ndiff --git a/unit_test/color_test.cc b/unit_test/color_test.cc\nindex 9aa9e836..66d045c2 100644\n--- a/unit_test/color_test.cc\n+++ b/unit_test/color_test.cc\n \n namespace libyuv {\n \n-#define TESTCS(TESTNAME, YUVTOARGB, ARGBTOYUV, HS1, HS, HN, DIFF)              \\\n+// TODO(fbarchard): Port high accuracy YUV to RGB to Neon.\n+#if !defined(LIBYUV_DISABLE_NEON) \u0026\u0026 \\\n+    (defined(__aarch64__) || defined(__ARM_NEON__) || defined(LIBYUV_NEON))\n+#define MAX_CDIFF 0\n+#define ERROR_R 1\n+#define ERROR_G 1\n+#define ERROR_B 3\n+#define ERROR_FULL 6\n+#else\n+#define MAX_CDIFF 0\n+#define ERROR_R 1\n+#define ERROR_G 1\n+#define ERROR_B 3\n+#define ERROR_FULL 5\n+#endif\n+  \n+#define TESTCS(TESTNAME, YUVTOARGB, ARGBTOYUV, HS1, HS, HN, DIFF, CDIFF)       \\\n TEST_F(libyuvTest, TESTNAME) {                                                 \\\n   const int kPixels \u003d benchmark_width_ * benchmark_height_;                    \\\n   const int kHalfPixels \u003d ((benchmark_width_ + 1) / 2) *                       \\\n```\n\nI found two problems with `LIBYUV_NEON` in the latest libyuv code.\n\n1. In https://codereview.chromium.org/2317073002/, the definition of `LIBYUV_NEON` in libyuv_test.gyp was ported to the GN build system. But the definition of `LIBYUV_NEON` in libyuv.gyp was never ported to the GN build system. We should file an issue to look into this further.\n\n2. The use of `LIBYUV_NEON` in `unit_test/color_test.cc`, corresponding to this `TODO(YangZhang)` comment, has since been removed. However, these are two new uses of `LIBYUV_NEON` in unit_test/planar_test.cc, which are unrelated to this `TODO(YangZhang)` comment. So I think we should remove this `TODO(YangZhang)` comment but leave the definition of `LIBYUV_NEON` unchanged.",
+      "parentUuid": "a7704bac_5a7238de",
+      "revId": "821b9c5de1cf232f51c26e1eaad4689fc2317949",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "c72a0ff1_bad19008",
         "filename": "BUILD.gn",
         "patchSetId": 2
