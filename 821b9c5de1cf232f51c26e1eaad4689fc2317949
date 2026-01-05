@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "980f8b1b_f6c6e9d5",
+        "filename": "BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 236,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-01-05T18:41:48Z",
+      "side": 1,
+      "message": "Nico: Should we file an issue on this?",
+      "revId": "821b9c5de1cf232f51c26e1eaad4689fc2317949",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a7704bac_5a7238de",
+        "filename": "BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 396,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-01-05T18:41:48Z",
+      "side": 1,
+      "message": "This TODO comment probably should be edited because it is unclear what \"these lines\" refers to. I will look into this.",
+      "revId": "821b9c5de1cf232f51c26e1eaad4689fc2317949",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c72a0ff1_bad19008",
+        "filename": "BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-01-05T18:41:48Z",
+      "side": 1,
+      "message": "Nico: Please confirm that the `target_cpu \u003d\u003d \"armv7\"` and `target_cpu \u003d\u003d \"armv7s\"` checks can be safely removed.",
+      "revId": "821b9c5de1cf232f51c26e1eaad4689fc2317949",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
