@@ -10,6 +10,7 @@
 
 #include "libyuv/row.h"
 
+#include <math.h>
 #include <assert.h>
 #include <string.h>  // For memcpy and memset.
 
@@ -756,6 +757,186 @@ MAKEROWYJ(RGB24, 2, 1, 0, 3)
 MAKEROWYJ(RAW, 0, 1, 2, 3)
 #undef MAKEROWYJ
 
+void ComputeArgbConstants(const struct YuvConstants* yuv,
+                          struct ArgbConstants* argb) {
+  int YG, YB, UB, UG, VG, VR;
+#if defined(__aarch64__) || defined(__arm__) || defined(__riscv)
+  UB = yuv->kUVCoeff[0];
+  VR = yuv->kUVCoeff[1];
+  UG = yuv->kUVCoeff[2];
+  VG = yuv->kUVCoeff[3];
+  YG = yuv->kRGBCoeffBias[0];
+  YB = yuv->kRGBCoeffBias[4];
+#else
+  UB = yuv->kUVToB[0];
+  UG = yuv->kUVToG[0];
+  VG = yuv->kUVToG[1];
+  VR = yuv->kUVToR[1];
+  YG = yuv->kYToRgb[0];
+  YB = yuv->kYBiasToRgb[0];
+#endif
+
+  // Scale factor for Y. YG is approx (range_y / 255) * 64.
+  // YG is stored such that (YG * 257) >> 16 is the scale.
+  double scale_y = (YG * 257.0) / 65536.0;
+
+  // Inverse luma coefficients.
+  // k_g' * (1 + VG/VR + UG/UB) = 1
+  double kg_inv = 1.0 + (double)VG / VR + (double)UG / UB;
+  double kg = 1.0 / kg_inv;
+  double kr = kg * (double)VG / VR;
+  double kb = kg * (double)UG / UB;
+
+  // Forward luma coefficients. RY = kr * (range_y / 255) * 256.
+  // range_y / 255 = 64.0 / scale_y.
+  int RY = (int)round(kr / scale_y * 16384.0);
+  int GY = (int)round(kg / scale_y * 16384.0);
+  int BY = (int)round(kb / scale_y * 16384.0);
+
+  int BU, RV, AY;
+  if (YB < 0) {  // Limited range
+    BU = 112;
+    RV = 112;
+    AY = 16 * 256 + 128;
+  } else {  // Full range
+    BU = 128;
+    RV = 128;
+    AY = 128;
+  }
+
+  int RU = (int)round(-kr / (1.0 - kb) * BU);
+  int GU = (int)round(-kg / (1.0 - kb) * BU);
+  int BV = (int)round(-kb / (1.0 - kr) * RV);
+  int GV = (int)round(-kg / (1.0 - kr) * RV);
+  int AUV = 128 * 256 + 128;
+
+#if defined(__aarch64__) || defined(__arm__) || defined(__riscv)
+  for (int i = 0; i < 16; ++i) {
+    argb->kRGBToY[i] = 0;
+    argb->kRGBToU[i] = 0;
+    argb->kRGBToV[i] = 0;
+  }
+  argb->kRGBToY[0] = (uint8_t)BY;
+  argb->kRGBToY[1] = (uint8_t)GY;
+  argb->kRGBToY[2] = (uint8_t)RY;
+  argb->kRGBToU[0] = (int8_t)BU;
+  argb->kRGBToU[1] = (int8_t)GU;
+  argb->kRGBToU[2] = (int8_t)RU;
+  argb->kRGBToV[0] = (int8_t)BV;
+  argb->kRGBToV[1] = (int8_t)GV;
+  argb->kRGBToV[2] = (int8_t)RV;
+  argb->kAddYUV[0] = (uint16_t)AY;
+  argb->kAddYUV[1] = (uint16_t)AUV;
+#else
+  for (int i = 0; i < 32; i += 4) {
+    argb->kRGBToY[i + 0] = (uint8_t)BY;
+    argb->kRGBToY[i + 1] = (uint8_t)GY;
+    argb->kRGBToY[i + 2] = (uint8_t)RY;
+    argb->kRGBToY[i + 3] = 0;
+    argb->kRGBToU[i + 0] = (int8_t)BU;
+    argb->kRGBToU[i + 1] = (int8_t)GU;
+    argb->kRGBToU[i + 2] = (int8_t)RU;
+    argb->kRGBToU[i + 3] = 0;
+    argb->kRGBToV[i + 0] = (int8_t)BV;
+    argb->kRGBToV[i + 1] = (int8_t)GV;
+    argb->kRGBToV[i + 2] = (int8_t)RV;
+    argb->kRGBToV[i + 3] = 0;
+  }
+  for (int i = 0; i < 16; ++i) {
+    argb->kAddY[i] = (uint16_t)AY;
+    argb->kAddUV[i] = (uint16_t)AUV;
+  }
+#endif
+}
+
+static __inline uint8_t RGBToYMatrix(uint8_t r,
+                                     uint8_t g,
+                                     uint8_t b,
+                                     const struct ArgbConstants* c) {
+  return STATIC_CAST(uint8_t, (c->kRGBToY[2] * r + c->kRGBToY[1] * g +
+                               c->kRGBToY[0] * b + c->kAddY[0]) >>
+                              8);
+}
+static __inline uint8_t RGBToUMatrix(uint8_t r,
+                                     uint8_t g,
+                                     uint8_t b,
+                                     const struct ArgbConstants* c) {
+  return STATIC_CAST(uint8_t, ((int8_t)c->kRGBToU[2] * r +
+                               (int8_t)c->kRGBToU[1] * g +
+                               (int8_t)c->kRGBToU[0] * b + c->kAddUV[0]) >>
+                              8);
+}
+static __inline uint8_t RGBToVMatrix(uint8_t r,
+                                     uint8_t g,
+                                     uint8_t b,
+                                     const struct ArgbConstants* c) {
+  return STATIC_CAST(uint8_t, ((int8_t)c->kRGBToV[2] * r +
+                               (int8_t)c->kRGBToV[1] * g +
+                               (int8_t)c->kRGBToV[0] * b + c->kAddUV[0]) >>
+                              8);
+}
+
+void ARGBToYMatrixRow_C(const uint8_t* src_argb,
+                        uint8_t* dst_y,
+                        int width,
+                        const struct ArgbConstants* c) {
+  int x;
+  for (x = 0; x < width; ++x) {
+    dst_y[0] = RGBToYMatrix(src_argb[2], src_argb[1], src_argb[0], c);
+    src_argb += 4;
+    dst_y += 1;
+  }
+}
+
+void ARGBToUVMatrixRow_C(const uint8_t* src_argb,
+                         int src_stride_argb,
+                         uint8_t* dst_u,
+                         uint8_t* dst_v,
+                         int width,
+                         const struct ArgbConstants* c) {
+  const uint8_t* src_argb1 = src_argb + src_stride_argb;
+  int x;
+  for (x = 0; x < width - 1; x += 2) {
+    uint8_t ab = (src_argb[0] + src_argb[4] + src_argb1[0] + src_argb1[4] + 2) >>
+                 2;
+    uint8_t ag = (src_argb[1] + src_argb[5] + src_argb1[1] + src_argb1[5] + 2) >>
+                 2;
+    uint8_t ar = (src_argb[2] + src_argb[6] + src_argb1[2] + src_argb1[6] + 2) >>
+                 2;
+    dst_u[0] = RGBToUMatrix(ar, ag, ab, c);
+    dst_v[0] = RGBToVMatrix(ar, ag, ab, c);
+    src_argb += 8;
+    src_argb1 += 8;
+    dst_u += 1;
+    dst_v += 1;
+  }
+  if (width & 1) {
+    uint8_t ab = (src_argb[0] + src_argb1[0] + 1) >> 1;
+    uint8_t ag = (src_argb[1] + src_argb1[1] + 1) >> 1;
+    uint8_t ar = (src_argb[2] + src_argb1[2] + 1) >> 1;
+    dst_u[0] = RGBToUMatrix(ar, ag, ab, c);
+    dst_v[0] = RGBToVMatrix(ar, ag, ab, c);
+  }
+}
+
+void ARGBToUV444MatrixRow_C(const uint8_t* src_argb,
+                            uint8_t* dst_u,
+                            uint8_t* dst_v,
+                            int width,
+                            const struct ArgbConstants* c) {
+  int x;
+  for (x = 0; x < width; ++x) {
+    uint8_t ab = src_argb[0];
+    uint8_t ag = src_argb[1];
+    uint8_t ar = src_argb[2];
+    dst_u[0] = RGBToUMatrix(ar, ag, ab, c);
+    dst_v[0] = RGBToVMatrix(ar, ag, ab, c);
+    src_argb += 4;
+    dst_u += 1;
+    dst_v += 1;
+  }
+}
+
 void RGB565ToYRow_C(const uint8_t* src_rgb565, uint8_t* dst_y, int width) {
   int x;
   for (x = 0; x < width; ++x) {
@@ -1387,6 +1568,14 @@ void J400ToARGBRow_C(const uint8_t* src_y, uint8_t* dst_argb, int width) {
   {{UB, VR, UG, VG, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                     \
    {YG, (UB * 128 - YB), (UG * 128 + VG * 128 + YB), (VR * 128 - YB), YB, 0, \
     0, 0}}
+#define ARGBCONSTANTSBODY(RY, GY, BY, RU, GU, BU, RV, GV, BV, AY, AUV)      \
+  {{BY, GY, RY, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},                     \
+   {STATIC_CAST(int8_t, BU), STATIC_CAST(int8_t, GU),                      \
+    STATIC_CAST(int8_t, RU), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},        \
+   {STATIC_CAST(int8_t, BV), STATIC_CAST(int8_t, GV),                      \
+    STATIC_CAST(int8_t, RV), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},        \
+   {STATIC_CAST(uint16_t, AY), STATIC_CAST(uint16_t, AUV), 0, 0, 0, 0, 0, \
+    0}}
 #else
 #define YUVCONSTANTSBODY(YG, YB, UB, UG, VG, VR)                     \
   {{UB, 0, UB, 0, UB, 0, UB, 0, UB, 0, UB, 0, UB, 0, UB, 0,          \
@@ -1397,6 +1586,49 @@ void J400ToARGBRow_C(const uint8_t* src_y, uint8_t* dst_argb, int width) {
     0, VR, 0, VR, 0, VR, 0, VR, 0, VR, 0, VR, 0, VR, 0, VR},         \
    {YG, YG, YG, YG, YG, YG, YG, YG, YG, YG, YG, YG, YG, YG, YG, YG}, \
    {YB, YB, YB, YB, YB, YB, YB, YB, YB, YB, YB, YB, YB, YB, YB, YB}}
+#define ARGBCONSTANTSBODY(RY, GY, BY, RU, GU, BU, RV, GV, BV, AY, AUV)        \
+  {{BY, GY, RY, 0, BY, GY, RY, 0, BY, GY, RY, 0, BY, GY, RY, 0,               \
+    BY, GY, RY, 0, BY, GY, RY, 0, BY, GY, RY, 0, BY, GY, RY, 0},              \
+   {STATIC_CAST(int8_t, BU), STATIC_CAST(int8_t, GU),                         \
+    STATIC_CAST(int8_t, RU), 0, STATIC_CAST(int8_t, BU),                      \
+    STATIC_CAST(int8_t, GU), STATIC_CAST(int8_t, RU), 0,                      \
+    STATIC_CAST(int8_t, BU), STATIC_CAST(int8_t, GU),                         \
+    STATIC_CAST(int8_t, RU), 0, STATIC_CAST(int8_t, BU),                      \
+    STATIC_CAST(int8_t, GU), STATIC_CAST(int8_t, RU), 0,                      \
+    STATIC_CAST(int8_t, BU), STATIC_CAST(int8_t, GU),                         \
+    STATIC_CAST(int8_t, RU), 0, STATIC_CAST(int8_t, BU),                      \
+    STATIC_CAST(int8_t, GU), STATIC_CAST(int8_t, RU), 0,                      \
+    STATIC_CAST(int8_t, BU), STATIC_CAST(int8_t, GU),                         \
+    STATIC_CAST(int8_t, RU), 0, STATIC_CAST(int8_t, BU),                      \
+    STATIC_CAST(int8_t, GU), STATIC_CAST(int8_t, RU), 0},                     \
+   {STATIC_CAST(int8_t, BV), STATIC_CAST(int8_t, GV),                         \
+    STATIC_CAST(int8_t, RV), 0, STATIC_CAST(int8_t, BV),                      \
+    STATIC_CAST(int8_t, GV), STATIC_CAST(int8_t, RV), 0,                      \
+    STATIC_CAST(int8_t, BV), STATIC_CAST(int8_t, GV),                         \
+    STATIC_CAST(int8_t, RV), 0, STATIC_CAST(int8_t, BV),                      \
+    STATIC_CAST(int8_t, GV), STATIC_CAST(int8_t, RV), 0,                      \
+    STATIC_CAST(int8_t, BV), STATIC_CAST(int8_t, GV),                         \
+    STATIC_CAST(int8_t, RV), 0, STATIC_CAST(int8_t, BV),                      \
+    STATIC_CAST(int8_t, GV), STATIC_CAST(int8_t, RV), 0,                      \
+    STATIC_CAST(int8_t, BV), STATIC_CAST(int8_t, GV),                         \
+    STATIC_CAST(int8_t, RV), 0, STATIC_CAST(int8_t, BV),                      \
+    STATIC_CAST(int8_t, GV), STATIC_CAST(int8_t, RV), 0},                     \
+   {STATIC_CAST(uint16_t, AY), STATIC_CAST(uint16_t, AY),                     \
+    STATIC_CAST(uint16_t, AY), STATIC_CAST(uint16_t, AY),                     \
+    STATIC_CAST(uint16_t, AY), STATIC_CAST(uint16_t, AY),                     \
+    STATIC_CAST(uint16_t, AY), STATIC_CAST(uint16_t, AY),                     \
+    STATIC_CAST(uint16_t, AY), STATIC_CAST(uint16_t, AY),                     \
+    STATIC_CAST(uint16_t, AY), STATIC_CAST(uint16_t, AY),                     \
+    STATIC_CAST(uint16_t, AY), STATIC_CAST(uint16_t, AY),                     \
+    STATIC_CAST(uint16_t, AY), STATIC_CAST(uint16_t, AY)},                    \
+   {STATIC_CAST(uint16_t, AUV), STATIC_CAST(uint16_t, AUV),                   \
+    STATIC_CAST(uint16_t, AUV), STATIC_CAST(uint16_t, AUV),                   \
+    STATIC_CAST(uint16_t, AUV), STATIC_CAST(uint16_t, AUV),                   \
+    STATIC_CAST(uint16_t, AUV), STATIC_CAST(uint16_t, AUV),                   \
+    STATIC_CAST(uint16_t, AUV), STATIC_CAST(uint16_t, AUV),                   \
+    STATIC_CAST(uint16_t, AUV), STATIC_CAST(uint16_t, AUV),                   \
+    STATIC_CAST(uint16_t, AUV), STATIC_CAST(uint16_t, AUV),                   \
+    STATIC_CAST(uint16_t, AUV), STATIC_CAST(uint16_t, AUV)}}
 #endif
 
 // clang-format on
@@ -1406,6 +1638,23 @@ void J400ToARGBRow_C(const uint8_t* src_y, uint8_t* dst_argb, int width) {
       YUVCONSTANTSBODY(YG, YB, UB, UG, VG, VR);                   \
   const struct YuvConstants SIMD_ALIGNED(kYvu##name##Constants) = \
       YUVCONSTANTSBODY(YG, YB, VR, VG, UG, UB);
+
+#define MAKEARGBCONSTANTS(name, RY, GY, BY, RU, GU, BU, RV, GV, BV, AY, AUV) \
+  const struct ArgbConstants SIMD_ALIGNED(kRgb##name##Constants) =            \
+      ARGBCONSTANTSBODY(RY, GY, BY, RU, GU, BU, RV, GV, BV, AY, AUV);
+
+// BT.601 limited range RGB to YUV coefficients
+// RY = round(0.299 * 219 / 255 * 256) = 66
+// GY = round(0.587 * 219 / 255 * 256) = 129
+// BY = round(0.114 * 219 / 255 * 256) = 25
+// BU = round(0.500 * 224 / 255 * 256) = 112
+// RU = round(-0.299 / (1 - 0.114) * 112.4) = -38
+// GU = round(-0.587 / (1 - 0.114) * 112.4) = -74
+// RV = 112
+// GV = round(-0.587 / (1 - 0.299) * 112.4) = -94
+// BV = round(-0.114 / (1 - 0.299) * 112.4) = -18
+// AY = 16 * 256 + 128 = 4224
+// AUV = 128 * 256 + 128 = 32896
 
 // TODO(fbarchard): Generate SIMD structures from float matrix.
 

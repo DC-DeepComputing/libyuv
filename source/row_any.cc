@@ -1267,6 +1267,87 @@ ANY11(UYVYToYRow_Any_LSX, UYVYToYRow_LSX, 1, 4, 1, 15)
 #ifdef HAS_UYVYTOYROW_LASX
 ANY11(UYVYToYRow_Any_LASX, UYVYToYRow_LASX, 1, 4, 1, 31)
 #endif
+
+// Any 1 to 1 with yuvconstants.
+#define ANY11M(NAMEANY, ANY_SIMD, BPP, MASK)                          \
+  void NAMEANY(const uint8_t* src_ptr, uint8_t* dst_ptr,               \
+               const struct YuvConstants* yuvconstants, int width) { \
+    SIMD_ALIGNED(uint8_t vin[128]);                                    \
+    SIMD_ALIGNED(uint8_t vout[128]);                                   \
+    memset(vin, 0, sizeof(vin)); /* for msan */                        \
+    int r = width & MASK;                                              \
+    int n = width & ~MASK;                                             \
+    if (n > 0) {                                                       \
+      ANY_SIMD(src_ptr, dst_ptr, yuvconstants, n);                    \
+    }                                                                  \
+    ptrdiff_t np = n;                                                  \
+    memcpy(vin, src_ptr + np * BPP, r * BPP);                          \
+    ANY_SIMD(vin, vout, yuvconstants, MASK + 1);                      \
+    memcpy(dst_ptr + np, vout, r);                                     \
+  }
+
+#ifdef HAS_ARGBTOYMATRIXROW_NEON
+ANY11M(ARGBToYMatrixRow_Any_NEON, ARGBToYMatrixRow_NEON, 4, 15)
+#endif
+#ifdef HAS_ARGBTOYMATRIXROW_RVV
+ANY11M(ARGBToYMatrixRow_Any_RVV, ARGBToYMatrixRow_RVV, 4, 1)
+#endif
+#undef ANY11M
+
+// Any 1 to 2 with source stride (2 rows of source) and yuvconstants.
+#define ANY12SM(NAMEANY, ANY_SIMD, BPP, MASK)                             \
+  void NAMEANY(const uint8_t* src_ptr, int src_stride, uint8_t* dst_u,    \
+               uint8_t* dst_v, const struct YuvConstants* yuvconstants, \
+               int width) {                                               \
+    SIMD_ALIGNED(uint8_t vin[128 * 2]);                                   \
+    SIMD_ALIGNED(uint8_t vout[128 * 2]);                                  \
+    memset(vin, 0, sizeof(vin)); /* for msan */                           \
+    int r = width & MASK;                                                 \
+    int n = width & ~MASK;                                                \
+    if (n > 0) {                                                          \
+      ANY_SIMD(src_ptr, src_stride, dst_u, dst_v, yuvconstants, n);      \
+    }                                                                     \
+    ptrdiff_t np = n;                                                     \
+    memcpy(vin, src_ptr + np * BPP, r * BPP);                             \
+    memcpy(vin + 128, src_ptr + src_stride + np * BPP, r * BPP);          \
+    if (width & 1) { /* repeat last pixel for subsample */                \
+      memcpy(vin + r * BPP, vin + r * BPP - BPP, BPP);                    \
+      memcpy(vin + 128 + r * BPP, vin + 128 + r * BPP - BPP, BPP);        \
+    }                                                                        \
+    ANY_SIMD(vin, 128, vout, vout + 128, yuvconstants, MASK + 1);        \
+    memcpy(dst_u + (np >> 1), vout, SS(r, 1));                            \
+    memcpy(dst_v + (np >> 1), vout + 128, SS(r, 1));                      \
+  }
+
+#ifdef HAS_ARGBTOUVMATRIXROW_NEON
+ANY12SM(ARGBToUVMatrixRow_Any_NEON, ARGBToUVMatrixRow_NEON, 4, 15)
+#endif
+#undef ANY12SM
+
+// Any 1 to 2 with yuvconstants.
+#define ANY12M(NAMEANY, ANY_SIMD, BPP, MASK)                          \
+  void NAMEANY(const uint8_t* src_ptr, uint8_t* dst_u, uint8_t* dst_v, \
+               const struct YuvConstants* yuvconstants, int width) { \
+    SIMD_ALIGNED(uint8_t vin[128]);                                    \
+    SIMD_ALIGNED(uint8_t vout[128 * 2]);                               \
+    memset(vin, 0, sizeof(vin)); /* for msan */                        \
+    int r = width & MASK;                                              \
+    int n = width & ~MASK;                                             \
+    if (n > 0) {                                                       \
+      ANY_SIMD(src_ptr, dst_u, dst_v, yuvconstants, n);               \
+    }                                                                  \
+    ptrdiff_t np = n;                                                  \
+    memcpy(vin, src_ptr + np * BPP, r * BPP);                          \
+    ANY_SIMD(vin, vout, vout + 128, yuvconstants, MASK + 1);          \
+    memcpy(dst_u + np, vout, r);                                       \
+    memcpy(dst_v + np, vout + 128, r);                                 \
+  }
+
+#ifdef HAS_ARGBTOUV444MATRIXROW_NEON
+ANY12M(ARGBToUV444MatrixRow_Any_NEON, ARGBToUV444MatrixRow_NEON, 4, 15)
+#endif
+#undef ANY12M
+
 #ifdef HAS_AYUVTOYROW_NEON
 ANY11(AYUVToYRow_Any_NEON, AYUVToYRow_NEON, 0, 4, 1, 15)
 #endif

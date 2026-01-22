@@ -2044,7 +2044,7 @@ void MergeUVRow_RVV(const uint8_t* src_u,
 #endif
 #endif
 
-struct RgbConstants {
+struct ArgbConstants {
   uint8_t kRGBToY[4];
   uint16_t kAddY;
   uint16_t pad;
@@ -2055,11 +2055,11 @@ struct RgbConstants {
 // G * 0.5870 coefficient = 150
 // R * 0.2990 coefficient = 77
 // Add 0.5 = 0x80
-static const struct RgbConstants kRgb24JPEGConstants = {{29, 150, 77, 0},
+static const struct ArgbConstants kRgb24JPEGConstants = {{29, 150, 77, 0},
                                                         128,
                                                         0};
 
-static const struct RgbConstants kRawJPEGConstants = {{77, 150, 29, 0}, 128, 0};
+static const struct ArgbConstants kRawJPEGConstants = {{77, 150, 29, 0}, 128, 0};
 
 // RGB to BT.601 coefficients
 // B * 0.1016 coefficient = 25
@@ -2067,11 +2067,11 @@ static const struct RgbConstants kRawJPEGConstants = {{77, 150, 29, 0}, 128, 0};
 // R * 0.2578 coefficient = 66
 // Add 16.5 = 0x1080
 
-static const struct RgbConstants kRgb24I601Constants = {{25, 129, 66, 0},
+static const struct ArgbConstants kRgb24I601Constants = {{25, 129, 66, 0},
                                                         0x1080,
                                                         0};
 
-static const struct RgbConstants kRawI601Constants = {{66, 129, 25, 0},
+static const struct ArgbConstants kRawI601Constants = {{66, 129, 25, 0},
                                                       0x1080,
                                                       0};
 
@@ -2079,9 +2079,10 @@ static const struct RgbConstants kRawI601Constants = {{66, 129, 25, 0},
 #ifdef HAS_ARGBTOYMATRIXROW_RVV
 #ifdef LIBYUV_RVV_HAS_TUPLE_TYPE
 static void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
-                                 uint8_t* dst_y,
-                                 int width,
-                                 const struct RgbConstants* rgbconstants) {
+                                uint8_t* dst_y,
+                                int width,
+                                const struct ArgbConstants* rgbconstants) {
+
   assert(width != 0);
   size_t w = (size_t)width;
   vuint8m2_t v_by, v_gy, v_ry;  // vectors are to store RGBToY constant
@@ -2090,7 +2091,7 @@ static void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
   v_by = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[0], vl);
   v_gy = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[1], vl);
   v_ry = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[2], vl);
-  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddY, vl);
+  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddYUV[0], vl);
   do {
     vuint8m2_t v_y;
     vuint16m4_t v_y_u16;
@@ -2114,7 +2115,7 @@ static void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
 static void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
                                  uint8_t* dst_y,
                                  int width,
-                                 const struct RgbConstants* rgbconstants) {
+                                 const struct ArgbConstants* rgbconstants) {
   assert(width != 0);
   size_t w = (size_t)width;
   vuint8m2_t v_by, v_gy, v_ry;  // vectors are to store RGBToY constant
@@ -2123,7 +2124,7 @@ static void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
   v_by = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[0], vl);
   v_gy = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[1], vl);
   v_ry = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[2], vl);
-  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddY, vl);
+  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddYUV[0]UV[0], vl);
   do {
     vuint8m2_t v_b, v_g, v_r, v_a, v_y;
     vuint16m4_t v_y_u16;
@@ -2173,7 +2174,7 @@ void ABGRToYJRow_RVV(const uint8_t* src_abgr, uint8_t* dst_yj, int width) {
 static void RGBAToYMatrixRow_RVV(const uint8_t* src_rgba,
                                  uint8_t* dst_y,
                                  int width,
-                                 const struct RgbConstants* rgbconstants) {
+                                 const struct ArgbConstants* rgbconstants) {
   assert(width != 0);
   size_t w = (size_t)width;
   vuint8m2_t v_by, v_gy, v_ry;  // vectors are to store RGBToY constant
@@ -2182,7 +2183,7 @@ static void RGBAToYMatrixRow_RVV(const uint8_t* src_rgba,
   v_by = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[0], vl);
   v_gy = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[1], vl);
   v_ry = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[2], vl);
-  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddY, vl);
+  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddYUV[0], vl);
   do {
     vuint8m2_t v_y;
     vuint16m4_t v_y_u16;
@@ -2206,7 +2207,7 @@ static void RGBAToYMatrixRow_RVV(const uint8_t* src_rgba,
 static void RGBAToYMatrixRow_RVV(const uint8_t* src_rgba,
                                  uint8_t* dst_y,
                                  int width,
-                                 const struct RgbConstants* rgbconstants) {
+                                 const struct ArgbConstants* rgbconstants) {
   assert(width != 0);
   size_t w = (size_t)width;
   vuint8m2_t v_by, v_gy, v_ry;  // vectors are to store RGBToY constant
@@ -2215,7 +2216,7 @@ static void RGBAToYMatrixRow_RVV(const uint8_t* src_rgba,
   v_by = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[0], vl);
   v_gy = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[1], vl);
   v_ry = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[2], vl);
-  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddY, vl);
+  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddYUV[0], vl);
   do {
     vuint8m2_t v_b, v_g, v_r, v_a, v_y;
     vuint16m4_t v_y_u16;
@@ -2258,7 +2259,7 @@ void BGRAToYRow_RVV(const uint8_t* src_bgra, uint8_t* dst_y, int width) {
 static void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
                                 uint8_t* dst_y,
                                 int width,
-                                const struct RgbConstants* rgbconstants) {
+                                const struct ArgbConstants* rgbconstants) {
   assert(width != 0);
   size_t w = (size_t)width;
   vuint8m2_t v_by, v_gy, v_ry;  // vectors are to store RGBToY constant
@@ -2267,7 +2268,7 @@ static void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
   v_by = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[0], vl);
   v_gy = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[1], vl);
   v_ry = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[2], vl);
-  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddY, vl);
+  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddYUV[0], vl);
   do {
     vuint8m2_t v_y;
     vuint16m4_t v_y_u16;
@@ -2291,7 +2292,7 @@ static void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
 static void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
                                 uint8_t* dst_y,
                                 int width,
-                                const struct RgbConstants* rgbconstants) {
+                                const struct ArgbConstants* rgbconstants) {
   assert(width != 0);
   size_t w = (size_t)width;
   vuint8m2_t v_by, v_gy, v_ry;  // vectors are to store RGBToY constant
@@ -2300,7 +2301,7 @@ static void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
   v_by = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[0], vl);
   v_gy = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[1], vl);
   v_ry = __riscv_vmv_v_x_u8m2(rgbconstants->kRGBToY[2], vl);
-  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddY, vl);
+  v_addy = __riscv_vmv_v_x_u16m4(rgbconstants->kAddYUV[0], vl);
   do {
     vuint8m2_t v_b, v_g, v_r, v_y;
     vuint16m4_t v_y_u16;
