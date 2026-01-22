@@ -3303,6 +3303,133 @@ int ABGRToJ400(const uint8_t* src_abgr,
   return 0;
 }
 
+// Convert ARGB To I444 with matrix.
+LIBYUV_API
+int ARGBToI444Matrix(const uint8_t* src_argb,
+                     int src_stride_argb,
+                     uint8_t* dst_y,
+                     int dst_stride_y,
+                     uint8_t* dst_u,
+                     int dst_stride_u,
+                     uint8_t* dst_v,
+                     int dst_stride_v,
+                     const struct YuvConstants* yuvconstants,
+                     int width,
+                     int height) {
+  int y;
+  struct ArgbConstants argb_internal;
+  void (*ARGBToYMatrixRow)(const uint8_t* src_argb, uint8_t* dst_y, int width,
+                           const struct ArgbConstants* c) = ARGBToYMatrixRow_C;
+  void (*ARGBToUV444MatrixRow)(const uint8_t* src_argb, uint8_t* dst_u,
+                               uint8_t* dst_v, int width,
+                               const struct ArgbConstants* c) =
+      ARGBToUV444MatrixRow_C;
+  if (!src_argb || !dst_y || !dst_u || !dst_v || !yuvconstants || width <= 0 ||
+      height == 0) {
+    return -1;
+  }
+  if (height < 0) {
+    height = -height;
+    src_argb = src_argb + (height - 1) * src_stride_argb;
+    src_stride_argb = -src_stride_argb;
+  }
+  // Coalesce rows.
+  if (src_stride_argb == width * 4 && dst_stride_y == width &&
+      dst_stride_u == width && dst_stride_v == width) {
+    width *= height;
+    height = 1;
+    src_stride_argb = dst_stride_y = dst_stride_u = dst_stride_v = 0;
+  }
+
+  ComputeArgbConstants(yuvconstants, &argb_internal);
+
+#if defined(HAS_ARGBTOYMATRIXROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
+  }
+#endif
+#if defined(HAS_ARGBTOYMATRIXROW_RVV)
+  if (TestCpuFlag(kCpuHasRVV)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_RVV;
+  }
+#endif
+#if defined(HAS_ARGBTOUV444MATRIXROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_Any_NEON;
+  }
+#endif
+
+  for (y = 0; y < height; ++y) {
+    ARGBToYMatrixRow(src_argb, dst_y, width, &argb_internal);
+    ARGBToUV444MatrixRow(src_argb, dst_u, dst_v, width, &argb_internal);
+    src_argb += src_stride_argb;
+    dst_y += dst_stride_y;
+    dst_u += dst_stride_u;
+    dst_v += dst_stride_v;
+  }
+  return 0;
+}
+
+// Convert ARGB To I422 with matrix.
+LIBYUV_API
+int ARGBToI422Matrix(const uint8_t* src_argb,
+                     int src_stride_argb,
+                     uint8_t* dst_y,
+                     int dst_stride_y,
+                     uint8_t* dst_u,
+                     int dst_stride_u,
+                     uint8_t* dst_v,
+                     int dst_stride_v,
+                     const struct YuvConstants* yuvconstants,
+                     int width,
+                     int height) {
+  int y;
+  struct ArgbConstants argb_internal;
+  void (*ARGBToYMatrixRow)(const uint8_t* src_argb, uint8_t* dst_y, int width,
+                           const struct ArgbConstants* c) = ARGBToYMatrixRow_C;
+  void (*ARGBToUVMatrixRow)(const uint8_t* src_argb, int src_stride_argb,
+                            uint8_t* dst_u, uint8_t* dst_v, int width,
+                            const struct ArgbConstants* c) =
+      ARGBToUVMatrixRow_C;
+  if (!src_argb || !dst_y || !dst_u || !dst_v || !yuvconstants || width <= 0 ||
+      height == 0) {
+    return -1;
+  }
+  if (height < 0) {
+    height = -height;
+    src_argb = src_argb + (height - 1) * src_stride_argb;
+    src_stride_argb = -src_stride_argb;
+  }
+
+  ComputeArgbConstants(yuvconstants, &argb_internal);
+
+#if defined(HAS_ARGBTOYMATRIXROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
+  }
+#endif
+#if defined(HAS_ARGBTOYMATRIXROW_RVV)
+  if (TestCpuFlag(kCpuHasRVV)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_RVV;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
+  }
+#endif
+
+  for (y = 0; y < height; ++y) {
+    ARGBToYMatrixRow(src_argb, dst_y, width, &argb_internal);
+    ARGBToUVMatrixRow(src_argb, 0, dst_u, dst_v, width, &argb_internal);
+    src_argb += src_stride_argb;
+    dst_y += dst_stride_y;
+    dst_u += dst_stride_u;
+    dst_v += dst_stride_v;
+  }
+  return 0;
+}
+
 // Convert ARGB to AR64.
 LIBYUV_API
 int ARGBToAR64(const uint8_t* src_argb,
