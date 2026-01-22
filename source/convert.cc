@@ -2144,6 +2144,74 @@ int ARGBToI420(const uint8_t* src_argb,
   return 0;
 }
 
+// ARGB little endian (bgra in memory) to I420 with matrix.
+LIBYUV_API
+int ARGBToI420Matrix(const uint8_t* src_argb,
+                     int src_stride_argb,
+                     uint8_t* dst_y,
+                     int dst_stride_y,
+                     uint8_t* dst_u,
+                     int dst_stride_u,
+                     uint8_t* dst_v,
+                     int dst_stride_v,
+                     const struct YuvConstants* yuvconstants,
+                     int width,
+                     int height) {
+  int y;
+  struct ArgbConstants argb_internal;
+  void (*ARGBToYMatrixRow)(const uint8_t* src_argb, uint8_t* dst_y, int width,
+                           const struct ArgbConstants* c) = ARGBToYMatrixRow_C;
+  void (*ARGBToUVMatrixRow)(const uint8_t* src_argb, int src_stride_argb,
+                            uint8_t* dst_u, uint8_t* dst_v, int width,
+                            const struct ArgbConstants* c) =
+      ARGBToUVMatrixRow_C;
+  if (!src_argb || !dst_y || !dst_u || !dst_v || !yuvconstants || width <= 0 ||
+      height == 0) {
+    return -1;
+  }
+  if (height < 0) {
+    height = -height;
+    src_argb = src_argb + (height - 1) * src_stride_argb;
+    src_stride_argb = -src_stride_argb;
+  }
+
+  ComputeArgbConstants(yuvconstants, &argb_internal);
+
+#if defined(HAS_ARGBTOYMATRIXROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
+  }
+#endif
+#if defined(HAS_ARGBTOYMATRIXROW_RVV)
+  if (TestCpuFlag(kCpuHasRVV)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_RVV;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
+  }
+#endif
+
+  for (y = 0; y < height - 1; y += 2) {
+    ARGBToUVMatrixRow(src_argb, src_stride_argb, dst_u, dst_v, width,
+                      &argb_internal);
+    ARGBToYMatrixRow(src_argb, dst_y, width, &argb_internal);
+    ARGBToYMatrixRow(src_argb + src_stride_argb, dst_y + dst_stride_y, width,
+                     &argb_internal);
+    src_argb += src_stride_argb * 2;
+    dst_y += dst_stride_y * 2;
+    dst_u += dst_stride_u;
+    dst_v += dst_stride_v;
+  }
+  if (height & 1) {
+    ARGBToUVMatrixRow(src_argb, 0, dst_u, dst_v, width, &argb_internal);
+    ARGBToYMatrixRow(src_argb, dst_y, width, &argb_internal);
+  }
+  return 0;
+}
+
+
 #ifdef USE_EXTRACTALPHA
 // Convert ARGB to I420 with Alpha
 // The following version calls ARGBExtractAlpha on the full image.
