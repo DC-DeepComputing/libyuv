@@ -87,6 +87,24 @@
       "parentUuid": "059430c1_49ca4f67",
       "revId": "0608fc76af2666f955cbfbee389451e93cdbd94b",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f7d94d6_b81eceaa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3388142
+      },
+      "writtenOn": "2026-01-27T00:09:38Z",
+      "side": 1,
+      "message": "Agreed, this was not idea. Good news, we were able to get the vuln scan team to land a change to ingest these urls so we no longer need this change :)",
+      "parentUuid": "b6b3aaeb_bfcc5015",
+      "revId": "0608fc76af2666f955cbfbee389451e93cdbd94b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
