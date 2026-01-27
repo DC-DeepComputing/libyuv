@@ -16,6 +16,24 @@
       "message": "what is this revision and how do we \u0027manually\u0027 update it?",
       "revId": "814ffdfc474a10763298a7b7c4449fb570aa52bf",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "472d1ac2_f17ac4ea",
+        "filename": "README.chromium",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 3388142
+      },
+      "writtenOn": "2026-01-27T06:16:59Z",
+      "side": 1,
+      "message": "Sorry for the noise, I didn\u0027t account for cases where the README.chromium is actually _inside_ the repo being copied in. I\u0027ve set this to DEPS since it\u0027s rolled with deps.",
+      "parentUuid": "5d6dee64_43642298",
+      "revId": "814ffdfc474a10763298a7b7c4449fb570aa52bf",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
