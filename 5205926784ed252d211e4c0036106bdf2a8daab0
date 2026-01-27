@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b38e6ff_6c6ca27f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-01-27T02:42:01Z",
+      "side": 1,
+      "message": "Thanks for taking a look. I\u0027m currently not happy with the setup, my plan is to do something like the following:\n\n````\nTODO for Gemini:\n* Lets start with adding pure new ARGBToI420Matrix and ARGBToI444Matrix methods.\n* Lets generate constants that allow for ABGR and ARGB input by changing the matrix.\n* Lets start with just the C implementations for each method.\n* After that\u0027s done, lets add SSSE3 and AVX2 versions.\n* After that, we\u0027ll add a NEON and NEONDOTPROD? version.\n* After that\u0027s done, we can see if we can replace the existing versions with the matrix versions.\n\n* Assuming all that works, we\u0027ll want to add a ARGBToNV12Matrix version. Although perhaps\njust using a I420ToNV12 intermediate method is fine.\n```\n\nI\u0027m also torn on inverting the yuv constants like I\u0027ve done for https://chromium-review.googlesource.com/c/libyuv/libyuv/+/7512033 so that we don\u0027t have to have another set of constants and folks can use Yvu vs Yuv constants for ABGR/ARGB.\n\nWDYT?",
+      "parentUuid": "92ad225f_faec5702",
+      "revId": "5205926784ed252d211e4c0036106bdf2a8daab0",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "97cf5dee_ab814803",
