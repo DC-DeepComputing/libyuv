@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a672300f_28f5902d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1378025
+      },
+      "writtenOn": "2026-01-27T06:34:41Z",
+      "side": 1,
+      "message": "i don\u0027t have vote power in this repo",
+      "revId": "7ea6cc9cf0c440a900cc6e71ef92c652c4b2a42a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
