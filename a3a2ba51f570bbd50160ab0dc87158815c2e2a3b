@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d7e1031_6d456fb7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-01-27T01:46:56Z",
+      "side": 1,
+      "message": "Looks plausible. :-)   The goal is to make Matrix functions the only implementation of row functions\neg\nI420ToABGR is a call to I420ToARGBMatrix\nby swapping u and v pointers you can also R \u0026 B swapped\nI420ToARGB is also a call to I420ToARGBMatrix but with Yuv constants vs Yvu constants\nand RgbConstants are predefined in row_common.cc for known color spaces, but in theory the user can define their own colorspace.\n\nIn the util/yuvconvert.c is a utility to take colorspace values and produce the arrays that go into code.",
+      "revId": "a3a2ba51f570bbd50160ab0dc87158815c2e2a3b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dcb98792_c2533ad0",
+        "filename": "source/row_rvv.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2047,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-01-27T01:46:56Z",
+      "side": 1,
+      "message": "Prefer RgbConstants to avoid confusion with Argb layout and consistency with YuvConstants.  \u0027rgb\u0027 refers generically to being RGB, as opposed to YUV.",
+      "revId": "a3a2ba51f570bbd50160ab0dc87158815c2e2a3b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
