@@ -38,6 +38,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "62c5e2ce_f3109ae9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-02-05T23:33:38Z",
+      "side": 1,
+      "message": "Okay, I\u0027ve cleaned this up and think it\u0027s ready for review now. I\u0027ve removed all the SIMD stuff for now and dropped the replacement of the non-matrix versions until a follow-up CL to ensure tests are comparing accurately.",
+      "parentUuid": "1b38e6ff_6c6ca27f",
+      "revId": "5205926784ed252d211e4c0036106bdf2a8daab0",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "97cf5dee_ab814803",
         "filename": "source/row_neon64.cc",
         "patchSetId": 1
