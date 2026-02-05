@@ -977,6 +977,13 @@ struct YuvConstants {
   uvec8 kUVCoeff;
   vec16 kRGBCoeffBias;
 };
+// This struct is for ARM and RISC-V color conversion.
+struct ArgbConstants {
+  uvec8 kRGBToY;
+  vec8 kRGBToU;
+  vec8 kRGBToV;
+  uvec16 kAddYUV;
+};
 #else
 // This struct is for Intel color conversion.
 struct YuvConstants {
@@ -986,6 +993,14 @@ struct YuvConstants {
   int16_t kYToRgb[16];
   int16_t kYBiasToRgb[16];
 };
+// This struct is for Intel color conversion.
+struct ArgbConstants {
+  uint8_t kRGBToY[32];
+  int8_t kRGBToU[32];
+  int8_t kRGBToV[32];
+  uint16_t kAddY[16];
+  uint16_t kAddUV[16];
+};
 
 // Offsets into YuvConstants structure
 #define KUVTOB 0
@@ -993,6 +1008,13 @@ struct YuvConstants {
 #define KUVTOR 64
 #define KYTORGB 96
 #define KYBIASTORGB 128
+
+// Offsets into ArgbConstants structure
+#define KRGBTOY_OFF 0
+#define KRGBTOU_OFF 32
+#define KRGBTOV_OFF 64
+#define KADDY_OFF 96
+#define KADDUV_OFF 128
 
 #endif
 
@@ -2074,6 +2096,22 @@ void RAWToYJRow_LASX(const uint8_t* src_raw, uint8_t* dst_yj, int width);
 
 void ARGBToYRow_C(const uint8_t* src_rgb, uint8_t* dst_y, int width);
 void ARGBToYJRow_C(const uint8_t* src_rgb, uint8_t* dst_y, int width);
+void ARGBToYMatrixRow_C(const uint8_t* src_argb,
+                        uint8_t* dst_y,
+                        int width,
+                        const struct ArgbConstants* c);
+void ARGBToUVMatrixRow_C(const uint8_t* src_argb,
+                         int src_stride_argb,
+                         uint8_t* dst_u,
+                         uint8_t* dst_v,
+                         int width,
+                         const struct ArgbConstants* c);
+void ARGBToUV444MatrixRow_C(const uint8_t* src_argb,
+                            uint8_t* dst_u,
+                            uint8_t* dst_v,
+                            int width,
+                            const struct ArgbConstants* c);
+
 void ABGRToYJRow_C(const uint8_t* src_rgb, uint8_t* dst_y, int width);
 void RGBAToYJRow_C(const uint8_t* src_rgb, uint8_t* dst_y, int width);
 void BGRAToYRow_C(const uint8_t* src_rgb, uint8_t* dst_y, int width);
