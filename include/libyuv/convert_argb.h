@@ -29,6 +29,14 @@ LIBYUV_API extern const struct YuvConstants kYuvF709Constants;   // BT.709 full
 LIBYUV_API extern const struct YuvConstants kYuv2020Constants;   // BT.2020
 LIBYUV_API extern const struct YuvConstants kYuvV2020Constants;  // BT.2020 full
 
+// Conversion matrix for RGB to YUV
+LIBYUV_API extern const struct ArgbConstants kRgbI601Constants;   // BT.601
+LIBYUV_API extern const struct ArgbConstants kRgbJPEGConstants;   // BT.601 full
+LIBYUV_API extern const struct ArgbConstants kRgbH709Constants;   // BT.709
+LIBYUV_API extern const struct ArgbConstants kRgbF709Constants;   // BT.709 full
+LIBYUV_API extern const struct ArgbConstants kRgb2020Constants;   // BT.2020
+LIBYUV_API extern const struct ArgbConstants kRgbV2020Constants;  // BT.2020 full
+
 // Conversion matrix for YVU to BGR
 LIBYUV_API extern const struct YuvConstants kYvuI601Constants;   // BT.601
 LIBYUV_API extern const struct YuvConstants kYvuJPEGConstants;   // BT.601 full
