@@ -218,6 +218,17 @@ int ARGBToI422Matrix(const uint8_t* src_argb,
                      int width,
                      int height);
 
+LIBYUV_API
+int ARGBToNV12Matrix(const uint8_t* src_argb,
+                     int src_stride_argb,
+                     uint8_t* dst_y,
+                     int dst_stride_y,
+                     uint8_t* dst_uv,
+                     int dst_stride_uv,
+                     const struct ArgbConstants* argbconstants,
+                     int width,
+                     int height);
+
 // Convert ARGB To I420. (also in convert.h)
 LIBYUV_API
 int ARGBToI420(const uint8_t* src_argb,
