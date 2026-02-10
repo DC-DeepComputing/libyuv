@@ -166,6 +166,7 @@ int ARGBToI444(const uint8_t* src_argb,
 }
 
 // Convert ARGB To I444 with matrix.
+// For ABGR little endian (rgba in memory) use the kBgr constants.
 LIBYUV_API
 int ARGBToI444Matrix(const uint8_t* src_argb,
                      int src_stride_argb,
@@ -374,6 +375,7 @@ int ARGBToI422(const uint8_t* src_argb,
 }
 
 // Convert ARGB To I422 with matrix.
+// For ABGR little endian (rgba in memory) use the kBgr constants.
 LIBYUV_API
 int ARGBToI422Matrix(const uint8_t* src_argb,
                      int src_stride_argb,
