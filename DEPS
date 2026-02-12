@@ -100,7 +100,7 @@ deps = {
   },
 
   'src/third_party/catapult':
-    Var('chromium_git') + '/catapult.git' + '@' + 'eda8d2eec9f0986179004f80a383518ba51008ab',
+    Var('chromium_git') + '/catapult.git' + '@' + '428ec56fc7b4ad6066c6dcdd24da83984740f760',
   'src/third_party/clang-format/script':
       Var('chromium_git') + '/external/github.com/llvm/llvm-project/clang/tools/clang-format.git' + '@' + 'c2725e0622e1a86d55f14514f2177a39efea4a0e',
   'src/third_party/compiler-rt/src':
