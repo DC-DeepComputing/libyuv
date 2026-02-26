@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c9412c3_9c41bbe5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-26T23:30:11Z",
+      "side": 1,
+      "message": "okay but i suggest fixing up bt.2020 to have the letter U for consistency",
+      "revId": "8617b0085f70ec849364d0e2cbb11a9eae30d9ed",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31bc61be_a8b86df7",
+        "filename": "include/libyuv/convert_argb.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-26T23:30:11Z",
+      "side": 1,
+      "message": "bt.2020 limit range is the letter \u0027U\u0027.\nbt.2020 full range is the letter \u0027V\u0027.\nthis and yuv constants should add the letter \u0027U\u0027",
+      "range": {
+        "startLine": 41,
+        "startChar": 66,
+        "endLine": 41,
+        "endChar": 76
+      },
+      "revId": "8617b0085f70ec849364d0e2cbb11a9eae30d9ed",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
