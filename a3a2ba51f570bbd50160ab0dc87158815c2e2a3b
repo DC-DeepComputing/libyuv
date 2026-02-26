@@ -20,6 +20,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "124666eb_1c3ffab6",
+        "filename": "include/libyuv/convert_from_argb.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-26T23:09:47Z",
+      "side": 1,
+      "message": "create RgbConstants so rgb to yuv is semi-independent from yuv to rgb?",
+      "revId": "a3a2ba51f570bbd50160ab0dc87158815c2e2a3b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc074152_730c796d",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2743,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-26T23:09:47Z",
+      "side": 1,
+      "message": "bit. i called it \u0027rgb\u0027 for 2 reasons:\n1. not to confuse it with a particular fourcc.\n2. alpha is not supported.  the constants are only used for b, g, and r.",
+      "revId": "a3a2ba51f570bbd50160ab0dc87158815c2e2a3b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "dcb98792_c2533ad0",
         "filename": "source/row_rvv.cc",
         "patchSetId": 3
