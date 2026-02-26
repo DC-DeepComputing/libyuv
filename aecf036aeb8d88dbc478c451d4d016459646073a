@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc457953_959ec546",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-26T23:46:49Z",
+      "side": 1,
+      "message": "minor concerns about where constants go and ld4 performance",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d788e62f_4e02122a",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-26T23:46:49Z",
+      "side": 1,
+      "message": "row functions should only include \"row.h\"?",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a049a790_9c2ccf4b",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1892,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-26T23:46:49Z",
+      "side": 1,
+      "message": "note the goal will be remove these too, from the low levels, calling matrix directly in a portable way from the convert_argb.cc",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "349b905d_f768445b",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 2758,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-26T23:46:49Z",
+      "side": 1,
+      "message": "the actual constants should move to row_common.cc same as yuv constants, and ideally be cross platform, but at least have the same names.\nthe c version on each platform should use the same constants as simd and be bit exact.\n\niirc the 0x1080 has 80 to do rounding during vaddhn.\nBut if we wanted ARGBToY for 10 bit, we wouldnt want to add 0x80.  It would be better on all platforms to make the constants not include the rounding that assumes 8 bit output.  Use a rounding shift or in this case vrhaddn.u16\nsee also how rvv version does the rounding shift, but removed the hard coded 0x80 from constants.\n\nits a fairly big issue so defer the rounding, but consider moving and sharing constants.",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb352873_9674133b",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 2775,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-26T23:46:49Z",
+      "side": 1,
+      "message": "note that ld4 is slow on new cpus, so working with argb as is can help... more like a dot product.\nin particular its about 54 cycles on cortex a510\n\nyou can literally mimic sdot with 3 instructions\nvmull -\u003e 16 bit\nvpadd -\u003e paired horizontal add\nvpadal -\u003e paired add and accumulate as 32 bit",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
