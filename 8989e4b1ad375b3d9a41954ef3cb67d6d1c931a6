@@ -16,6 +16,24 @@
       "message": "One wrinkle here is that the existing SIMD matrix versions are using 8-bit constants, so the methods need some modification if we want to use these 16-bit versions.",
       "revId": "8989e4b1ad375b3d9a41954ef3cb67d6d1c931a6",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45620cfd_af6ce36a",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-27T00:00:10Z",
+      "side": 1,
+      "message": "I\u0027m leaning toward staying with the exact same constants for both.  the input and output will be 16 bit (or 10 bit really).",
+      "parentUuid": "fea4ae69_ea3b49d6",
+      "revId": "8989e4b1ad375b3d9a41954ef3cb67d6d1c931a6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }

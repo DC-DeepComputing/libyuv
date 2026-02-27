@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "189acac8_adfc01ab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-27T00:00:10Z",
+      "side": 1,
+      "message": "note that for yuv there is a compile time flag for higher quality coefficients, but an alternative implementation might be a runtime way to\n1. generate constants and/or.  An init function call could take a flag to say you want legacy defaults or new improved constants.\n2. have multiple versions of constants and select which to use with a runtime call\n\nAs it stands, its very hard to enable higher quality without breaking many (134) golden tests",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d146f60_56d76786",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 844,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-27T00:00:10Z",
+      "side": 1,
+      "message": "nit prefer rgbconstants to clarify this is not supporting alpha constants and not specific to fourcc \u0027argb\u0027.  but just a nit.",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2531f29_b8edf30f",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 2095,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-27T00:00:10Z",
+      "side": 1,
+      "message": "nit: in the ideal world, UV444 would use the ARGBToY.  But Y is unsigned and UV is signed, and with 8 bit it helps to use different instructions/datatype.\n\nmany YUV formats have the U and V together (biplanar), but with planar something like ARGBToU could do 1 plane and get called twice.\nARM and Intel prefer multiple reads but 1 write per loop, performance wise.\nthe u and v could be weaved.\n\nARGBToUV does subsampling.  I had hoped we could do ARGBToUV444 and then downsample, or downsample the ARGB first into a row buffer.  But as is, ARGBToUV helps performance a bit.   It is complicated and limits the performance on intel compared to ARGBToY.  I dont have avx512 for the UV versions yet.",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6790c45c_5b98d2e2",
+        "filename": "source/convert.cc",
+        "patchSetId": 13
+      },
+      "lineNbr": 2181,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-27T00:00:10Z",
+      "side": 1,
+      "message": "note that the Y channels could be done in a different loop and use row coalesce.  but if ARGB is very large, it would cause cache misses.",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e2d5786_6437e9d7",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 13
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-02-27T00:00:10Z",
+      "side": 1,
+      "message": "row coalesce on very large",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
