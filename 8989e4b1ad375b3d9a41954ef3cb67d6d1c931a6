@@ -70,6 +70,24 @@
       "parentUuid": "73834b27_88e86416",
       "revId": "8989e4b1ad375b3d9a41954ef3cb67d6d1c931a6",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51d93f30_1e547129",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 11
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-03T22:27:18Z",
+      "side": 1,
+      "message": "int8 makes sense... allows for dot product.. for arm thats usdot where the rgb is uint8 but the coefficients are signed int8.",
+      "parentUuid": "2bca424a_55302c15",
+      "revId": "8989e4b1ad375b3d9a41954ef3cb67d6d1c931a6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }

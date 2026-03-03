@@ -73,6 +73,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "0188538d_e4602f94",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 844,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-03T22:27:18Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "fdcc94cf_5dc2c558",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "c2531f29_b8edf30f",
         "filename": "include/libyuv/row.h",
         "patchSetId": 13
@@ -136,6 +154,24 @@
       "side": 1,
       "message": "Sorry, what\u0027s the suggestion here? Improving the comment? Or changing the code?",
       "parentUuid": "7e2d5786_6437e9d7",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecaf1c81_ec12d63c",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 13
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-03T22:27:18Z",
+      "side": 1,
+      "message": "remove row coalescing.  if width * height is very large, it slows it down.",
+      "parentUuid": "5bf113e5_6adbfb61",
       "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
