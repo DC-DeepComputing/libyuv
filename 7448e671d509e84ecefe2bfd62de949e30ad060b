@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "80f9e681_ea552204",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 13
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-03T21:08:33Z",
+      "side": 1,
+      "message": "Thanks for the details. For now I think sticking with the standard quality constants for RGB-\u003eYUV should be fine.",
+      "parentUuid": "189acac8_adfc01ab",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0d146f60_56d76786",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-02-27T00:00:10Z",
       "side": 1,
       "message": "nit prefer rgbconstants to clarify this is not supporting alpha constants and not specific to fourcc \u0027argb\u0027.  but just a nit.",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fdcc94cf_5dc2c558",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 844,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-03T21:08:33Z",
+      "side": 1,
+      "message": "I chose `Rgb` originally, but after a few subsequent patch sets I found it much clearer to match the constant names to the method names. E.g., ARGBToI420Matrix should use ARGB constants, ABGRToI420 would use ABGR constants, etc.",
+      "parentUuid": "0d146f60_56d76786",
       "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -82,6 +118,24 @@
       "writtenOn": "2026-02-27T00:00:10Z",
       "side": 1,
       "message": "row coalesce on very large",
+      "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5bf113e5_6adbfb61",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 13
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-03T21:08:33Z",
+      "side": 1,
+      "message": "Sorry, what\u0027s the suggestion here? Improving the comment? Or changing the code?",
+      "parentUuid": "7e2d5786_6437e9d7",
       "revId": "7448e671d509e84ecefe2bfd62de949e30ad060b",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
