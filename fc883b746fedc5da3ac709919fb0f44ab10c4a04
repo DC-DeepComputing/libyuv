@@ -70,6 +70,24 @@
       "parentUuid": "24eb2f9c_6c48e6cb",
       "revId": "fc883b746fedc5da3ac709919fb0f44ab10c4a04",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b0122a2_4c6aa761",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-04T00:48:42Z",
+      "side": 1,
+      "message": "no.  good point. row.h is considered internal.  all row headers used to live in the source folder instead of include but it was hard getting the include paths to work.  It would be good to do a clean up to move them back to source or an internal subfolder.\nlets leave it then",
+      "parentUuid": "af023af3_cc97e6d5",
+      "revId": "fc883b746fedc5da3ac709919fb0f44ab10c4a04",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
