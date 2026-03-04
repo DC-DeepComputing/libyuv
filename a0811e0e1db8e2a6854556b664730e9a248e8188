@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d9c47d29_413943e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-04T20:28:14Z",
+      "side": 1,
+      "message": "LG but comments should read kAbgr not kBgr",
+      "revId": "a0811e0e1db8e2a6854556b664730e9a248e8188",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36a83d50_0137e987",
+        "filename": "source/convert.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 2148,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-04T20:28:14Z",
+      "side": 1,
+      "message": "use the kAbgr constants.  the constants are renamed to have \u0027A\u0027",
+      "revId": "a0811e0e1db8e2a6854556b664730e9a248e8188",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71e7817b_5ff8cbc7",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-04T20:28:14Z",
+      "side": 1,
+      "message": "ditto.  kAbgr",
+      "revId": "a0811e0e1db8e2a6854556b664730e9a248e8188",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
