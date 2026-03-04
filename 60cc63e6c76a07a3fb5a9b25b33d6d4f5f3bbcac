@@ -70,6 +70,58 @@
       "parentUuid": "a4435d47_dea67193",
       "revId": "60cc63e6c76a07a3fb5a9b25b33d6d4f5f3bbcac",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9193c4f_240c9709",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-04T04:18:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ac2adcb_83af3f34",
+      "revId": "60cc63e6c76a07a3fb5a9b25b33d6d4f5f3bbcac",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b8b627c_9e91667a",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 15
+      },
+      "lineNbr": 974,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-04T04:18:07Z",
+      "side": 1,
+      "message": "Optional: This struct could be named `RgbConstants` because A (Alpha) is not used.",
+      "revId": "60cc63e6c76a07a3fb5a9b25b33d6d4f5f3bbcac",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37541e99_638f0aad",
+        "filename": "source/row_common.cc",
+        "patchSetId": 15
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-04T04:18:07Z",
+      "side": 1,
+      "message": "`struct ArgbConstants` is defined as follows:\n\n```\nstruct ArgbConstants {\n  uint8_t kRGBToY[32];\n  int16_t kRGBToU[16];\n  int16_t kRGBToV[16];\n  uint16_t kAddY[16];\n  uint16_t kAddUV[16];\n};\n```\n\nBut these three functions could get by with the following array sizes:\n\n```\nstruct ArgbConstants {\n  uint8_t kRGBToY[3];\n  int16_t kRGBToU[3];\n  int16_t kRGBToV[3];\n  uint16_t kAddY[1];\n  uint16_t kAddUV[1];\n};\n```\n\nWhat are the other array elements for?",
+      "revId": "60cc63e6c76a07a3fb5a9b25b33d6d4f5f3bbcac",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
