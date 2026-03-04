@@ -16,6 +16,24 @@
       "message": "remove.  convert is an image level api.  row functions should only need row.h\nor add todo for moving something",
       "revId": "fc883b746fedc5da3ac709919fb0f44ab10c4a04",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f511fc2a_870af80a",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-04T00:38:51Z",
+      "side": 1,
+      "message": "Without this the constants defined in convert_argb.h like kArgbI601Constants aren\u0027t available. Should we move all the constants from convert_argb.h to row.h?",
+      "parentUuid": "ea57a196_b374b046",
+      "revId": "fc883b746fedc5da3ac709919fb0f44ab10c4a04",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
