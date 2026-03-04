@@ -16,6 +16,24 @@
       "message": "the test seems fine.  nv21 should be supported using the same low levels but the Bgr constants instead of Rgb?",
       "revId": "fdef1976f3a806e71464ac5636de6c22c82e22e8",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "51e0496d_04d969e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-04T00:06:49Z",
+      "side": 1,
+      "message": "I tried adding a test for this, but it doesn\u0027t seem to work. Or at least the output doesn\u0027t match the ToNV21 versions of the functions. I think adding a version which calls MergeUV(v,u) instead of (u,v) would be better.\n\nOutside of ChromeOS there\u0027s no usage of NV21 in Chromium code, so I hadn\u0027t planned on adding that yet.",
+      "parentUuid": "cf5ac9db_dd984502",
+      "revId": "fdef1976f3a806e71464ac5636de6c22c82e22e8",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
