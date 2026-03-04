@@ -52,6 +52,24 @@
       "parentUuid": "f511fc2a_870af80a",
       "revId": "fc883b746fedc5da3ac709919fb0f44ab10c4a04",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af023af3_cc97e6d5",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-04T00:46:02Z",
+      "side": 1,
+      "message": "Okay. Are libyuv clients expected to include `row.h` then? Or should we also include row.h from one of the public header files like convert_from_argb, etc?\n\nI.e., doing this move breaks Chromium and the unit test code since they don\u0027t typically include row.h",
+      "parentUuid": "24eb2f9c_6c48e6cb",
+      "revId": "fc883b746fedc5da3ac709919fb0f44ab10c4a04",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
