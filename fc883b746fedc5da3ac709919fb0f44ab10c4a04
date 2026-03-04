@@ -34,6 +34,24 @@
       "parentUuid": "ea57a196_b374b046",
       "revId": "fc883b746fedc5da3ac709919fb0f44ab10c4a04",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24eb2f9c_6c48e6cb",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-04T00:40:36Z",
+      "side": 1,
+      "message": "yes.  the externs in row.h and the actual definitions in row_common.cc",
+      "parentUuid": "f511fc2a_870af80a",
+      "revId": "fc883b746fedc5da3ac709919fb0f44ab10c4a04",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
