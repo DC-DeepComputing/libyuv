@@ -16,6 +16,24 @@
       "message": "@mbonadei@chromium.org and @wtc@google.com did you want to review too or do you defer to Frank?",
       "revId": "60cc63e6c76a07a3fb5a9b25b33d6d4f5f3bbcac",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ca632e6_d16cf586",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-04T01:44:49Z",
+      "side": 1,
+      "message": "Dale: Frank\u0027s review suffices!",
+      "parentUuid": "b526fa7a_bdee9e76",
+      "revId": "60cc63e6c76a07a3fb5a9b25b33d6d4f5f3bbcac",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
