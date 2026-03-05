@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "116db9a7_9ce7bf04",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-05T21:17:48Z",
+      "side": 1,
+      "message": "IMPORTANT: Bump the libyuv version in include/libyuv/version.h and README.chromium when new functions are added. This allows detection of the new functions at compile time. We forgot to do that in https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/7512030.\n\nYou can choose to do that in the last CL of this chain, if you consider the chain of CLs a cohesive unit of new feature.",
+      "revId": "008653f401d7a58a72c0b13ae5a8c1cd11081197",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "971e36ab_1daa2445",
         "filename": "include/libyuv/convert_argb.h",
         "patchSetId": 6
