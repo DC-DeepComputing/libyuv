@@ -33,6 +33,23 @@
       "message": "Nit: I suggest listing the `kAbgr*Constants` declarations in a separate section with the comment:\n\n```\n// Conversion matrix for BGR to YUV\n```",
       "revId": "008653f401d7a58a72c0b13ae5a8c1cd11081197",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30f3fbbb_d7f52c45",
+        "filename": "source/convert.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 2148,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-05T21:25:15Z",
+      "side": 1,
+      "message": "Should we move this comment to the declaration of this function in the public header?\n\nNote: This also applies to the new comments added to source/convert_from_argb.cc.",
+      "revId": "008653f401d7a58a72c0b13ae5a8c1cd11081197",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
