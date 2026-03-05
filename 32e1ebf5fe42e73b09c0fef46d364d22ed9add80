@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af6a89a3_937a23aa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-05T21:28:59Z",
+      "side": 1,
+      "message": "IMPORTANT: Bump libyuv version in include/libyuv/version.h and README.chromium",
+      "revId": "32e1ebf5fe42e73b09c0fef46d364d22ed9add80",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7ea1cbd_4da9bfec",
+        "filename": "include/libyuv/convert_argb.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-05T21:28:59Z",
+      "side": 1,
+      "message": "Optional: Consider moving these constant declarations to their own sections. It is a matter of preference. I leave it to you.",
+      "revId": "32e1ebf5fe42e73b09c0fef46d364d22ed9add80",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc176fcb_99b15c59",
+        "filename": "include/libyuv/convert_argb.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-05T21:28:59Z",
+      "side": 1,
+      "message": "Optional: Consider adding the comments similar to those added in https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/7564316 about using these new constants, e.g.,\n\n```\n// For RGBA little endian (abgr in memory) use the kRgba constants.\n```",
+      "revId": "32e1ebf5fe42e73b09c0fef46d364d22ed9add80",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
