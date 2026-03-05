@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df215216_de2b6f92",
+        "filename": "include/libyuv/convert_from_argb.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-05T21:19:53Z",
+      "side": 1,
+      "message": "Nit: Move the `ARGBToNV12Matrix` declaration here (after `ARGBToNV12`) and add the following comment:\n\n```\n// Convert ARGB To NV12 with matrix.\n```",
+      "revId": "32ecc59eb1a790a0f4cdf51b9b6380f226eec5cb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3945466_b161d13f",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-05T21:19:53Z",
+      "side": 1,
+      "message": "Nit: Move this function after `ARGBToNV12`. This is apparently the convention in this file -- the Matrix version goes after the non-Matrix version.",
+      "revId": "32ecc59eb1a790a0f4cdf51b9b6380f226eec5cb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bdc03709_452bf0da",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 704,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-05T21:19:53Z",
+      "side": 1,
+      "message": "Optional: I know you copied this from `ARGBToNV21()`. It doesn\u0027t seem necessary to enclose the rest of this function in a `{ }` block.",
+      "revId": "32ecc59eb1a790a0f4cdf51b9b6380f226eec5cb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
