@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "37b5665e_40e9b6a4",
+        "filename": "include/libyuv/convert_from_argb.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-05T23:42:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "df215216_de2b6f92",
+      "revId": "32ecc59eb1a790a0f4cdf51b9b6380f226eec5cb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a3945466_b161d13f",
@@ -35,6 +53,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4f3db22_b0e9e258",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-05T23:42:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a3945466_b161d13f",
+      "revId": "32ecc59eb1a790a0f4cdf51b9b6380f226eec5cb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bdc03709_452bf0da",
@@ -48,6 +84,24 @@
       "writtenOn": "2026-03-05T21:19:53Z",
       "side": 1,
       "message": "Optional: I know you copied this from `ARGBToNV21()`. It doesn\u0027t seem necessary to enclose the rest of this function in a `{ }` block.",
+      "revId": "32ecc59eb1a790a0f4cdf51b9b6380f226eec5cb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "82032b0d_71d50e31",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 704,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-05T23:42:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bdc03709_452bf0da",
       "revId": "32ecc59eb1a790a0f4cdf51b9b6380f226eec5cb",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
