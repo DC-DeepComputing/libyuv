@@ -16,6 +16,24 @@
       "message": "Nit: Omit this comment. (This kind of comment is uncommon in Chrome.)",
       "revId": "42ee89f737ce3f30dd33be18cad664715ae45852",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60c932b2_1db5563f",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-06T00:26:23Z",
+      "side": 1,
+      "message": "This mirrors an existing comment in row_common.cc. Frank indicated he wasn\u0027t thrilled with the dep here, so I\u0027m inclined to leave it, but defer to Frank.",
+      "parentUuid": "e6e050b6_57401062",
+      "revId": "42ee89f737ce3f30dd33be18cad664715ae45852",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
