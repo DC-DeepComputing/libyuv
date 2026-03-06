@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6e050b6_57401062",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-03-06T00:23:38Z",
+      "side": 1,
+      "message": "Nit: Omit this comment. (This kind of comment is uncommon in Chrome.)",
+      "revId": "42ee89f737ce3f30dd33be18cad664715ae45852",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
