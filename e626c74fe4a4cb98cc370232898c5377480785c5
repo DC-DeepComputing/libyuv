@@ -39,6 +39,30 @@
       },
       "revId": "e626c74fe4a4cb98cc370232898c5377480785c5",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34a9b8e4_c171891e",
+        "filename": "include/libyuv/convert_from_argb.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-17T23:54:28Z",
+      "side": 1,
+      "message": "I changed this based on Wan-Teh\u0027s feedback and since this can handle ARGB, ABGR, and in later patch sets BGRA and RGBA. The idea being that the comment up on ArgbConstants would explain the mechanism in more detail. WDYT?",
+      "parentUuid": "fbb9ab80_9ae00a95",
+      "range": {
+        "startLine": 181,
+        "startChar": 4,
+        "endLine": 181,
+        "endChar": 15
+      },
+      "revId": "e626c74fe4a4cb98cc370232898c5377480785c5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
