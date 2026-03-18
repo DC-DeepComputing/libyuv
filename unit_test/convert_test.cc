@@ -2266,12 +2266,13 @@ TEST_F(LibYUVConvertTest, TestARGBToI420Matrix) {
                    dst_v, kWidth / 2, &kArgbU2020Constants, kWidth, kHeight);
 
   // Reference BT.709 (limited range)
-  // Y = round(0.2126 * 219 / 255 * R + 0.7152 * 219 / 255 * G + 0.0722 * 219 / 255 * B + 16)
-  // Y = round(0.1826 * R + 0.6142 * G + 0.0620 * B + 16)
-  // 47 * 255 + 157 * 255 + 16 * 255 + 4224 = 11985 + 40035 + 4080 + 4224 = 60324
-  // 60324 / 256 = 235.64 -> 235. Correct.
+  // Y = round(0.2126 * 219 / 255 * R + 0.7152 * 219 / 255 * G + 0.0722 * 219 /
+  // 255 * B + 16) Y = round(0.1826 * R + 0.6142 * G + 0.0620 * B + 16) 47 * 255
+  // + 157 * 255 + 16 * 255 + 4224 = 11985 + 40035 + 4080 + 4224 = 60324 60324 /
+  // 256 = 235.64 -> 235. Correct.
 
-  for (int i = 0; i < kWidth * kHeight * 4; ++i) src_argb[i] = 255;
+  for (int i = 0; i < kWidth * kHeight * 4; ++i)
+    src_argb[i] = 255;
   ARGBToI420Matrix(src_argb, kWidth * 4, dst_y, kWidth, dst_u, kWidth / 2,
                    dst_v, kWidth / 2, &kArgbH709Constants, kWidth, kHeight);
   EXPECT_EQ(dst_y[0], 235);
