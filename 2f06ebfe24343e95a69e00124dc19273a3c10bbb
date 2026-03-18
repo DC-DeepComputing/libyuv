@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe0095f2_5850e99f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-18T00:35:19Z",
+      "side": 1,
+      "message": "nit - remove trailing _ in MergeVURow_",
+      "revId": "2f06ebfe24343e95a69e00124dc19273a3c10bbb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83fe3aea_f19d7d27",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 633,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-18T00:35:19Z",
+      "side": 1,
+      "message": "Remove trailing _\nMergeUVRow_\nboth here and NV21.  Thats a typo I think.\n\nIts frustrating this and NV21 cant share a common function.\nThe hack way would be write a MergeVURow that swaps the src_u and src_v and calls MergeUVRow.\nThe classic way to endswap in libyuv is Bgr constants and swap pointers, but nv12 is biplanar",
+      "revId": "2f06ebfe24343e95a69e00124dc19273a3c10bbb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
