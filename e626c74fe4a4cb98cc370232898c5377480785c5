@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0422f9e1_14b9ea79",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 834,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-18T00:01:52Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "9b436147_44697a39",
+      "revId": "e626c74fe4a4cb98cc370232898c5377480785c5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fbb9ab80_9ae00a95",
@@ -79,6 +97,30 @@
       "side": 1,
       "message": "Acknowledged.  okay no big deal.  i find it confusing they dont match.  the function could be RGBToI444 but changing the name will get hard in the future as they become public api.",
       "parentUuid": "34a9b8e4_c171891e",
+      "range": {
+        "startLine": 181,
+        "startChar": 4,
+        "endLine": 181,
+        "endChar": 15
+      },
+      "revId": "e626c74fe4a4cb98cc370232898c5377480785c5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f74a2edf_0a493a78",
+        "filename": "include/libyuv/convert_from_argb.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-18T00:01:52Z",
+      "side": 1,
+      "message": "Would you prefer RGBToI444Matrix then?",
+      "parentUuid": "6a841093_b1ec9b28",
       "range": {
         "startLine": 181,
         "startChar": 4,
