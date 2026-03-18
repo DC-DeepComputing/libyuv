@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7dda6271_97f5e82d",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-18T23:10:40Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by Large Change: This change adds 623 lines of production code. Consider splitting this change in...\n\nThis change adds 623 lines of production code. Consider splitting this change into smaller ones.\nSmall changes get reviewed faster and more thoroughly, are less likely to introduce bugs, and are easier to roll back if needed.\nYou can bypass this warning by adding \u0027BYPASS_LARGE_CHANGE_WARNING: \u003creason\u003e\u0027 to the change description. (Google-internal: See go/large-change-nudge)",
+      "revId": "43313088d30dcbca57557ac57d21ced0ca942a0d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
