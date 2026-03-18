@@ -271,7 +271,7 @@ void I422ToRGBARow_NEON(const uint8_t* src_y,
       "subs        %[width], %[width], #8        \n"  //
       YUVTORGB                                        //
           RGBTORGB8                                   //
-              STORERGBA                               //
+      STORERGBA                                       //
       "bgt         1b                            \n"
       : [src_y] "+r"(src_y),                               // %[src_y]
         [src_u] "+r"(src_u),                               // %[src_u]
@@ -324,9 +324,8 @@ void I422ToRGB565Row_NEON(const uint8_t* src_y,
       YUVTORGB_SETUP
       "vmov.u8     d6, #255                      \n"
       "1:          \n"  //
-      READYUV422
-      "subs        %[width], %[width], #8        \n" YUVTORGB RGBTORGB8
-          ARGBTORGB565
+      READYUV422 "subs        %[width], %[width], #8        \n" YUVTORGB
+          RGBTORGB8 ARGBTORGB565
       "vst1.8      {q2}, [%[dst_rgb565]]!        \n"  // store 8 pixels RGB565.
       "bgt         1b                            \n"
       : [src_y] "+r"(src_y),                               // %[src_y]

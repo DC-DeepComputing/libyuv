@@ -1004,7 +1004,7 @@ struct YuvConstants {
 
 #endif
 
-#define IS_ALIGNED(p, a) (!((uintptr_t)(p) & ((a)-1)))
+#define IS_ALIGNED(p, a) (!((uintptr_t)(p) & ((a) - 1)))
 
 #define align_buffer_64(var, size)                                         \
   void* var##_mem = malloc((size) + 63);                      /* NOLINT */ \
@@ -1057,26 +1057,17 @@ struct YuvConstants {
 #define IACA_UD_BYTES __asm__ __volatile__("\n\t .byte 0x0F, 0x0B");
 
 #else /* Visual C */
-#define IACA_UD_BYTES \
-  { __asm _emit 0x0F __asm _emit 0x0B }
+#define IACA_UD_BYTES {__asm _emit 0x0F __asm _emit 0x0B}
 
 #define IACA_SSC_MARK(x) \
-  { __asm mov ebx, x __asm _emit 0x64 __asm _emit 0x67 __asm _emit 0x90 }
+  {__asm mov ebx, x __asm _emit 0x64 __asm _emit 0x67 __asm _emit 0x90}
 
 #define IACA_VC64_START __writegsbyte(111, 111);
 #define IACA_VC64_END __writegsbyte(222, 222);
 #endif
 
-#define IACA_START     \
-  {                    \
-    IACA_UD_BYTES      \
-    IACA_SSC_MARK(111) \
-  }
-#define IACA_END       \
-  {                    \
-    IACA_SSC_MARK(222) \
-    IACA_UD_BYTES      \
-  }
+#define IACA_START {IACA_UD_BYTES IACA_SSC_MARK(111)}
+#define IACA_END {IACA_SSC_MARK(222) IACA_UD_BYTES}
 
 void I210AlphaToARGBRow_NEON(const uint16_t* src_y,
                              const uint16_t* src_u,

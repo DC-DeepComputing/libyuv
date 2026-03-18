@@ -782,9 +782,8 @@ void I422ToRGB565Row_NEON(const uint8_t* src_y,
   asm volatile(
       YUVTORGB_SETUP
       "1:          \n"  //
-      READYUV422
-      "subs        %w[width], %w[width], #8      \n" I4XXTORGB RGBTORGB8_TOP
-          ARGBTORGB565_FROM_TOP
+      READYUV422 "subs        %w[width], %w[width], #8      \n" I4XXTORGB
+          RGBTORGB8_TOP ARGBTORGB565_FROM_TOP
       "st1         {v18.8h}, [%[dst_rgb565]], #16 \n"  // store 8 pixels RGB565.
       "b.gt        1b                            \n"
       : [src_y] "+r"(src_y),                               // %[src_y]
@@ -1035,9 +1034,8 @@ void NV12ToRGB565Row_NEON(const uint8_t* src_y,
       YUVTORGB_SETUP
       "ldr         q2, [%[kNV12Table]]           \n"
       "1:          \n"  //
-      READNV12
-      "subs        %w[width], %w[width], #8      \n" NVTORGB RGBTORGB8_TOP
-          ARGBTORGB565_FROM_TOP
+      READNV12 "subs        %w[width], %w[width], #8      \n" NVTORGB
+          RGBTORGB8_TOP ARGBTORGB565_FROM_TOP
       "st1         {v18.8h}, [%[dst_rgb565]], #16 \n"  // store 8
                                                        // pixels
                                                        // RGB565.

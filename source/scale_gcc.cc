@@ -1912,8 +1912,8 @@ void ScaleFilterCols_SSSE3(uint8_t* dst_ptr,
         "x"(kFsub80),  // %8
         "x"(kFadd40)   // %9
 #else
-        "m"(kFsub80),    // %8
-        "m"(kFadd40)     // %9
+        "m"(kFsub80),  // %8
+        "m"(kFadd40)   // %9
 #endif
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
         "xmm7");

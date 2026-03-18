@@ -1077,7 +1077,7 @@ int NV21ToNV12(const uint8_t* src_y,
 }
 
 // Test if tile_height is a power of 2 (16 or 32)
-#define IS_POWEROFTWO(x) (!((x) & ((x)-1)))
+#define IS_POWEROFTWO(x) (!((x) & ((x) - 1)))
 
 // Detile a plane of data
 // tile width is 16 and assumed.

@@ -446,8 +446,8 @@ static int YUVToARGBTestFilter(int src_width,
   align_buffer_page_end(src_u, src_uv_plane_size);
   align_buffer_page_end(src_v, src_uv_plane_size);
 
-  int64_t dst_argb_plane_size = (dst_width) * (dst_height)*4LL;
-  int dst_stride_argb = (dst_width)*4;
+  int64_t dst_argb_plane_size = (dst_width) * (dst_height) * 4LL;
+  int dst_stride_argb = (dst_width) * 4;
   align_buffer_page_end(dst_argb_c, dst_argb_plane_size);
   align_buffer_page_end(dst_argb_opt, dst_argb_plane_size);
   if (!dst_argb_c || !dst_argb_opt || !src_y || !src_u || !src_v) {

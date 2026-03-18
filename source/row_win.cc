@@ -1605,7 +1605,7 @@ __declspec(naked) void ARGBToUVRow_AVX2(const uint8_t* src_argb,
     sub        edi, edx   // stride from u to v
 
  convertloop:
-        /* step 1 - subsample 32x2 argb pixels to 16x1 */
+    /* step 1 - subsample 32x2 argb pixels to 16x1 */
     vmovdqu    ymm0, [eax]
     vmovdqu    ymm1, [eax + 32]
     vmovdqu    ymm2, [eax + 64]
@@ -1673,7 +1673,7 @@ __declspec(naked) void ARGBToUVJRow_AVX2(const uint8_t* src_argb,
     sub        edi, edx   // stride from u to v
 
  convertloop:
-        /* step 1 - subsample 32x2 argb pixels to 16x1 */
+    /* step 1 - subsample 32x2 argb pixels to 16x1 */
     vmovdqu    ymm0, [eax]
     vmovdqu    ymm1, [eax + 32]
     vmovdqu    ymm2, [eax + 64]
@@ -1738,7 +1738,7 @@ __declspec(naked) void ARGBToUV444Row_SSSE3(const uint8_t* src_argb,
     sub        edi, edx    // stride from u to v
 
  convertloop:
-        /* convert to U and V */
+    /* convert to U and V */
     movdqu     xmm0, [eax]  // U
     movdqu     xmm1, [eax + 16]
     movdqu     xmm2, [eax + 32]
@@ -3139,14 +3139,14 @@ __declspec(naked) void I400ToARGBRow_SSE2(const uint8_t* y_buf,
     mov        ecx, [esp + 12]  // width
 
  convertloop:
-        // Step 1: Scale Y contribution to 8 G values. G = (y - 16) * 1.164
+    // Step 1: Scale Y contribution to 8 G values. G = (y - 16) * 1.164
     movq       xmm0, qword ptr [eax]
     lea        eax, [eax + 8]
     punpcklbw  xmm0, xmm0  // Y.Y
     pmulhuw    xmm0, xmm2
     psubusw    xmm0, xmm3
     psrlw      xmm0, 6
-    packuswb   xmm0, xmm0        // G
+    packuswb   xmm0, xmm0      // G
 
         // Step 2: Weave into ARGB
     punpcklbw  xmm0, xmm0  // GG
@@ -3187,7 +3187,7 @@ __declspec(naked) void I400ToARGBRow_AVX2(const uint8_t* y_buf,
     mov        ecx, [esp + 12]  // width
 
  convertloop:
-        // Step 1: Scale Y contriportbution to 16 G values. G = (y - 16) * 1.164
+    // Step 1: Scale Y contriportbution to 16 G values. G = (y - 16) * 1.164
     vmovdqu    xmm0, [eax]
     lea        eax, [eax + 16]
     vpermq     ymm0, ymm0, 0xd8  // vpunpcklbw mutates
@@ -3195,7 +3195,7 @@ __declspec(naked) void I400ToARGBRow_AVX2(const uint8_t* y_buf,
     vpmulhuw   ymm0, ymm0, ymm2
     vpsubusw   ymm0, ymm0, ymm3
     vpsrlw     ymm0, ymm0, 6
-    vpackuswb  ymm0, ymm0, ymm0        // G.  still mutated: 3120
+    vpackuswb  ymm0, ymm0, ymm0      // G.  still mutated: 3120
 
         // TODO(fbarchard): Weave alpha with unpack.
         // Step 2: Weave into ARGB
@@ -4441,7 +4441,7 @@ __declspec(naked) void ARGBBlendRow_SSSE3(const uint8_t* src_argb,
     add        ecx, 4 - 1
     jl         convertloop1b
 
-            // 1 pixel loop.
+             // 1 pixel loop.
   convertloop1:
     movd       xmm3, [eax]  // src argb
     lea        eax, [eax + 4]
@@ -4671,7 +4671,7 @@ __declspec(naked) void ARGBUnattenuateRow_AVX2(const uint8_t* src_argb,
     vbroadcastf128 ymm5, xmmword ptr kUnattenShuffleAlpha_AVX2
 
  convertloop:
-        // replace VPGATHER
+    // replace VPGATHER
     movzx      esi, byte ptr [eax + 3]  // alpha0
     movzx      edi, byte ptr [eax + 7]  // alpha1
     vmovd      xmm0, dword ptr [ebx + esi * 4]  // [1,a0]
@@ -4694,7 +4694,7 @@ __declspec(naked) void ARGBUnattenuateRow_AVX2(const uint8_t* src_argb,
     vpunpckldq xmm2, xmm2, xmm3  // [1,a7,1,a6]
     vpunpcklqdq xmm3, xmm6, xmm7  // [1,a3,1,a2,1,a1,1,a0]
     vpunpcklqdq xmm0, xmm0, xmm2  // [1,a7,1,a6,1,a5,1,a4]
-    vinserti128 ymm3, ymm3, xmm0, 1                // [1,a7,1,a6,1,a5,1,a4,1,a3,1,a2,1,a1,1,a0]
+    vinserti128 ymm3, ymm3, xmm0, 1            // [1,a7,1,a6,1,a5,1,a4,1,a3,1,a2,1,a1,1,a0]
     // end of VPGATHER
 
     vmovdqu    ymm6, [eax]  // read 8 pixels.
@@ -4706,7 +4706,7 @@ __declspec(naked) void ARGBUnattenuateRow_AVX2(const uint8_t* src_argb,
     vpshufb    ymm3, ymm3, ymm5  // replicate high 4 alphas
     vpmulhuw   ymm0, ymm0, ymm2  // rgb * ia
     vpmulhuw   ymm1, ymm1, ymm3  // rgb * ia
-    vpackuswb  ymm0, ymm0, ymm1             // unmutated.
+    vpackuswb  ymm0, ymm0, ymm1         // unmutated.
     vmovdqu    [eax + edx], ymm0
     lea        eax, [eax + 32]
     sub        ecx, 8
@@ -5487,7 +5487,7 @@ void CumulativeSumToAverageRow_SSE2(const int32_t* topleft,
 
         // 4 pixel loop small blocks.
   s4:
-        // top left
+    // top left
     movdqu     xmm0, [eax]
     movdqu     xmm1, [eax + 16]
     movdqu     xmm2, [eax + 32]
@@ -5529,7 +5529,7 @@ void CumulativeSumToAverageRow_SSE2(const int32_t* topleft,
 
             // 4 pixel loop
   l4:
-        // top left
+    // top left
     movdqu     xmm0, [eax]
     movdqu     xmm1, [eax + 16]
     movdqu     xmm2, [eax + 32]
@@ -5579,7 +5579,7 @@ void CumulativeSumToAverageRow_SSE2(const int32_t* topleft,
     add        ecx, 4 - 1
     jl         l1b
 
-            // 1 pixel loop
+             // 1 pixel loop
   l1:
     movdqu     xmm0, [eax]
     psubd      xmm0, [eax + edx * 4]
@@ -5667,7 +5667,7 @@ void ComputeCumulativeSumRow_SSE2(const uint8_t* row,
     add        ecx, 4 - 1
     jl         l1b
 
-            // 1 pixel loop
+             // 1 pixel loop
   l1:
     movd       xmm2, dword ptr [eax]  // 1 argb pixel
     lea        eax, [eax + 4]
@@ -5753,7 +5753,7 @@ __declspec(naked) LIBYUV_API void ARGBAffineRow_SSE2(const uint8_t* src_argb,
     add        ecx, 4 - 1
     jl         l1b
 
-            // 1 pixel loop
+             // 1 pixel loop
   l1:
     cvttps2dq  xmm0, xmm2  // x, y float to int
     packssdw   xmm0, xmm0  // x, y as shorts
@@ -5820,14 +5820,14 @@ __declspec(naked) void InterpolateRow_AVX2(uint8_t* dst_ptr,
     vpaddw     ymm0, ymm0, ymm4
     vpsrlw     ymm1, ymm1, 8
     vpsrlw     ymm0, ymm0, 8
-    vpackuswb  ymm0, ymm0, ymm1            // unmutates
+    vpackuswb  ymm0, ymm0, ymm1       // unmutates
     vmovdqu    [esi + edi], ymm0
     lea        esi, [esi + 32]
     sub        ecx, 32
     jg         xloop
     jmp        xloop99
 
-        // Blend 50 / 50.
+         // Blend 50 / 50.
  xloop50:
    vmovdqu    ymm0, [esi]
    vpavgb     ymm0, ymm0, [esi + edx]
@@ -5837,7 +5837,7 @@ __declspec(naked) void InterpolateRow_AVX2(uint8_t* dst_ptr,
    jg         xloop50
    jmp        xloop99
 
-        // Blend 100 / 0 - Copy row unchanged.
+         // Blend 100 / 0 - Copy row unchanged.
  xloop100:
    rep movsb
 
@@ -5890,7 +5890,7 @@ __declspec(naked) void InterpolateRow_SSSE3(uint8_t* dst_ptr,
     movdqu     xmm1, xmm0
     punpcklbw  xmm0, xmm2
     punpckhbw  xmm1, xmm2
-    psubb      xmm0, xmm4            // bias image by -128
+    psubb      xmm0, xmm4       // bias image by -128
     psubb      xmm1, xmm4
     movdqa     xmm2, xmm5
     movdqa     xmm3, xmm5
@@ -5907,7 +5907,7 @@ __declspec(naked) void InterpolateRow_SSSE3(uint8_t* dst_ptr,
     jg         xloop
     jmp        xloop99
 
-        // Blend 50 / 50.
+         // Blend 50 / 50.
   xloop50:
     movdqu     xmm0, [esi]
     movdqu     xmm1, [esi + edx]
@@ -5918,7 +5918,7 @@ __declspec(naked) void InterpolateRow_SSSE3(uint8_t* dst_ptr,
     jg         xloop50
     jmp        xloop99
 
-        // Blend 100 / 0 - Copy row unchanged.
+         // Blend 100 / 0 - Copy row unchanged.
   xloop100:
     movdqu     xmm0, [esi]
     movdqu     [esi + edi], xmm0
@@ -6085,8 +6085,8 @@ __declspec(naked) void ARGBPolynomialRow_SSE2(const uint8_t* src_argb,
 
         // 2 pixel loop.
  convertloop:
-        //    pmovzxbd  xmm0, dword ptr [eax]  // BGRA pixel
-        //    pmovzxbd  xmm4, dword ptr [eax + 4]  // BGRA pixel
+    //    pmovzxbd  xmm0, dword ptr [eax]  // BGRA pixel
+    //    pmovzxbd  xmm4, dword ptr [eax + 4]  // BGRA pixel
     movq       xmm0, qword ptr [eax]  // BGRABGRA
     lea        eax, [eax + 8]
     punpcklbw  xmm0, xmm3
