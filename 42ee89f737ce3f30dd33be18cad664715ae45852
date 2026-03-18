@@ -92,6 +92,30 @@
       },
       "revId": "42ee89f737ce3f30dd33be18cad664715ae45852",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9bf296ed_4519ad5e",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1662,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-18T22:22:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "025e339a_3dfbf72e",
+      "range": {
+        "startLine": 1662,
+        "startChar": 7,
+        "endLine": 1662,
+        "endChar": 21
+      },
+      "revId": "42ee89f737ce3f30dd33be18cad664715ae45852",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
