@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2edb2dd4_fbb0c471",
+        "filename": "source/convert.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 2181,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-18T00:25:09Z",
+      "side": 1,
+      "message": "Note: I really want to see avx512 and/or AVXVNNI versions of these, but Intel has been saying they\u0027re working on it for a year, so I think we\u0027re on our own.\nMaybe AI can help with the port.  The ARM versions do well with dotproducts and this one in particular expects unsigned ARGB with signed coefficients, so its perfect for VNNI.",
+      "revId": "42ee89f737ce3f30dd33be18cad664715ae45852",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e6e050b6_57401062",
@@ -50,6 +67,29 @@
       "side": 1,
       "message": "I see. This is fine then.",
       "parentUuid": "60c932b2_1db5563f",
+      "revId": "42ee89f737ce3f30dd33be18cad664715ae45852",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "025e339a_3dfbf72e",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1662,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-18T00:25:09Z",
+      "side": 1,
+      "message": "the constants are 32 bytes...\nint8_t kRGBToU[32];\nso you can use vmovdqa?",
+      "range": {
+        "startLine": 1662,
+        "startChar": 7,
+        "endLine": 1662,
+        "endChar": 21
+      },
       "revId": "42ee89f737ce3f30dd33be18cad664715ae45852",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
