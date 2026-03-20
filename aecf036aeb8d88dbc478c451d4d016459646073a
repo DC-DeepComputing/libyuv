@@ -35,6 +35,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "270dbc60_38a796a6",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-20T00:25:10Z",
+      "side": 1,
+      "message": "As previously discussed this is needed, comment added.",
+      "parentUuid": "d788e62f_4e02122a",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a049a790_9c2ccf4b",
@@ -48,6 +66,24 @@
       "writtenOn": "2026-02-26T23:46:49Z",
       "side": 1,
       "message": "note the goal will be remove these too, from the low levels, calling matrix directly in a portable way from the convert_argb.cc",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ea0a26f_2b43ce72",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1892,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-20T00:25:10Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "a049a790_9c2ccf4b",
       "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -69,6 +105,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "430086be_1a34ae2c",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 2758,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-20T00:25:10Z",
+      "side": 1,
+      "message": "I originally tried to remove these, but the tests blew up. With Gemini 3.1, it looks like it figured out the issue and correctly updated the assembly.",
+      "parentUuid": "349b905d_f768445b",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bb352873_9674133b",
@@ -82,6 +136,24 @@
       "writtenOn": "2026-02-26T23:46:49Z",
       "side": 1,
       "message": "note that ld4 is slow on new cpus, so working with argb as is can help... more like a dot product.\nin particular its about 54 cycles on cortex a510\n\nyou can literally mimic sdot with 3 instructions\nvmull -\u003e 16 bit\nvpadd -\u003e paired horizontal add\nvpadal -\u003e paired add and accumulate as 32 bit",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd6bdd77_fab4d1b5",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 2775,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-20T00:25:10Z",
+      "side": 1,
+      "message": "The vld4 part is pre-existing, did you want me to change it here?",
+      "parentUuid": "bb352873_9674133b",
       "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
