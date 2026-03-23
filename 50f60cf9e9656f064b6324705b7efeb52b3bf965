@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c385e9a3_d904798f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-23T23:09:54Z",
+      "side": 1,
+      "message": "Can you clarify this description?\nAre you comparing Neon to Scalar?",
+      "revId": "50f60cf9e9656f064b6324705b7efeb52b3bf965",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f81d1c4_4f24f440",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-23T23:09:54Z",
+      "side": 1,
+      "message": "nit: suggest moving these into a section that is all the 32 bit only row functions with a todo to port them to 64 bit.\nbut if you plan to do 64 bit soon, dont bother.\n\nx86 above has some 64 bit-only functions that dont work in 32 bit or visual c, and are likely to not be ported any time soon.  Some of the advanced ISA are 64 bit only.  With SIMD there are really very few actual differences so I would think gemini could help port back and forth.",
+      "revId": "50f60cf9e9656f064b6324705b7efeb52b3bf965",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b04c28b_dd6dd2cb",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 996,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-23T23:09:54Z",
+      "side": 1,
+      "message": "for now this looks right.  with sve/sme the 16 byte vectors may want to change, but they still use 16 bytes for sve and can dup the values.  sve has a 16 byte lane concept that i dont fully understand, since hardware really doesnt exist.\n\nA mistake we made for YuvConstants was to make 32 bit arm different than 64 bit.\nLast time I looked the 32 bit one made more sense.  Not a big deal.\n\nI had hoped RGB To YUV could use the same constants on all platforms, architecting it for 8 bit dot products.  But at the moment avx wants 32 elements vs neon wants 16.  Both could use scalar.. but here that would be 4 bytes for RGBToY\nNot a priority.. only the name needs to be the same.",
+      "revId": "50f60cf9e9656f064b6324705b7efeb52b3bf965",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8a92def_4a793311",
+        "filename": "source/row_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1489,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-23T23:09:54Z",
+      "side": 1,
+      "message": "nit: this implies all other cpus mimic x86, but it may be better to treat x86 as different, and else is for arm etc.\nthe other cpus are mips/loongson, hexagon, ppc, wasmsimd.\nmost cpus will want to be like arm.",
+      "revId": "50f60cf9e9656f064b6324705b7efeb52b3bf965",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "90358b4e_342cd116",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1897,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-03-23T23:09:54Z",
+      "side": 1,
+      "message": "These row function wrappers were done to allow matrix to be used internally to reduce/simplify code, but should be removed entirely and have the convert functions do the wrappers.  Which would look similar to this\nARGBToUV444() would call ARGBToUV444Matrix(..., \u0026kArgbI601Constants)",
+      "revId": "50f60cf9e9656f064b6324705b7efeb52b3bf965",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
