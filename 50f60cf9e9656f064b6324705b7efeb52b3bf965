@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "425aaf4c_d1152564",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-23T23:15:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c385e9a3_d904798f",
+      "revId": "50f60cf9e9656f064b6324705b7efeb52b3bf965",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2f81d1c4_4f24f440",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-03-23T23:09:54Z",
       "side": 1,
       "message": "nit: suggest moving these into a section that is all the 32 bit only row functions with a todo to port them to 64 bit.\nbut if you plan to do 64 bit soon, dont bother.\n\nx86 above has some 64 bit-only functions that dont work in 32 bit or visual c, and are likely to not be ported any time soon.  Some of the advanced ISA are 64 bit only.  With SIMD there are really very few actual differences so I would think gemini could help port back and forth.",
+      "revId": "50f60cf9e9656f064b6324705b7efeb52b3bf965",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1da10ba_85009b23",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-23T23:15:28Z",
+      "side": 1,
+      "message": "Will do the 64-bit ones this week.",
+      "parentUuid": "2f81d1c4_4f24f440",
       "revId": "50f60cf9e9656f064b6324705b7efeb52b3bf965",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
