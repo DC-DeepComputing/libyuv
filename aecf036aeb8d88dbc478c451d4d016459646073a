@@ -156,6 +156,24 @@
       "parentUuid": "bb352873_9674133b",
       "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a30007c1_d6fe2c3d",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 2775,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-03-23T23:15:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd6bdd77_fab4d1b5",
+      "revId": "aecf036aeb8d88dbc478c451d4d016459646073a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
