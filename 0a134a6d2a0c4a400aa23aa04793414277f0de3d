@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3c111a8_8c191107",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-08T22:59:38Z",
+      "side": 1,
+      "message": "@fbarchard@chromium.org Which do you prefer? The forward declaration? Or including `convert_from_argb.h`?",
+      "revId": "0a134a6d2a0c4a400aa23aa04793414277f0de3d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
