@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "079bdb10_a6bcdfaa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-08T17:02:13Z",
+      "side": 1,
+      "message": "AI review has a suggestion for this CL",
+      "revId": "55328482c43c56932bdfaadafb0f9b4e799aeb27",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "902d19c0_5e3a3a50",
+        "filename": "source/cpu_id.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-08T17:02:13Z",
+      "side": 1,
+      "message": "This will only calculate the length of the first token, because `strtok_r` modifies the `extensions` string by placing a `\\0` after the first token it finds.\n\nTo fix this, please move this line to before the first `strtok_r` call on line 341.",
+      "range": {
+        "startLine": 342,
+        "startChar": 0,
+        "endLine": 342,
+        "endChar": 0
+      },
+      "revId": "55328482c43c56932bdfaadafb0f9b4e799aeb27",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
