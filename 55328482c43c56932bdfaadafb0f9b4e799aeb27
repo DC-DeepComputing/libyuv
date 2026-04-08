@@ -39,6 +39,30 @@
       },
       "revId": "55328482c43c56932bdfaadafb0f9b4e799aeb27",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb8dfba4_97e593da",
+        "filename": "source/cpu_id.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 1286337
+      },
+      "writtenOn": "2026-04-08T17:15:13Z",
+      "side": 1,
+      "message": "Done. However, I don\u0027t think `strtok_r` is any different than `strtok` in this regard, so we will probably be seeing different behaviour now.",
+      "parentUuid": "902d19c0_5e3a3a50",
+      "range": {
+        "startLine": 342,
+        "startChar": 0,
+        "endLine": 342,
+        "endChar": 0
+      },
+      "revId": "55328482c43c56932bdfaadafb0f9b4e799aeb27",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
