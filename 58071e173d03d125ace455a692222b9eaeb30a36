@@ -16,6 +16,24 @@
       "message": "Nit: Delete the `\u0026\u0026 !defined(strtok_r)` check. It is not necessary.",
       "revId": "58071e173d03d125ace455a692222b9eaeb30a36",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a321a359_a00215d6",
+        "filename": "source/cpu_id.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1286337
+      },
+      "writtenOn": "2026-04-08T18:18:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2e1ab7e0_f6d60553",
+      "revId": "58071e173d03d125ace455a692222b9eaeb30a36",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
