@@ -38,6 +38,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "dd32a044_8496b355",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-08T18:03:17Z",
+      "side": 1,
+      "message": "Note this is for fp16 detect and the proper way to do that for linux and android is hwprobe, which will also work in qemu, while /proc/cpuinfo does not and is not sandbox friendly for chrome.   Its on my todo list to make the tool/cpuid show the hwprobe as a first step, and I\u0027m using it in xnnpack already.\n\nAlso its in a pending PR for pytorch/cpuinfo which is a great library for cpu detects and I may want an option to use it for its ability to detect uarch and then do different row functions depending exactly on the cpu",
+      "revId": "55328482c43c56932bdfaadafb0f9b4e799aeb27",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "902d19c0_5e3a3a50",
         "filename": "source/cpu_id.cc",
         "patchSetId": 2
