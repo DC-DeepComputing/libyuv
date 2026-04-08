@@ -332,14 +332,15 @@ LIBYUV_API SAFEBUFFERS int RiscvCpuCaps(const char* cpuinfo_name) {
         if (extensions) {
           // Multi-letter extensions are seperated by a single underscore
           // as described in RISC-V User-Level ISA V2.2.
-          char* ext = strtok(extensions, "_");
+          char* saveptr = nullptr;
+          char* ext = strtok_r(extensions, "_", &saveptr);
           extensions_len = strlen(extensions);
           while (ext) {
             // Search for the ZVFH (Vector FP16) extension.
             if (!strcmp(ext, "zvfh")) {
               flag |= kCpuHasRVVZVFH;
             }
-            ext = strtok(NULL, "_");
+            ext = strtok_r(NULL, "_", &saveptr);
           }
         }
         std_isa_len = isa_len - extensions_len - 5;
