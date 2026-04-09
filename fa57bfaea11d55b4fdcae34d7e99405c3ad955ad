@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "899f40a3_3e413e58",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-09T15:46:05Z",
+      "side": 1,
+      "message": "I\u0027m guessing you\u0027ve already double checked the new images match modulo some rounding errors?",
+      "revId": "fa57bfaea11d55b4fdcae34d7e99405c3ad955ad",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
