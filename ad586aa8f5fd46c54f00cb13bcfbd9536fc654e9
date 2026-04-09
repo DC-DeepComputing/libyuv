@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3221d66d_f786388a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-09T18:23:20Z",
+      "side": 1,
+      "message": "Added ifdef and dug up old buganizer issue for this",
+      "revId": "ad586aa8f5fd46c54f00cb13bcfbd9536fc654e9",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}

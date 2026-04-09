@@ -16,6 +16,24 @@
       "message": "I\u0027m guessing you\u0027ve already double checked the new images match modulo some rounding errors?",
       "revId": "fa57bfaea11d55b4fdcae34d7e99405c3ad955ad",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca1b533a_b6852f5f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-09T18:23:20Z",
+      "side": 1,
+      "message": "The image is fixed size and content.  I dont really have a good way to test this, hence the checksum.  So this test should probably be removed or refactored in the future.  Its been broken more than a year.\n\nblaze build -c opt --copt\u003d-DLIBYUV_BIT_EXACT\u003d1 --copt\u003d-DLIBYUV_UNLIMITED_DATA --copt\u003d-DENABLE_ROW_TESTS --copt\u003d-gmlt --fission\u003dno --strip\u003dnever --dynamic_mode\u003doff //third_party/libyuv:libyuv_test -k\n\nah... I\u0027m testing with some options.  If I dont do any options the new unittest fails.  It is likely the LIBYUV_UNLIMITED_DATA\nI\u0027ve asked gemini to prepare a fix\n\nAlso when I run I do see a regular YUY2ToARGB test.  The problem with many libyuv tests is the C code is assumed to be right, so it really only tests that the C code and assembly match (with LIBYUV_BIT_EXACT).\nThe better tests I have for some conversions is a 2 step conversion vs 1 step.  e.g.  YUY2ToI422ToARGB would use YUY2ToI422 (lossless) and then I422ToARGB and compare that to YUY2ToARGB.\n\nI\u0027ll try to get this test working with an ifdef but I think we can simply remove it and rely on YUY2ToARGB_Opt etc working.\n\nI\u0027m really loving gemini cli for stuff like this\n│ │ 2714   TEST_F(LibYUVConvertTest, TestUYVYToARGB) {                                                                                                                           │ │\n│ │ ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════ │ │\n│ │ 2722     }                                                                                                                                                                   │ │\n│ │ 2723     UYVYToARGB(\u0026orig_pixels[0][0], 0, \u0026dest_argb[0][0], 0, 256, 1);                                                                                                     │ │\n│ │ 2724     uint32_t checksum \u003d HashDjb2(\u0026dest_argb[0][0], sizeof(dest_argb), 5381);                                                                                            │ │\n│ │ 2725 + #if defined(LIBYUV_UNLIMITED_DATA)                                                                                                                                    │ │\n│ │ 2726     EXPECT_EQ(10343289u, checksum);                                                                                                                                     │ │\n│ │ 2727 + #else                                                                                                                                                                 │ │\n│ │ 2728 +   EXPECT_EQ(3486643515u, checksum);                                                                                                                                   │ │\n│ │ 2729 + #endif                                                                                                                                                                │ │\n│ │ 2730   }                                                                                                                                                                     │ │\n│ │ 2731                                                                                                                                                                         │ │\n│ │ 2732   #ifdef ENABLE_ROW_TESTS                                                                                                                                               │ │\n│ ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯ │\n│ Apply this change?                                                                                                                                                               │\n│                                                                                                                                                                                  │\n│ ● 1. Allow once",
+      "parentUuid": "899f40a3_3e413e58",
+      "revId": "fa57bfaea11d55b4fdcae34d7e99405c3ad955ad",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
