@@ -16,6 +16,24 @@
       "message": "@fbarchard@chromium.org Which do you prefer? The forward declaration? Or including `convert_from_argb.h`?",
       "revId": "0a134a6d2a0c4a400aa23aa04793414277f0de3d",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8bbfbfd6_59d123d4",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-09T01:14:25Z",
+      "side": 1,
+      "message": "I like the forward declare, as long as we dont need the details.\nI like that gemini will make any changes like this easier to refactor in the future.\nIdeally there would be a clear separation of internal and external headers.  The row headers used to be in the source folder, and I liked that the public headers were the only thing in the include/ folder, so maybe fix that up again.  It just had build issues with not being able to find the headers on some build systems.\nIdeally libyuv would be separate independent libraries, headers and tests for each component.  e.g.  scale, rotate, convert, compare\nIn practice convert sometimes uses scale or vice versa.  I might still like to see the unittests and headers be a cleaner separation.\nI sometimes regret that there are 4 convert files - convert, convert_argb, convert_from and covert_from_argb.  Although the API centers around I420 and ARGB with to and from each of those leading the the 4 we have, there is a huge implementation for ARGB to YUV and YUV to ARGB.  Whereas ARGB to RGB is really a simple planar function.\n\nThis file contains ARGBToI420Matrix etc\nIn the near future we should remove the non-matrix implementations and have them call ARGBToI420Matrix with various constants for I420, J420 etc.\nIf it gets to be too many, we can switch to the header",
+      "parentUuid": "e3c111a8_8c191107",
+      "revId": "0a134a6d2a0c4a400aa23aa04793414277f0de3d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
