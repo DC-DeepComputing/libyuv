@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2543d720_904ae504",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002030
+      },
+      "writtenOn": "2026-04-10T21:43:36Z",
+      "side": 1,
+      "message": "The main question I have is the version. I don\u0027t think it is necessary to check for version 1 of avx10.1 if it has avx10. I am assuming that is never deprecated. So You set has 10.1 and if version is \u003e\u003d 2 then  it has 10.2. That looks good to me.",
+      "revId": "5b5a2f6b922bacdcd6dd2861381d91cd168edea6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
