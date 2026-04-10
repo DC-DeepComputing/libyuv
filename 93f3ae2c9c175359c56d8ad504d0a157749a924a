@@ -33,6 +33,91 @@
       "message": "I unfortunately don\u0027t know anything about Bazel. Do you @wtc@google.com?",
       "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83a54cd8_2bf45766",
+        "filename": "BUILD.bazel",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-10T01:37:14Z",
+      "side": 1,
+      "message": "Nit: Delete this comment?\n\nThis comment doesn\u0027t seem useful. A Bazel file is obviously compatible with Bazel, and this file has already been copied into the root of the libyuv git repository.\n\nOr did you mean \"This Blaze build file\" rather than \"This Bazel build file\"?",
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34ccbe69_afc48229",
+        "filename": "BUILD.bazel",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-10T01:37:14Z",
+      "side": 1,
+      "message": "Nit: Replace \"google3\" with \"Google\u0027s internal repository\"?",
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4523bc9_311ceb27",
+        "filename": "docs/getting_started.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-10T01:37:14Z",
+      "side": 1,
+      "message": "Nit: Fold this long line?",
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "126a885f_d4f99f14",
+        "filename": "docs/getting_started.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-10T01:37:14Z",
+      "side": 1,
+      "message": "Nit: 64-bit x86 \u003d\u003e x86_64 ?",
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "510c321e_3be1b4c6",
+        "filename": "docs/getting_started.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-10T01:37:14Z",
+      "side": 1,
+      "message": "Nit: Fold this long line?",
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
