@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0991d78_f1fa35e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-10T01:17:49Z",
+      "side": 1,
+      "message": "Fix for compile error cpu_id.cc:348:19: error: use of undeclared identifier \u0027strtok_r\u0027",
+      "revId": "7689afb9fc2ed344ead06486ec6f53fac046f10e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
