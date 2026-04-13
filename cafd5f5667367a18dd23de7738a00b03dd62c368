@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1df38862_be164ddd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-13T22:38:59Z",
+      "side": 1,
+      "message": "Might be good to separate out the replacement of the individual functions with wrappers into a different CL. You could even remove them entirely in that CL such that all call sites call the matrix versions directly.",
+      "revId": "cafd5f5667367a18dd23de7738a00b03dd62c368",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcbd6c6c_770f3a73",
+        "filename": "source/convert.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 2094,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-13T22:38:59Z",
+      "side": 1,
+      "message": "Extra line",
+      "revId": "cafd5f5667367a18dd23de7738a00b03dd62c368",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "734c3c69_4f9dcec8",
+        "filename": "source/convert.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 2534,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-13T22:38:59Z",
+      "side": 1,
+      "message": "Ditto",
+      "revId": "cafd5f5667367a18dd23de7738a00b03dd62c368",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ec080db_db2f5cf3",
+        "filename": "source/convert.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 2642,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-13T22:38:59Z",
+      "side": 1,
+      "message": "Ditto",
+      "revId": "cafd5f5667367a18dd23de7738a00b03dd62c368",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c242625_e7ff7be0",
+        "filename": "source/convert.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 2782,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-13T22:38:59Z",
+      "side": 1,
+      "message": "Ditto",
+      "revId": "cafd5f5667367a18dd23de7738a00b03dd62c368",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "325f2005_3dc65fd8",
+        "filename": "source/convert.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 2791,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-13T22:38:59Z",
+      "side": 1,
+      "message": "Ditto",
+      "revId": "cafd5f5667367a18dd23de7738a00b03dd62c368",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55b5506d_d2569376",
+        "filename": "source/convert.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 3173,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-13T22:38:59Z",
+      "side": 1,
+      "message": "Ditto",
+      "revId": "cafd5f5667367a18dd23de7738a00b03dd62c368",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b1569b3_5522323b",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-13T22:38:59Z",
+      "side": 1,
+      "message": "Ditto here and all below",
+      "revId": "cafd5f5667367a18dd23de7738a00b03dd62c368",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
