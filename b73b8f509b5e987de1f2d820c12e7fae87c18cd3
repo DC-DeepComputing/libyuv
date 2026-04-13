@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "33d2f750_3c6f2856",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 1766,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-13T23:12:58Z",
+      "side": 1,
+      "message": "Acknowledged.  Yes I agree, but these are going away soon, so only focus on the matrix functions.  Lets keep this CL smaller",
+      "parentUuid": "245b0bad_6ab971c9",
+      "revId": "b73b8f509b5e987de1f2d820c12e7fae87c18cd3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a5ec3c59_f35ff208",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-04-13T23:07:57Z",
       "side": 1,
       "message": "like others @dalecurtis@chromium.org mentioned this is a line that others don\u0027t have but not a big deal.",
+      "revId": "b73b8f509b5e987de1f2d820c12e7fae87c18cd3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a026f80_d2bcad65",
+        "filename": "source/planar_functions.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 4780,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-13T23:12:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a5ec3c59_f35ff208",
       "revId": "b73b8f509b5e987de1f2d820c12e7fae87c18cd3",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -52,6 +88,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eef71a36_c9cc9a2b",
+        "filename": "source/row_any.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 1073,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-13T23:12:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0aa8c34c_97f0715f",
+      "revId": "b73b8f509b5e987de1f2d820c12e7fae87c18cd3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d068acd0_8249a555",
@@ -65,6 +119,24 @@
       "writtenOn": "2026-04-13T23:07:57Z",
       "side": 1,
       "message": "@fbarchard@chromium.org I just noticed src_argb is it really argb?",
+      "revId": "b73b8f509b5e987de1f2d820c12e7fae87c18cd3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a40a2ea_352748b4",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 1372,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-13T23:12:58Z",
+      "side": 1,
+      "message": "Acknowledged.  No its ABGR.  The variable and comment above should all say the same type - ABGR in this case.  But the wrapper row functions will go away soon.\nIf they dont I can do a CL to rename them all.  AI seems pretty good at stuff like this",
+      "parentUuid": "d068acd0_8249a555",
       "revId": "b73b8f509b5e987de1f2d820c12e7fae87c18cd3",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
