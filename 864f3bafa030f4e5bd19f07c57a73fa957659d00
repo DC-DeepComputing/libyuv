@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c8609bdb_ec87e079",
+        "filename": "source/row_any.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1766,
+      "author": {
+        "id": 1002219
+      },
+      "writtenOn": "2026-04-13T19:02:15Z",
+      "side": 1,
+      "message": "So stack size increases for all configurations, not just the ones that need it? Should this value become a macro instead?",
+      "range": {
+        "startLine": 1766,
+        "startChar": 30,
+        "endLine": 1766,
+        "endChar": 33
+      },
+      "revId": "864f3bafa030f4e5bd19f07c57a73fa957659d00",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
