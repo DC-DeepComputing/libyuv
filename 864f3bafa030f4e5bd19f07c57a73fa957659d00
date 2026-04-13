@@ -22,6 +22,30 @@
       },
       "revId": "864f3bafa030f4e5bd19f07c57a73fa957659d00",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48807832_895fd831",
+        "filename": "source/row_any.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1766,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-13T19:14:49Z",
+      "side": 1,
+      "message": "Acknowledged.  Yes.  Basically its the \u0027MASK+1\u0027 * BPP.\nI\u0027ve filed a bug  b/502250231 \nI think gemini cli could do this.",
+      "parentUuid": "c8609bdb_ec87e079",
+      "range": {
+        "startLine": 1766,
+        "startChar": 30,
+        "endLine": 1766,
+        "endChar": 33
+      },
+      "revId": "864f3bafa030f4e5bd19f07c57a73fa957659d00",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
