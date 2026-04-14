@@ -16,6 +16,24 @@
       "message": "Gemini missed a couple avx512 functions, so I asked it to run perf record/report and find the avx2 that should have been avx512 and hook it up.  Also I asked it to send this CL for libyuv",
       "revId": "1b2690fbf6abfe02a5f740a06b8e1295f7aa0658",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69721d20_a9391e4b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002030
+      },
+      "writtenOn": "2026-04-14T18:42:36Z",
+      "side": 1,
+      "message": "Looks good to me",
+      "parentUuid": "d5164f60_9a1fbae1",
+      "revId": "1b2690fbf6abfe02a5f740a06b8e1295f7aa0658",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
