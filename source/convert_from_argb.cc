@@ -3998,6 +3998,245 @@ int RAWToJNV21(const uint8_t* src_raw,
 }
 #undef HAS_RAWTOYJROW
 
+// Enabled if 1 pass is available
+#if (defined(HAS_RAWTOYROW_NEON) || defined(HAS_RAWTOYROW_LSX) || \
+     defined(HAS_RAWTOYROW_RVV))
+#define HAS_RAWTOYROW
+#endif
+
+// RAW to NV21
+LIBYUV_API
+int RAWToNV21(const uint8_t* src_raw,
+              int src_stride_raw,
+              uint8_t* dst_y,
+              int dst_stride_y,
+              uint8_t* dst_vu,
+              int dst_stride_vu,
+              int width,
+              int height) {
+  int y;
+  int halfwidth = (width + 1) >> 1;
+#if defined(HAS_RAWTOYROW)
+  void (*RAWToUVRow)(const uint8_t* src_raw, int src_stride_raw,
+                     uint8_t* dst_u, uint8_t* dst_v, int width) =
+      RAWToUVRow_C;
+  void (*RAWToYRow)(const uint8_t* src_raw, uint8_t* dst_y, int width) =
+      RAWToYRow_C;
+#else
+  void (*RAWToARGBRow)(const uint8_t* src_rgb, uint8_t* dst_argb, int width) =
+      RAWToARGBRow_C;
+  void (*ARGBToUVRow)(const uint8_t* src_argb0, int src_stride_argb,
+                      uint8_t* dst_u, uint8_t* dst_v, int width) =
+      ARGBToUVRow_C;
+  void (*ARGBToYRow)(const uint8_t* src_argb, uint8_t* dst_y, int width) =
+      ARGBToYRow_C;
+#endif
+  void (*MergeUVRow)(const uint8_t* src_u, const uint8_t* src_v,
+                      uint8_t* dst_vu, int width) = MergeUVRow_C;
+  if (!src_raw || !dst_y || !dst_vu || width <= 0 || height == 0) {
+    return -1;
+  }
+  // Negative height means invert the image.
+  if (height < 0) {
+    height = -height;
+    src_raw = src_raw + (height - 1) * src_stride_raw;
+    src_stride_raw = -src_stride_raw;
+  }
+
+#if defined(HAS_RAWTOYROW)
+
+// Neon version does direct RAW to YUV.
+#if defined(HAS_RAWTOYROW_NEON) && defined(HAS_RAWTOUVROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    RAWToUVRow = RAWToUVRow_Any_NEON;
+    RAWToYRow = RAWToYRow_Any_NEON;
+    if (IS_ALIGNED(width, 16)) {
+      RAWToYRow = RAWToYRow_NEON;
+      RAWToUVRow = RAWToUVRow_NEON;
+    }
+  }
+#endif
+#if defined(HAS_RAWTOYROW_LSX) && defined(HAS_RAWTOUVROW_LSX)
+  if (TestCpuFlag(kCpuHasLSX)) {
+    RAWToYRow = RAWToYRow_Any_LSX;
+    RAWToUVRow = RAWToUVRow_Any_LSX;
+    if (IS_ALIGNED(width, 16)) {
+      RAWToYRow = RAWToYRow_LSX;
+      RAWToUVRow = RAWToUVRow_LSX;
+    }
+  }
+#endif
+#if defined(HAS_RAWTOYROW_LASX) && defined(HAS_RAWTOUVROW_LASX)
+  if (TestCpuFlag(kCpuHasLASX)) {
+    RAWToYRow = RAWToYRow_Any_LASX;
+    RAWToUVRow = RAWToUVRow_Any_LASX;
+    if (IS_ALIGNED(width, 32)) {
+      RAWToYRow = RAWToYRow_LASX;
+      RAWToUVRow = RAWToUVRow_LASX;
+    }
+  }
+#endif
+#if defined(HAS_RAWTOYROW_RVV)
+  if (TestCpuFlag(kCpuHasRVV)) {
+    RAWToYRow = RAWToYRow_RVV;
+  }
+#endif
+
+// Other platforms do intermediate conversion from RAW to ARGB.
+#else  // HAS_RAWTOYROW
+
+#if defined(HAS_RAWTOARGBROW_SSSE3)
+  if (TestCpuFlag(kCpuHasSSSE3)) {
+    RAWToARGBRow = RAWToARGBRow_Any_SSSE3;
+    if (IS_ALIGNED(width, 16)) {
+      RAWToARGBRow = RAWToARGBRow_SSSE3;
+    }
+  }
+#endif
+#if defined(HAS_RAWTOARGBROW_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    RAWToARGBRow = RAWToARGBRow_Any_AVX2;
+    if (IS_ALIGNED(width, 32)) {
+      RAWToARGBRow = RAWToARGBRow_AVX2;
+    }
+  }
+#endif
+#if defined(HAS_ARGBTOYROW_SSSE3)
+  if (TestCpuFlag(kCpuHasSSSE3)) {
+    ARGBToYRow = ARGBToYRow_Any_SSSE3;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToYRow = ARGBToYRow_SSSE3;
+    }
+  }
+#endif
+#if defined(HAS_ARGBTOYROW_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    ARGBToYRow = ARGBToYRow_Any_AVX2;
+    if (IS_ALIGNED(width, 32)) {
+      ARGBToYRow = ARGBToYRow_AVX2;
+    }
+  }
+#endif
+#if defined(HAS_ARGBTOUVROW_SSSE3)
+  if (TestCpuFlag(kCpuHasSSSE3)) {
+    ARGBToUVRow = ARGBToUVRow_Any_SSSE3;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToUVRow = ARGBToUVRow_SSSE3;
+    }
+  }
+#endif
+#if defined(HAS_ARGBTOUVROW_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    ARGBToUVRow = ARGBToUVRow_Any_AVX2;
+    if (IS_ALIGNED(width, 32)) {
+      ARGBToUVRow = ARGBToUVRow_AVX2;
+    }
+  }
+#endif
+#endif  // HAS_RAWTOYROW
+#if defined(HAS_MERGEUVROW_SSE2)
+  if (TestCpuFlag(kCpuHasSSE2)) {
+    MergeUVRow = MergeUVRow_Any_SSE2;
+    if (IS_ALIGNED(halfwidth, 16)) {
+      MergeUVRow = MergeUVRow_SSE2;
+    }
+  }
+#endif
+#if defined(HAS_MERGEUVROW_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    MergeUVRow = MergeUVRow_Any_AVX2;
+    if (IS_ALIGNED(halfwidth, 16)) {
+      MergeUVRow = MergeUVRow_AVX2;
+    }
+  }
+#endif
+#if defined(HAS_MERGEUVROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    MergeUVRow = MergeUVRow_Any_AVX512BW;
+    if (IS_ALIGNED(halfwidth, 64)) {
+      MergeUVRow = MergeUVRow_AVX512BW;
+    }
+  }
+#endif
+#if defined(HAS_MERGEUVROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    MergeUVRow = MergeUVRow_Any_NEON;
+    if (IS_ALIGNED(halfwidth, 16)) {
+      MergeUVRow = MergeUVRow_NEON;
+    }
+  }
+#endif
+#if defined(HAS_MERGEUVROW_SME)
+  if (TestCpuFlag(kCpuHasSME)) {
+    MergeUVRow = MergeUVRow_SME;
+  }
+#endif
+#if defined(HAS_MERGEUVROW_LSX)
+  if (TestCpuFlag(kCpuHasLSX)) {
+    MergeUVRow = MergeUVRow_Any_LSX;
+    if (IS_ALIGNED(halfwidth, 16)) {
+      MergeUVRow = MergeUVRow_LSX;
+    }
+  }
+#endif
+#if defined(HAS_MERGEUVROW_RVV)
+  if (TestCpuFlag(kCpuHasRVV)) {
+    MergeUVRow = MergeUVRow_RVV;
+  }
+#endif
+  {
+#if defined(HAS_RAWTOYROW)
+    // Allocate a row of uv.
+    const int row_uv_size = ((halfwidth + 31) & ~31);
+    align_buffer_64(row_u, row_uv_size * 2);
+    uint8_t* row_v = row_u + row_uv_size;
+#else
+    // Allocate row of uv and 2 rows of ARGB.
+    const int row_size = ((width * 4 + 31) & ~31);
+    const int row_uv_size = ((halfwidth + 31) & ~31);
+    align_buffer_64(row_u, row_uv_size * 2 + row_size * 2);
+    uint8_t* row_v = row_u + row_uv_size;
+    uint8_t* row = row_v + row_uv_size;
+#endif
+    if (!row_u)
+      return 1;
+
+    for (y = 0; y < height - 1; y += 2) {
+#if defined(HAS_RAWTOYROW)
+      RAWToUVRow(src_raw, src_stride_raw, row_u, row_v, width);
+      MergeUVRow(row_v, row_u, dst_vu, halfwidth);
+      RAWToYRow(src_raw, dst_y, width);
+      RAWToYRow(src_raw + src_stride_raw, dst_y + dst_stride_y, width);
+#else
+      RAWToARGBRow(src_raw, row, width);
+      RAWToARGBRow(src_raw + src_stride_raw, row + row_size, width);
+      ARGBToUVRow(row, row_size, row_u, row_v, width);
+      MergeUVRow(row_v, row_u, dst_vu, halfwidth);
+      ARGBToYRow(row, dst_y, width);
+      ARGBToYRow(row + row_size, dst_y + dst_stride_y, width);
+#endif
+      src_raw += src_stride_raw * 2;
+      dst_y += dst_stride_y * 2;
+      dst_vu += dst_stride_vu;
+    }
+    if (height & 1) {
+#if defined(HAS_RAWTOYROW)
+      RAWToUVRow(src_raw, 0, row_u, row_v, width);
+      MergeUVRow(row_v, row_u, dst_vu, halfwidth);
+      RAWToYRow(src_raw, dst_y, width);
+#else
+      RAWToARGBRow(src_raw, row, width);
+      ARGBToUVRow(row, 0, row_u, row_v, width);
+      MergeUVRow(row_v, row_u, dst_vu, halfwidth);
+      ARGBToYRow(row, dst_y, width);
+#endif
+    }
+    free_aligned_buffer_64(row_u);
+  }
+  return 0;
+}
+#undef HAS_RAWTOYROW
+
 #ifdef __cplusplus
 }  // extern "C"
 }  // namespace libyuv
