@@ -1,0 +1,3 @@
+Fix parameter names and comments for ARGB/BGRA/RGBA/ABGR functions
+
+In all functions that start with ARGB, BGRA, RGBA or ABGR in the include/libyuv/ headers, make sure the parameter variable name has the same 4 letters, but lower case, and the comment before the function should have the same matching name. Then make sure the implementation in source/ folder has the same variable names.
