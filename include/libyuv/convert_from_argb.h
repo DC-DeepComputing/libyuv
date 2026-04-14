@@ -467,6 +467,17 @@ int RAWToJNV21(const uint8_t* src_raw,
                int width,
                int height);
 
+// RAW to NV21
+LIBYUV_API
+int RAWToNV21(const uint8_t* src_raw,
+              int src_stride_raw,
+              uint8_t* dst_y,
+              int dst_stride_y,
+              uint8_t* dst_vu,
+              int dst_stride_vu,
+              int width,
+              int height);
+
 #ifdef __cplusplus
 }  // extern "C"
 }  // namespace libyuv
