@@ -1,0 +1,4 @@
+Fix parameter names and comments for ARGB/BGRA/RGBA/ABGR functions
+
+In all functions that start with ARGB, BGRA, RGBA or ABGR in the include/libyuv/ headers, make sure the parameter variable name has the same 4 letters, but lower case, and the comment before the function should have the same matching name. Then make sure the implementation in source/ folder has the same variable names.
+You can use row_win by building with blaze run -c opt --copt=-DLIBYUV_BIT_EXACT=1 --copt=-DLIBYUV_UNLIMITED_DATA --copt=-DENABLE_ROW_TESTS --copt=-DLIBYUV_ENABLE_ROWWIN //third_party/libyuv:libyuv_test

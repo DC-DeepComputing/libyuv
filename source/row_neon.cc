@@ -2650,7 +2650,8 @@ void ARGBToAR64Row_NEON(const uint8_t* src_argb,
       : "cc", "memory", "q0", "q1", "q2", "q3");
 }
 
-static const uvec8 kShuffleARGBToABGR = {2,  1, 0, 3,  6,  5,  4,  7,
+SIMD_ALIGNED(const uint8_t) kShuffleARGBToABGR[32] = {2,  1, 0, 3,  6,  5,  4,  7,
+                                         10, 9, 8, 11, 14, 13, 12, 15, 2,  1, 0, 3,  6,  5,  4,  7,
                                          10, 9, 8, 11, 14, 13, 12, 15};
 
 void ARGBToAB64Row_NEON(const uint8_t* src_argb,
@@ -2703,7 +2704,7 @@ void AR64ToARGBRow_NEON(const uint16_t* src_ar64,
       : "cc", "memory", "q0", "q1", "q2", "q3");
 }
 
-static const uvec8 kShuffleAB64ToARGB = {5, 3, 1, 7, 13, 11, 9, 15};
+SIMD_ALIGNED(const uint8_t) kShuffleAB64ToARGB[16] = {5, 3, 1, 7, 13, 11, 9, 15, 5, 3, 1, 7, 13, 11, 9, 15};
 
 void AB64ToARGBRow_NEON(const uint16_t* src_ab64,
                         uint8_t* dst_argb,

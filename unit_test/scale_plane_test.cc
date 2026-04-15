@@ -38,7 +38,7 @@
 namespace libyuv {
 
 #ifdef ENABLE_ROW_TESTS
-#ifdef HAS_SCALEROWDOWN2_SSSE3
+#if 1
 TEST_F(LibYUVScaleTest, TestScaleRowDown2Box_Odd_SSSE3) {
   SIMD_ALIGNED(uint8_t orig_pixels[128 * 2]);
   SIMD_ALIGNED(uint8_t dst_pixels_opt[64]);
@@ -47,7 +47,6 @@ TEST_F(LibYUVScaleTest, TestScaleRowDown2Box_Odd_SSSE3) {
   memset(dst_pixels_opt, 0, sizeof(dst_pixels_opt));
   memset(dst_pixels_c, 0, sizeof(dst_pixels_c));
 
-  int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
   if (!has_ssse3) {
     printf("Warning SSSE3 not detected; Skipping test.\n");
   } else {

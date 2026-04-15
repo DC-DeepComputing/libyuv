@@ -23,9 +23,6 @@ extern "C" {
 #if !defined(LIBYUV_DISABLE_X86) &&                             \
     ((defined(__x86_64__) && !defined(LIBYUV_ENABLE_ROWWIN)) || \
      defined(__i386__) || defined(_M_IX86))
-#define HAS_HASHDJB2_SSE41
-#define HAS_SUMSQUAREERROR_SSE2
-#define HAS_HAMMINGDISTANCE_SSE42
 #endif
 
 // The following are available for Visual C and clangcl 32 bit:
@@ -40,7 +37,6 @@ extern "C" {
 #if !defined(LIBYUV_DISABLE_X86) &&               \
     (defined(__x86_64__) || defined(__i386__)) && \
     !defined(LIBYUV_ENABLE_ROWWIN)
-#define HAS_HAMMINGDISTANCE_SSSE3
 #endif
 
 // The following are available for GCC and clangcl:
@@ -68,12 +64,8 @@ extern "C" {
 uint32_t HammingDistance_C(const uint8_t* src_a,
                            const uint8_t* src_b,
                            int count);
-uint32_t HammingDistance_SSE42(const uint8_t* src_a,
-                               const uint8_t* src_b,
-                               int count);
-uint32_t HammingDistance_SSSE3(const uint8_t* src_a,
-                               const uint8_t* src_b,
-                               int count);
+
+
 uint32_t HammingDistance_AVX2(const uint8_t* src_a,
                               const uint8_t* src_b,
                               int count);
@@ -86,9 +78,7 @@ uint32_t HammingDistance_NEON_DotProd(const uint8_t* src_a,
 uint32_t SumSquareError_C(const uint8_t* src_a,
                           const uint8_t* src_b,
                           int count);
-uint32_t SumSquareError_SSE2(const uint8_t* src_a,
-                             const uint8_t* src_b,
-                             int count);
+
 uint32_t SumSquareError_AVX2(const uint8_t* src_a,
                              const uint8_t* src_b,
                              int count);
@@ -100,7 +90,7 @@ uint32_t SumSquareError_NEON_DotProd(const uint8_t* src_a,
                                      int count);
 
 uint32_t HashDjb2_C(const uint8_t* src, int count, uint32_t seed);
-uint32_t HashDjb2_SSE41(const uint8_t* src, int count, uint32_t seed);
+
 uint32_t HashDjb2_AVX2(const uint8_t* src, int count, uint32_t seed);
 uint32_t HashDjb2_NEON(const uint8_t* src, int count, uint32_t seed);
 

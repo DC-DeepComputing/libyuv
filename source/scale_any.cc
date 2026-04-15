@@ -49,7 +49,7 @@ extern "C" {
                    dst_ptr + n * BPP, r + 1);                                  \
   }
 
-#ifdef HAS_SCALEROWDOWN2_SSSE3
+#if 1
 SDANY(ScaleRowDown2_Any_SSSE3, ScaleRowDown2_SSSE3, ScaleRowDown2_C, 2, 1, 15)
 SDANY(ScaleRowDown2Linear_Any_SSSE3,
       ScaleRowDown2Linear_SSSE3,
@@ -70,7 +70,7 @@ SDODD(ScaleRowDown2Box_Odd_SSSE3,
       1,
       15)
 #endif
-#ifdef HAS_SCALEUVROWDOWN2BOX_SSSE3
+#if 1
 SDANY(ScaleUVRowDown2Box_Any_SSSE3,
       ScaleUVRowDown2Box_SSSE3,
       ScaleUVRowDown2Box_C,
@@ -167,7 +167,7 @@ SDANY(ScaleRowDown2Box_Any_LSX,
       1,
       31)
 #endif
-#ifdef HAS_SCALEROWDOWN4_SSSE3
+#if 1
 SDANY(ScaleRowDown4_Any_SSSE3, ScaleRowDown4_SSSE3, ScaleRowDown4_C, 4, 1, 7)
 SDANY(ScaleRowDown4Box_Any_SSSE3,
       ScaleRowDown4Box_SSSE3,
@@ -203,7 +203,7 @@ SDANY(ScaleRowDown4Box_Any_LSX,
       1,
       15)
 #endif
-#ifdef HAS_SCALEROWDOWN34_SSSE3
+#if 1
 SDANY(ScaleRowDown34_Any_SSSE3,
       ScaleRowDown34_SSSE3,
       ScaleRowDown34_C,
@@ -284,7 +284,7 @@ SDANY(ScaleRowDown34_1_Box_Any_LSX,
       1,
       47)
 #endif
-#ifdef HAS_SCALEROWDOWN38_SSSE3
+#if 1
 SDANY(ScaleRowDown38_Any_SSSE3,
       ScaleRowDown38_SSSE3,
       ScaleRowDown38_C,
@@ -345,7 +345,7 @@ SDANY(ScaleRowDown38_2_Box_Any_LSX,
       11)
 #endif
 
-#ifdef HAS_SCALEARGBROWDOWN2_SSE2
+#if 1
 SDANY(ScaleARGBRowDown2_Any_SSE2,
       ScaleARGBRowDown2_SSE2,
       ScaleARGBRowDown2_C,
@@ -420,7 +420,7 @@ SDANY(ScaleARGBRowDown2Box_Any_LSX,
                    dst_ptr + n * BPP, r);                                   \
   }
 
-#ifdef HAS_SCALEARGBROWDOWNEVEN_SSE2
+#if 1
 SDAANY(ScaleARGBRowDownEven_Any_SSE2,
        ScaleARGBRowDownEven_SSE2,
        ScaleARGBRowDownEven_C,
@@ -484,7 +484,7 @@ SDAANY(ScaleUVRowDownEven_Any_NEON,
     memcpy(dst_ptr + n * BPP, dst_temp, r * BPP);                      \
   }
 
-#ifdef HAS_SCALEADDROW_SSE2
+#if 1
 SAROW(ScaleAddRow_Any_SSE2, ScaleAddRow_SSE2, 1, 2, 15)
 #endif
 #ifdef HAS_SCALEADDROW_AVX2
@@ -510,7 +510,7 @@ SAROW(ScaleAddRow_Any_LSX, ScaleAddRow_LSX, 1, 2, 15)
     SCALEADDROW_C(src_ptr + n, dst_ptr + n, src_width & MASK);             \
   }
 
-#ifdef HAS_SCALEADDROW_SSE2
+#if 1
 SAANY(ScaleAddRow_Any_SSE2, ScaleAddRow_SSE2, ScaleAddRow_C, 15)
 #endif
 #ifdef HAS_SCALEADDROW_AVX2
@@ -597,7 +597,7 @@ SUH2LANY(ScaleRowUp2_Linear_16_Any_C,
          0,
          uint16_t)
 
-#ifdef HAS_SCALEROWUP2_LINEAR_SSE2
+#if 1
 SUH2LANY(ScaleRowUp2_Linear_Any_SSE2,
          ScaleRowUp2_Linear_SSE2,
          ScaleRowUp2_Linear_C,
@@ -605,7 +605,7 @@ SUH2LANY(ScaleRowUp2_Linear_Any_SSE2,
          uint8_t)
 #endif
 
-#ifdef HAS_SCALEROWUP2_LINEAR_SSSE3
+#if 1
 SUH2LANY(ScaleRowUp2_Linear_Any_SSSE3,
          ScaleRowUp2_Linear_SSSE3,
          ScaleRowUp2_Linear_C,
@@ -613,7 +613,7 @@ SUH2LANY(ScaleRowUp2_Linear_Any_SSSE3,
          uint8_t)
 #endif
 
-#ifdef HAS_SCALEROWUP2_LINEAR_12_SSSE3
+#if 1
 SUH2LANY(ScaleRowUp2_Linear_12_Any_SSSE3,
          ScaleRowUp2_Linear_12_SSSE3,
          ScaleRowUp2_Linear_16_C,
@@ -621,7 +621,7 @@ SUH2LANY(ScaleRowUp2_Linear_12_Any_SSSE3,
          uint16_t)
 #endif
 
-#ifdef HAS_SCALEROWUP2_LINEAR_16_SSE2
+#if 1
 SUH2LANY(ScaleRowUp2_Linear_16_Any_SSE2,
          ScaleRowUp2_Linear_16_SSE2,
          ScaleRowUp2_Linear_16_C,
@@ -725,7 +725,7 @@ SU2BLANY(ScaleRowUp2_Bilinear_16_Any_C,
          0,
          uint16_t)
 
-#ifdef HAS_SCALEROWUP2_BILINEAR_SSE2
+#if 1
 SU2BLANY(ScaleRowUp2_Bilinear_Any_SSE2,
          ScaleRowUp2_Bilinear_SSE2,
          ScaleRowUp2_Bilinear_C,
@@ -733,7 +733,7 @@ SU2BLANY(ScaleRowUp2_Bilinear_Any_SSE2,
          uint8_t)
 #endif
 
-#ifdef HAS_SCALEROWUP2_BILINEAR_12_SSSE3
+#if 1
 SU2BLANY(ScaleRowUp2_Bilinear_12_Any_SSSE3,
          ScaleRowUp2_Bilinear_12_SSSE3,
          ScaleRowUp2_Bilinear_16_C,
@@ -741,7 +741,7 @@ SU2BLANY(ScaleRowUp2_Bilinear_12_Any_SSSE3,
          uint16_t)
 #endif
 
-#ifdef HAS_SCALEROWUP2_BILINEAR_16_SSE2
+#if 1
 SU2BLANY(ScaleRowUp2_Bilinear_16_Any_SSE2,
          ScaleRowUp2_Bilinear_16_SSE2,
          ScaleRowUp2_Bilinear_16_C,
@@ -749,7 +749,7 @@ SU2BLANY(ScaleRowUp2_Bilinear_16_Any_SSE2,
          uint16_t)
 #endif
 
-#ifdef HAS_SCALEROWUP2_BILINEAR_SSSE3
+#if 1
 SU2BLANY(ScaleRowUp2_Bilinear_Any_SSSE3,
          ScaleRowUp2_Bilinear_SSSE3,
          ScaleRowUp2_Bilinear_C,
@@ -837,7 +837,7 @@ SBUH2LANY(ScaleUVRowUp2_Linear_16_Any_C,
           0,
           uint16_t)
 
-#ifdef HAS_SCALEUVROWUP2_LINEAR_SSSE3
+#if 1
 SBUH2LANY(ScaleUVRowUp2_Linear_Any_SSSE3,
           ScaleUVRowUp2_Linear_SSSE3,
           ScaleUVRowUp2_Linear_C,
@@ -853,7 +853,7 @@ SBUH2LANY(ScaleUVRowUp2_Linear_Any_AVX2,
           uint8_t)
 #endif
 
-#ifdef HAS_SCALEUVROWUP2_LINEAR_16_SSE41
+#if 1
 SBUH2LANY(ScaleUVRowUp2_Linear_16_Any_SSE41,
           ScaleUVRowUp2_Linear_16_SSE41,
           ScaleUVRowUp2_Linear_16_C,
@@ -935,7 +935,7 @@ SBU2BLANY(ScaleUVRowUp2_Bilinear_16_Any_C,
           0,
           uint16_t)
 
-#ifdef HAS_SCALEUVROWUP2_BILINEAR_SSSE3
+#if 1
 SBU2BLANY(ScaleUVRowUp2_Bilinear_Any_SSSE3,
           ScaleUVRowUp2_Bilinear_SSSE3,
           ScaleUVRowUp2_Bilinear_C,
@@ -951,7 +951,7 @@ SBU2BLANY(ScaleUVRowUp2_Bilinear_Any_AVX2,
           uint8_t)
 #endif
 
-#ifdef HAS_SCALEUVROWUP2_BILINEAR_16_SSE41
+#if 1
 SBU2BLANY(ScaleUVRowUp2_Bilinear_16_Any_SSE41,
           ScaleUVRowUp2_Bilinear_16_SSE41,
           ScaleUVRowUp2_Bilinear_16_C,

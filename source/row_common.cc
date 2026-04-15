@@ -4050,130 +4050,29 @@ void ARGBCopyYToAlphaRow_C(const uint8_t* src, uint8_t* dst, int width) {
 #define MAXTWIDTH 2048
 
 #if !(defined(_MSC_VER) && !defined(__clang__) && defined(_M_IX86)) && \
-    defined(HAS_I422TORGB565ROW_SSSE3) && !defined(LIBYUV_ENABLE_ROWWIN)
+    1 && !defined(LIBYUV_ENABLE_ROWWIN)
 // row_win.cc has asm version, but GCC uses 2 step wrapper.
-void I422ToRGB565Row_SSSE3(const uint8_t* src_y,
-                           const uint8_t* src_u,
-                           const uint8_t* src_v,
-                           uint8_t* dst_rgb565,
-                           const struct YuvConstants* yuvconstants,
-                           int width) {
-  SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
-  while (width > 0) {
-    int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    I422ToARGBRow_SSSE3(src_y, src_u, src_v, row, yuvconstants, twidth);
-    ARGBToRGB565Row_SSE2(row, dst_rgb565, twidth);
-    src_y += twidth;
-    src_u += twidth / 2;
-    src_v += twidth / 2;
-    dst_rgb565 += twidth * 2;
-    width -= twidth;
-  }
-}
+
 #endif
 
-#if defined(HAS_I422TOARGB1555ROW_SSSE3)
-void I422ToARGB1555Row_SSSE3(const uint8_t* src_y,
-                             const uint8_t* src_u,
-                             const uint8_t* src_v,
-                             uint8_t* dst_argb1555,
-                             const struct YuvConstants* yuvconstants,
-                             int width) {
-  // Row buffer for intermediate ARGB pixels.
-  SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
-  while (width > 0) {
-    int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    I422ToARGBRow_SSSE3(src_y, src_u, src_v, row, yuvconstants, twidth);
-    ARGBToARGB1555Row_SSE2(row, dst_argb1555, twidth);
-    src_y += twidth;
-    src_u += twidth / 2;
-    src_v += twidth / 2;
-    dst_argb1555 += twidth * 2;
-    width -= twidth;
-  }
-}
+#if 1
+
 #endif
 
-#if defined(HAS_I422TOARGB4444ROW_SSSE3)
-void I422ToARGB4444Row_SSSE3(const uint8_t* src_y,
-                             const uint8_t* src_u,
-                             const uint8_t* src_v,
-                             uint8_t* dst_argb4444,
-                             const struct YuvConstants* yuvconstants,
-                             int width) {
-  // Row buffer for intermediate ARGB pixels.
-  SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
-  while (width > 0) {
-    int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    I422ToARGBRow_SSSE3(src_y, src_u, src_v, row, yuvconstants, twidth);
-    ARGBToARGB4444Row_SSE2(row, dst_argb4444, twidth);
-    src_y += twidth;
-    src_u += twidth / 2;
-    src_v += twidth / 2;
-    dst_argb4444 += twidth * 2;
-    width -= twidth;
-  }
-}
+#if 1
+
 #endif
 
-#if defined(HAS_NV12TORGB565ROW_SSSE3)
-void NV12ToRGB565Row_SSSE3(const uint8_t* src_y,
-                           const uint8_t* src_uv,
-                           uint8_t* dst_rgb565,
-                           const struct YuvConstants* yuvconstants,
-                           int width) {
-  // Row buffer for intermediate ARGB pixels.
-  SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
-  while (width > 0) {
-    int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    NV12ToARGBRow_SSSE3(src_y, src_uv, row, yuvconstants, twidth);
-    ARGBToRGB565Row_SSE2(row, dst_rgb565, twidth);
-    src_y += twidth;
-    src_uv += twidth;
-    dst_rgb565 += twidth * 2;
-    width -= twidth;
-  }
-}
+#if 1
+
 #endif
 
-#if defined(HAS_NV12TORGB24ROW_SSSE3)
-void NV12ToRGB24Row_SSSE3(const uint8_t* src_y,
-                          const uint8_t* src_uv,
-                          uint8_t* dst_rgb24,
-                          const struct YuvConstants* yuvconstants,
-                          int width) {
-  // Row buffer for intermediate ARGB pixels.
-  SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
-  while (width > 0) {
-    int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    NV12ToARGBRow_SSSE3(src_y, src_uv, row, yuvconstants, twidth);
-    ARGBToRGB24Row_SSSE3(row, dst_rgb24, twidth);
-    src_y += twidth;
-    src_uv += twidth;
-    dst_rgb24 += twidth * 3;
-    width -= twidth;
-  }
-}
+#if 1
+
 #endif
 
-#if defined(HAS_NV21TORGB24ROW_SSSE3)
-void NV21ToRGB24Row_SSSE3(const uint8_t* src_y,
-                          const uint8_t* src_vu,
-                          uint8_t* dst_rgb24,
-                          const struct YuvConstants* yuvconstants,
-                          int width) {
-  // Row buffer for intermediate ARGB pixels.
-  SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
-  while (width > 0) {
-    int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    NV21ToARGBRow_SSSE3(src_y, src_vu, row, yuvconstants, twidth);
-    ARGBToRGB24Row_SSSE3(row, dst_rgb24, twidth);
-    src_y += twidth;
-    src_vu += twidth;
-    dst_rgb24 += twidth * 3;
-    width -= twidth;
-  }
-}
+#if 1
+
 #endif
 
 #if defined(HAS_NV12TORGB24ROW_AVX2)
@@ -4384,7 +4283,7 @@ void RGB24ToYJRow_AVX2(const uint8_t* src_rgb24, uint8_t* dst_yj, int width) {
   SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
   while (width > 0) {
     int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    RGB24ToARGBRow_SSSE3(src_rgb24, row, twidth);
+    RGB24ToARGBRow_C(src_rgb24, row, twidth);
     ARGBToYJRow_AVX2(row, dst_yj, twidth);
     src_rgb24 += twidth * 3;
     dst_yj += twidth;
@@ -4413,36 +4312,14 @@ void RAWToYJRow_AVX2(const uint8_t* src_raw, uint8_t* dst_yj, int width) {
 }
 #endif  // HAS_RAWTOYJROW_AVX2
 
-#ifdef HAS_RGB24TOYJROW_SSSE3
+#if 1
 // Convert 16 RGB24 pixels (64 bytes) to 16 YJ values.
-void RGB24ToYJRow_SSSE3(const uint8_t* src_rgb24, uint8_t* dst_yj, int width) {
-  // Row buffer for intermediate ARGB pixels.
-  SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
-  while (width > 0) {
-    int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    RGB24ToARGBRow_SSSE3(src_rgb24, row, twidth);
-    ARGBToYJRow_SSSE3(row, dst_yj, twidth);
-    src_rgb24 += twidth * 3;
-    dst_yj += twidth;
-    width -= twidth;
-  }
-}
+
 #endif  // HAS_RGB24TOYJROW_SSSE3
 
-#ifdef HAS_RAWTOYJROW_SSSE3
+#if 1
 // Convert 16 RAW pixels (64 bytes) to 16 YJ values.
-void RAWToYJRow_SSSE3(const uint8_t* src_raw, uint8_t* dst_yj, int width) {
-  // Row buffer for intermediate ARGB pixels.
-  SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
-  while (width > 0) {
-    int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    RAWToARGBRow_SSSE3(src_raw, row, twidth);
-    ARGBToYJRow_SSSE3(row, dst_yj, twidth);
-    src_raw += twidth * 3;
-    dst_yj += twidth;
-    width -= twidth;
-  }
-}
+
 #endif  // HAS_RAWTOYJROW_SSSE3
 
 #ifdef HAS_INTERPOLATEROW_16TO8_AVX2

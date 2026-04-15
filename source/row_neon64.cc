@@ -110,13 +110,17 @@ extern "C" {
   "prfm       pldl1keep, [%[src_y], 448]     \n" \
   "zip1       v0.16b, v0.16b, v0.16b         \n"
 
-static const uvec8 kNV12Table = {0, 0, 2, 2, 4, 4, 6, 6,
+SIMD_ALIGNED(const uint8_t) kNV12Table[32] = {0, 0, 2, 2, 4, 4, 6, 6,
+                                 1, 1, 3, 3, 5, 5, 7, 7, 0, 0, 2, 2, 4, 4, 6, 6,
                                  1, 1, 3, 3, 5, 5, 7, 7};
-static const uvec8 kNV12InterleavedTable = {0, 0, 4, 4, 8,  8,  12, 12,
+SIMD_ALIGNED(const uint8_t) kNV12InterleavedTable[32] = {0, 0, 4, 4, 8,  8,  12, 12,
+                                            2, 2, 6, 6, 10, 10, 14, 14, 0, 0, 4, 4, 8,  8,  12, 12,
                                             2, 2, 6, 6, 10, 10, 14, 14};
-static const uvec8 kNV21Table = {1, 1, 3, 3, 5, 5, 7, 7,
+SIMD_ALIGNED(const uint8_t) kNV21Table[32] = {1, 1, 3, 3, 5, 5, 7, 7,
+                                 0, 0, 2, 2, 4, 4, 6, 6, 1, 1, 3, 3, 5, 5, 7, 7,
                                  0, 0, 2, 2, 4, 4, 6, 6};
-static const uvec8 kNV21InterleavedTable = {1, 1, 5, 5, 9,  9,  13, 13,
+SIMD_ALIGNED(const uint8_t) kNV21InterleavedTable[32] = {1, 1, 5, 5, 9,  9,  13, 13,
+                                            3, 3, 7, 7, 11, 11, 15, 15, 1, 1, 5, 5, 9,  9,  13, 13,
                                             3, 3, 7, 7, 11, 11, 15, 15};
 
 // Read 8 Y and 4 UV from NV12 or NV21
@@ -1864,7 +1868,8 @@ void ARGBSetRow_NEON(uint8_t* dst, uint32_t v32, int width) {
 }
 
 // Shuffle table for reversing the bytes.
-static const uvec8 kShuffleMirror = {15u, 14u, 13u, 12u, 11u, 10u, 9u, 8u,
+SIMD_ALIGNED(const uint8_t) kShuffleMirror[32] = {15u, 14u, 13u, 12u, 11u, 10u, 9u, 8u,
+                                     7u,  6u,  5u,  4u,  3u,  2u,  1u, 0u, 15u, 14u, 13u, 12u, 11u, 10u, 9u, 8u,
                                      7u,  6u,  5u,  4u,  3u,  2u,  1u, 0u};
 
 void MirrorRow_NEON(const uint8_t* src, uint8_t* dst, int width) {
@@ -1889,7 +1894,8 @@ void MirrorRow_NEON(const uint8_t* src, uint8_t* dst, int width) {
 }
 
 // Shuffle table for reversing the UV.
-static const uvec8 kShuffleMirrorUV = {14u, 15u, 12u, 13u, 10u, 11u, 8u, 9u,
+SIMD_ALIGNED(const uint8_t) kShuffleMirrorUV[32] = {14u, 15u, 12u, 13u, 10u, 11u, 8u, 9u,
+                                       6u,  7u,  4u,  5u,  2u,  3u,  0u, 1u, 14u, 15u, 12u, 13u, 10u, 11u, 8u, 9u,
                                        6u,  7u,  4u,  5u,  2u,  3u,  0u, 1u};
 
 void MirrorUVRow_NEON(const uint8_t* src_uv, uint8_t* dst_uv, int width) {
@@ -1942,7 +1948,8 @@ void MirrorSplitUVRow_NEON(const uint8_t* src_uv,
 }
 
 // Shuffle table for reversing the ARGB.
-static const uvec8 kShuffleMirrorARGB = {12u, 13u, 14u, 15u, 8u, 9u, 10u, 11u,
+SIMD_ALIGNED(const uint8_t) kShuffleMirrorARGB[32] = {12u, 13u, 14u, 15u, 8u, 9u, 10u, 11u,
+                                         4u,  5u,  6u,  7u,  0u, 1u, 2u,  3u, 12u, 13u, 14u, 15u, 8u, 9u, 10u, 11u,
                                          4u,  5u,  6u,  7u,  0u, 1u, 2u,  3u};
 
 void ARGBMirrorRow_NEON(const uint8_t* src_argb, uint8_t* dst_argb, int width) {
@@ -2588,7 +2595,8 @@ void ARGBToAR64Row_NEON(const uint8_t* src_argb,
       : "cc", "memory", "v0", "v1", "v2", "v3");
 }
 
-static const uvec8 kShuffleARGBToABGR = {2,  1, 0, 3,  6,  5,  4,  7,
+SIMD_ALIGNED(const uint8_t) kShuffleARGBToABGR[32] = {2,  1, 0, 3,  6,  5,  4,  7,
+                                         10, 9, 8, 11, 14, 13, 12, 15, 2,  1, 0, 3,  6,  5,  4,  7,
                                          10, 9, 8, 11, 14, 13, 12, 15};
 
 void ARGBToAB64Row_NEON(const uint8_t* src_argb,
@@ -2662,7 +2670,8 @@ void ARGBToAB64Row_NEON(const uint8_t* src_argb,
 }
 #endif  // LIBYUV_USE_ST2
 
-static const uvec8 kShuffleAR64ToARGB = {1,  3,  5,  7,  9,  11, 13, 15,
+SIMD_ALIGNED(const uint8_t) kShuffleAR64ToARGB[32] = {1,  3,  5,  7,  9,  11, 13, 15,
+                                         17, 19, 21, 23, 25, 27, 29, 31, 1,  3,  5,  7,  9,  11, 13, 15,
                                          17, 19, 21, 23, 25, 27, 29, 31};
 
 void AR64ToARGBRow_NEON(const uint16_t* src_ar64,
@@ -2686,7 +2695,8 @@ void AR64ToARGBRow_NEON(const uint16_t* src_ar64,
       : "cc", "memory", "v0", "v1", "v2", "v3", "v4");
 }
 
-static const uvec8 kShuffleAB64ToARGB = {5,  3,  1,  7,  13, 11, 9,  15,
+SIMD_ALIGNED(const uint8_t) kShuffleAB64ToARGB[32] = {5,  3,  1,  7,  13, 11, 9,  15,
+                                         21, 19, 17, 23, 29, 27, 25, 31, 5,  3,  1,  7,  13, 11, 9,  15,
                                          21, 19, 17, 23, 29, 27, 25, 31};
 
 void AB64ToARGBRow_NEON(const uint16_t* src_ab64,
@@ -4394,8 +4404,9 @@ void ARGBGrayRow_NEON(const uint8_t* src_argb, uint8_t* dst_argb, int width) {
       : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v24", "v25", "v26");
 }
 
-static const uvec8 kARGBGrayRowCoeffs = {29, 150, 77, 0};
-static const uvec8 kARGBGrayRowIndices = {0, 0, 0, 19, 2, 2, 2, 23,
+SIMD_ALIGNED(const uint8_t) kARGBGrayRowCoeffs[8] = {29, 150, 77, 0, 29, 150, 77, 0};
+SIMD_ALIGNED(const uint8_t) kARGBGrayRowIndices[32] = {0, 0, 0, 19, 2, 2, 2, 23,
+                                          4, 4, 4, 27, 6, 6, 6, 31, 0, 0, 0, 19, 2, 2, 2, 23,
                                           4, 4, 4, 27, 6, 6, 6, 31};
 
 void ARGBGrayRow_NEON_DotProd(const uint8_t* src_argb,
@@ -4467,9 +4478,10 @@ void ARGBSepiaRow_NEON(uint8_t* dst_argb, int width) {
         "v21", "v22", "v24", "v25", "v26", "v28", "v29", "v30");
 }
 
-static const uvec8 kARGBSepiaRowCoeffs = {17, 68, 35, 0,  22, 88,
+SIMD_ALIGNED(const uint8_t) kARGBSepiaRowCoeffs[24] = {17, 68, 35, 0,  22, 88,
+                                          45, 0,  24, 98, 50, 0, 17, 68, 35, 0,  22, 88,
                                           45, 0,  24, 98, 50, 0};
-static const uvec8 kARGBSepiaRowAlphaIndices = {3, 7, 11, 15, 19, 23, 27, 31};
+SIMD_ALIGNED(const uint8_t) kARGBSepiaRowAlphaIndices[16] = {3, 7, 11, 15, 19, 23, 27, 31, 3, 7, 11, 15, 19, 23, 27, 31};
 
 void ARGBSepiaRow_NEON_DotProd(uint8_t* dst_argb, int width) {
   asm volatile(

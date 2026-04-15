@@ -88,7 +88,7 @@ static void ScaleUVDown2(int src_width,
     src_uv += (y >> 16) * (intptr_t)src_stride + ((x >> 16) - 1) * 2;
   }
 
-#if defined(HAS_SCALEUVROWDOWN2BOX_SSSE3)
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3) && filtering) {
     ScaleUVRowDown2 = ScaleUVRowDown2Box_Any_SSSE3;
     if (IS_ALIGNED(dst_width, 4)) {
@@ -138,7 +138,7 @@ static void ScaleUVDown2(int src_width,
 #endif
 
 // This code is not enabled.  Only box filter is available at this time.
-#if defined(HAS_SCALEUVROWDOWN2_SSSE3)
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3)) {
     ScaleUVRowDown2 =
         filtering == kFilterNone
@@ -200,7 +200,7 @@ static int ScaleUVDown4Box(int src_width,
   assert(dx == 65536 * 4);      // Test scale factor of 4.
   assert((dy & 0x3ffff) == 0);  // Test vertical scale is multiple of 4.
 
-#if defined(HAS_SCALEUVROWDOWN2BOX_SSSE3)
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3)) {
     ScaleUVRowDown2 = ScaleUVRowDown2Box_Any_SSSE3;
     if (IS_ALIGNED(dst_width, 4)) {
@@ -276,7 +276,7 @@ static void ScaleUVDownEven(int src_width,
   assert(IS_ALIGNED(src_width, 2));
   assert(IS_ALIGNED(src_height, 2));
   src_uv += (y >> 16) * (intptr_t)src_stride + (x >> 16) * 2;
-#if defined(HAS_SCALEUVROWDOWNEVEN_SSSE3)
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3)) {
     ScaleUVRowDownEven = filtering ? ScaleUVRowDownEvenBox_Any_SSSE3
                                    : ScaleUVRowDownEven_Any_SSSE3;
@@ -363,7 +363,7 @@ static int ScaleUVBilinearDown(int src_width,
   clip_src_width = (int)(xr - xl) * 2;  // Width aligned to 2.
   src_uv += xl * 2;
   x -= (int)(xl << 16);
-#if defined(HAS_INTERPOLATEROW_SSSE3)
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3)) {
     InterpolateRow = InterpolateRow_Any_SSSE3;
     if (IS_ALIGNED(clip_src_width, 16)) {
@@ -405,7 +405,7 @@ static int ScaleUVBilinearDown(int src_width,
     InterpolateRow = InterpolateRow_RVV;
   }
 #endif
-#if defined(HAS_SCALEUVFILTERCOLS_SSSE3)
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3) && src_width < 32768) {
     ScaleUVFilterCols = ScaleUVFilterCols_SSSE3;
   }
@@ -473,7 +473,7 @@ static int ScaleUVBilinearUp(int src_width,
                             int dst_width, int x, int dx) =
       filtering ? ScaleUVFilterCols_C : ScaleUVCols_C;
   const int max_y = (src_height - 1) << 16;
-#if defined(HAS_INTERPOLATEROW_SSSE3)
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3)) {
     InterpolateRow = InterpolateRow_Any_SSSE3;
     if (IS_ALIGNED(dst_width, 8)) {
@@ -518,7 +518,7 @@ static int ScaleUVBilinearUp(int src_width,
   if (src_width >= 32768) {
     ScaleUVFilterCols = filtering ? ScaleUVFilterCols64_C : ScaleUVCols64_C;
   }
-#if defined(HAS_SCALEUVFILTERCOLS_SSSE3)
+#if 1
   if (filtering && TestCpuFlag(kCpuHasSSSE3) && src_width < 32768) {
     ScaleUVFilterCols = ScaleUVFilterCols_SSSE3;
   }
@@ -531,7 +531,7 @@ static int ScaleUVBilinearUp(int src_width,
     }
   }
 #endif
-#if defined(HAS_SCALEUVCOLS_SSSE3)
+#if 1
   if (!filtering && TestCpuFlag(kCpuHasSSSE3) && src_width < 32768) {
     ScaleUVFilterCols = ScaleUVCols_SSSE3;
   }
@@ -546,7 +546,7 @@ static int ScaleUVBilinearUp(int src_width,
 #endif
   if (!filtering && src_width * 2 == dst_width && x < 0x8000) {
     ScaleUVFilterCols = ScaleUVColsUp2_C;
-#if defined(HAS_SCALEUVCOLSUP2_SSSE3)
+#if 1
     if (TestCpuFlag(kCpuHasSSSE3) && IS_ALIGNED(dst_width, 8)) {
       ScaleUVFilterCols = ScaleUVColsUp2_SSSE3;
     }
@@ -636,7 +636,7 @@ static void ScaleUVLinearUp2(int src_width,
   (void)src_width;
   assert(src_width == ((dst_width + 1) / 2));
 
-#ifdef HAS_SCALEUVROWUP2_LINEAR_SSSE3
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3)) {
     ScaleRowUp = ScaleUVRowUp2_Linear_Any_SSSE3;
   }
@@ -696,7 +696,7 @@ static void ScaleUVBilinearUp2(int src_width,
   assert(src_width == ((dst_width + 1) / 2));
   assert(src_height == ((dst_height + 1) / 2));
 
-#ifdef HAS_SCALEUVROWUP2_BILINEAR_SSSE3
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3)) {
     Scale2RowUp = ScaleUVRowUp2_Bilinear_Any_SSSE3;
   }
@@ -757,10 +757,8 @@ static void ScaleUVLinearUp2_16(int src_width,
   (void)src_width;
   assert(src_width == ((dst_width + 1) / 2));
 
-#ifdef HAS_SCALEUVROWUP2_LINEAR_16_SSE41
-  if (TestCpuFlag(kCpuHasSSE41)) {
-    ScaleRowUp = ScaleUVRowUp2_Linear_16_Any_SSE41;
-  }
+#if 1
+
 #endif
 
 #ifdef HAS_SCALEUVROWUP2_LINEAR_16_AVX2
@@ -811,10 +809,8 @@ static void ScaleUVBilinearUp2_16(int src_width,
   assert(src_width == ((dst_width + 1) / 2));
   assert(src_height == ((dst_height + 1) / 2));
 
-#ifdef HAS_SCALEUVROWUP2_BILINEAR_16_SSE41
-  if (TestCpuFlag(kCpuHasSSE41)) {
-    Scale2RowUp = ScaleUVRowUp2_Bilinear_16_Any_SSE41;
-  }
+#if 1
+
 #endif
 
 #ifdef HAS_SCALEUVROWUP2_BILINEAR_16_AVX2
@@ -865,7 +861,7 @@ static void ScaleUVSimple(int src_width,
                       int x, int dx) =
       (src_width >= 32768) ? ScaleUVCols64_C : ScaleUVCols_C;
   (void)src_height;
-#if defined(HAS_SCALEUVCOLS_SSSE3)
+#if 1
   if (TestCpuFlag(kCpuHasSSSE3) && src_width < 32768) {
     ScaleUVCols = ScaleUVCols_SSSE3;
   }
@@ -880,7 +876,7 @@ static void ScaleUVSimple(int src_width,
 #endif
   if (src_width * 2 == dst_width && x < 0x8000) {
     ScaleUVCols = ScaleUVColsUp2_C;
-#if defined(HAS_SCALEUVCOLSUP2_SSSE3)
+#if 1
     if (TestCpuFlag(kCpuHasSSSE3) && IS_ALIGNED(dst_width, 8)) {
       ScaleUVCols = ScaleUVColsUp2_SSSE3;
     }

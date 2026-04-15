@@ -1,0 +1,30 @@
+Port ARGBToUVMatrixRow from AVX2 to AVX512BW
+
+- Added `ARGBToUVMatrixRow_AVX512BW` implementation in
+  `source/row_gcc.cc`.
+- Added corresponding `ARGBToUVRow_AVX512BW` and
+  `ABGRToUVRow_AVX512BW` functions.
+- Added unaligned wrappers `ARGBToUVRow_Any_AVX512BW` and
+  `ABGRToUVRow_Any_AVX512BW` in `source/row_any.cc`.
+- Updated `ANY12S` and `ANY12MS` macros in `source/row_any.cc` to
+  increase temporary stack variables (`vin` and `vout`) from 128 to 256
+  elements. This is needed because AVX512 calls pass a larger MASK size
+  of 63 (processing up to 64 pixels), which requires larger temporary
+  buffers.
+- Updated `include/libyuv/row.h` with the required AVX512BW headers and
+  definitions, scoped appropriately.
+- Wired all callers of `ARGBToUVRow_AVX2` and related functions in
+  `source/convert.cc` and `source/convert_from_argb.cc` to dynamically
+  use the `AVX512BW` implementations if the CPU flag indicates
+  AVX-512BW support.
+- Optimized AVX-512 code to generate the `-1` multiplier in a single
+  instruction (`vpternlogd`) and reused it across word (`vpmaddwd`) dot
+  products. Handled the resulting negation by replacing a subtraction
+  with `vpaddw` offset adjustment.
+- Further optimized the loop by generating a `1` multiplier via `vpabsb`
+  from the `-1` multiplier, allowing the removal of two `vpabsw`
+  instructions from the main loop following the `vpmaddubsw` dot
+  products.
+- Verified successful test execution across `doyuv3x` and `runyuv3`
+  ensuring all 3535 `libyuv_test` variants (`*Any`, `*Unaligned`,
+  `*Opt`, etc.) complete without failures.

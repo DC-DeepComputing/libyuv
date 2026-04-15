@@ -1686,7 +1686,6 @@ TEST_F(LibYUVConvertTest, ARGBToAR30Row_Opt) {
   ARGBToAR30Row_C(src, dst_c, kPixels);
 
   int has_avx2 = TestCpuFlag(kCpuHasAVX2);
-  int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
   for (int i = 0; i < benchmark_iterations_; ++i) {
     if (has_avx2) {
       ARGBToAR30Row_AVX2(src, dst_opt, kPixels);
@@ -1720,7 +1719,6 @@ TEST_F(LibYUVConvertTest, ABGRToAR30Row_Opt) {
   ABGRToAR30Row_C(src, dst_c, kPixels);
 
   int has_avx2 = TestCpuFlag(kCpuHasAVX2);
-  int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
   for (int i = 0; i < benchmark_iterations_; ++i) {
     if (has_avx2) {
       ABGRToAR30Row_AVX2(src, dst_opt, kPixels);

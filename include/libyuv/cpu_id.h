@@ -39,10 +39,7 @@ static const int kCpuHasRVVZVFH = 0x200;
 
 // These flags are only valid on x86 processors.
 static const int kCpuHasX86 = 0x8;
-static const int kCpuHasSSE2 = 0x100;
 static const int kCpuHasSSSE3 = 0x200;
-static const int kCpuHasSSE41 = 0x400;
-static const int kCpuHasSSE42 = 0x800;
 static const int kCpuHasAVX = 0x1000;
 static const int kCpuHasAVX2 = 0x2000;
 static const int kCpuHasERMS = 0x4000;

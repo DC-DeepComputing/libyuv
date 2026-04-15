@@ -155,13 +155,19 @@ void ScaleRowDown4Box_NEON(const uint8_t* src_ptr,
       : "memory", "cc", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7");
 }
 
-static const uvec8 kShuf34_0 = {
+SIMD_ALIGNED(const uint8_t) kShuf34_0[32] = {
+    0, 1, 3, 4, 5, 7, 8, 9, 11, 12, 13, 15, 16, 17, 19, 20,
+, 
     0, 1, 3, 4, 5, 7, 8, 9, 11, 12, 13, 15, 16, 17, 19, 20,
 };
-static const uvec8 kShuf34_1 = {
+SIMD_ALIGNED(const uint8_t) kShuf34_1[32] = {
+    5, 7, 8, 9, 11, 12, 13, 15, 16, 17, 19, 20, 21, 23, 24, 25,
+, 
     5, 7, 8, 9, 11, 12, 13, 15, 16, 17, 19, 20, 21, 23, 24, 25,
 };
-static const uvec8 kShuf34_2 = {
+SIMD_ALIGNED(const uint8_t) kShuf34_2[32] = {
+    11, 12, 13, 15, 16, 17, 19, 20, 21, 23, 24, 25, 27, 28, 29, 31,
+, 
     11, 12, 13, 15, 16, 17, 19, 20, 21, 23, 24, 25, 27, 28, 29, 31,
 };
 
@@ -320,11 +326,15 @@ void ScaleRowDown34_1_Box_NEON(const uint8_t* src_ptr,
       : "memory", "cc", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v20");
 }
 
-static const uvec8 kShuf38 = {0,  3,  6,  8,  11, 14, 16, 19,
+SIMD_ALIGNED(const uint8_t) kShuf38[32] = {0,  3,  6,  8,  11, 14, 16, 19,
+                              22, 24, 27, 30, 0,  0,  0,  0, 0,  3,  6,  8,  11, 14, 16, 19,
                               22, 24, 27, 30, 0,  0,  0,  0};
-static const vec16 kMult38_Div664 = {
+SIMD_ALIGNED(const int16_t) kMult38_Div664[16] = {
+    65536 / 12, 65536 / 12, 65536 / 8, 65536 / 12, 65536 / 12, 65536 / 8, 0, 0, 
     65536 / 12, 65536 / 12, 65536 / 8, 65536 / 12, 65536 / 12, 65536 / 8, 0, 0};
-static const vec16 kMult38_Div996 = {65536 / 18, 65536 / 18, 65536 / 12,
+SIMD_ALIGNED(const int16_t) kMult38_Div996[16] = {65536 / 18, 65536 / 18, 65536 / 12,
+                                     65536 / 18, 65536 / 18, 65536 / 12,
+                                     0,          0, 65536 / 18, 65536 / 18, 65536 / 12,
                                      65536 / 18, 65536 / 18, 65536 / 12,
                                      0,          0};
 
@@ -1276,7 +1286,9 @@ void ScaleARGBCols_NEON(uint8_t* dst_argb,
 
 #undef LOAD1_DATA32_LANE
 
-static const uvec8 kScaleARGBFilterColsShuffleIndices = {
+SIMD_ALIGNED(const uint8_t) kScaleARGBFilterColsShuffleIndices[32] = {
+    0, 0, 0, 0, 2, 2, 2, 2, 4, 4, 4, 4, 6, 6, 6, 6,
+, 
     0, 0, 0, 0, 2, 2, 2, 2, 4, 4, 4, 4, 6, 6, 6, 6,
 };
 
