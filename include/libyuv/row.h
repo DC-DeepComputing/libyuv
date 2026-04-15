@@ -24,8 +24,7 @@ extern "C" {
 
 // The following are available on all x86 platforms:
 #if !defined(LIBYUV_DISABLE_X86) &&                             \
-    (defined(_M_IX86) ||                                        \
-     (defined(__x86_64__) && !defined(LIBYUV_ENABLE_ROWWIN)) || \
+    ((defined(__x86_64__) && !defined(LIBYUV_ENABLE_ROWWIN)) || \
      defined(__i386__))
 // Conversions:
 #define HAS_ARGB1555TOARGBROW_SSE2
@@ -179,19 +178,6 @@ extern "C" {
 // #define HAS_ARGBMULTIPLYROW_AVX2
 #define HAS_ARGBSUBTRACTROW_AVX2
 #define HAS_BLENDPLANEROW_AVX2
-#endif
-
-// The following are available for AVX2 Visual C 32 bit:
-// TODO(fbarchard): Port to gcc.
-#if !defined(LIBYUV_DISABLE_X86) && defined(_M_IX86) && defined(_MSC_VER) && \
-    !defined(__clang__) && defined(VISUALC_HAS_AVX2)
-#define HAS_ARGB1555TOARGBROW_AVX2
-#define HAS_ARGB4444TOARGBROW_AVX2
-#define HAS_ARGBTOARGB1555ROW_AVX2
-#define HAS_ARGBTOARGB4444ROW_AVX2
-#define HAS_ARGBTORGB565ROW_AVX2
-#define HAS_J400TOARGBROW_AVX2
-#define HAS_RGB565TOARGBROW_AVX2
 #endif
 
 // The following are also available on x64 Visual C.
