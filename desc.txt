@@ -1,0 +1,5 @@
+Remove all support for SSE, leaving only AVX and AVX512
+
+Removes the cpuid support for SSE functions. Removes all constants and types that are exclusively for SSE. Makes all vectors use AVX types of 32 bytes. In the AVX code, switches from broadcast instructions to vmovdqu or equivalent. Updates AVX512 to use the appropriate broadcast. The goal is to simplify the code.
+
+You can use row_win by building with blaze run -c opt --copt=-DLIBYUV_BIT_EXACT=1 --copt=-DLIBYUV_UNLIMITED_DATA --copt=-DENABLE_ROW_TESTS --copt=-DLIBYUV_ENABLE_ROWWIN //third_party/libyuv:libyuv_test
