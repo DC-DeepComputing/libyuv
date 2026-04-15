@@ -16,6 +16,24 @@
       "message": "Click format button in code review edit UI?",
       "revId": "7534c9ebba7c2cd0ea7657a8311d703ef711d33f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09d839f5_159f2b50",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-15T21:46:10Z",
+      "side": 1,
+      "message": "Done.  But I already asked gemini to format it according to chromium conventions so I think the button did nothing",
+      "parentUuid": "c162d21a_d516aff8",
+      "revId": "7534c9ebba7c2cd0ea7657a8311d703ef711d33f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
