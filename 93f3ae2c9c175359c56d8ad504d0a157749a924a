@@ -52,6 +52,42 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d20e4af6_e5a5ba3d",
+        "filename": "BUILD.bazel",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T00:10:27Z",
+      "side": 1,
+      "message": "Fix applied.",
+      "parentUuid": "83a54cd8_2bf45766",
+      "fixSuggestions": [
+        {
+          "fixId": "310162da_cc18344a",
+          "description": "GET_AI_FIX_FOR_COMMENT prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "BUILD.bazel",
+              "range": {
+                "startLine": 6,
+                "startChar": 0,
+                "endLine": 9,
+                "endChar": 0
+              },
+              "replacement": ""
+            }
+          ]
+        }
+      ],
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "34ccbe69_afc48229",
