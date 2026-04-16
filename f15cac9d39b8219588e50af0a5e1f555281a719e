@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9db344c6_05026812",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T18:39:06Z",
+      "side": 1,
+      "message": "probably a typo but often 422 row functions are used for 420.",
+      "revId": "f15cac9d39b8219588e50af0a5e1f555281a719e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
