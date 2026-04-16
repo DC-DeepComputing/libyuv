@@ -35,6 +35,41 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ba8c516_7879b4a1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T00:22:32Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "ec6183fb_9230bffa",
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "30f0ec0d_32f1e97b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T00:22:32Z",
+      "side": 1,
+      "message": "used gemini to reformat the documentation",
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "83a54cd8_2bf45766",
@@ -105,6 +140,42 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1ecb4f4_e970fbe1",
+        "filename": "BUILD.bazel",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T00:22:32Z",
+      "side": 1,
+      "message": "Fix applied.",
+      "parentUuid": "34ccbe69_afc48229",
+      "fixSuggestions": [
+        {
+          "fixId": "f757b13e_297a4cf8",
+          "description": "GET_AI_FIX_FOR_COMMENT prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "BUILD.bazel",
+              "range": {
+                "startLine": 13,
+                "startChar": 0,
+                "endLine": 15,
+                "endChar": 0
+              },
+              "replacement": "# Detect if we are in Google\u0027s internal repository (where source files are\n# under files/) or open source (where source files are at the root).\n"
+            }
+          ]
+        }
+      ],
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f4523bc9_311ceb27",
@@ -118,6 +189,24 @@
       "writtenOn": "2026-04-10T01:37:14Z",
       "side": 1,
       "message": "Nit: Fold this long line?",
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c6b2f3a_f1a162e2",
+        "filename": "docs/getting_started.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T00:22:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f4523bc9_311ceb27",
       "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -139,6 +228,42 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f6d69f5_ff217b48",
+        "filename": "docs/getting_started.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T00:22:32Z",
+      "side": 1,
+      "message": "Fix applied.",
+      "parentUuid": "126a885f_d4f99f14",
+      "fixSuggestions": [
+        {
+          "fixId": "4e7e368c_5bce19d3",
+          "description": "GET_AI_FIX_FOR_COMMENT prompt_to_edit API",
+          "replacements": [
+            {
+              "path": "docs/getting_started.md",
+              "range": {
+                "startLine": 64,
+                "startChar": 0,
+                "endLine": 65,
+                "endChar": 0
+              },
+              "replacement": "**Linux x86_64:**\n"
+            }
+          ]
+        }
+      ],
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "510c321e_3be1b4c6",
@@ -152,6 +277,24 @@
       "writtenOn": "2026-04-10T01:37:14Z",
       "side": 1,
       "message": "Nit: Fold this long line?",
+      "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0263f9cd_a70be2b3",
+        "filename": "docs/getting_started.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T00:22:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "510c321e_3be1b4c6",
       "revId": "93f3ae2c9c175359c56d8ad504d0a157749a924a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
