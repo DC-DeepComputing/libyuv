@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "60f63584_52563c5e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T18:28:52Z",
+      "side": 1,
+      "message": "Thanks for the function!  This looks good and consistent with how the others of this nature are done.  But RAW/RGB24 keeps coming up and it would be cleaner to implement it in 1 pass consistently.  I think AI could help here\n1. short term a 1 pass row function can be written in row_common.cc for x86 by doing 2 passes in the row function.\n2. to do a proper 1 pass needs row_gcc to have READRAW macro which is hard to implement efficiently.  But I\u0027m sure AI could come up with something.  Maybe read 8 int32 and write to stack and then read that into avx register.\n\nI\u0027m doing some refactoring for RGB to YUV so this code is affected.  The goal is \u0027Matrix\u0027 row functions that can do any color space, and then have he high level (convert_from_argb) have a matrix image function for the color space, with short wrappers to pass bt.601 etc constants via ARGBConstants.",
+      "revId": "3061d67993df2c26854da2bf631b7391d30e4750",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
