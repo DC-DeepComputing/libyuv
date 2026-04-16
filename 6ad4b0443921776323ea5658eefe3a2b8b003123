@@ -33,6 +33,24 @@
       "message": "No version bump?",
       "revId": "6ad4b0443921776323ea5658eefe3a2b8b003123",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b037d6fe_463e5f97",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-16T21:56:44Z",
+      "side": 1,
+      "message": "Acknowledged.  na this is a trivial change, but if they wanted to check for the new macro, they could ifdef on it.",
+      "parentUuid": "a4e5d47a_69ceb4a2",
+      "revId": "6ad4b0443921776323ea5658eefe3a2b8b003123",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
