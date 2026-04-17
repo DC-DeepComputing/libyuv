@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2018033_dfdd51e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-17T21:13:00Z",
+      "side": 1,
+      "message": "some rvv cleanup to use vlseg4 and fix remainder handling",
+      "revId": "d57af58c87d3108df345335e6619b9642e1801b1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
