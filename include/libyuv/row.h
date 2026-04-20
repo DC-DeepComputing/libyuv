@@ -297,6 +297,9 @@ extern "C" {
 #define HAS_ARGBTOUV444MATRIXROW_AVX2
 #define HAS_ARGBTOYJROW_AVX2
 #define HAS_ARGBTOYROW_AVX2
+#if defined(__x86_64__)
+#define HAS_RGBTOYMATRIXROW_AVX2
+#endif
 #define HAS_ARGBUNATTENUATEROW_AVX2
 #define HAS_CONVERT16TO8ROW_AVX2
 #define HAS_CONVERT8TO16ROW_AVX2
@@ -330,9 +333,11 @@ extern "C" {
 #define HAS_P210TOARGBROW_AVX2
 #define HAS_P410TOAR30ROW_AVX2
 #define HAS_P410TOARGBROW_AVX2
+#if defined(__x86_64__) || defined(_M_X64)
 #define HAS_RAWTOYJROW_AVX2
 #define HAS_RGB24TOYJROW_AVX2
 #define HAS_RGBATOYJROW_AVX2
+#endif
 #define HAS_SPLITARGBROW_AVX2
 #define HAS_SPLITRGBROW_AVX2
 #define HAS_SPLITUVROW_16_AVX2
@@ -1857,6 +1862,10 @@ void ARGBToYMatrixRow_NEON(const uint8_t* src_argb,
                             uint8_t* dst_y,
                             int width,
                             const struct ArgbConstants* c);
+void RGBToYMatrixRow_NEON(const uint8_t* src_argb,
+                           uint8_t* dst_y,
+                           int width,
+                           const struct ArgbConstants* c);
 void ARGBToUV444MatrixRow_Any_NEON(const uint8_t* src_argb,
                                    uint8_t* dst_u,
                                    uint8_t* dst_v,
@@ -1866,6 +1875,10 @@ void ARGBToYMatrixRow_Any_NEON(const uint8_t* src_argb,
                                uint8_t* dst_y,
                                int width,
                                const struct ArgbConstants* c);
+void RGBToYMatrixRow_Any_NEON(const uint8_t* src_argb,
+                              uint8_t* dst_y,
+                              int width,
+                              const struct ArgbConstants* c);
 #endif
 void ARGBToUV444Row_NEON(const uint8_t* src_argb,
                          uint8_t* dst_u,
@@ -2220,6 +2233,12 @@ void ARGBToYMatrixRow_AVX2(const uint8_t* src_argb,
                            uint8_t* dst_y,
                            int width,
                            const struct ArgbConstants* c);
+#if defined(HAS_RGBTOYMATRIXROW_AVX2)
+void RGBToYMatrixRow_AVX2(const uint8_t* src_argb,
+                          uint8_t* dst_y,
+                          int width,
+                          const struct ArgbConstants* c);
+#endif
 void ARGBToYMatrixRow_AVX512BW(const uint8_t* src_argb,
                                uint8_t* dst_y,
                                int width,
@@ -2232,6 +2251,12 @@ void ARGBToYMatrixRow_Any_AVX2(const uint8_t* src_argb,
                                uint8_t* dst_y,
                                int width,
                                const struct ArgbConstants* c);
+#if defined(HAS_RGBTOYMATRIXROW_AVX2)
+void RGBToYMatrixRow_Any_AVX2(const uint8_t* src_argb,
+                              uint8_t* dst_y,
+                              int width,
+                              const struct ArgbConstants* c);
+#endif
 void ARGBToYMatrixRow_Any_AVX512BW(const uint8_t* src_argb,
                                    uint8_t* dst_y,
                                    int width,
