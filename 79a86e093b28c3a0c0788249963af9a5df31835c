@@ -33,6 +33,23 @@
       "message": "done",
       "revId": "79a86e093b28c3a0c0788249963af9a5df31835c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c0fdea1a_b3b29e95",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-20T16:53:07Z",
+      "side": 1,
+      "message": "rslgtm to satisfy the bots since Richard and Frank already stamped.",
+      "revId": "79a86e093b28c3a0c0788249963af9a5df31835c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
