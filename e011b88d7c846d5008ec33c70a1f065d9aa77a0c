@@ -16,6 +16,24 @@
       "message": "Chema needs to approve my changes?\nI have an alternative implementation in mind, if we dont land this one: Adapt the current JNV21 to a Matrix function and create 2 wrappers.  Best done in the convert_from_argb.cc using only 1 pass matrix row functions, which need to be implemented for avx but can use C for now",
       "revId": "e011b88d7c846d5008ec33c70a1f065d9aa77a0c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f809fd1_672f3770",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4750156
+      },
+      "writtenOn": "2026-04-20T20:26:19Z",
+      "side": 1,
+      "message": "I did",
+      "parentUuid": "fdb8979f_b81be540",
+      "revId": "e011b88d7c846d5008ec33c70a1f065d9aa77a0c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
