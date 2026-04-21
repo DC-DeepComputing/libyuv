@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2691713b_582e1900",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-21T03:40:39Z",
+      "side": 1,
+      "message": "I\u0027ll LG again but gerrit things we need 1 more reviewer?\n\nFor a better long term solution I\u0027ve implemented RGBToNV21Matrix which can take RAW or RGB24, and output NV21 or JNV21.  Its only done as 1 pass row functions to keep the high level simple so the low level RGBToYMatrix and RGBToUVMatrix row functions need to be implemented on all platforms.  on arm they exist for 32 bit and they do exist for 64 bit but are static, so I\u0027m working on a CL to make them public.\nOn x86 the RGBToYMatrix is ported to AVX2 (but not avx512) and the RGBToUVMatrix needs to be written.\n\nAt any point of we get enough approvals I\u0027ll land this CL as is.",
+      "revId": "f363b3f4b9cbd8b0f8df58f7ee93d5f9a24fa171",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
