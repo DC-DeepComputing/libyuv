@@ -3421,11 +3421,11 @@ int RAWToI420(const uint8_t* src_raw,
     }
   }
 #endif
-#if defined(HAS_RAWTOARGBROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI)) {
-    RAWToARGBRow = RAWToARGBRow_Any_AVX512VBMI;
+#if defined(HAS_RAWTOARGBROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    RAWToARGBRow = RAWToARGBRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
-      RAWToARGBRow = RAWToARGBRow_AVX512VBMI;
+      RAWToARGBRow = RAWToARGBRow_AVX512BW;
     }
   }
 #endif
@@ -3618,11 +3618,11 @@ int RAWToJ420(const uint8_t* src_raw,
     }
   }
 #endif
-#if defined(HAS_RAWTOARGBROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI)) {
-    RAWToARGBRow = RAWToARGBRow_Any_AVX512VBMI;
+#if defined(HAS_RAWTOARGBROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    RAWToARGBRow = RAWToARGBRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
-      RAWToARGBRow = RAWToARGBRow_AVX512VBMI;
+      RAWToARGBRow = RAWToARGBRow_AVX512BW;
     }
   }
 #endif
@@ -3902,11 +3902,11 @@ int RAWToI444(const uint8_t* src_raw,
     }
   }
 #endif
-#if defined(HAS_RAWTOARGBROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI)) {
-    RAWToARGBRow = RAWToARGBRow_Any_AVX512VBMI;
+#if defined(HAS_RAWTOARGBROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    RAWToARGBRow = RAWToARGBRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
-      RAWToARGBRow = RAWToARGBRow_AVX512VBMI;
+      RAWToARGBRow = RAWToARGBRow_AVX512BW;
     }
   }
 #endif
@@ -4121,11 +4121,11 @@ int RAWToJ444(const uint8_t* src_raw,
     }
   }
 #endif
-#if defined(HAS_RAWTOARGBROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI)) {
-    RAWToARGBRow = RAWToARGBRow_Any_AVX512VBMI;
+#if defined(HAS_RAWTOARGBROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    RAWToARGBRow = RAWToARGBRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
-      RAWToARGBRow = RAWToARGBRow_AVX512VBMI;
+      RAWToARGBRow = RAWToARGBRow_AVX512BW;
     }
   }
 #endif
@@ -5039,11 +5039,11 @@ int RAWToJ400(const uint8_t* src_raw,
     }
   }
 #endif
-#if defined(HAS_RAWTOARGBROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI)) {
-    RAWToARGBRow = RAWToARGBRow_Any_AVX512VBMI;
+#if defined(HAS_RAWTOARGBROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    RAWToARGBRow = RAWToARGBRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
-      RAWToARGBRow = RAWToARGBRow_AVX512VBMI;
+      RAWToARGBRow = RAWToARGBRow_AVX512BW;
     }
   }
 #endif
