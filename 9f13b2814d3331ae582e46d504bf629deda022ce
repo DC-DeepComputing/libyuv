@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3220f5df_3b729a1c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002325
+      },
+      "writtenOn": "2026-04-22T07:43:32Z",
+      "side": 1,
+      "message": "This broke compilation for 32 bit arm:\n\n```\nlibyuv/src/source/row_neon.cc:2833:13: error: static declaration of \u0027RGBToYMatrixRow_NEON\u0027 follows non-static declaration\n 2833 | static void RGBToYMatrixRow_NEON(const uint8_t* src_rgb,\n      |             ^\nlibyuv/src/include/libyuv/row.h:1868:6: note: previous declaration is here\n 1868 | void RGBToYMatrixRow_NEON(const uint8_t* src_argb,\n      |      ^\nlibyuv/src/source/row_neon.cc:2869:3: error: call to \u0027RGBToYMatrixRow_NEON\u0027 is ambiguous\n 2869 |   RGBToYMatrixRow_NEON(src_rgb24, dst_yj, width, \u0026kArgbJPEGConstants);\n      |   ^~~~~~~~~~~~~~~~~~~~\nlibyuv/src/include/libyuv/row.h:1868:6: note: candidate function\n 1868 | void RGBToYMatrixRow_NEON(const uint8_t* src_argb,\n      |      ^\nlibyuv/src/source/row_neon.cc:2833:13: note: candidate function\n 2833 | static void RGBToYMatrixRow_NEON(const uint8_t* src_rgb,\n      |             ^\nlibyuv/src/source/row_neon.cc:2873:3: error: call to \u0027RGBToYMatrixRow_NEON\u0027 is ambiguous\n 2873 |   RGBToYMatrixRow_NEON(src_raw, dst_yj, width, \u0026kAbgrJPEGConstants);\n      |   ^~~~~~~~~~~~~~~~~~~~\nlibyuv/src/include/libyuv/row.h:1868:6: note: candidate function\n 1868 | void RGBToYMatrixRow_NEON(const uint8_t* src_argb,\n      |      ^\nlibyuv/src/source/row_neon.cc:2833:13: note: candidate function\n 2833 | static void RGBToYMatrixRow_NEON(const uint8_t* src_rgb,\n      |             ^\nlibyuv/src/source/row_neon.cc:2877:3: error: call to \u0027RGBToYMatrixRow_NEON\u0027 is ambiguous\n 2877 |   RGBToYMatrixRow_NEON(src_rgb24, dst_y, width, \u0026kArgbI601Constants);\n      |   ^~~~~~~~~~~~~~~~~~~~\nlibyuv/src/include/libyuv/row.h:1868:6: note: candidate function\n 1868 | void RGBToYMatrixRow_NEON(const uint8_t* src_argb,\n      |      ^\nlibyuv/src/source/row_neon.cc:2833:13: note: candidate function\n 2833 | static void RGBToYMatrixRow_NEON(const uint8_t* src_rgb,\n      |             ^\nlibyuv/src/source/row_neon.cc:2881:3: error: call to \u0027RGBToYMatrixRow_NEON\u0027 is ambiguous\n 2881 |   RGBToYMatrixRow_NEON(src_raw, dst_y, width, \u0026kAbgrI601Constants);\n      |   ^~~~~~~~~~~~~~~~~~~~\nlibyuv/src/include/libyuv/row.h:1868:6: note: candidate function\n 1868 | void RGBToYMatrixRow_NEON(const uint8_t* src_argb,\n      |      ^\nlibyuv/src/source/row_neon.cc:2833:13: note: candidate function\n 2833 | static void RGBToYMatrixRow_NEON(const uint8_t* src_rgb,\n      |             ^\n5 errors generated.\n```",
+      "revId": "9f13b2814d3331ae582e46d504bf629deda022ce",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
