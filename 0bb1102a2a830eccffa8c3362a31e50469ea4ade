@@ -16,6 +16,23 @@
       "message": "looks good. i see another avx2 byte align 16 and it looks correct.",
       "revId": "0bb1102a2a830eccffa8c3362a31e50469ea4ade",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "906048ba_1990a70a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-23T02:02:53Z",
+      "side": 1,
+      "message": "adding yeongseon to review avx512 which is working well on amd zen5 but not really any faster on skylake or icelake?",
+      "revId": "0bb1102a2a830eccffa8c3362a31e50469ea4ade",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
