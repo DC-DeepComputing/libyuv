@@ -3378,11 +3378,11 @@ int RAWToRGB24(const uint8_t* src_raw,
     height = 1;
     src_stride_raw = dst_stride_rgb24 = 0;
   }
-#if defined(HAS_RAWTORGB24ROW_SSSE3)
-  if (TestCpuFlag(kCpuHasSSSE3)) {
-    RAWToRGB24Row = RAWToRGB24Row_Any_SSSE3;
-    if (IS_ALIGNED(width, 8)) {
-      RAWToRGB24Row = RAWToRGB24Row_SSSE3;
+#if defined(HAS_RAWTORGB24ROW_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    RAWToRGB24Row = RAWToRGB24Row_Any_AVX2;
+    if (IS_ALIGNED(width, 16)) {
+      RAWToRGB24Row = RAWToRGB24Row_AVX2;
     }
   }
 #endif

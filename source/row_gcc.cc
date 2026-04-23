@@ -266,10 +266,9 @@ void RAWToARGBRow_AVX2(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
 static const uint32_t kPermdRAWToARGB_AVX512BW[16] = {
     0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12};
 
-void RGBToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, const uint32_t* shuffler, int width) {
+void RGBToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, const uint32_t* shuffler, uint32_t alpha_mask, int width) {
   asm volatile(
-      "vpternlogd  $0xff,%%zmm6,%%zmm6,%%zmm6    \n"  // 0xffffffff
-      "vpslld      $0x18,%%zmm6,%%zmm6           \n"  // 0xff000000
+      "vpbroadcastd %5,%%zmm6                    \n"
       "movabs      $0xffffffffffff,%%rax         \n"  // 48 bytes mask
       "kmovq       %%rax,%%k1                    \n"
       "vmovdqu32   %3,%%zmm5                     \n"
@@ -306,16 +305,21 @@ void RGBToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, const uint
         "+r"(dst_argb),                 // %1
         "+r"(width)                     // %2
       : "m"(kPermdRAWToARGB_AVX512BW),  // %3
-        "m"(*shuffler)                  // %4
+        "m"(*shuffler),                 // %4
+        "rm"(alpha_mask)                // %5
       : "memory", "cc", "rax", "k1", "zmm0", "zmm1", "zmm2", "zmm3", "zmm4", "zmm5", "zmm6");
 }
 
 void RAWToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
-  RGBToARGBRow_AVX512BW(src_raw, dst_argb, (const uint32_t*)&kShuffleMaskRAWToARGB, width);
+  RGBToARGBRow_AVX512BW(src_raw, dst_argb, (const uint32_t*)&kShuffleMaskRAWToARGB, 0xff000000, width);
 }
 
 void RGB24ToARGBRow_AVX512BW(const uint8_t* src_rgb24, uint8_t* dst_argb, int width) {
-  RGBToARGBRow_AVX512BW(src_rgb24, dst_argb, (const uint32_t*)&kShuffleMaskRGB24ToARGB, width);
+  RGBToARGBRow_AVX512BW(src_rgb24, dst_argb, (const uint32_t*)&kShuffleMaskRGB24ToARGB, 0xff000000, width);
+}
+
+void RAWToRGBARow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_rgba, int width) {
+  RGBToARGBRow_AVX512BW(src_raw, dst_rgba, (const uint32_t*)&kShuffleMaskRAWToRGBA, 0x000000ff, width);
 }
 #endif
 
@@ -359,37 +363,46 @@ void RAWToRGBARow_SSSE3(const uint8_t* src_raw, uint8_t* dst_rgba, int width) {
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
 }
 
-void RAWToRGB24Row_SSSE3(const uint8_t* src_raw,
-                         uint8_t* dst_rgb24,
-                         int width) {
+#ifdef HAS_RAWTORGB24ROW_AVX2
+void RAWToRGB24Row_AVX2(const uint8_t* src_raw, uint8_t* dst_rgb24, int width) {
   asm volatile(
-      "movdqa      %3,%%xmm3                     \n"
-      "movdqa      %4,%%xmm4                     \n"
-      "movdqa      %5,%%xmm5                     \n"
-
+      "vbroadcastf128 %3,%%ymm3                  \n"
+      "vbroadcastf128 %4,%%ymm4                  \n"
+      "vbroadcastf128 %5,%%ymm5                  \n"
       LABELALIGN
       "1:          \n"
-      "movdqu      (%0),%%xmm0                   \n"
-      "movdqu      0x4(%0),%%xmm1                \n"
-      "movdqu      0x8(%0),%%xmm2                \n"
-      "lea         0x18(%0),%0                   \n"
-      "pshufb      %%xmm3,%%xmm0                 \n"
-      "pshufb      %%xmm4,%%xmm1                 \n"
-      "pshufb      %%xmm5,%%xmm2                 \n"
-      "movq        %%xmm0,(%1)                   \n"
-      "movq        %%xmm1,0x8(%1)                \n"
-      "movq        %%xmm2,0x10(%1)               \n"
-      "lea         0x18(%1),%1                   \n"
-      "sub         $0x8,%2                       \n"
+      "vmovdqu     (%0),%%xmm0                   \n"
+      "vinserti128 $1,0x18(%0),%%ymm0,%%ymm0     \n"
+      "vmovdqu     0x4(%0),%%xmm1                \n"
+      "vinserti128 $1,0x1c(%0),%%ymm1,%%ymm1     \n"
+      "vmovdqu     0x8(%0),%%xmm2                \n"
+      "vinserti128 $1,0x20(%0),%%ymm2,%%ymm2     \n"
+      "lea         0x30(%0),%0                   \n"
+      "vpshufb     %%ymm3,%%ymm0,%%ymm0          \n"
+      "vpshufb     %%ymm4,%%ymm1,%%ymm1          \n"
+      "vpshufb     %%ymm5,%%ymm2,%%ymm2          \n"
+      "vmovq       %%xmm0,(%1)                   \n"
+      "vmovq       %%xmm1,0x8(%1)                \n"
+      "vmovq       %%xmm2,0x10(%1)               \n"
+      "vextracti128 $1,%%ymm0,%%xmm0             \n"
+      "vextracti128 $1,%%ymm1,%%xmm1             \n"
+      "vextracti128 $1,%%ymm2,%%xmm2             \n"
+      "vmovq       %%xmm0,0x18(%1)               \n"
+      "vmovq       %%xmm1,0x20(%1)               \n"
+      "vmovq       %%xmm2,0x28(%1)               \n"
+      "lea         0x30(%1),%1                   \n"
+      "sub         $0x10,%2                      \n"
       "jg          1b                            \n"
+      "vzeroupper  \n"
       : "+r"(src_raw),                  // %0
         "+r"(dst_rgb24),                // %1
         "+r"(width)                     // %2
       : "m"(kShuffleMaskRAWToRGB24_0),  // %3
         "m"(kShuffleMaskRAWToRGB24_1),  // %4
         "m"(kShuffleMaskRAWToRGB24_2)   // %5
-      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5");
 }
+#endif
 
 void RGB565ToARGBRow_SSE2(const uint8_t* src, uint8_t* dst, int width) {
   asm volatile(

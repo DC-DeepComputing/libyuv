@@ -73,7 +73,6 @@ extern "C" {
 #define HAS_NV21TOARGBROW_SSSE3
 #define HAS_NV21TORGB24ROW_SSSE3
 #define HAS_RAWTOARGBROW_SSSE3
-#define HAS_RAWTORGB24ROW_SSSE3
 #define HAS_RGB24TOARGBROW_SSSE3
 #define HAS_RGB565TOARGBROW_SSE2
 #define HAS_SETROW_ERMS
@@ -136,6 +135,14 @@ extern "C" {
 #define HAS_I444ALPHATOARGBROW_AVX2
 #endif
 
+#endif
+
+// The following are available on all x86 platforms (32 and 64 bit),
+// clang, gcc and visual c.
+#if !defined(LIBYUV_DISABLE_X86) && \
+    (defined(VISUALC_HAS_AVX2) || defined(CLANG_HAS_AVX2) || \
+     defined(GCC_HAS_AVX2))
+#define HAS_RAWTORGB24ROW_AVX2
 #endif
 
 // The following are available on all x86 platforms, but
@@ -351,10 +358,6 @@ extern "C" {
     ((defined(_MSC_VER) && !defined(__clang__)) || \
      defined(LIBYUV_ENABLE_ROWWIN))
 #define HAS_RAWTOARGBROW_AVX2
-#if defined(__x86_64__) || defined(_M_X64)
-#define HAS_RAWTOARGBROW_AVX512BW
-#define HAS_RGB24TOARGBROW_AVX512BW
-#endif
 #define HAS_ARGBTOYROW_AVX2
 #define HAS_ARGBTOYMATRIXROW_AVX2
 #define HAS_ABGRTOYROW_AVX2
@@ -372,13 +375,18 @@ extern "C" {
     (defined(__x86_64__) || defined(__i386__)) && defined(CLANG_HAS_AVX512) && \
     !defined(LIBYUV_ENABLE_ROWWIN)
 #define HAS_COPYROW_AVX512BW
-#if defined(__x86_64__) || defined(_M_X64)
-#define HAS_RAWTOARGBROW_AVX512BW
-#define HAS_RGB24TOARGBROW_AVX512BW
-#endif
 #define HAS_ARGBTORGB24ROW_AVX512VBMI
 #define HAS_CONVERT16TO8ROW_AVX512BW
 #define HAS_MERGEUVROW_AVX512BW
+#endif
+
+// The following are available for AVX512 x64 platforms:
+#if !defined(LIBYUV_DISABLE_X86) && \
+    (defined(__x86_64__) || defined(_M_X64)) && \
+    defined(CLANG_HAS_AVX512)
+#define HAS_RAWTOARGBROW_AVX512BW
+#define HAS_RAWTORGBAROW_AVX512BW
+#define HAS_RGB24TOARGBROW_AVX512BW
 #endif
 
 // The following are available for AVX512 clang x64 platforms:
@@ -3984,7 +3992,7 @@ void RAWToARGBRow_SSSE3(const uint8_t* src_raw, uint8_t* dst_argb, int width);
 void RAWToARGBRow_AVX2(const uint8_t* src_raw, uint8_t* dst_argb, int width);
 void RAWToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, int width);
 void RAWToRGBARow_SSSE3(const uint8_t* src_raw, uint8_t* dst_rgba, int width);
-void RAWToRGB24Row_SSSE3(const uint8_t* src_raw, uint8_t* dst_rgb24, int width);
+void RAWToRGB24Row_AVX2(const uint8_t* src_raw, uint8_t* dst_rgb24, int width);
 void RGB565ToARGBRow_SSE2(const uint8_t* src, uint8_t* dst, int width);
 void ARGB1555ToARGBRow_SSE2(const uint8_t* src, uint8_t* dst, int width);
 void ARGB4444ToARGBRow_SSE2(const uint8_t* src, uint8_t* dst, int width);
@@ -4080,9 +4088,9 @@ void RGB24ToARGBRow_Any_AVX512BW(const uint8_t* src_ptr, uint8_t* dst_ptr, int w
 void RAWToRGBARow_Any_SSSE3(const uint8_t* src_ptr,
                             uint8_t* dst_ptr,
                             int width);
-void RAWToRGB24Row_Any_SSSE3(const uint8_t* src_ptr,
-                             uint8_t* dst_ptr,
-                             int width);
+void RAWToRGB24Row_Any_AVX2(const uint8_t* src_ptr,
+                            uint8_t* dst_ptr,
+                            int width);
 
 void RGB565ToARGBRow_Any_SSE2(const uint8_t* src_ptr,
                               uint8_t* dst_ptr,
@@ -4113,6 +4121,8 @@ void RGB24ToARGBRow_Any_LASX(const uint8_t* src_ptr,
                              uint8_t* dst_ptr,
                              int width);
 void RAWToARGBRow_Any_NEON(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void RAWToRGBARow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_rgba, int width);
+void RAWToRGBARow_Any_AVX512BW(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
 void RAWToRGBARow_Any_NEON(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
 void RAWToARGBRow_Any_LSX(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
 void RAWToARGBRow_Any_LASX(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);

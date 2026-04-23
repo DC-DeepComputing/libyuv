@@ -213,6 +213,48 @@ void BGRAToYRow_AVX2(const uint8_t* src_bgra, uint8_t* dst_y, int width) {
   ARGBToYMatrixRow_AVX2(src_bgra, dst_y, width, &kBgraI601Constants);
 }
 
+#ifdef HAS_RAWTORGB24ROW_AVX2
+LIBYUV_TARGET_AVX2
+void RAWToRGB24Row_AVX2(const uint8_t* src_raw, uint8_t* dst_rgb24, int width) {
+  __m256i shuf0 = _mm256_setr_epi8(
+      2, 1, 0, 5, 4, 3, 8, 7, -1, -1, -1, -1, -1, -1, -1, -1,
+      2, 1, 0, 5, 4, 3, 8, 7, -1, -1, -1, -1, -1, -1, -1, -1);
+  __m256i shuf1 = _mm256_setr_epi8(
+      2, 7, 6, 5, 10, 9, 8, 13, -1, -1, -1, -1, -1, -1, -1, -1,
+      2, 7, 6, 5, 10, 9, 8, 13, -1, -1, -1, -1, -1, -1, -1, -1);
+  __m256i shuf2 = _mm256_setr_epi8(
+      8, 7, 12, 11, 10, 15, 14, 13, -1, -1, -1, -1, -1, -1, -1, -1,
+      8, 7, 12, 11, 10, 15, 14, 13, -1, -1, -1, -1, -1, -1, -1, -1);
+
+  while (width > 0) {
+    __m256i ymm0 = _mm256_castsi128_si256(_mm_loadu_si128((const __m128i*)src_raw));
+    ymm0 = _mm256_inserti128_si256(ymm0, _mm_loadu_si128((const __m128i*)(src_raw + 24)), 1);
+
+    __m256i ymm1 = _mm256_castsi128_si256(_mm_loadu_si128((const __m128i*)(src_raw + 4)));
+    ymm1 = _mm256_inserti128_si256(ymm1, _mm_loadu_si128((const __m128i*)(src_raw + 28)), 1);
+
+    __m256i ymm2 = _mm256_castsi128_si256(_mm_loadu_si128((const __m128i*)(src_raw + 8)));
+    ymm2 = _mm256_inserti128_si256(ymm2, _mm_loadu_si128((const __m128i*)(src_raw + 32)), 1);
+
+    ymm0 = _mm256_shuffle_epi8(ymm0, shuf0);
+    ymm1 = _mm256_shuffle_epi8(ymm1, shuf1);
+    ymm2 = _mm256_shuffle_epi8(ymm2, shuf2);
+
+    _mm_storel_epi64((__m128i*)dst_rgb24, _mm256_castsi256_si128(ymm0));
+    _mm_storel_epi64((__m128i*)(dst_rgb24 + 8), _mm256_castsi256_si128(ymm1));
+    _mm_storel_epi64((__m128i*)(dst_rgb24 + 16), _mm256_castsi256_si128(ymm2));
+
+    _mm_storel_epi64((__m128i*)(dst_rgb24 + 24), _mm256_extracti128_si256(ymm0, 1));
+    _mm_storel_epi64((__m128i*)(dst_rgb24 + 32), _mm256_extracti128_si256(ymm1, 1));
+    _mm_storel_epi64((__m128i*)(dst_rgb24 + 40), _mm256_extracti128_si256(ymm2, 1));
+
+    src_raw += 48;
+    dst_rgb24 += 48;
+    width -= 16;
+  }
+}
+#endif
+
 #ifdef HAS_RAWTOARGBROW_AVX2
 LIBYUV_TARGET_AVX2
 void RAWToARGBRow_AVX2(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
@@ -263,8 +305,8 @@ void RAWToARGBRow_AVX2(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
 
 #ifdef HAS_RAWTOARGBROW_AVX512BW
 LIBYUV_TARGET_AVX512BW
-void RGBToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, const __m128i* shuffler, int width) {
-  __m512i zmm_alpha = _mm512_set1_epi32(0xff000000);
+void RGBToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, const __m128i* shuffler, uint32_t alpha_mask, int width) {
+  __m512i zmm_alpha = _mm512_set1_epi32(alpha_mask);
   __m512i zmm_perm = _mm512_set_epi32(
       12, 11, 10, 9, 9, 8, 7, 6, 6, 5, 4, 3, 3, 2, 1, 0);
   __m512i zmm_shuf = _mm512_broadcast_i32x4(_mm_loadu_si128(shuffler));
@@ -304,13 +346,19 @@ void RGBToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, const __m1
 LIBYUV_TARGET_AVX512BW
 void RAWToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
   __m128i shuf = _mm_set_epi8(-1, 9, 10, 11, -1, 6, 7, 8, -1, 3, 4, 5, -1, 0, 1, 2);
-  RGBToARGBRow_AVX512BW(src_raw, dst_argb, &shuf, width);
+  RGBToARGBRow_AVX512BW(src_raw, dst_argb, &shuf, 0xff000000, width);
 }
 
 LIBYUV_TARGET_AVX512BW
 void RGB24ToARGBRow_AVX512BW(const uint8_t* src_rgb24, uint8_t* dst_argb, int width) {
   __m128i shuf = _mm_set_epi8(-1, 11, 10, 9, -1, 8, 7, 6, -1, 5, 4, 3, -1, 2, 1, 0);
-  RGBToARGBRow_AVX512BW(src_rgb24, dst_argb, &shuf, width);
+  RGBToARGBRow_AVX512BW(src_rgb24, dst_argb, &shuf, 0xff000000, width);
+}
+
+LIBYUV_TARGET_AVX512BW
+void RAWToRGBARow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_rgba, int width) {
+  __m128i shuf = _mm_set_epi8(9, 10, 11, -1, 6, 7, 8, -1, 3, 4, 5, -1, 0, 1, 2, -1);
+  RGBToARGBRow_AVX512BW(src_raw, dst_rgba, &shuf, 0x000000ff, width);
 }
 #endif
 
