@@ -266,10 +266,9 @@ void RAWToARGBRow_AVX2(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
 static const uint32_t kPermdRAWToARGB_AVX512BW[16] = {
     0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 10, 11, 12};
 
-void RGBToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, const uint32_t* shuffler, int width) {
+void RGBToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, const uint32_t* shuffler, uint32_t alpha_mask, int width) {
   asm volatile(
-      "vpternlogd  $0xff,%%zmm6,%%zmm6,%%zmm6    \n"  // 0xffffffff
-      "vpslld      $0x18,%%zmm6,%%zmm6           \n"  // 0xff000000
+      "vpbroadcastd %5,%%zmm6                    \n"
       "movabs      $0xffffffffffff,%%rax         \n"  // 48 bytes mask
       "kmovq       %%rax,%%k1                    \n"
       "vmovdqu32   %3,%%zmm5                     \n"
@@ -306,16 +305,29 @@ void RGBToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, const uint
         "+r"(dst_argb),                 // %1
         "+r"(width)                     // %2
       : "m"(kPermdRAWToARGB_AVX512BW),  // %3
-        "m"(*shuffler)                  // %4
+        "m"(*shuffler),                 // %4
+        "rm"(alpha_mask)                // %5
       : "memory", "cc", "rax", "k1", "zmm0", "zmm1", "zmm2", "zmm3", "zmm4", "zmm5", "zmm6");
 }
 
 void RAWToARGBRow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
-  RGBToARGBRow_AVX512BW(src_raw, dst_argb, (const uint32_t*)&kShuffleMaskRAWToARGB, width);
+  static const uint8_t shuf[16] = {2, 1, 0, 255, 5, 4, 3, 255, 8, 7, 6, 255, 11, 10, 9, 255};
+  RGBToARGBRow_AVX512BW(src_raw, dst_argb, (const uint32_t*)shuf, 0xff000000, width);
 }
 
+#endif
+
+#ifdef HAS_RGB24TOARGBROW_AVX512BW
 void RGB24ToARGBRow_AVX512BW(const uint8_t* src_rgb24, uint8_t* dst_argb, int width) {
-  RGBToARGBRow_AVX512BW(src_rgb24, dst_argb, (const uint32_t*)&kShuffleMaskRGB24ToARGB, width);
+  static const uint8_t shuf[16] = {0, 1, 2, 255, 3, 4, 5, 255, 6, 7, 8, 255, 9, 10, 11, 255};
+  RGBToARGBRow_AVX512BW(src_rgb24, dst_argb, (const uint32_t*)shuf, 0xff000000, width);
+}
+#endif
+
+#ifdef HAS_RAWTORGBAROW_AVX512BW
+void RAWToRGBARow_AVX512BW(const uint8_t* src_raw, uint8_t* dst_rgba, int width) {
+  static const uint8_t shuf[16] = {255, 2, 1, 0, 255, 5, 4, 3, 255, 8, 7, 6, 255, 11, 10, 9};
+  RGBToARGBRow_AVX512BW(src_raw, dst_rgba, (const uint32_t*)shuf, 0x000000ff, width);
 }
 #endif
 

@@ -3823,6 +3823,22 @@ int RAWToRGBA(const uint8_t* src_raw,
     }
   }
 #endif
+#if defined(HAS_RAWTORGBAROW_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    RAWToRGBARow = RAWToRGBARow_Any_AVX2;
+    if (IS_ALIGNED(width, 32)) {
+      RAWToRGBARow = RAWToRGBARow_AVX2;
+    }
+  }
+#endif
+#if defined(HAS_RAWTORGBAROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    RAWToRGBARow = RAWToRGBARow_Any_AVX512BW;
+    if (IS_ALIGNED(width, 64)) {
+      RAWToRGBARow = RAWToRGBARow_AVX512BW;
+    }
+  }
+#endif
 #if defined(HAS_RAWTORGBAROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     RAWToRGBARow = RAWToRGBARow_Any_NEON;
@@ -3836,13 +3852,28 @@ int RAWToRGBA(const uint8_t* src_raw,
     RAWToRGBARow = RAWToRGBARow_SVE2;
   }
 #endif
+#if defined(HAS_RAWTORGBAROW_LSX)
+  if (TestCpuFlag(kCpuHasLSX)) {
+    RAWToRGBARow = RAWToRGBARow_Any_LSX;
+    if (IS_ALIGNED(width, 16)) {
+      RAWToRGBARow = RAWToRGBARow_LSX;
+    }
+  }
+#endif
+#if defined(HAS_RAWTORGBAROW_LASX)
+  if (TestCpuFlag(kCpuHasLASX)) {
+    RAWToRGBARow = RAWToRGBARow_Any_LASX;
+    if (IS_ALIGNED(width, 32)) {
+      RAWToRGBARow = RAWToRGBARow_LASX;
+    }
+  }
+#endif
 #if defined(HAS_RAWTORGBAROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
     RAWToRGBARow = RAWToRGBARow_RVV;
   }
 #endif
-
-  for (y = 0; y < height; ++y) {
+for (y = 0; y < height; ++y) {
     RAWToRGBARow(src_raw, dst_rgba, width);
     src_raw += src_stride_raw;
     dst_rgba += dst_stride_rgba;
