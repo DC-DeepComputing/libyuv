@@ -1689,7 +1689,7 @@ void ScalePlaneVertical(int src_height,
     }
     yi = y >> 16;
     yf = filtering ? ((y >> 8) & 255) : 0;
-    InterpolateRow(dst_argb, src_argb + yi * src_stride, src_stride,
+    InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride, src_stride,
                    dst_width_bytes, yf);
     dst_argb += dst_stride;
     y += dy;
@@ -1765,7 +1765,7 @@ void ScalePlaneVertical_16(int src_height,
     }
     yi = y >> 16;
     yf = filtering ? ((y >> 8) & 255) : 0;
-    InterpolateRow(dst_argb, src_argb + yi * src_stride, src_stride,
+    InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride, src_stride,
                    dst_width_words, yf);
     dst_argb += dst_stride;
     y += dy;
@@ -1834,8 +1834,8 @@ void ScalePlaneVertical_16To8(int src_height,
     }
     yi = y >> 16;
     yf = filtering ? ((y >> 8) & 255) : 0;
-    InterpolateRow_16To8(dst_argb, src_argb + yi * src_stride, src_stride,
-                         scale, dst_width_words, yf);
+    InterpolateRow_16To8(dst_argb, src_argb + yi * (ptrdiff_t)src_stride,
+                         src_stride, scale, dst_width_words, yf);
     dst_argb += dst_stride;
     y += dy;
   }

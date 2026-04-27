@@ -8,6 +8,8 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
+#include <limits.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -462,4 +464,55 @@ TEST_F(LibYUVScaleTest, PlaneTest1_16_Box) {
   free_aligned_buffer_page_end(dst_pixels_alloc);
   free_aligned_buffer_page_end(orig_pixels_alloc);
 }
+
+#if PTRDIFF_MAX > INT_MAX
+// POC: int * int overflow in ScalePlaneVertical (scale_common.cc).
+//
+// `yi * src_stride` is evaluated as int * int. When the product exceeds
+// INT_MAX it wraps negative and InterpolateRow reads from BEFORE the
+// source allocation.
+//
+// Parameters:
+//   - dst_width == src_width
+//     -> ScalePlane dispatches to ScalePlaneVertical
+//   - src_height == 5, dst_height == 1
+//     -> single iteration with yi == 2
+//   - src_stride == 0x7FFFFFF8
+//     -> 2 * 0x7FFFFFF8 == 0xFFFFFFF0 == -16 (int)
+//
+// The source buffer is sized so that the *correct* 64-bit offset
+// (2 * 0x7FFFFFF8 == 4294967280) plus kWidth bytes is in-bounds. With the
+// bug, the 32-bit product is -16 and ASAN reports a heap-buffer-overflow
+// READ "16 bytes before" the allocation.
+TEST_F(LibYUVScaleTest, ScalePlaneVertical_IntStrideOverflow) {
+  const int kWidth = 16;
+  const int kSrcHeight = 5;
+  const int kDstHeight = 1;
+  const int kStride = 0x7FFFFFF8;  // 2147483640
+
+  // Big enough for the only row this call legitimately touches (yi == 2)
+  // when computed in 64-bit:  2*stride + width  ~= 4 GiB.
+  const size_t kSrcSize =
+      static_cast<size_t>(2) * static_cast<size_t>(kStride) + kWidth;
+  uint8_t* src = new (std::nothrow) uint8_t[kSrcSize];
+  if (!src) {
+    GTEST_SKIP() << "could not allocate " << kSrcSize << " bytes";
+  }
+  uint8_t* dst = new uint8_t[kWidth];
+  memset(dst, 0, kWidth);
+
+  // Force the scalar path so the crash site is deterministic
+  // (InterpolateRow_C -> memcpy when yf == 0).
+  MaskCpuFlags(disable_cpu_flags_);
+
+  int r = ScalePlane(src, kStride, kWidth, kSrcHeight,
+                     dst, kWidth, kWidth, kDstHeight, kFilterNone);
+
+  // Not reached under ASAN.
+  EXPECT_EQ(0, r);
+  delete[] src;
+  delete[] dst;
+}
+#endif  // PTRDIFF_MAX > INT_MAX
+
 }  // namespace libyuv
