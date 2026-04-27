@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "13d6a157_7c141e4c",
+        "filename": "unit_test/scale_plane_test.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-27T23:27:49Z",
+      "side": 1,
+      "message": "Frank: This check excludes the test from 32-bit builds, in which `size_t` cannot express `kSrcSize` (see line 498).",
+      "revId": "088d3efe786ca685cdab636b8a64f796c1d2ef50",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60273dd0_fac45852",
+        "filename": "unit_test/scale_plane_test.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-27T23:27:49Z",
+      "side": 1,
+      "message": "I am worried that in an environment where OOM is handled by aborting the process, this will abort the test program.\n\nFrank, do you know of any other libyuv test that allocates such a large buffer?",
+      "revId": "088d3efe786ca685cdab636b8a64f796c1d2ef50",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
