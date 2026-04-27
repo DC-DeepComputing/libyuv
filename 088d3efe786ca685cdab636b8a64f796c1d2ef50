@@ -33,6 +33,24 @@
       "message": "I am worried that in an environment where OOM is handled by aborting the process, this will abort the test program.\n\nFrank, do you know of any other libyuv test that allocates such a large buffer?",
       "revId": "088d3efe786ca685cdab636b8a64f796c1d2ef50",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "042480a7_8de39f62",
+        "filename": "unit_test/scale_plane_test.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-27T23:41:37Z",
+      "side": 1,
+      "message": "yes and that is a problem - the allocator will abort.\nIt was originally reported as a \u0027nexus 5\u0027 failure on chromebots.\n\nI dont have a great solution but this is what is in convert_arg_test.cc\n\n#if !defined(DISABLE_SLOW_TESTS) \u0026\u0026 \\\n    (defined(__x86_64__) || defined(_M_X64) || defined(__aarch64__))\n// TODO(fbarchard): Consider _set_new_mode(0) to make malloc return NULL\n\nTEST_F(LibYUVConvertTest, TestI400LargeSize) {\n  // The width and height are chosen as follows:\n  // - kWidth * kHeight is not a multiple of 8: This lets us to use the Any\n  //   variant of the conversion function.\n  const int kWidth \u003d 1073741823;\n  const int kHeight \u003d 2;\n\n#if defined(__aarch64__)\n  // Infer malloc can accept a large size for cpu with dot product (a76/a55)\n  int has_large_malloc \u003d TestCpuFlag(kCpuHasNeonDotProd);\n#else\n  int has_large_malloc \u003d 1;\n#endif\n  if (!has_large_malloc) {\n    printf(\"WARNING: Skipped.  Large allocation may assert for %zd\\n\",\n           (size_t)kWidth * kHeight);\n    return;\n  }",
+      "parentUuid": "60273dd0_fac45852",
+      "revId": "088d3efe786ca685cdab636b8a64f796c1d2ef50",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
