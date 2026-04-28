@@ -16,6 +16,24 @@
       "message": "James: Please do a preliminary review and make sure I didn\u0027t misunderstand something.\n\nIn each of the modified functions, it is not necessary to convert `src_stride` to the `intptr_t` type. We can just `src_stride` (of the `ptrdiff_t` type) directly.",
       "revId": "ebb698827725d870bf89acf219829d9eec91ad46",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "300d58a6_166e52fc",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-28T03:01:08Z",
+      "side": 1,
+      "message": "I think youre right... this is likely left over from an api that used int with internal implementation of ptrdiff but the api is ptrdiff_t now.",
+      "parentUuid": "27be0378_3bda1f79",
+      "revId": "ebb698827725d870bf89acf219829d9eec91ad46",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
