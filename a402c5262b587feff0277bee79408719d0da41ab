@@ -3,6 +3,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "93b33070_dca87187",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-28T19:00:35Z",
+      "side": 1,
+      "message": "Note that with gemini cli it helps to have tests and especially benchmarks, that fail quickly.  A general approach is to use ASSERT_EQ instead of EXPECT_EQ",
+      "revId": "a402c5262b587feff0277bee79408719d0da41ab",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "0cf20348_48ead856",
         "filename": "unit_test/convert_argb_test.cc",
         "patchSetId": 1
