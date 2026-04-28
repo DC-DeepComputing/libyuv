@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65e199c2_f8790225",
+        "filename": "GEMINI.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-28T23:37:13Z",
+      "side": 1,
+      "message": "\"Wrap commit message text at 72 chars\" since otherwise it\u0027s ambiguous and could be interpreted as wrapping code length to 72.",
+      "revId": "28d43b53795b1f617aa5b50eb9d69fb5982d08f1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
