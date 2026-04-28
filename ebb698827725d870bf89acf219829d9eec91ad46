@@ -34,6 +34,24 @@
       "parentUuid": "27be0378_3bda1f79",
       "revId": "ebb698827725d870bf89acf219829d9eec91ad46",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fde1c376_20f55dfb",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-28T16:34:08Z",
+      "side": 1,
+      "message": "Thanks for the confirmation!",
+      "parentUuid": "300d58a6_166e52fc",
+      "revId": "ebb698827725d870bf89acf219829d9eec91ad46",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
