@@ -51,6 +51,24 @@
       "parentUuid": "60273dd0_fac45852",
       "revId": "088d3efe786ca685cdab636b8a64f796c1d2ef50",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d667d86_93f47de1",
+        "filename": "unit_test/scale_plane_test.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-28T17:41:02Z",
+      "side": 1,
+      "message": "Thank you for the pointer to convert_argb_test.cc. I will look into porting the complicated solution to this test. Not sure if it is worth it...",
+      "parentUuid": "042480a7_8de39f62",
+      "revId": "088d3efe786ca685cdab636b8a64f796c1d2ef50",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
