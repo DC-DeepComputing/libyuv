@@ -16,6 +16,24 @@
       "message": "I switched to a run-time check that detects `size_t` overflow when calculating the allocation size of the `src` buffer.\n\nI copied the `#if !defined(DISABLE_SLOW_TESTS)` guard from LibYUVConvertTest.TestI400LargeSize in convert_argb_test.cc.",
       "revId": "e85107afceedde9bd16af35b2c59f8bb3025f55c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57821c58_69a638fc",
+        "filename": "unit_test/scale_plane_test.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-28T18:44:10Z",
+      "side": 1,
+      "message": "I deleted the `#if !defined(DISABLE_SLOW_TESTS)`. Unlike LibYUVConvertTest.TestI400LargeSize, this test is not slow, even when running under ASan and UBSan.",
+      "parentUuid": "a46a077e_6e5583d2",
+      "revId": "e85107afceedde9bd16af35b2c59f8bb3025f55c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
