@@ -168,10 +168,6 @@ TEST_F(LibYUVBaseTest, TestCpuHas) {
     defined(_M_X64)
   int has_x86 = TestCpuFlag(kCpuHasX86);
   if (has_x86) {
-    int has_sse2 = TestCpuFlag(kCpuHasSSE2);
-    int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
-    int has_sse41 = TestCpuFlag(kCpuHasSSE41);
-    int has_sse42 = TestCpuFlag(kCpuHasSSE42);
     int has_avx = TestCpuFlag(kCpuHasAVX);
     int has_avx2 = TestCpuFlag(kCpuHasAVX2);
     int has_erms = TestCpuFlag(kCpuHasERMS);
@@ -190,10 +186,7 @@ TEST_F(LibYUVBaseTest, TestCpuHas) {
     int has_avxvnniint8 = TestCpuFlag(kCpuHasAVXVNNIINT8);
     int has_amxint8 = TestCpuFlag(kCpuHasAMXINT8);
     printf("Has X86 0x%x\n", has_x86);
-    printf("Has SSE2 0x%x\n", has_sse2);
     printf("Has SSSE3 0x%x\n", has_ssse3);
-    printf("Has SSE4.1 0x%x\n", has_sse41);
-    printf("Has SSE4.2 0x%x\n", has_sse42);
     printf("Has AVX 0x%x\n", has_avx);
     printf("Has AVX2 0x%x\n", has_avx2);
     printf("Has ERMS 0x%x\n", has_erms);
