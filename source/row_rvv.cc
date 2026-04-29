@@ -1419,17 +1419,9 @@ static void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
 }
 #endif
 
-#ifdef HAS_RGB24TOYJROW_RVV
-#endif
 
-#ifdef HAS_RAWTOYJROW_RVV
-#endif
 
-#ifdef HAS_RGB24TOYROW_RVV
-#endif
 
-#ifdef HAS_RAWTOYROW_RVV
-#endif
 
 // Blend src_argb over src_argb1 and store to dst_argb.
 // dst_argb may be src_argb or src_argb1.
