@@ -240,21 +240,15 @@ TEST_F(LibYUVCompareTest, BenchmarkHammingDistance_Opt) {
     if (has_avx2) {
       h1 = HammingDistance_AVX2(src_a, src_b, kMaxWidth);
     } else {
-      int has_sse42 = TestCpuFlag(kCpuHasSSE42);
-      if (has_sse42) {
         h1 = HammingDistance_SSE42(src_a, src_b, kMaxWidth);
       } else {
-        int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
-        if (has_ssse3) {
           h1 = HammingDistance_SSSE3(src_a, src_b, kMaxWidth);
         } else {
           h1 = HammingDistance_C(src_a, src_b, kMaxWidth);
         }
       }
     }
-#elif defined(HAS_HAMMINGDISTANCE_SSE42)
-    int has_sse42 = TestCpuFlag(kCpuHasSSE42);
-    if (has_sse42) {
+#elif 0
       h1 = HammingDistance_SSE42(src_a, src_b, kMaxWidth);
     } else {
       h1 = HammingDistance_C(src_a, src_b, kMaxWidth);
@@ -361,21 +355,15 @@ TEST_F(LibYUVCompareTest, TestHammingDistance_Opt) {
     if (has_avx2) {
       h1 = HammingDistance_AVX2(src_a, src_b, kMaxWidth);
     } else {
-      int has_sse42 = TestCpuFlag(kCpuHasSSE42);
-      if (has_sse42) {
         h1 = HammingDistance_SSE42(src_a, src_b, kMaxWidth);
       } else {
-        int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
-        if (has_ssse3) {
           h1 = HammingDistance_SSSE3(src_a, src_b, kMaxWidth);
         } else {
           h1 = HammingDistance_C(src_a, src_b, kMaxWidth);
         }
       }
     }
-#elif defined(HAS_HAMMINGDISTANCE_SSE42)
-    int has_sse42 = TestCpuFlag(kCpuHasSSE42);
-    if (has_sse42) {
+#elif 0
       h1 = HammingDistance_SSE42(src_a, src_b, kMaxWidth);
     } else {
       h1 = HammingDistance_C(src_a, src_b, kMaxWidth);

@@ -64,19 +64,15 @@ void TransposePlane(const uint8_t* src,
     TransposeWxH = TransposeWxH_SME;
   }
 #endif
-#if defined(HAS_TRANSPOSEWX8_SSSE3)
+#if 0
   if (TestCpuFlag(kCpuHasSSSE3)) {
-    TransposeWx8 = TransposeWx8_Any_SSSE3;
     if (IS_ALIGNED(width, 8)) {
-      TransposeWx8 = TransposeWx8_SSSE3;
     }
   }
 #endif
-#if defined(HAS_TRANSPOSEWX8_FAST_SSSE3)
+#if 0
   if (TestCpuFlag(kCpuHasSSSE3)) {
-    TransposeWx8 = TransposeWx8_Fast_Any_SSSE3;
     if (IS_ALIGNED(width, 16)) {
-      TransposeWx8 = TransposeWx8_Fast_SSSE3;
     }
   }
 #endif
@@ -174,11 +170,9 @@ void RotatePlane180(const uint8_t* src,
     }
   }
 #endif
-#if defined(HAS_MIRRORROW_SSSE3)
+#if 0
   if (TestCpuFlag(kCpuHasSSSE3)) {
-    MirrorRow = MirrorRow_Any_SSSE3;
     if (IS_ALIGNED(width, 16)) {
-      MirrorRow = MirrorRow_SSSE3;
     }
   }
 #endif
@@ -206,7 +200,7 @@ void RotatePlane180(const uint8_t* src,
     }
   }
 #endif
-#if defined(HAS_COPYROW_SSE2)
+#if 0
   if (TestCpuFlag(kCpuHasSSE2)) {
     CopyRow = IS_ALIGNED(width, 32) ? CopyRow_SSE2 : CopyRow_Any_SSE2;
   }
@@ -301,11 +295,9 @@ void SplitTransposeUV(const uint8_t* src,
     TransposeUVWxH = TransposeUVWxH_SME;
   }
 #endif
-#if defined(HAS_TRANSPOSEUVWX8_SSE2)
+#if 0
   if (TestCpuFlag(kCpuHasSSE2)) {
-    TransposeUVWx8 = TransposeUVWx8_Any_SSE2;
     if (IS_ALIGNED(width, 8)) {
-      TransposeUVWx8 = TransposeUVWx8_SSE2;
     }
   }
 #endif
@@ -397,9 +389,8 @@ void SplitRotateUV180(const uint8_t* src,
     MirrorSplitUVRow = MirrorSplitUVRow_NEON;
   }
 #endif
-#if defined(HAS_MIRRORSPLITUVROW_SSSE3)
+#if 0
   if (TestCpuFlag(kCpuHasSSSE3) && IS_ALIGNED(width, 16)) {
-    MirrorSplitUVRow = MirrorSplitUVRow_SSSE3;
   }
 #endif
 #if defined(HAS_MIRRORSPLITUVROW_LSX)

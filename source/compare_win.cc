@@ -26,57 +26,10 @@ extern "C" {
 #if !defined(LIBYUV_DISABLE_X86) && defined(_MSC_VER) && defined(_M_IX86) && \
     (!defined(__clang__) || defined(LIBYUV_ENABLE_ROWWIN))
 
-uint32_t HammingDistance_SSE42(const uint8_t* src_a,
-                               const uint8_t* src_b,
-                               int count) {
-  uint32_t diff = 0u;
 
-  int i;
-  for (i = 0; i < count - 3; i += 4) {
-    uint32_t x = *((uint32_t*)src_a) ^ *((uint32_t*)src_b);  // NOLINT
-    src_a += 4;
-    src_b += 4;
-    diff += __popcnt(x);
-  }
-  return diff;
-}
 
 __declspec(naked) uint32_t
-    SumSquareError_SSE2(const uint8_t* src_a, const uint8_t* src_b, int count) {
-  __asm {
-    mov        eax, [esp + 4]  // src_a
-    mov        edx, [esp + 8]  // src_b
-    mov        ecx, [esp + 12]  // count
-    pxor       xmm0, xmm0
-    pxor       xmm5, xmm5
 
-  wloop:
-    movdqu     xmm1, [eax]
-    lea        eax,  [eax + 16]
-    movdqu     xmm2, [edx]
-    lea        edx,  [edx + 16]
-    movdqa     xmm3, xmm1  // abs trick
-    psubusb    xmm1, xmm2
-    psubusb    xmm2, xmm3
-    por        xmm1, xmm2
-    movdqa     xmm2, xmm1
-    punpcklbw  xmm1, xmm5
-    punpckhbw  xmm2, xmm5
-    pmaddwd    xmm1, xmm1
-    pmaddwd    xmm2, xmm2
-    paddd      xmm0, xmm1
-    paddd      xmm0, xmm2
-    sub        ecx, 16
-    jg         wloop
-
-    pshufd     xmm1, xmm0, 0xee
-    paddd      xmm0, xmm1
-    pshufd     xmm1, xmm0, 0x01
-    paddd      xmm0, xmm1
-    movd       eax, xmm0
-    ret
-  }
-}
 
 #ifdef HAS_SUMSQUAREERROR_AVX2
 // C4752: found Intel(R) Advanced Vector Extensions; consider using /arch:AVX.
@@ -147,53 +100,7 @@ uvec32 kHashMul3 = {
 };
 
 __declspec(naked) uint32_t
-    HashDjb2_SSE41(const uint8_t* src, int count, uint32_t seed) {
-  __asm {
-    mov        eax, [esp + 4]  // src
-    mov        ecx, [esp + 8]  // count
-    movd       xmm0, [esp + 12]  // seed
 
-    pxor       xmm7, xmm7  // constant 0 for unpck
-    movdqa     xmm6, xmmword ptr kHash16x33
-
-  wloop:
-    movdqu     xmm1, [eax]  // src[0-15]
-    lea        eax, [eax + 16]
-    pmulld     xmm0, xmm6  // hash *= 33 ^ 16
-    movdqa     xmm5, xmmword ptr kHashMul0
-    movdqa     xmm2, xmm1
-    punpcklbw  xmm2, xmm7  // src[0-7]
-    movdqa     xmm3, xmm2
-    punpcklwd  xmm3, xmm7  // src[0-3]
-    pmulld     xmm3, xmm5
-    movdqa     xmm5, xmmword ptr kHashMul1
-    movdqa     xmm4, xmm2
-    punpckhwd  xmm4, xmm7  // src[4-7]
-    pmulld     xmm4, xmm5
-    movdqa     xmm5, xmmword ptr kHashMul2
-    punpckhbw  xmm1, xmm7  // src[8-15]
-    movdqa     xmm2, xmm1
-    punpcklwd  xmm2, xmm7  // src[8-11]
-    pmulld     xmm2, xmm5
-    movdqa     xmm5, xmmword ptr kHashMul3
-    punpckhwd  xmm1, xmm7  // src[12-15]
-    pmulld     xmm1, xmm5
-    paddd      xmm3, xmm4  // add 16 results
-    paddd      xmm1, xmm2
-    paddd      xmm1, xmm3
-
-    pshufd     xmm2, xmm1, 0x0e  // upper 2 dwords
-    paddd      xmm1, xmm2
-    pshufd     xmm2, xmm1, 0x01
-    paddd      xmm1, xmm2
-    paddd      xmm0, xmm1
-    sub        ecx, 16
-    jg         wloop
-
-    movd       eax, xmm0  // return hash
-    ret
-  }
-}
 
 // Visual C 2012 required for AVX2.
 #ifdef HAS_HASHDJB2_AVX2
