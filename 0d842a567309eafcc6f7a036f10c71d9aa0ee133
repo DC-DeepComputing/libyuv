@@ -84,6 +84,24 @@
       "message": "Frank: Please check this change. I deleted the local variable `row1` and used the parameter `src_stride` directly.",
       "revId": "0d842a567309eafcc6f7a036f10c71d9aa0ee133",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "22530222_116a761b",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2104,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-29T01:05:13Z",
+      "side": 1,
+      "message": "Marked this comment resolved so I can submit this CL.",
+      "parentUuid": "fc4204f0_9b68a742",
+      "revId": "0d842a567309eafcc6f7a036f10c71d9aa0ee133",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
