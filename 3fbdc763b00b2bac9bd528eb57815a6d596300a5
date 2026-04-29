@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7050cd4a_8584822e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-29T23:38:01Z",
+      "side": 1,
+      "message": "As previously discussed Chrome still runs with a minimum of SSE3, so possibly some users are still benefiting from this code, but maybe autovectorization is good enough now.",
+      "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4bb22b56_efc45836",
+        "filename": "include/libyuv/compare_row.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-29T23:38:01Z",
+      "side": 1,
+      "message": "Empty conditional now. Almost every file has one of these, can you clean them all up?",
+      "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4f7da05_1ccf9ae1",
+        "filename": "source/compare.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-29T23:38:01Z",
+      "side": 1,
+      "message": "Should probably just delete the block instead? There\u0027s quite a few of these to remove in other files too.",
+      "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc29b57d_0dc62a81",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-29T23:38:01Z",
+      "side": 1,
+      "message": "Clean these cases up as well.",
+      "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
