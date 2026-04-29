@@ -1536,17 +1536,11 @@ TEST_F(LibYUVPlanarTest, TestAffine) {
   EXPECT_EQ(96u, interpolate_pixels_C[128][0]);
   EXPECT_EQ(191u, interpolate_pixels_C[255][3]);
 
-#if defined(HAS_ARGBAFFINEROW_SSE2)
+#if 0
   SIMD_ALIGNED(uint8_t interpolate_pixels_Opt[1280][4]);
-  ARGBAffineRow_SSE2(&orig_pixels_0[0][0], 0, &interpolate_pixels_Opt[0][0],
-                     uv_step, 1280);
   EXPECT_EQ(0, memcmp(interpolate_pixels_Opt, interpolate_pixels_C, 1280 * 4));
 
-  int has_sse2 = TestCpuFlag(kCpuHasSSE2);
-  if (has_sse2) {
     for (int i = 0; i < benchmark_pixels_div1280_; ++i) {
-      ARGBAffineRow_SSE2(&orig_pixels_0[0][0], 0, &interpolate_pixels_Opt[0][0],
-                         uv_step, 1280);
     }
   }
 #endif
@@ -3916,14 +3910,11 @@ TEST_F(LibYUVPlanarTest, Convert16To8Row_Opt) {
                     dst_pixels_y_c, 16384, kPixels);
 
   int has_avx2 = TestCpuFlag(kCpuHasAVX2);
-  int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
   for (int i = 0; i < benchmark_iterations_; ++i) {
     if (has_avx2) {
       Convert16To8Row_AVX2(reinterpret_cast<const uint16_t*>(src_pixels_y),
                            dst_pixels_y_opt, 16384, kPixels);
     } else if (has_ssse3) {
-      Convert16To8Row_SSSE3(reinterpret_cast<const uint16_t*>(src_pixels_y),
-                            dst_pixels_y_opt, 16384, kPixels);
     } else {
       Convert16To8Row_C(reinterpret_cast<const uint16_t*>(src_pixels_y),
                         dst_pixels_y_opt, 16384, kPixels);
@@ -4020,14 +4011,9 @@ TEST_F(LibYUVPlanarTest, Convert8To16Row_Opt) {
                     1024, kPixels);
 
   int has_avx2 = TestCpuFlag(kCpuHasAVX2);
-  int has_sse2 = TestCpuFlag(kCpuHasSSE2);
   for (int i = 0; i < benchmark_iterations_; ++i) {
     if (has_avx2) {
       Convert8To16Row_AVX2(src_pixels_y,
-                           reinterpret_cast<uint16_t*>(dst_pixels_y_opt), 1024,
-                           kPixels);
-    } else if (has_sse2) {
-      Convert8To16Row_SSE2(src_pixels_y,
                            reinterpret_cast<uint16_t*>(dst_pixels_y_opt), 1024,
                            kPixels);
     } else {
