@@ -16,6 +16,23 @@
       "message": "I\u0027ll LG again but gerrit things we need 1 more reviewer?\n\nFor a better long term solution I\u0027ve implemented RGBToNV21Matrix which can take RAW or RGB24, and output NV21 or JNV21.  Its only done as 1 pass row functions to keep the high level simple so the low level RGBToYMatrix and RGBToUVMatrix row functions need to be implemented on all platforms.  on arm they exist for 32 bit and they do exist for 64 bit but are static, so I\u0027m working on a CL to make them public.\nOn x86 the RGBToYMatrix is ported to AVX2 (but not avx512) and the RGBToUVMatrix needs to be written.\n\nAt any point of we get enough approvals I\u0027ll land this CL as is.",
       "revId": "f363b3f4b9cbd8b0f8df58f7ee93d5f9a24fa171",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc443f86_fe8c3a3a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-29T20:06:08Z",
+      "side": 1,
+      "message": "sorry this hasnt landed.. it still looks good, but I\u0027m working on an alternative solution in https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/7802432\n\nwhich is still not as fast on pixel 9 as your CL because it uses 2 passes.  I would still land your CL if I could but gerrit wants more owner reviews??\nthere is a merge conflict at the moment, but its probably not worth your time.  But if you want to try I suggest AI such as Gemini CLI or Antigravity... you can point it at these CL and ask it to fix issues or make new CL\n\nIn the version I\u0027m landing the approach is \u0027Matrix\u0027 row functions that takes ArgbConstants.  These now exist for ARGB but are spotty for \u0027RAW\u0027, because x86 is hard.  Work in progress.  But initial benchmarks show even complicated x86 in 1 pass is faster than 2 pass.  The downside on x86 is the complicate bit for reading RAW (many shuffles) is replicated on RAWToY and RAWToUV.  Which is why RAWToARGB is a pretty good solution on x86, where this is now AVX512.\n\nThe good thing about this Matrix version I\u0027m checking in is that there is SVE, SME, NeonDot, I8MM and Neon.  I8MM is really a USDOT here that treats pixels (RGB) as unsigned but coefficients as signed.  Intel will have that soon with VNNI for avx512 and/or AVXVNNI for AVX.\nAnother benefit of Matrix is RAWToNV21 allows for RGB24ToNV12 using the same code.",
+      "revId": "f363b3f4b9cbd8b0f8df58f7ee93d5f9a24fa171",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
