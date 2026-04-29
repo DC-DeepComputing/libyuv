@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a648a201_e9499681",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-29T23:53:06Z",
+      "side": 1,
+      "message": "Acknowledged.  that is the intent.  if libyuv is compiled with -msse3 the row_common kernels can be coaxed into producing sse.  not hand tuned, but good enough.  its still worth having avx that is better than sse.",
+      "parentUuid": "7050cd4a_8584822e",
+      "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4bb22b56_efc45836",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-04-29T23:38:01Z",
       "side": 1,
       "message": "Empty conditional now. Almost every file has one of these, can you clean them all up?",
+      "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "934fddfb_0f68afd6",
+        "filename": "include/libyuv/compare_row.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-29T23:53:06Z",
+      "side": 1,
+      "message": "Done (by gemini).  I feel like a 3rd wheel :-)",
+      "parentUuid": "4bb22b56_efc45836",
       "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
