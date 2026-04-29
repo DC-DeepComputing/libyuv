@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99f23b6a_5edb5b36",
+        "filename": "source/rotate_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-29T00:28:26Z",
+      "side": 1,
+      "message": "There are several kinds of changes in this CL. This is an example of the first kind: the stride parameters are of the `int` type, so they need to be cast to `ptrdiff_t`.",
+      "revId": "0d842a567309eafcc6f7a036f10c71d9aa0ee133",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "67587905_81e29079",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 4652,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-29T00:28:26Z",
+      "side": 1,
+      "message": "This is an example of the second kind of change: the `width` parameter (of the `int` type) is converted to a local variable of the `ptrdiff_t` type.",
+      "revId": "0d842a567309eafcc6f7a036f10c71d9aa0ee133",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "646820d1_14d1b43a",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 8773,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-29T00:28:26Z",
+      "side": 1,
+      "message": "This is an example of the third kind of change: the stride parameter is already of the `ptrdiff_t` type, so no cast is needed.",
+      "revId": "0d842a567309eafcc6f7a036f10c71d9aa0ee133",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9bbb1c89_396c7ce2",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-29T00:28:26Z",
+      "side": 1,
+      "message": "I assume this variable means \"src_stride * 3\".",
+      "revId": "0d842a567309eafcc6f7a036f10c71d9aa0ee133",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc4204f0_9b68a742",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2104,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-04-29T00:28:26Z",
+      "side": 1,
+      "message": "Frank: Please check this change. I deleted the local variable `row1` and used the parameter `src_stride` directly.",
+      "revId": "0d842a567309eafcc6f7a036f10c71d9aa0ee133",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
