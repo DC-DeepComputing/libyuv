@@ -12,9 +12,7 @@
 // To build: g++ -O3 -o psnr psnr.cc ssim.cc psnr_main.cc
 // or VisualC: cl /Ox psnr.cc ssim.cc psnr_main.cc
 //
-// To enable OpenMP and SSE2
 // gcc: g++ -msse2 -O3 -fopenmp -o psnr psnr.cc ssim.cc psnr_main.cc
-// vc:  cl /arch:SSE2 /Ox /openmp psnr.cc ssim.cc psnr_main.cc
 //
 // Usage: psnr org_seq rec_seq -s width height [-skip skip_org skip_rec]
 

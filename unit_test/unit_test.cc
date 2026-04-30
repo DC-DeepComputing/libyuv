@@ -109,18 +109,6 @@ static int TestCpuEnv(int cpu_info) {
   if (TestEnv("LIBYUV_DISABLE_X86")) {
     cpu_info &= ~libyuv::kCpuHasX86;
   }
-  if (TestEnv("LIBYUV_DISABLE_SSE2")) {
-    cpu_info &= ~libyuv::kCpuHasSSE2;
-  }
-  if (TestEnv("LIBYUV_DISABLE_SSSE3")) {
-    cpu_info &= ~libyuv::kCpuHasSSSE3;
-  }
-  if (TestEnv("LIBYUV_DISABLE_SSE41")) {
-    cpu_info &= ~libyuv::kCpuHasSSE41;
-  }
-  if (TestEnv("LIBYUV_DISABLE_SSE42")) {
-    cpu_info &= ~libyuv::kCpuHasSSE42;
-  }
   if (TestEnv("LIBYUV_DISABLE_AVX")) {
     cpu_info &= ~libyuv::kCpuHasAVX;
   }

@@ -256,7 +256,6 @@ static int ARGBClipTestFilter(int src_width,
   }
 
 // Test a scale factor with all 4 filters.  Expect unfiltered to be exact, but
-// filtering is different fixed point implementations for SSSE3, Neon and C.
 #ifndef DISABLE_SLOW_TESTS
 #define TEST_FACTOR(name, nom, denom)           \
   TEST_FACTOR1(, name, None, nom, denom, 0)     \

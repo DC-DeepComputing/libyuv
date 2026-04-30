@@ -37,14 +37,6 @@ static int ARGBTranspose(const uint8_t* src_argb,
   if (src_stride_argb & 3) {
     return -1;
   }
-#if defined(HAS_SCALEARGBROWDOWNEVEN_SSE2)
-  if (TestCpuFlag(kCpuHasSSE2)) {
-    ScaleARGBRowDownEven = ScaleARGBRowDownEven_Any_SSE2;
-    if (IS_ALIGNED(height, 4)) {  // Width of dest.
-      ScaleARGBRowDownEven = ScaleARGBRowDownEven_SSE2;
-    }
-  }
-#endif
 #if defined(HAS_SCALEARGBROWDOWNEVEN_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ScaleARGBRowDownEven = ScaleARGBRowDownEven_Any_NEON;
@@ -131,14 +123,6 @@ static int ARGBRotate180(const uint8_t* src_argb,
     }
   }
 #endif
-#if defined(HAS_ARGBMIRRORROW_SSE2)
-  if (TestCpuFlag(kCpuHasSSE2)) {
-    ARGBMirrorRow = ARGBMirrorRow_Any_SSE2;
-    if (IS_ALIGNED(width, 4)) {
-      ARGBMirrorRow = ARGBMirrorRow_SSE2;
-    }
-  }
-#endif
 #if defined(HAS_ARGBMIRRORROW_AVX2)
   if (TestCpuFlag(kCpuHasAVX2)) {
     ARGBMirrorRow = ARGBMirrorRow_Any_AVX2;
@@ -161,11 +145,6 @@ static int ARGBRotate180(const uint8_t* src_argb,
     if (IS_ALIGNED(width, 16)) {
       ARGBMirrorRow = ARGBMirrorRow_LASX;
     }
-  }
-#endif
-#if defined(HAS_COPYROW_SSE2)
-  if (TestCpuFlag(kCpuHasSSE2)) {
-    CopyRow = IS_ALIGNED(width * 4, 32) ? CopyRow_SSE2 : CopyRow_Any_SSE2;
   }
 #endif
 #if defined(HAS_COPYROW_AVX)

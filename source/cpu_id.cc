@@ -408,10 +408,10 @@ static SAFEBUFFERS int GetCpuFlags(void) {
   if (cpu_info0[0] >= 0x24) {
     CpuId(0x24, 0, cpu_info24);
   }
-  cpu_info = kCpuHasX86 | ((cpu_info1[3] & 0x04000000) ? kCpuHasSSE2 : 0) |
-             ((cpu_info1[2] & 0x00000200) ? kCpuHasSSSE3 : 0) |
-             ((cpu_info1[2] & 0x00080000) ? kCpuHasSSE41 : 0) |
-             ((cpu_info1[2] & 0x00100000) ? kCpuHasSSE42 : 0) |
+  cpu_info = kCpuHasX86 | 0 |
+             0 |
+             0 |
+             0 |
              ((cpu_info7[1] & 0x00000200) ? kCpuHasERMS : 0) |
              ((cpu_info7[3] & 0x00000010) ? kCpuHasFSMR : 0);
 

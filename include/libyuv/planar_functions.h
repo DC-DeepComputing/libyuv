@@ -487,9 +487,6 @@ int NV21ToNV12(const uint8_t* src_y,
                int width,
                int height);
 
-// Alias
-#define NV12ToNV21 NV21ToNV12
-
 LIBYUV_API
 int YUY2ToY(const uint8_t* src_yuy2,
             int src_stride_yuy2,

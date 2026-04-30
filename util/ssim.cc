@@ -19,11 +19,8 @@ extern "C" {
 typedef unsigned int uint32_t;    // NOLINT
 typedef unsigned short uint16_t;  // NOLINT
 
-#if !defined(LIBYUV_DISABLE_X86) && !defined(__SSE2__) && \
     (defined(_M_X64) || (defined(_M_IX86_FP) && (_M_IX86_FP >= 2)))
-#define __SSE2__
 #endif
-#if !defined(LIBYUV_DISABLE_X86) && defined(__SSE2__)
 #include <emmintrin.h>
 #endif
 
@@ -48,66 +45,6 @@ static const double kiW[KERNEL + 1 + 1] = {
     1. / 726.,   // 1 / sum(i:0..3, j..6) K[i]*K[j]
 };
 
-#if !defined(LIBYUV_DISABLE_X86) && defined(__SSE2__)
-
-#define PWEIGHT(A, B) static_cast<uint16_t>(K[(A)] * K[(B)])  // weight product
-#define MAKE_WEIGHT(L)                                                \
-  {                                                                   \
-    {                                                                 \
-      {                                                               \
-        PWEIGHT(L, 0)                                                 \
-        , PWEIGHT(L, 1), PWEIGHT(L, 2), PWEIGHT(L, 3), PWEIGHT(L, 4), \
-            PWEIGHT(L, 5), PWEIGHT(L, 6), 0                           \
-      }                                                               \
-    }                                                                 \
-  }
-
-// We need this union trick to be able to initialize constant static __m128i
-// values. We can't call _mm_set_epi16() for static compile-time initialization.
-static const struct {
-  union {
-    uint16_t i16_[8];
-    __m128i m_;
-  } values_;
-} W0 = MAKE_WEIGHT(0), W1 = MAKE_WEIGHT(1), W2 = MAKE_WEIGHT(2),
-  W3 = MAKE_WEIGHT(3);
-// ... the rest is symmetric.
-#undef MAKE_WEIGHT
-#undef PWEIGHT
-#endif
-
-// Common final expression for SSIM, once the weighted sums are known.
-static double FinalizeSSIM(double iw,
-                           double xm,
-                           double ym,
-                           double xxm,
-                           double xym,
-                           double yym) {
-  const double iwx = xm * iw;
-  const double iwy = ym * iw;
-  double sxx = xxm * iw - iwx * iwx;
-  double syy = yym * iw - iwy * iwy;
-  // small errors are possible, due to rounding. Clamp to zero.
-  if (sxx < 0.) {
-    sxx = 0.;
-  }
-  if (syy < 0.) {
-    syy = 0.;
-  }
-  const double sxsy = sqrt(sxx * syy);
-  const double sxy = xym * iw - iwx * iwy;
-  static const double C11 = (0.01 * 0.01) * (255 * 255);
-  static const double C22 = (0.03 * 0.03) * (255 * 255);
-  static const double C33 = (0.015 * 0.015) * (255 * 255);
-  const double l = (2. * iwx * iwy + C11) / (iwx * iwx + iwy * iwy + C11);
-  const double c = (2. * sxsy + C22) / (sxx + syy + C22);
-  const double s = (sxy + C33) / (sxsy + C33);
-  return l * c * s;
-}
-
-// GetSSIM() does clipping.  GetSSIMFullKernel() does not
-
-// TODO(skal): use summed tables?
 // Note: worst case of accumulation is a weight of 33 = 11 + 2 * (7 + 3 + 1)
 // with a diff of 255, squared. The maximum error is thus 0x4388241,
 // which fits into 32 bits integers.
@@ -153,7 +90,6 @@ double GetSSIMFullKernel(const uint8_t* org,
                          double area_weight) {
   uint32_t xm = 0, ym = 0, xxm = 0, xym = 0, yym = 0;
 
-#if defined(LIBYUV_DISABLE_X86) || !defined(__SSE2__)
 
   org += yo * stride + xo;
   rec += yo * stride + xo;
@@ -230,63 +166,6 @@ double GetSSIMFullKernel(const uint8_t* org,
   xym += Wxy * s1 * s2;
   yym += Wxy * s2 * s2;
 
-#else  // __SSE2__
-
-  org += (yo - KERNEL) * stride + (xo - KERNEL);
-  rec += (yo - KERNEL) * stride + (xo - KERNEL);
-
-  const __m128i zero = _mm_setzero_si128();
-  __m128i x = zero;
-  __m128i y = zero;
-  __m128i xx = zero;
-  __m128i xy = zero;
-  __m128i yy = zero;
-
-// Read 8 pixels at line #L, and convert to 16bit, perform weighting
-// and acccumulate.
-#define LOAD_LINE_PAIR(L, WEIGHT)                                            \
-  do {                                                                       \
-    const __m128i v0 =                                                       \
-        _mm_loadl_epi64(reinterpret_cast<const __m128i*>(org + (L)*stride)); \
-    const __m128i v1 =                                                       \
-        _mm_loadl_epi64(reinterpret_cast<const __m128i*>(rec + (L)*stride)); \
-    const __m128i w0 = _mm_unpacklo_epi8(v0, zero);                          \
-    const __m128i w1 = _mm_unpacklo_epi8(v1, zero);                          \
-    const __m128i ww0 = _mm_mullo_epi16(w0, (WEIGHT).values_.m_);            \
-    const __m128i ww1 = _mm_mullo_epi16(w1, (WEIGHT).values_.m_);            \
-    x = _mm_add_epi32(x, _mm_unpacklo_epi16(ww0, zero));                     \
-    y = _mm_add_epi32(y, _mm_unpacklo_epi16(ww1, zero));                     \
-    x = _mm_add_epi32(x, _mm_unpackhi_epi16(ww0, zero));                     \
-    y = _mm_add_epi32(y, _mm_unpackhi_epi16(ww1, zero));                     \
-    xx = _mm_add_epi32(xx, _mm_madd_epi16(ww0, w0));                         \
-    xy = _mm_add_epi32(xy, _mm_madd_epi16(ww0, w1));                         \
-    yy = _mm_add_epi32(yy, _mm_madd_epi16(ww1, w1));                         \
-  } while (0)
-
-#define ADD_AND_STORE_FOUR_EPI32(M, OUT)                    \
-  do {                                                      \
-    uint32_t tmp[4];                                        \
-    _mm_storeu_si128(reinterpret_cast<__m128i*>(tmp), (M)); \
-    (OUT) = tmp[3] + tmp[2] + tmp[1] + tmp[0];              \
-  } while (0)
-
-  LOAD_LINE_PAIR(0, W0);
-  LOAD_LINE_PAIR(1, W1);
-  LOAD_LINE_PAIR(2, W2);
-  LOAD_LINE_PAIR(3, W3);
-  LOAD_LINE_PAIR(4, W2);
-  LOAD_LINE_PAIR(5, W1);
-  LOAD_LINE_PAIR(6, W0);
-
-  ADD_AND_STORE_FOUR_EPI32(x, xm);
-  ADD_AND_STORE_FOUR_EPI32(y, ym);
-  ADD_AND_STORE_FOUR_EPI32(xx, xxm);
-  ADD_AND_STORE_FOUR_EPI32(xy, xym);
-  ADD_AND_STORE_FOUR_EPI32(yy, yym);
-
-#undef LOAD_LINE_PAIR
-#undef ADD_AND_STORE_FOUR_EPI32
-#endif
 
   return FinalizeSSIM(area_weight, xm, ym, xxm, xym, yym);
 }
