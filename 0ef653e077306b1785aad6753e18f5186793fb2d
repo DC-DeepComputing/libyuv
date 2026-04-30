@@ -16,6 +16,24 @@
       "message": "Looks like we\u0027re going backwards? This one is back now.",
       "revId": "0ef653e077306b1785aad6753e18f5186793fb2d",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "490a8634_73806cf8",
+        "filename": "include/libyuv/compare_row.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-30T21:04:41Z",
+      "side": 1,
+      "message": "yes this entire CL is based on version 1928 and lost many changes.\ni\u0027m more concerned about the arm/rvv changes that are unrelated to x86, since x86 needs more work, especially with rowwin\nmy attempt to fix this will be updating google3 and doing a g4 merge, then upstream that in this cl",
+      "parentUuid": "cfdf7716_a5ebb9a0",
+      "revId": "0ef653e077306b1785aad6753e18f5186793fb2d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }

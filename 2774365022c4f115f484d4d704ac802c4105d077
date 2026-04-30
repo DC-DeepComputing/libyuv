@@ -121,6 +121,24 @@
       "message": "Still some 0 blocks",
       "revId": "2774365022c4f115f484d4d704ac802c4105d077",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3b49c047_4b434196",
+        "filename": "source/compare.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-30T21:04:41Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "58d414e2_7e4342a0",
+      "revId": "2774365022c4f115f484d4d704ac802c4105d077",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
