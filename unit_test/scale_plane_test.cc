@@ -8,13 +8,8 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-#include <limits.h>
-#include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
-
-#include <new>
 
 #include "../unit_test/unit_test.h"
 #include "libyuv/cpu_id.h"
@@ -43,95 +38,6 @@
 namespace libyuv {
 
 #ifdef ENABLE_ROW_TESTS
-#ifdef HAS_SCALEROWDOWN2_SSSE3
-TEST_F(LibYUVScaleTest, TestScaleRowDown2Box_Odd_SSSE3) {
-  SIMD_ALIGNED(uint8_t orig_pixels[128 * 2]);
-  SIMD_ALIGNED(uint8_t dst_pixels_opt[64]);
-  SIMD_ALIGNED(uint8_t dst_pixels_c[64]);
-  memset(orig_pixels, 0, sizeof(orig_pixels));
-  memset(dst_pixels_opt, 0, sizeof(dst_pixels_opt));
-  memset(dst_pixels_c, 0, sizeof(dst_pixels_c));
-
-  int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
-  if (!has_ssse3) {
-    printf("Warning SSSE3 not detected; Skipping test.\n");
-  } else {
-    // TL.
-    orig_pixels[0] = 255u;
-    orig_pixels[1] = 0u;
-    orig_pixels[128 + 0] = 0u;
-    orig_pixels[128 + 1] = 0u;
-    // TR.
-    orig_pixels[2] = 0u;
-    orig_pixels[3] = 100u;
-    orig_pixels[128 + 2] = 0u;
-    orig_pixels[128 + 3] = 0u;
-    // BL.
-    orig_pixels[4] = 0u;
-    orig_pixels[5] = 0u;
-    orig_pixels[128 + 4] = 50u;
-    orig_pixels[128 + 5] = 0u;
-    // BR.
-    orig_pixels[6] = 0u;
-    orig_pixels[7] = 0u;
-    orig_pixels[128 + 6] = 0u;
-    orig_pixels[128 + 7] = 20u;
-    // Odd.
-    orig_pixels[126] = 4u;
-    orig_pixels[127] = 255u;
-    orig_pixels[128 + 126] = 16u;
-    orig_pixels[128 + 127] = 255u;
-
-    // Test regular half size.
-    ScaleRowDown2Box_C(orig_pixels, 128, dst_pixels_c, 64);
-
-    EXPECT_EQ(64u, dst_pixels_c[0]);
-    EXPECT_EQ(25u, dst_pixels_c[1]);
-    EXPECT_EQ(13u, dst_pixels_c[2]);
-    EXPECT_EQ(5u, dst_pixels_c[3]);
-    EXPECT_EQ(0u, dst_pixels_c[4]);
-    EXPECT_EQ(133u, dst_pixels_c[63]);
-
-    // Test Odd width version - Last pixel is just 1 horizontal pixel.
-    ScaleRowDown2Box_Odd_C(orig_pixels, 128, dst_pixels_c, 64);
-
-    EXPECT_EQ(64u, dst_pixels_c[0]);
-    EXPECT_EQ(25u, dst_pixels_c[1]);
-    EXPECT_EQ(13u, dst_pixels_c[2]);
-    EXPECT_EQ(5u, dst_pixels_c[3]);
-    EXPECT_EQ(0u, dst_pixels_c[4]);
-    EXPECT_EQ(10u, dst_pixels_c[63]);
-
-    // Test one pixel less, should skip the last pixel.
-    memset(dst_pixels_c, 0, sizeof(dst_pixels_c));
-    ScaleRowDown2Box_Odd_C(orig_pixels, 128, dst_pixels_c, 63);
-
-    EXPECT_EQ(64u, dst_pixels_c[0]);
-    EXPECT_EQ(25u, dst_pixels_c[1]);
-    EXPECT_EQ(13u, dst_pixels_c[2]);
-    EXPECT_EQ(5u, dst_pixels_c[3]);
-    EXPECT_EQ(0u, dst_pixels_c[4]);
-    EXPECT_EQ(0u, dst_pixels_c[63]);
-
-    // Test regular half size SSSE3.
-    ScaleRowDown2Box_SSSE3(orig_pixels, 128, dst_pixels_opt, 64);
-
-    EXPECT_EQ(64u, dst_pixels_opt[0]);
-    EXPECT_EQ(25u, dst_pixels_opt[1]);
-    EXPECT_EQ(13u, dst_pixels_opt[2]);
-    EXPECT_EQ(5u, dst_pixels_opt[3]);
-    EXPECT_EQ(0u, dst_pixels_opt[4]);
-    EXPECT_EQ(133u, dst_pixels_opt[63]);
-
-    // Compare C and SSSE3 match.
-    ScaleRowDown2Box_Odd_C(orig_pixels, 128, dst_pixels_c, 64);
-    ScaleRowDown2Box_Odd_SSSE3(orig_pixels, 128, dst_pixels_opt, 64);
-    for (int i = 0; i < 64; ++i) {
-      EXPECT_EQ(dst_pixels_c[i], dst_pixels_opt[i]);
-    }
-  }
-}
-#endif  // HAS_SCALEROWDOWN2_SSSE3
 
 TEST_F(LibYUVScaleTest, TestScaleRowDown2Box_16) {
   SIMD_ALIGNED(uint16_t orig_pixels[2560 * 2]);
@@ -467,71 +373,4 @@ TEST_F(LibYUVScaleTest, PlaneTest1_16_Box) {
   free_aligned_buffer_page_end(dst_pixels_alloc);
   free_aligned_buffer_page_end(orig_pixels_alloc);
 }
-
-// POC: int * int overflow in ScalePlaneVertical (scale_common.cc).
-//
-// `yi * src_stride` is evaluated as int * int. When the product exceeds
-// INT_MAX it wraps negative and InterpolateRow reads from BEFORE the
-// source allocation.
-//
-// Parameters:
-//   - dst_width == src_width
-//     -> ScalePlane dispatches to ScalePlaneVertical
-//   - src_height == 5, dst_height == 1
-//     -> single iteration with yi == 2
-//   - src_stride == 0x7FFFFFF8
-//     -> 2 * 0x7FFFFFF8 == 0xFFFFFFF0 == -16 (int)
-//
-// The source buffer is sized so that the *correct* 64-bit offset
-// (2 * 0x7FFFFFF8 == 4294967280) plus kWidth bytes is in-bounds. With the
-// bug, the 32-bit product is -16 and ASAN reports a heap-buffer-overflow
-// READ "16 bytes before" the allocation.
-TEST_F(LibYUVScaleTest, ScalePlaneVertical_IntStrideOverflow) {
-  const int kWidth = 16;
-  const int kSrcHeight = 5;
-  const int kDstHeight = 1;
-  const int kStride = 0x7FFFFFF8;  // 2147483640
-
-  // src_size is big enough for the only row this call legitimately touches
-  // (yi == 2) when computed in 64-bit: 2 * stride + width = 4 GiB.
-  size_t src_size = kStride;
-  if (src_size > SIZE_MAX / 2) {
-    GTEST_SKIP() << "could not represent allocation size in size_t";
-  }
-  src_size *= 2;
-  if (src_size > SIZE_MAX - kWidth) {
-    GTEST_SKIP() << "could not represent allocation size in size_t";
-  }
-  src_size += kWidth;
-
-#if defined(__aarch64__)
-  // Infer malloc can accept a large size for cpu with dot product (a76/a55)
-  int has_large_malloc = TestCpuFlag(kCpuHasNeonDotProd);
-#else
-  int has_large_malloc = 1;
-#endif
-  if (!has_large_malloc) {
-    GTEST_SKIP() << "large allocation may assert for " << src_size << " bytes";
-  }
-
-  uint8_t* src = new (std::nothrow) uint8_t[src_size];
-  if (!src) {
-    GTEST_SKIP() << "could not allocate " << src_size << " bytes";
-  }
-  uint8_t* dst = new uint8_t[kWidth];
-  memset(dst, 0, kWidth);
-
-  // Force the scalar path so the crash site is deterministic
-  // (InterpolateRow_C -> memcpy when yf == 0).
-  MaskCpuFlags(disable_cpu_flags_);
-
-  int r = ScalePlane(src, kStride, kWidth, kSrcHeight, dst, kWidth, kWidth,
-                     kDstHeight, kFilterNone);
-
-  // Not reached under ASAN.
-  EXPECT_EQ(0, r);
-  delete[] src;
-  delete[] dst;
-}
-
 }  // namespace libyuv

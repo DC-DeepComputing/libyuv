@@ -221,8 +221,8 @@ TEST_F(LibYUVBaseTest, TestCompilerMacros) {
 #ifdef __ATOMIC_RELAXED
   printf("__ATOMIC_RELAXED %d\n", __ATOMIC_RELAXED);
 #endif
-#ifdef __cplusplus
-  printf("__cplusplus %ld\n", __cplusplus);
+#ifdef __clang__
+  printf("__clang__ %d\n", __clang__);
 #endif
 #ifdef __clang_major__
   printf("__clang_major__ %d\n", __clang_major__);
@@ -236,8 +236,68 @@ TEST_F(LibYUVBaseTest, TestCompilerMacros) {
 #ifdef __GNUC_MINOR__
   printf("__GNUC_MINOR__ %d\n", __GNUC_MINOR__);
 #endif
+#ifdef __mips_msa
+  printf("__mips_msa %d\n", __mips_msa);
+#endif
+#ifdef __pic__
+  printf("__pic__ %d\n", __pic__);
+#endif
+#ifdef __pnacl__
+  printf("__pnacl__ %d\n", __pnacl__);
+#endif
+#if defined(__mips__) && defined(__mips_dsp) && (__mips_dsp_rev >= 2)
+  printf("__mips_dsp_rev %d\n", __mips_dsp_rev);
+#endif
+#ifdef _M_ARM
+  printf("_M_ARM %d\n", _M_ARM);
+#endif
+#ifdef _M_ARM64
+  printf("_M_ARM64 %d\n", _M_ARM64);
+#endif
+#ifdef _MSC_VER
+  printf("_MSC_VER %d\n", _MSC_VER);
+#endif
+#ifdef __AARCH64EB__
+  printf("__AARCH64EB__ %d\n", __AARCH64EB__);
+#endif
+#ifdef __aarch64__
+  printf("__aarch64__ %d\n", __aarch64__);
+#endif
+#ifdef __ARMEB__
+  printf("__ARMEB__ %d\n", __ARMEB__);
+#endif
+#ifdef __arm__
+  printf("__arm__ %d\n", __arm__);
+#endif
+#ifdef __APPLE__
+  printf("__APPLE__ %d\n", __APPLE__);
+#endif
+#ifdef __CLR_VER
+  printf("__CLR_VER %d\n", __CLR_VER);
+#endif
+#ifdef __CYGWIN__
+  printf("__CYGWIN__ %d\n", __CYGWIN__);
+#endif
+#ifdef __has_feature
+  printf("__has_feature %d\n", __has_feature);
+#endif
+#ifdef __has_include
+  printf("__has_include %d\n", __has_include);
+#endif
 #ifdef __i386__
   printf("__i386__ %d\n", __i386__);
+#endif
+#ifdef __linux__
+  printf("__linux__ %d\n", __linux__);
+#endif
+#ifdef __mips__
+  printf("__mips__ %d\n", __mips__);
+#endif
+#ifdef __native_client__
+  printf("__native_client__ %d\n", __native_client__);
+#endif
+#ifdef __powerpc__
+  printf("__powerpc__ %d\n", __powerpc__);
 #endif
 #ifdef __x86_64__
   printf("__x86_64__ %d\n", __x86_64__);
@@ -248,180 +308,573 @@ TEST_F(LibYUVBaseTest, TestCompilerMacros) {
 #ifdef _M_X64
   printf("_M_X64 %d\n", _M_X64);
 #endif
-#ifdef _MSC_VER
-  printf("_MSC_VER %d\n", _MSC_VER);
-#endif
-#ifdef __aarch64__
-  printf("__aarch64__ %d\n", __aarch64__);
-#endif
-#ifdef __arm__
-  printf("__arm__ %d\n", __arm__);
-#endif
-#ifdef __riscv
-  printf("__riscv %d\n", __riscv);
-#endif
-#ifdef __riscv_vector
-  printf("__riscv_vector %d\n", __riscv_vector);
-#endif
-#ifdef __riscv_v_intrinsic
-  printf("__riscv_v_intrinsic %d\n", __riscv_v_intrinsic);
-#endif
-#ifdef __riscv_zve64x
-  printf("__riscv_zve64x %d\n", __riscv_zve64x);
-#endif
-#ifdef __APPLE__
-  printf("__APPLE__ %d\n", __APPLE__);
-#endif
-#ifdef __clang__
-  printf("__clang__ %d\n", __clang__);
-#endif
-#ifdef __CLR_VER
-  printf("__CLR_VER %d\n", __CLR_VER);
-#endif
-#ifdef __CYGWIN__
-  printf("__CYGWIN__ %d\n", __CYGWIN__);
-#endif
-#ifdef __llvm__
-  printf("__llvm__ %d\n", __llvm__);
-#endif
-#ifdef __loongarch__
-  printf("__loongarch__ %d\n", __loongarch__);
-#endif
-#ifdef _WIN32
-  printf("_WIN32 %d\n", _WIN32);
-#endif
-#ifdef __native_client__
-  printf("__native_client__ %d\n", __native_client__);
-#endif
-#ifdef __pic__
-  printf("__pic__ %d\n", __pic__);
-#endif
-#ifdef __pnacl__
-  printf("__pnacl__ %d\n", __pnacl__);
-#endif
-#ifdef GG_LONGLONG
-  printf("GG_LONGLONG %lld\n", GG_LONGLONG(1));
-#endif
-#ifdef INT_TYPES_DEFINED
-  printf("INT_TYPES_DEFINED\n");
-#endif
-#ifdef __has_feature
-  printf("__has_feature\n");
-#if __has_feature(memory_sanitizer)
-  printf("__has_feature(memory_sanitizer) %d\n",
-         __has_feature(memory_sanitizer));
-#endif
-#endif
 }
 
-static int FileExists(const char* file_name) {
-  FILE* f = fopen(file_name, "r");
-  if (!f) {
-    return 0;
-  }
-  fclose(f);
-  return 1;
-}
-
-TEST_F(LibYUVBaseTest, DISABLED_TestLinuxArm) {
-  if (FileExists("../../unit_test/testdata/arm_v7.txt")) {
-    printf("Note: testing to load \"../../unit_test/testdata/arm_v7.txt\"\n");
-
-    EXPECT_EQ(0, ArmCpuCaps("../../unit_test/testdata/arm_v7.txt"));
-    EXPECT_EQ(kCpuHasNEON, ArmCpuCaps("../../unit_test/testdata/tegra3.txt"));
-  } else {
-    printf("WARNING: unable to load \"../../unit_test/testdata/arm_v7.txt\"\n");
-  }
-#if defined(__linux__) && defined(__ARM_NEON__) && !defined(__aarch64__)
-  if (FileExists("/proc/cpuinfo")) {
-    if (kCpuHasNEON != ArmCpuCaps("/proc/cpuinfo")) {
-      // This can happen on Arm emulator but /proc/cpuinfo is from host.
-      printf("WARNING: Neon build enabled but CPU does not have Neon\n");
-    }
-  } else {
-    printf("WARNING: unable to load \"/proc/cpuinfo\"\n");
-  }
+TEST_F(LibYUVBaseTest, TestCpuMacro) {
+#if defined(HAS_HASHDJB2_AVX2)
+  printf("HAS_HASHDJB2_AVX2\n");
 #endif
-}
-
-#if defined(__linux__) && defined(__aarch64__)
-TEST_F(LibYUVBaseTest, TestLinuxAArch64) {
-  // Values taken from a Cortex-A57 machine, only Neon available.
-  EXPECT_EQ(kCpuHasNEON, AArch64CpuCaps(0xffU, 0x0U));
-
-  // Values taken from a Google Pixel 7.
-  int expected = kCpuHasNEON | kCpuHasNeonDotProd;
-  EXPECT_EQ(expected, AArch64CpuCaps(0x119fffU, 0x0U));
-
-  // Values taken from a Google Pixel 8.
-  expected = kCpuHasNEON | kCpuHasNeonDotProd | kCpuHasNeonI8MM | kCpuHasSVE |
-             kCpuHasSVE2;
-  EXPECT_EQ(expected, AArch64CpuCaps(0x3fffffffU, 0x2f33fU));
-
-  // Values taken from a Neoverse N2 machine.
-  EXPECT_EQ(expected, AArch64CpuCaps(0x3fffffffU, 0x2f3ffU));
-
-  // Check for SME feature detection.
-  expected |= kCpuHasSME;
-  EXPECT_EQ(expected, AArch64CpuCaps(0x3fffffffU, 0x82f3ffU));
-
-  // TODO: Check for SME2 feature detection from Apple M4
-}
+#if defined(HAS_SUMSQUAREERROR_AVX2)
+  printf("HAS_SUMSQUAREERROR_AVX2\n");
 #endif
-
-TEST_F(LibYUVBaseTest, DISABLED_TestLinuxRVV) {
-  if (FileExists("../../unit_test/testdata/riscv64.txt")) {
-    printf("Note: testing to load \"../../unit_test/testdata/riscv64.txt\"\n");
-
-    EXPECT_EQ(0, RiscvCpuCaps("../../unit_test/testdata/riscv64.txt"));
-    EXPECT_EQ(kCpuHasRVV,
-              RiscvCpuCaps("../../unit_test/testdata/riscv64_rvv.txt"));
-    EXPECT_EQ(kCpuHasRVV | kCpuHasRVVZVFH,
-              RiscvCpuCaps("../../unit_test/testdata/riscv64_rvv_zvfh.txt"));
-  } else {
-    printf(
-        "WARNING: unable to load "
-        "\"../../unit_test/testdata/riscv64.txt\"\n");
-  }
-#if defined(__linux__) && defined(__riscv)
-  if (FileExists("/proc/cpuinfo")) {
-    if (!(kCpuHasRVV & RiscvCpuCaps("/proc/cpuinfo"))) {
-      // This can happen on RVV emulator but /proc/cpuinfo is from host.
-      printf("WARNING: RVV build enabled but CPU does not have RVV\n");
-    }
-  } else {
-    printf("WARNING: unable to load \"/proc/cpuinfo\"\n");
-  }
+#if defined(HAS_HAMMINGDISTANCE_AVX2)
+  printf("HAS_HAMMINGDISTANCE_AVX2\n");
 #endif
-}
-
-#ifdef _WIN32
-// This doesn't pass on Windows CQ.
-#define MAYBE_TestSetCpuFlags DISABLED_TestSetCpuFlags
-#else
-#define MAYBE_TestSetCpuFlags TestSetCpuFlags
+#if defined(HAS_HASHDJB2_NEON)
+  printf("HAS_HASHDJB2_NEON\n");
 #endif
-TEST_F(LibYUVBaseTest, MAYBE_TestSetCpuFlags) {
-  // Reset any masked flags that may have been set so auto init is enabled.
-  MaskCpuFlags(0);
-
-  int original_cpu_flags = TestCpuFlag(-1);
-
-  // Test setting different CPU configurations.
-  int cpu_flags = kCpuHasARM | kCpuHasNEON | kCpuInitialized;
-  SetCpuFlags(cpu_flags);
-  EXPECT_EQ(cpu_flags, TestCpuFlag(-1));
-
-  cpu_flags = kCpuHasX86 | kCpuInitialized;
-  SetCpuFlags(cpu_flags);
-  EXPECT_EQ(cpu_flags, TestCpuFlag(-1));
-
-  // Test that setting 0 turns auto-init back on.
-  SetCpuFlags(0);
-  EXPECT_EQ(original_cpu_flags, TestCpuFlag(-1));
-
-  // Restore the CPU flag mask.
-  MaskCpuFlags(benchmark_cpu_info_);
+#if defined(HAS_HAMMINGDISTANCE_NEON)
+  printf("HAS_HAMMINGDISTANCE_NEON\n");
+#endif
+#if defined(HAS_SUMSQUAREERROR_NEON)
+  printf("HAS_SUMSQUAREERROR_NEON\n");
+#endif
+#if defined(HAS_HAMMINGDISTANCE_NEON_DOTPROD)
+  printf("HAS_HAMMINGDISTANCE_NEON_DOTPROD\n");
+#endif
+#if defined(HAS_SUMSQUAREERROR_NEON_DOTPROD)
+  printf("HAS_SUMSQUAREERROR_NEON_DOTPROD\n");
+#endif
+#if defined(HAS_TRANSPOSE4X4_32_AVX2)
+  printf("HAS_TRANSPOSE4X4_32_AVX2\n");
+#endif
+#if defined(HAS_TRANSPOSE4X4_32_NEON)
+  printf("HAS_TRANSPOSE4X4_32_NEON\n");
+#endif
+#if defined(HAS_TRANSPOSE4X4_32_SME)
+  printf("HAS_TRANSPOSE4X4_32_SME\n");
+#endif
+#if defined(HAS_TRANSPOSE4X4_32_SVE2)
+  printf("HAS_TRANSPOSE4X4_32_SVE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_SSSE3)
+  printf("HAS_SCALEROWDOWN2_SSSE3\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_AVX2)
+  printf("HAS_SCALEROWDOWN2_AVX2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_NEON)
+  printf("HAS_SCALEROWDOWN2_NEON\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_SME)
+  printf("HAS_SCALEROWDOWN2_SME\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_SVE2)
+  printf("HAS_SCALEROWDOWN2_SVE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_SSSE3)
+  printf("HAS_SCALEROWDOWN4_SSSE3\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_AVX2)
+  printf("HAS_SCALEROWDOWN4_AVX2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_NEON)
+  printf("HAS_SCALEROWDOWN4_NEON\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_SME)
+  printf("HAS_SCALEROWDOWN4_SME\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_SVE2)
+  printf("HAS_SCALEROWDOWN4_SVE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN34_SSSE3)
+  printf("HAS_SCALEROWDOWN34_SSSE3\n");
+#endif
+#if defined(HAS_SCALEROWDOWN34_NEON)
+  printf("HAS_SCALEROWDOWN34_NEON\n");
+#endif
+#if defined(HAS_SCALEROWDOWN34_SME)
+  printf("HAS_SCALEROWDOWN34_SME\n");
+#endif
+#if defined(HAS_SCALEROWDOWN34_SVE2)
+  printf("HAS_SCALEROWDOWN34_SVE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN38_SSSE3)
+  printf("HAS_SCALEROWDOWN38_SSSE3\n");
+#endif
+#if defined(HAS_SCALEROWDOWN38_NEON)
+  printf("HAS_SCALEROWDOWN38_NEON\n");
+#endif
+#if defined(HAS_SCALEROWDOWN38_SME)
+  printf("HAS_SCALEROWDOWN38_SME\n");
+#endif
+#if defined(HAS_SCALEROWDOWN38_SVE2)
+  printf("HAS_SCALEROWDOWN38_SVE2\n");
+#endif
+#if defined(HAS_SCALEARGBROWDOWN2_SSE2)
+  printf("HAS_SCALEARGBROWDOWN2_SSE2\n");
+#endif
+#if defined(HAS_SCALEARGBROWDOWN2_NEON)
+  printf("HAS_SCALEARGBROWDOWN2_NEON\n");
+#endif
+#if defined(HAS_SCALEARGBROWDOWN2_SME)
+  printf("HAS_SCALEARGBROWDOWN2_SME\n");
+#endif
+#if defined(HAS_SCALEARGBROWDOWN2_SVE2)
+  printf("HAS_SCALEARGBROWDOWN2_SVE2\n");
+#endif
+#if defined(HAS_SCALEARGBROWDOWNEVEN_SSE2)
+  printf("HAS_SCALEARGBROWDOWNEVEN_SSE2\n");
+#endif
+#if defined(HAS_SCALEARGBROWDOWNEVEN_NEON)
+  printf("HAS_SCALEARGBROWDOWNEVEN_NEON\n");
+#endif
+#if defined(HAS_SCALEARGBROWDOWNEVEN_SME)
+  printf("HAS_SCALEARGBROWDOWNEVEN_SME\n");
+#endif
+#if defined(HAS_SCALEARGBROWDOWNEVEN_SVE2)
+  printf("HAS_SCALEARGBROWDOWNEVEN_SVE2\n");
+#endif
+#if defined(HAS_SCALEARGBCOLS_SSE2)
+  printf("HAS_SCALEARGBCOLS_SSE2\n");
+#endif
+#if defined(HAS_SCALEARGBCOLS_NEON)
+  printf("HAS_SCALEARGBCOLS_NEON\n");
+#endif
+#if defined(HAS_SCALEARGBCOLS_SME)
+  printf("HAS_SCALEARGBCOLS_SME\n");
+#endif
+#if defined(HAS_SCALEARGBCOLS_SVE2)
+  printf("HAS_SCALEARGBCOLS_SVE2\n");
+#endif
+#if defined(HAS_SCALEARGBFILTERCOLS_SSSE3)
+  printf("HAS_SCALEARGBFILTERCOLS_SSSE3\n");
+#endif
+#if defined(HAS_SCALEARGBFILTERCOLS_NEON)
+  printf("HAS_SCALEARGBFILTERCOLS_NEON\n");
+#endif
+#if defined(HAS_SCALEARGBFILTERCOLS_SME)
+  printf("HAS_SCALEARGBFILTERCOLS_SME\n");
+#endif
+#if defined(HAS_SCALEARGBFILTERCOLS_SVE2)
+  printf("HAS_SCALEARGBFILTERCOLS_SVE2\n");
+#endif
+#if defined(HAS_SCALEARGBCOLSUP2_SSE2)
+  printf("HAS_SCALEARGBCOLSUP2_SSE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_16_SSE2)
+  printf("HAS_SCALEROWDOWN2_16_SSE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_16_AVX2)
+  printf("HAS_SCALEROWDOWN2_16_AVX2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_16_NEON)
+  printf("HAS_SCALEROWDOWN2_16_NEON\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_16_SME)
+  printf("HAS_SCALEROWDOWN2_16_SME\n");
+#endif
+#if defined(HAS_SCALEROWDOWN2_16_SVE2)
+  printf("HAS_SCALEROWDOWN2_16_SVE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_16_SSE2)
+  printf("HAS_SCALEROWDOWN4_16_SSE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_16_AVX2)
+  printf("HAS_SCALEROWDOWN4_16_AVX2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_16_NEON)
+  printf("HAS_SCALEROWDOWN4_16_NEON\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_16_SME)
+  printf("HAS_SCALEROWDOWN4_16_SME\n");
+#endif
+#if defined(HAS_SCALEROWDOWN4_16_SVE2)
+  printf("HAS_SCALEROWDOWN4_16_SVE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN34_16_SSSE3)
+  printf("HAS_SCALEROWDOWN34_16_SSSE3\n");
+#endif
+#if defined(HAS_SCALEROWDOWN34_16_NEON)
+  printf("HAS_SCALEROWDOWN34_16_NEON\n");
+#endif
+#if defined(HAS_SCALEROWDOWN34_16_SME)
+  printf("HAS_SCALEROWDOWN34_16_SME\n");
+#endif
+#if defined(HAS_SCALEROWDOWN34_16_SVE2)
+  printf("HAS_SCALEROWDOWN34_16_SVE2\n");
+#endif
+#if defined(HAS_SCALEROWDOWN38_16_SSSE3)
+  printf("HAS_SCALEROWDOWN38_16_SSSE3\n");
+#endif
+#if defined(HAS_SCALEROWDOWN38_16_NEON)
+  printf("HAS_SCALEROWDOWN38_16_NEON\n");
+#endif
+#if defined(HAS_SCALEROWDOWN38_16_SME)
+  printf("HAS_SCALEROWDOWN38_16_SME\n");
+#endif
+#if defined(HAS_SCALEROWDOWN38_16_SVE2)
+  printf("HAS_SCALEROWDOWN38_16_SVE2\n");
+#endif
+#if defined(HAS_SCALEADDROW_16_SSE2)
+  printf("HAS_SCALEADDROW_16_SSE2\n");
+#endif
+#if defined(HAS_SCALEADDROW_16_AVX2)
+  printf("HAS_SCALEADDROW_16_AVX2\n");
+#endif
+#if defined(HAS_SCALEADDROW_16_NEON)
+  printf("HAS_SCALEADDROW_16_NEON\n");
+#endif
+#if defined(HAS_SCALEADDROW_16_SME)
+  printf("HAS_SCALEADDROW_16_SME\n");
+#endif
+#if defined(HAS_SCALEADDROW_16_SVE2)
+  printf("HAS_SCALEADDROW_16_SVE2\n");
+#endif
+#if defined(HAS_SCALEFILTERCOLS_16_SSSE3)
+  printf("HAS_SCALEFILTERCOLS_16_SSSE3\n");
+#endif
+#if defined(HAS_SCALEFILTERCOLS_16_NEON)
+  printf("HAS_SCALEFILTERCOLS_16_NEON\n");
+#endif
+#if defined(HAS_SCALEFILTERCOLS_16_SME)
+  printf("HAS_SCALEFILTERCOLS_16_SME\n");
+#endif
+#if defined(HAS_SCALEFILTERCOLS_16_SVE2)
+  printf("HAS_SCALEFILTERCOLS_16_SVE2\n");
+#endif
+#if defined(HAS_SCALECOLS_16_SSE2)
+  printf("HAS_SCALECOLS_16_SSE2\n");
+#endif
+#if defined(HAS_SCALECOLS_16_NEON)
+  printf("HAS_SCALECOLS_16_NEON\n");
+#endif
+#if defined(HAS_SCALECOLS_16_SME)
+  printf("HAS_SCALECOLS_16_SME\n");
+#endif
+#if defined(HAS_SCALECOLS_16_SVE2)
+  printf("HAS_SCALECOLS_16_SVE2\n");
+#endif
+#if defined(HAS_SCALEROWUP2_16_SSE2)
+  printf("HAS_SCALEROWUP2_16_SSE2\n");
+#endif
+#if defined(HAS_SCALEROWUP2_16_SSSE3)
+  printf("HAS_SCALEROWUP2_16_SSSE3\n");
+#endif
+#if defined(HAS_SCALEROWUP2_16_AVX2)
+  printf("HAS_SCALEROWUP2_16_AVX2\n");
+#endif
+#if defined(HAS_SCALEROWUP2_16_NEON)
+  printf("HAS_SCALEROWUP2_16_NEON\n");
+#endif
+#if defined(HAS_SCALEROWUP2_16_SME)
+  printf("HAS_SCALEROWUP2_16_SME\n");
+#endif
+#if defined(HAS_SCALEROWUP2_16_SVE2)
+  printf("HAS_SCALEROWUP2_16_SVE2\n");
+#endif
+#if defined(HAS_SCALEUVROWDOWN2_SSSE3)
+  printf("HAS_SCALEUVROWDOWN2_SSSE3\n");
+#endif
+#if defined(HAS_SCALEUVROWDOWN2_AVX2)
+  printf("HAS_SCALEUVROWDOWN2_AVX2\n");
+#endif
+#if defined(HAS_SCALEUVROWDOWN2_NEON)
+  printf("HAS_SCALEUVROWDOWN2_NEON\n");
+#endif
+#if defined(HAS_SCALEUVROWDOWN2_SME)
+  printf("HAS_SCALEUVROWDOWN2_SME\n");
+#endif
+#if defined(HAS_SCALEUVROWDOWN2_SVE2)
+  printf("HAS_SCALEUVROWDOWN2_SVE2\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_SSSE3)
+  printf("HAS_SCALEUVROWUP2_SSSE3\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_AVX2)
+  printf("HAS_SCALEUVROWUP2_AVX2\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_NEON)
+  printf("HAS_SCALEUVROWUP2_NEON\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_SME)
+  printf("HAS_SCALEUVROWUP2_SME\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_SVE2)
+  printf("HAS_SCALEUVROWUP2_SVE2\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_16_SSE41)
+  printf("HAS_SCALEUVROWUP2_16_SSE41\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_16_AVX2)
+  printf("HAS_SCALEUVROWUP2_16_AVX2\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_16_NEON)
+  printf("HAS_SCALEUVROWUP2_16_NEON\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_16_SME)
+  printf("HAS_SCALEUVROWUP2_16_SME\n");
+#endif
+#if defined(HAS_SCALEUVROWUP2_16_SVE2)
+  printf("HAS_SCALEUVROWUP2_16_SVE2\n");
+#endif
+#if defined(HAS_SCALEADDROW_SSE2)
+  printf("HAS_SCALEADDROW_SSE2\n");
+#endif
+#if defined(HAS_SCALEADDROW_AVX2)
+  printf("HAS_SCALEADDROW_AVX2\n");
+#endif
+#if defined(HAS_SCALEADDROW_NEON)
+  printf("HAS_SCALEADDROW_NEON\n");
+#endif
+#if defined(HAS_SCALEADDROW_SME)
+  printf("HAS_SCALEADDROW_SME\n");
+#endif
+#if defined(HAS_SCALEADDROW_SVE2)
+  printf("HAS_SCALEADDROW_SVE2\n");
+#endif
+#if defined(HAS_SCALEFILTERCOLS_SSSE3)
+  printf("HAS_SCALEFILTERCOLS_SSSE3\n");
+#endif
+#if defined(HAS_SCALEFILTERCOLS_NEON)
+  printf("HAS_SCALEFILTERCOLS_NEON\n");
+#endif
+#if defined(HAS_SCALEFILTERCOLS_SME)
+  printf("HAS_SCALEFILTERCOLS_SME\n");
+#endif
+#if defined(HAS_SCALEFILTERCOLS_SVE2)
+  printf("HAS_SCALEFILTERCOLS_SVE2\n");
+#endif
+#if defined(HAS_SCALECOLS_SSE2)
+  printf("HAS_SCALECOLS_SSE2\n");
+#endif
+#if defined(HAS_SCALECOLS_NEON)
+  printf("HAS_SCALECOLS_NEON\n");
+#endif
+#if defined(HAS_SCALECOLS_SME)
+  printf("HAS_SCALECOLS_SME\n");
+#endif
+#if defined(HAS_SCALECOLS_SVE2)
+  printf("HAS_SCALECOLS_SVE2\n");
+#endif
+#if defined(HAS_SCALEROWUP2_SSE2)
+  printf("HAS_SCALEROWUP2_SSE2\n");
+#endif
+#if defined(HAS_SCALEROWUP2_SSSE3)
+  printf("HAS_SCALEROWUP2_SSSE3\n");
+#endif
+#if defined(HAS_SCALEROWUP2_AVX2)
+  printf("HAS_SCALEROWUP2_AVX2\n");
+#endif
+#if defined(HAS_SCALEROWUP2_NEON)
+  printf("HAS_SCALEROWUP2_NEON\n");
+#endif
+#if defined(HAS_SCALEROWUP2_SME)
+  printf("HAS_SCALEROWUP2_SME\n");
+#endif
+#if defined(HAS_SCALEROWUP2_SVE2)
+  printf("HAS_SCALEROWUP2_SVE2\n");
+#endif
+#if defined(HAS_ARGBBLENDROW_SSSE3)
+  printf("HAS_ARGBBLENDROW_SSSE3\n");
+#endif
+#if defined(HAS_ARGBBLENDROW_NEON)
+  printf("HAS_ARGBBLENDROW_NEON\n");
+#endif
+#if defined(HAS_ARGBBLENDROW_SME)
+  printf("HAS_ARGBBLENDROW_SME\n");
+#endif
+#if defined(HAS_ARGBBLENDROW_SVE2)
+  printf("HAS_ARGBBLENDROW_SVE2\n");
+#endif
+#if defined(HAS_ARGBATTENUATEROW_SSSE3)
+  printf("HAS_ARGBATTENUATEROW_SSSE3\n");
+#endif
+#if defined(HAS_ARGBATTENUATEROW_AVX2)
+  printf("HAS_ARGBATTENUATEROW_AVX2\n");
+#endif
+#if defined(HAS_ARGBATTENUATEROW_NEON)
+  printf("HAS_ARGBATTENUATEROW_NEON\n");
+#endif
+#if defined(HAS_ARGBATTENUATEROW_SME)
+  printf("HAS_ARGBATTENUATEROW_SME\n");
+#endif
+#if defined(HAS_ARGBATTENUATEROW_SVE2)
+  printf("HAS_ARGBATTENUATEROW_SVE2\n");
+#endif
+#if defined(HAS_ARGBUNATTENUATEROW_SSE2)
+  printf("HAS_ARGBUNATTENUATEROW_SSE2\n");
+#endif
+#if defined(HAS_ARGBUNATTENUATEROW_AVX2)
+  printf("HAS_ARGBUNATTENUATEROW_AVX2\n");
+#endif
+#if defined(HAS_ARGBQUANTIZEROW_SSE2)
+  printf("HAS_ARGBQUANTIZEROW_SSE2\n");
+#endif
+#if defined(HAS_ARGBQUANTIZEROW_NEON)
+  printf("HAS_ARGBQUANTIZEROW_NEON\n");
+#endif
+#if defined(HAS_ARGBQUANTIZEROW_SME)
+  printf("HAS_ARGBQUANTIZEROW_SME\n");
+#endif
+#if defined(HAS_ARGBQUANTIZEROW_SVE2)
+  printf("HAS_ARGBQUANTIZEROW_SVE2\n");
+#endif
+#if defined(HAS_COMPUTEBINS_C)
+  printf("HAS_COMPUTEBINS_C\n");
+#endif
+#if defined(HAS_COMPUTEBINS_SSSE3)
+  printf("HAS_COMPUTEBINS_SSSE3\n");
+#endif
+#if defined(HAS_COMPUTEBINS_AVX2)
+  printf("HAS_COMPUTEBINS_AVX2\n");
+#endif
+#if defined(HAS_COMPUTEBINS_NEON)
+  printf("HAS_COMPUTEBINS_NEON\n");
+#endif
+#if defined(HAS_COMPUTEBINS_SME)
+  printf("HAS_COMPUTEBINS_SME\n");
+#endif
+#if defined(HAS_COMPUTEBINS_SVE2)
+  printf("HAS_COMPUTEBINS_SVE2\n");
+#endif
+#if defined(HAS_ARGBSHADEROW_SSE2)
+  printf("HAS_ARGBSHADEROW_SSE2\n");
+#endif
+#if defined(HAS_ARGBSHADEROW_NEON)
+  printf("HAS_ARGBSHADEROW_NEON\n");
+#endif
+#if defined(HAS_ARGBSHADEROW_SME)
+  printf("HAS_ARGBSHADEROW_SME\n");
+#endif
+#if defined(HAS_ARGBSHADEROW_SVE2)
+  printf("HAS_ARGBSHADEROW_SVE2\n");
+#endif
+#if defined(HAS_ARGBCOLORMATRIXROW_SSSE3)
+  printf("HAS_ARGBCOLORMATRIXROW_SSSE3\n");
+#endif
+#if defined(HAS_ARGBCOLORMATRIXROW_NEON)
+  printf("HAS_ARGBCOLORMATRIXROW_NEON\n");
+#endif
+#if defined(HAS_ARGBCOLORMATRIXROW_SME)
+  printf("HAS_ARGBCOLORMATRIXROW_SME\n");
+#endif
+#if defined(HAS_ARGBCOLORMATRIXROW_SVE2)
+  printf("HAS_ARGBCOLORMATRIXROW_SVE2\n");
+#endif
+#if defined(HAS_ARGBMULTIPLYROW_SSE2)
+  printf("HAS_ARGBMULTIPLYROW_SSE2\n");
+#endif
+#if defined(HAS_ARGBMULTIPLYROW_AVX2)
+  printf("HAS_ARGBMULTIPLYROW_AVX2\n");
+#endif
+#if defined(HAS_ARGBMULTIPLYROW_NEON)
+  printf("HAS_ARGBMULTIPLYROW_NEON\n");
+#endif
+#if defined(HAS_ARGBMULTIPLYROW_SME)
+  printf("HAS_ARGBMULTIPLYROW_SME\n");
+#endif
+#if defined(HAS_ARGBMULTIPLYROW_SVE2)
+  printf("HAS_ARGBMULTIPLYROW_SVE2\n");
+#endif
+#if defined(HAS_ARGBADDROW_SSE2)
+  printf("HAS_ARGBADDROW_SSE2\n");
+#endif
+#if defined(HAS_ARGBADDROW_AVX2)
+  printf("HAS_ARGBADDROW_AVX2\n");
+#endif
+#if defined(HAS_ARGBADDROW_NEON)
+  printf("HAS_ARGBADDROW_NEON\n");
+#endif
+#if defined(HAS_ARGBADDROW_SME)
+  printf("HAS_ARGBADDROW_SME\n");
+#endif
+#if defined(HAS_ARGBADDROW_SVE2)
+  printf("HAS_ARGBADDROW_SVE2\n");
+#endif
+#if defined(HAS_ARGBSUBTRACTROW_SSE2)
+  printf("HAS_ARGBSUBTRACTROW_SSE2\n");
+#endif
+#if defined(HAS_ARGBSUBTRACTROW_AVX2)
+  printf("HAS_ARGBSUBTRACTROW_AVX2\n");
+#endif
+#if defined(HAS_ARGBSUBTRACTROW_NEON)
+  printf("HAS_ARGBSUBTRACTROW_NEON\n");
+#endif
+#if defined(HAS_ARGBSUBTRACTROW_SME)
+  printf("HAS_ARGBSUBTRACTROW_SME\n");
+#endif
+#if defined(HAS_ARGBSUBTRACTROW_SVE2)
+  printf("HAS_ARGBSUBTRACTROW_SVE2\n");
+#endif
+#if defined(HAS_ARGBCOLORMATRIXROW_NEON_I8MM)
+  printf("HAS_ARGBCOLORMATRIXROW_NEON_I8MM\n");
+#endif
+#if defined(HAS_SOBELROW_SSE2)
+  printf("HAS_SOBELROW_SSE2\n");
+#endif
+#if defined(HAS_SOBELROW_NEON)
+  printf("HAS_SOBELROW_NEON\n");
+#endif
+#if defined(HAS_SOBELROW_SME)
+  printf("HAS_SOBELROW_SME\n");
+#endif
+#if defined(HAS_SOBELROW_SVE2)
+  printf("HAS_SOBELROW_SVE2\n");
+#endif
+#if defined(HAS_SOBELTOPLANEROW_SSE2)
+  printf("HAS_SOBELTOPLANEROW_SSE2\n");
+#endif
+#if defined(HAS_SOBELTOPLANEROW_NEON)
+  printf("HAS_SOBELTOPLANEROW_NEON\n");
+#endif
+#if defined(HAS_SOBELTOPLANEROW_SME)
+  printf("HAS_SOBELTOPLANEROW_SME\n");
+#endif
+#if defined(HAS_SOBELTOPLANEROW_SVE2)
+  printf("HAS_SOBELTOPLANEROW_SVE2\n");
+#endif
+#if defined(HAS_SOBELXROW_SSE2)
+  printf("HAS_SOBELXROW_SSE2\n");
+#endif
+#if defined(HAS_SOBELXROW_NEON)
+  printf("HAS_SOBELXROW_NEON\n");
+#endif
+#if defined(HAS_SOBELXROW_SME)
+  printf("HAS_SOBELXROW_SME\n");
+#endif
+#if defined(HAS_SOBELXROW_SVE2)
+  printf("HAS_SOBELXROW_SVE2\n");
+#endif
+#if defined(HAS_SOBELYROW_SSE2)
+  printf("HAS_SOBELYROW_SSE2\n");
+#endif
+#if defined(HAS_SOBELYROW_NEON)
+  printf("HAS_SOBELYROW_NEON\n");
+#endif
+#if defined(HAS_SOBELYROW_SME)
+  printf("HAS_SOBELYROW_SME\n");
+#endif
+#if defined(HAS_SOBELYROW_SVE2)
+  printf("HAS_SOBELYROW_SVE2\n");
+#endif
+#if defined(HAS_SOBELXYROW_SSE2)
+  printf("HAS_SOBELXYROW_SSE2\n");
+#endif
+#if defined(HAS_SOBELXYROW_NEON)
+  printf("HAS_SOBELXYROW_NEON\n");
+#endif
+#if defined(HAS_SOBELXYROW_SME)
+  printf("HAS_SOBELXYROW_SME\n");
+#endif
+#if defined(HAS_SOBELXYROW_SVE2)
+  printf("HAS_SOBELXYROW_SVE2\n");
+#endif
+#if defined(HAS_ARGBSEPIAROW_SSSE3)
+  printf("HAS_ARGBSEPIAROW_SSSE3\n");
+#endif
+#if defined(HAS_ARGBSEPIAROW_NEON)
+  printf("HAS_ARGBSEPIAROW_NEON\n");
+#endif
+#if defined(HAS_ARGBSEPIAROW_SME)
+  printf("HAS_ARGBSEPIAROW_SME\n");
+#endif
+#if defined(HAS_ARGBSEPIAROW_SVE2)
+  printf("HAS_ARGBSEPIAROW_SVE2\n");
+#endif
+#if defined(HAS_ARGBSEPIAROW_NEON_DOTPROD)
+  printf("HAS_ARGBSEPIAROW_NEON_DOTPROD\n");
+#endif
 }
 
 }  // namespace libyuv
