@@ -20,28 +20,14 @@ extern "C" {
 #endif
 
 // The following are available for Visual C 32 bit:
-// TODO - port to clangcl on rotate_win
-#if !defined(LIBYUV_DISABLE_X86) && defined(_M_IX86) && defined(_MSC_VER) && \
-    !defined(__clang__)
-#define HAS_TRANSPOSEWX8_SSSE3
-#define HAS_TRANSPOSEUVWX8_SSE2
-#endif
 
 // The following are available for GCC 32 or 64 bit:
 #if !defined(LIBYUV_DISABLE_X86) &&               \
     (defined(__i386__) || defined(__x86_64__)) && \
     !defined(LIBYUV_ENABLE_ROWWIN)
-#define HAS_TRANSPOSEWX8_SSSE3
-#define HAS_TRANSPOSE4X4_32_SSE2
 #define HAS_TRANSPOSE4X4_32_AVX2
 #endif
 
-// The following are available for 64 bit GCC:
-#if !defined(LIBYUV_DISABLE_X86) && defined(__x86_64__) && \
-    !defined(LIBYUV_ENABLE_ROWWIN)
-#define HAS_TRANSPOSEWX8_FAST_SSSE3
-#define HAS_TRANSPOSEUVWX8_SSE2
-#endif
 
 #if !defined(LIBYUV_DISABLE_NEON) && \
     (defined(__ARM_NEON__) || defined(LIBYUV_NEON) || defined(__aarch64__))
@@ -98,16 +84,6 @@ void TransposeWxH_SME(const uint8_t* src,
                       int dst_stride,
                       int width,
                       int height);
-void TransposeWx8_SSSE3(const uint8_t* src,
-                        int src_stride,
-                        uint8_t* dst,
-                        int dst_stride,
-                        int width);
-void TransposeWx8_Fast_SSSE3(const uint8_t* src,
-                             int src_stride,
-                             uint8_t* dst,
-                             int dst_stride,
-                             int width);
 void TransposeWx16_LSX(const uint8_t* src,
                        int src_stride,
                        uint8_t* dst,
@@ -124,16 +100,6 @@ void TransposeWx16_Any_NEON(const uint8_t* src,
                             uint8_t* dst,
                             int dst_stride,
                             int width);
-void TransposeWx8_Any_SSSE3(const uint8_t* src,
-                            int src_stride,
-                            uint8_t* dst,
-                            int dst_stride,
-                            int width);
-void TransposeWx8_Fast_Any_SSSE3(const uint8_t* src,
-                                 int src_stride,
-                                 uint8_t* dst,
-                                 int dst_stride,
-                                 int width);
 void TransposeWx16_Any_LSX(const uint8_t* src,
                            int src_stride,
                            uint8_t* dst,
@@ -163,13 +129,6 @@ void TransposeUVWx16_C(const uint8_t* src,
                        uint8_t* dst_b,
                        int dst_stride_b,
                        int width);
-void TransposeUVWx8_SSE2(const uint8_t* src,
-                         int src_stride,
-                         uint8_t* dst_a,
-                         int dst_stride_a,
-                         uint8_t* dst_b,
-                         int dst_stride_b,
-                         int width);
 void TransposeUVWx8_NEON(const uint8_t* src,
                          int src_stride,
                          uint8_t* dst_a,
@@ -193,13 +152,6 @@ void TransposeUVWx16_LSX(const uint8_t* src,
                          int dst_stride_b,
                          int width);
 
-void TransposeUVWx8_Any_SSE2(const uint8_t* src,
-                             int src_stride,
-                             uint8_t* dst_a,
-                             int dst_stride_a,
-                             uint8_t* dst_b,
-                             int dst_stride_b,
-                             int width);
 void TransposeUVWx8_Any_NEON(const uint8_t* src,
                              int src_stride,
                              uint8_t* dst_a,
@@ -239,11 +191,6 @@ void Transpose4x4_32_NEON(const uint8_t* src,
                           int dst_stride,
                           int width);
 
-void Transpose4x4_32_SSE2(const uint8_t* src,
-                          int src_stride,
-                          uint8_t* dst,
-                          int dst_stride,
-                          int width);
 
 void Transpose4x4_32_AVX2(const uint8_t* src,
                           int src_stride,

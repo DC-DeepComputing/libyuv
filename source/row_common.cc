@@ -4046,7 +4046,7 @@ void ARGBCopyYToAlphaRow_C(const uint8_t* src, uint8_t* dst, int width) {
 #define MAXTWIDTH 2048
 
 #if !(defined(_MSC_VER) && !defined(__clang__) && defined(_M_IX86)) && \
-    defined(HAS_I422TORGB565ROW_SSSE3) && !defined(LIBYUV_ENABLE_ROWWIN)
+    0 && !defined(LIBYUV_ENABLE_ROWWIN)
 // row_win.cc has asm version, but GCC uses 2 step wrapper.
 void I422ToRGB565Row_SSSE3(const uint8_t* src_y,
                            const uint8_t* src_u,
@@ -4057,8 +4057,6 @@ void I422ToRGB565Row_SSSE3(const uint8_t* src_y,
   SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
   while (width > 0) {
     int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    I422ToARGBRow_SSSE3(src_y, src_u, src_v, row, yuvconstants, twidth);
-    ARGBToRGB565Row_SSE2(row, dst_rgb565, twidth);
     src_y += twidth;
     src_u += twidth / 2;
     src_v += twidth / 2;
@@ -4068,7 +4066,7 @@ void I422ToRGB565Row_SSSE3(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_I422TOARGB1555ROW_SSSE3)
+#if 0
 void I422ToARGB1555Row_SSSE3(const uint8_t* src_y,
                              const uint8_t* src_u,
                              const uint8_t* src_v,
@@ -4079,8 +4077,6 @@ void I422ToARGB1555Row_SSSE3(const uint8_t* src_y,
   SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
   while (width > 0) {
     int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    I422ToARGBRow_SSSE3(src_y, src_u, src_v, row, yuvconstants, twidth);
-    ARGBToARGB1555Row_SSE2(row, dst_argb1555, twidth);
     src_y += twidth;
     src_u += twidth / 2;
     src_v += twidth / 2;
@@ -4090,7 +4086,7 @@ void I422ToARGB1555Row_SSSE3(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_I422TOARGB4444ROW_SSSE3)
+#if 0
 void I422ToARGB4444Row_SSSE3(const uint8_t* src_y,
                              const uint8_t* src_u,
                              const uint8_t* src_v,
@@ -4101,8 +4097,6 @@ void I422ToARGB4444Row_SSSE3(const uint8_t* src_y,
   SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
   while (width > 0) {
     int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    I422ToARGBRow_SSSE3(src_y, src_u, src_v, row, yuvconstants, twidth);
-    ARGBToARGB4444Row_SSE2(row, dst_argb4444, twidth);
     src_y += twidth;
     src_u += twidth / 2;
     src_v += twidth / 2;
@@ -4112,7 +4106,7 @@ void I422ToARGB4444Row_SSSE3(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_NV12TORGB565ROW_SSSE3)
+#if 0
 void NV12ToRGB565Row_SSSE3(const uint8_t* src_y,
                            const uint8_t* src_uv,
                            uint8_t* dst_rgb565,
@@ -4122,8 +4116,6 @@ void NV12ToRGB565Row_SSSE3(const uint8_t* src_y,
   SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
   while (width > 0) {
     int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    NV12ToARGBRow_SSSE3(src_y, src_uv, row, yuvconstants, twidth);
-    ARGBToRGB565Row_SSE2(row, dst_rgb565, twidth);
     src_y += twidth;
     src_uv += twidth;
     dst_rgb565 += twidth * 2;
@@ -4132,7 +4124,7 @@ void NV12ToRGB565Row_SSSE3(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_NV12TORGB24ROW_SSSE3)
+#if 0
 void NV12ToRGB24Row_SSSE3(const uint8_t* src_y,
                           const uint8_t* src_uv,
                           uint8_t* dst_rgb24,
@@ -4142,8 +4134,6 @@ void NV12ToRGB24Row_SSSE3(const uint8_t* src_y,
   SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
   while (width > 0) {
     int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    NV12ToARGBRow_SSSE3(src_y, src_uv, row, yuvconstants, twidth);
-    ARGBToRGB24Row_SSSE3(row, dst_rgb24, twidth);
     src_y += twidth;
     src_uv += twidth;
     dst_rgb24 += twidth * 3;
@@ -4152,7 +4142,7 @@ void NV12ToRGB24Row_SSSE3(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_NV21TORGB24ROW_SSSE3)
+#if 0
 void NV21ToRGB24Row_SSSE3(const uint8_t* src_y,
                           const uint8_t* src_vu,
                           uint8_t* dst_rgb24,
@@ -4162,8 +4152,6 @@ void NV21ToRGB24Row_SSSE3(const uint8_t* src_y,
   SIMD_ALIGNED(uint8_t row[MAXTWIDTH * 4]);
   while (width > 0) {
     int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
-    NV21ToARGBRow_SSSE3(src_y, src_vu, row, yuvconstants, twidth);
-    ARGBToRGB24Row_SSSE3(row, dst_rgb24, twidth);
     src_y += twidth;
     src_vu += twidth;
     dst_rgb24 += twidth * 3;
@@ -4186,7 +4174,6 @@ void NV12ToRGB24Row_AVX2(const uint8_t* src_y,
 #if defined(HAS_ARGBTORGB24ROW_AVX2)
     ARGBToRGB24Row_AVX2(row, dst_rgb24, twidth);
 #else
-    ARGBToRGB24Row_SSSE3(row, dst_rgb24, twidth);
 #endif
     src_y += twidth;
     src_uv += twidth;
@@ -4210,7 +4197,6 @@ void NV21ToRGB24Row_AVX2(const uint8_t* src_y,
 #if defined(HAS_ARGBTORGB24ROW_AVX2)
     ARGBToRGB24Row_AVX2(row, dst_rgb24, twidth);
 #else
-    ARGBToRGB24Row_SSSE3(row, dst_rgb24, twidth);
 #endif
     src_y += twidth;
     src_vu += twidth;
@@ -4234,7 +4220,6 @@ void I422ToRGB565Row_AVX2(const uint8_t* src_y,
 #if defined(HAS_ARGBTORGB565ROW_AVX2)
     ARGBToRGB565Row_AVX2(row, dst_rgb565, twidth);
 #else
-    ARGBToRGB565Row_SSE2(row, dst_rgb565, twidth);
 #endif
     src_y += twidth;
     src_u += twidth / 2;
@@ -4260,7 +4245,6 @@ void I422ToARGB1555Row_AVX2(const uint8_t* src_y,
 #if defined(HAS_ARGBTOARGB1555ROW_AVX2)
     ARGBToARGB1555Row_AVX2(row, dst_argb1555, twidth);
 #else
-    ARGBToARGB1555Row_SSE2(row, dst_argb1555, twidth);
 #endif
     src_y += twidth;
     src_u += twidth / 2;
@@ -4286,7 +4270,6 @@ void I422ToARGB4444Row_AVX2(const uint8_t* src_y,
 #if defined(HAS_ARGBTOARGB4444ROW_AVX2)
     ARGBToARGB4444Row_AVX2(row, dst_argb4444, twidth);
 #else
-    ARGBToARGB4444Row_SSE2(row, dst_argb4444, twidth);
 #endif
     src_y += twidth;
     src_u += twidth / 2;
@@ -4312,7 +4295,6 @@ void I422ToRGB24Row_AVX2(const uint8_t* src_y,
 #if defined(HAS_ARGBTORGB24ROW_AVX2)
     ARGBToRGB24Row_AVX2(row, dst_rgb24, twidth);
 #else
-    ARGBToRGB24Row_SSSE3(row, dst_rgb24, twidth);
 #endif
     src_y += twidth;
     src_u += twidth / 2;
@@ -4338,7 +4320,6 @@ void I444ToRGB24Row_AVX2(const uint8_t* src_y,
 #if defined(HAS_ARGBTORGB24ROW_AVX2)
     ARGBToRGB24Row_AVX2(row, dst_rgb24, twidth);
 #else
-    ARGBToRGB24Row_SSSE3(row, dst_rgb24, twidth);
 #endif
     src_y += twidth;
     src_u += twidth;
@@ -4363,7 +4344,6 @@ void NV12ToRGB565Row_AVX2(const uint8_t* src_y,
 #if defined(HAS_ARGBTORGB565ROW_AVX2)
     ARGBToRGB565Row_AVX2(row, dst_rgb565, twidth);
 #else
-    ARGBToRGB565Row_SSE2(row, dst_rgb565, twidth);
 #endif
     src_y += twidth;
     src_uv += twidth;
@@ -4383,12 +4363,12 @@ void NV12ToRGB565Row_AVX2(const uint8_t* src_y,
 }
 #endif  // HAS_RAWTOYJROW_AVX2
 
-#ifdef HAS_RGB24TOYJROW_SSSE3
+#if 0
 // Convert 16 RGB24 pixels (64 bytes) to 16 YJ values.
 }
 #endif  // HAS_RGB24TOYJROW_SSSE3
 
-#ifdef HAS_RAWTOYJROW_SSSE3
+#if 0
 // Convert 16 RAW pixels (64 bytes) to 16 YJ values.
 }
 #endif  // HAS_RAWTOYJROW_SSSE3

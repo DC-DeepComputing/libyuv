@@ -102,21 +102,9 @@ extern "C" {
   _mm_storeu_si128((__m128i*)(dst_argb + 16), xmm1); \
   dst_argb += 32;
 
-#if defined(HAS_I422TOARGBROW_SSSE3)
 
-#endif
 
-#if defined(HAS_I422ALPHATOARGBROW_SSSE3)
 
-#endif
-
-#if defined(HAS_I444TOARGBROW_SSSE3)
-
-#endif
-
-#if defined(HAS_I444ALPHATOARGBROW_SSSE3)
-
-#endif
 
 #if defined(HAS_ARGBTOYROW_AVX2)
 
