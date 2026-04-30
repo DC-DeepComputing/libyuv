@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a28354f_277fcfa9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-30T16:24:34Z",
+      "side": 1,
+      "message": "Can you do another pass for the issues below, still seem to be a fair few.",
+      "revId": "2774365022c4f115f484d4d704ac802c4105d077",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a148474d_b03bd02e",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-30T16:24:34Z",
+      "side": 1,
+      "message": "Still empty defines?",
+      "revId": "2774365022c4f115f484d4d704ac802c4105d077",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "80b0feb8_dcb6c933",
+        "filename": "include/libyuv/scale_row.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-30T16:24:34Z",
+      "side": 1,
+      "message": "Lingering comment.",
+      "revId": "2774365022c4f115f484d4d704ac802c4105d077",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58d414e2_7e4342a0",
+        "filename": "source/compare.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-30T16:24:34Z",
+      "side": 1,
+      "message": "Still some 0 blocks",
+      "revId": "2774365022c4f115f484d4d704ac802c4105d077",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
