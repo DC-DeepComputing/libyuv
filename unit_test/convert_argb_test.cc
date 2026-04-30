@@ -762,9 +762,6 @@ TESTATOA(RAW, uint8_t, 3, 3, 1, RGB24, uint8_t, 3, 3, 1)
 TESTATOA(RGB24, uint8_t, 3, 3, 1, J400, uint8_t, 1, 1, 1)
 // TESTATOA(RGB24, uint8_t, 3, 3, 1, RGB24Mirror, uint8_t, 3, 3, 1)
 TESTATOA(RAW, uint8_t, 3, 3, 1, J400, uint8_t, 1, 1, 1)
-#ifdef LITTLE_ENDIAN_ONLY_TEST
-// TESTATOA(RGB565, uint8_t, 2, 2, 1, ARGB, uint8_t, 4, 4, 1)
-#endif
 TESTATOA(RGBA, uint8_t, 4, 4, 1, ARGB, uint8_t, 4, 4, 1)
 // TESTATOA(UYVY, uint8_t, 2, 4, 1, ARGB, uint8_t, 4, 4, 1)
 // TESTATOA(YUY2, uint8_t, 2, 4, 1, ARGB, uint8_t, 4, 4, 1)
@@ -1686,12 +1683,10 @@ TEST_F(LibYUVConvertTest, ARGBToAR30Row_Opt) {
   ARGBToAR30Row_C(src, dst_c, kPixels);
 
   int has_avx2 = TestCpuFlag(kCpuHasAVX2);
-  int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
   for (int i = 0; i < benchmark_iterations_; ++i) {
     if (has_avx2) {
       ARGBToAR30Row_AVX2(src, dst_opt, kPixels);
     } else if (has_ssse3) {
-      ARGBToAR30Row_SSSE3(src, dst_opt, kPixels);
     } else {
       ARGBToAR30Row_C(src, dst_opt, kPixels);
     }
@@ -1720,12 +1715,10 @@ TEST_F(LibYUVConvertTest, ABGRToAR30Row_Opt) {
   ABGRToAR30Row_C(src, dst_c, kPixels);
 
   int has_avx2 = TestCpuFlag(kCpuHasAVX2);
-  int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
   for (int i = 0; i < benchmark_iterations_; ++i) {
     if (has_avx2) {
       ABGRToAR30Row_AVX2(src, dst_opt, kPixels);
     } else if (has_ssse3) {
-      ABGRToAR30Row_SSSE3(src, dst_opt, kPixels);
     } else {
       ABGRToAR30Row_C(src, dst_opt, kPixels);
     }
