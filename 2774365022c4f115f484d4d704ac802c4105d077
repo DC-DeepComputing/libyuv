@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "48a3156b_3ddca8bb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-30T19:41:15Z",
+      "side": 1,
+      "message": "Done.  Gemini is a bit weak (1m tokens) and when it works, its only doing partial updates, so i broke it down into 3 parts - tests, header and source.  verify specifically removing SSE2, SSSE3 and SSE41 functions and macros.\n\nI went back to checkpoint 6 and redid a lot of the changes and cleanup.  I\u0027m telling it to remove empty ifdefs, but that also leads to some broken code, that I\u0027ve manually fixed by replacing SSSE3 with C.",
+      "parentUuid": "8a28354f_277fcfa9",
+      "revId": "2774365022c4f115f484d4d704ac802c4105d077",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a148474d_b03bd02e",
@@ -35,6 +53,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ef75c39_614e9d0d",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-30T19:41:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a148474d_b03bd02e",
+      "revId": "2774365022c4f115f484d4d704ac802c4105d077",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "80b0feb8_dcb6c933",
@@ -48,6 +84,24 @@
       "writtenOn": "2026-04-30T16:24:34Z",
       "side": 1,
       "message": "Lingering comment.",
+      "revId": "2774365022c4f115f484d4d704ac802c4105d077",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eaf93453_fcf54855",
+        "filename": "include/libyuv/scale_row.h",
+        "patchSetId": 10
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-30T19:41:15Z",
+      "side": 1,
+      "message": "line 32 comment seems accurate.  _gcc is inline assembly in gcc syntax for gcc and clang on x86 platforms (not arm).\nthere will be followup changes affecting mainly visual c (row_win)\nthere will also be followup to optimize the avx to have a native 32 byte vector type, instead of using 16 bytes with broadcast.\nsome technical issues with sse 32 bit having 8 registers will be slightly easier in avx and I think we can relax the compiler checks and assume all compilers can do basic avx2.",
+      "parentUuid": "80b0feb8_dcb6c933",
       "revId": "2774365022c4f115f484d4d704ac802c4105d077",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
