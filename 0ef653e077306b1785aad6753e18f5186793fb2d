@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfdf7716_a5ebb9a0",
+        "filename": "include/libyuv/compare_row.h",
+        "patchSetId": 12
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-04-30T20:29:13Z",
+      "side": 1,
+      "message": "Looks like we\u0027re going backwards? This one is back now.",
+      "revId": "0ef653e077306b1785aad6753e18f5186793fb2d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
