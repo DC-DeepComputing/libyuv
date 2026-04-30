@@ -133,7 +133,6 @@ static int RGBTestFilter(int src_width,
 
 #if defined(ENABLE_FULL_TESTS)
 // Test a scale factor with all 4 filters.  Expect unfiltered to be exact, but
-// filtering is different fixed point implementations for SSSE3, Neon and C.
 #define TEST_FACTOR(name, nom, denom)         \
   TEST_FACTOR1(name, None, nom, denom, 0)     \
   TEST_FACTOR1(name, Linear, nom, denom, 3)   \

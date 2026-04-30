@@ -762,9 +762,6 @@ TESTATOA(RAW, uint8_t, 3, 3, 1, RGB24, uint8_t, 3, 3, 1)
 TESTATOA(RGB24, uint8_t, 3, 3, 1, J400, uint8_t, 1, 1, 1)
 // TESTATOA(RGB24, uint8_t, 3, 3, 1, RGB24Mirror, uint8_t, 3, 3, 1)
 TESTATOA(RAW, uint8_t, 3, 3, 1, J400, uint8_t, 1, 1, 1)
-#ifdef LITTLE_ENDIAN_ONLY_TEST
-// TESTATOA(RGB565, uint8_t, 2, 2, 1, ARGB, uint8_t, 4, 4, 1)
-#endif
 TESTATOA(RGBA, uint8_t, 4, 4, 1, ARGB, uint8_t, 4, 4, 1)
 // TESTATOA(UYVY, uint8_t, 2, 4, 1, ARGB, uint8_t, 4, 4, 1)
 // TESTATOA(YUY2, uint8_t, 2, 4, 1, ARGB, uint8_t, 4, 4, 1)
@@ -1686,12 +1683,9 @@ TEST_F(LibYUVConvertTest, ARGBToAR30Row_Opt) {
   ARGBToAR30Row_C(src, dst_c, kPixels);
 
   int has_avx2 = TestCpuFlag(kCpuHasAVX2);
-  int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
   for (int i = 0; i < benchmark_iterations_; ++i) {
     if (has_avx2) {
       ARGBToAR30Row_AVX2(src, dst_opt, kPixels);
-    } else if (has_ssse3) {
-      ARGBToAR30Row_SSSE3(src, dst_opt, kPixels);
     } else {
       ARGBToAR30Row_C(src, dst_opt, kPixels);
     }
@@ -1720,12 +1714,9 @@ TEST_F(LibYUVConvertTest, ABGRToAR30Row_Opt) {
   ABGRToAR30Row_C(src, dst_c, kPixels);
 
   int has_avx2 = TestCpuFlag(kCpuHasAVX2);
-  int has_ssse3 = TestCpuFlag(kCpuHasSSSE3);
   for (int i = 0; i < benchmark_iterations_; ++i) {
     if (has_avx2) {
       ABGRToAR30Row_AVX2(src, dst_opt, kPixels);
-    } else if (has_ssse3) {
-      ABGRToAR30Row_SSSE3(src, dst_opt, kPixels);
     } else {
       ABGRToAR30Row_C(src, dst_opt, kPixels);
     }
@@ -2866,73 +2857,5 @@ TEST_F(LibYUVConvertTest, TestI400LargeSize) {
         // (defined(__x86_64__) || defined(_M_X64) || defined(__aarch64__))
 
 #endif  // !defined(LEAN_TESTS)
-
-
-#define TESTATOBPI(FMT_A, TYPE_A, BPP_A, STRIDE_A, HEIGHT_A, FMT_B, SUBSAMP_X, \
-                   SUBSAMP_Y, W1280, N, NEG, OFF)                              \
-  TEST_F(LibYUVConvertTest, FMT_A##To##FMT_B##N) {                             \
-    const int kWidth = W1280;                                                  \
-    const int kHeight = benchmark_height_;                                     \
-    const int kHeightA = (kHeight + HEIGHT_A - 1) / HEIGHT_A * HEIGHT_A;       \
-    const int kStrideA =                                                       \
-        (kWidth * BPP_A + STRIDE_A - 1) / STRIDE_A * STRIDE_A;                 \
-    const int kStrideY = kWidth;                                               \
-    const int kStrideUV = SUBSAMPLE(kWidth, SUBSAMP_X) * 2;                    \
-    const int kSizeUV = kStrideUV * SUBSAMPLE(kHeight, SUBSAMP_Y);             \
-    align_buffer_page_end(src_argb,                                            \
-                          kStrideA* kHeightA*(int)sizeof(TYPE_A) + OFF);       \
-    align_buffer_page_end(dst_y_c, kStrideY* kHeight);                         \
-    align_buffer_page_end(dst_uv_c, kSizeUV);                                  \
-    align_buffer_page_end(dst_y_opt, kStrideY* kHeight);                       \
-    align_buffer_page_end(dst_uv_opt, kSizeUV);                                \
-    for (int i = 0; i < kStrideA * kHeightA * (int)sizeof(TYPE_A); ++i) {      \
-      src_argb[i + OFF] = (fastrand() & 0xff);                                 \
-    }                                                                          \
-    memset(dst_y_c, 1, kStrideY* kHeight);                                     \
-    memset(dst_uv_c, 2, kSizeUV);                                              \
-    memset(dst_y_opt, 101, kStrideY* kHeight);                                 \
-    memset(dst_uv_opt, 102, kSizeUV);                                          \
-    MaskCpuFlags(disable_cpu_flags_);                                          \
-    FMT_A##To##FMT_B((TYPE_A*)(src_argb + OFF), kStrideA, dst_y_c, kStrideY,   \
-                     dst_uv_c, kStrideUV, kWidth, NEG kHeight);                \
-    MaskCpuFlags(benchmark_cpu_info_);                                         \
-    for (int i = 0; i < benchmark_iterations_; ++i) {                          \
-      FMT_A##To##FMT_B((TYPE_A*)(src_argb + OFF), kStrideA, dst_y_opt,         \
-                       kStrideY, dst_uv_opt, kStrideUV, kWidth, NEG kHeight);  \
-    }                                                                          \
-    for (int i = 0; i < kStrideY * kHeight; ++i) {                             \
-      EXPECT_EQ(dst_y_c[i], dst_y_opt[i]);                                     \
-    }                                                                          \
-    for (int i = 0; i < kSizeUV; ++i) {                                        \
-      EXPECT_EQ(dst_uv_c[i], dst_uv_opt[i]);                                   \
-    }                                                                          \
-    free_aligned_buffer_page_end(src_argb);                                    \
-    free_aligned_buffer_page_end(dst_y_c);                                     \
-    free_aligned_buffer_page_end(dst_uv_c);                                    \
-    free_aligned_buffer_page_end(dst_y_opt);                                   \
-    free_aligned_buffer_page_end(dst_uv_opt);                                  \
-  }
-
-#if defined(ENABLE_FULL_TESTS)
-#define TESTATOBP(FMT_A, TYPE_A, BPP_A, STRIDE_A, HEIGHT_A, FMT_B, SUBSAMP_X, \
-                  SUBSAMP_Y)                                                  \
-  TESTATOBPI(FMT_A, TYPE_A, BPP_A, STRIDE_A, HEIGHT_A, FMT_B, SUBSAMP_X,      \
-             SUBSAMP_Y, benchmark_width_ + 1, _Any, +, 0)                     \
-  TESTATOBPI(FMT_A, TYPE_A, BPP_A, STRIDE_A, HEIGHT_A, FMT_B, SUBSAMP_X,      \
-             SUBSAMP_Y, benchmark_width_, _Unaligned, +, 4)                   \
-  TESTATOBPI(FMT_A, TYPE_A, BPP_A, STRIDE_A, HEIGHT_A, FMT_B, SUBSAMP_X,      \
-             SUBSAMP_Y, benchmark_width_, _Invert, -, 0)                      \
-  TESTATOBPI(FMT_A, TYPE_A, BPP_A, STRIDE_A, HEIGHT_A, FMT_B, SUBSAMP_X,      \
-             SUBSAMP_Y, benchmark_width_, _Opt, +, 0)
-#else
-#define TESTATOBP(FMT_A, TYPE_A, BPP_A, STRIDE_A, HEIGHT_A, FMT_B, SUBSAMP_X, \
-                  SUBSAMP_Y)                                                  \
-  TESTATOBPI(FMT_A, TYPE_A, BPP_A, STRIDE_A, HEIGHT_A, FMT_B, SUBSAMP_X,      \
-             SUBSAMP_Y, benchmark_width_, _Opt, +, 0)
-#endif
-
-TESTATOBP(RAW, uint8_t, 3, 3, 1, NV21, 2, 2)
-TESTATOBP(RGB24, uint8_t, 3, 3, 1, NV12, 2, 2)
-TESTATOBP(RAW, uint8_t, 3, 3, 1, JNV21, 2, 2)
 
 }  // namespace libyuv

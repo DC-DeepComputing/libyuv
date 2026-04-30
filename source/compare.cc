@@ -34,11 +34,6 @@ uint32_t HashDjb2(const uint8_t* src, uint64_t count, uint32_t seed) {
   int remainder;
   uint32_t (*HashDjb2_SSE)(const uint8_t* src, int count, uint32_t seed) =
       HashDjb2_C;
-#if defined(HAS_HASHDJB2_SSE41)
-  if (TestCpuFlag(kCpuHasSSE41)) {
-    HashDjb2_SSE = HashDjb2_SSE41;
-  }
-#endif
 #if defined(HAS_HASHDJB2_AVX2)
   if (TestCpuFlag(kCpuHasAVX2)) {
     HashDjb2_SSE = HashDjb2_AVX2;
@@ -144,16 +139,6 @@ uint64_t ComputeHammingDistance(const uint8_t* src_a,
     HammingDistance = HammingDistance_NEON_DotProd;
   }
 #endif
-#if defined(HAS_HAMMINGDISTANCE_SSSE3)
-  if (TestCpuFlag(kCpuHasSSSE3)) {
-    HammingDistance = HammingDistance_SSSE3;
-  }
-#endif
-#if defined(HAS_HAMMINGDISTANCE_SSE42)
-  if (TestCpuFlag(kCpuHasSSE42)) {
-    HammingDistance = HammingDistance_SSE42;
-  }
-#endif
 #if defined(HAS_HAMMINGDISTANCE_AVX2)
   if (TestCpuFlag(kCpuHasAVX2)) {
     HammingDistance = HammingDistance_AVX2;
@@ -202,12 +187,6 @@ uint64_t ComputeSumSquareError(const uint8_t* src_a,
 #if defined(HAS_SUMSQUAREERROR_NEON_DOTPROD)
   if (TestCpuFlag(kCpuHasNeonDotProd)) {
     SumSquareError = SumSquareError_NEON_DotProd;
-  }
-#endif
-#if defined(HAS_SUMSQUAREERROR_SSE2)
-  if (TestCpuFlag(kCpuHasSSE2)) {
-    // Note only used for multiples of 16 so count is not checked.
-    SumSquareError = SumSquareError_SSE2;
   }
 #endif
 #if defined(HAS_SUMSQUAREERROR_AVX2)

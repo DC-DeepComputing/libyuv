@@ -106,127 +106,9 @@ static uint32_t SumSquareError_NEON(const uint8_t* src_a,
   return sse;
 }
 #elif !defined(LIBYUV_DISABLE_X86) && defined(_M_IX86) && defined(_MSC_VER)
-#define HAS_SUMSQUAREERROR_SSE2
-__declspec(naked) static uint32_t SumSquareError_SSE2(const uint8_t* /*src_a*/,
-                                                      const uint8_t* /*src_b*/,
-                                                      int /*count*/) {
-  __asm {
-    mov        eax, [esp + 4]  // src_a
-    mov        edx, [esp + 8]  // src_b
-    mov        ecx, [esp + 12]  // count
-    pxor       xmm0, xmm0
-    pxor       xmm5, xmm5
-    sub        edx, eax
-
-  wloop:
-    movdqu     xmm1, [eax]
-    movdqu     xmm2, [eax + edx]
-    lea        eax,  [eax + 16]
-    movdqu     xmm3, xmm1
-    psubusb    xmm1, xmm2
-    psubusb    xmm2, xmm3
-    por        xmm1, xmm2
-    movdqu     xmm2, xmm1
-    punpcklbw  xmm1, xmm5
-    punpckhbw  xmm2, xmm5
-    pmaddwd    xmm1, xmm1
-    pmaddwd    xmm2, xmm2
-    paddd      xmm0, xmm1
-    paddd      xmm0, xmm2
-    sub        ecx, 16
-    ja         wloop
-
-    pshufd     xmm1, xmm0, 0EEh
-    paddd      xmm0, xmm1
-    pshufd     xmm1, xmm0, 01h
-    paddd      xmm0, xmm1
-    movd       eax, xmm0
-    ret
-  }
-}
 #elif !defined(LIBYUV_DISABLE_X86) && (defined(__x86_64__) || defined(__i386__))
-#define HAS_SUMSQUAREERROR_SSE2
-static uint32_t SumSquareError_SSE2(const uint8_t* src_a,
-                                    const uint8_t* src_b,
-                                    int count) {
-  uint32_t sse;
-  asm volatile(  // NOLINT
-      "pxor      %%xmm0,%%xmm0                   \n"
-      "pxor      %%xmm5,%%xmm5                   \n"
-      "sub       %0,%1                           \n"
-
-      "1:                                        \n"
-      "movdqu    (%0),%%xmm1                     \n"
-      "movdqu    (%0,%1,1),%%xmm2                \n"
-      "lea       0x10(%0),%0                     \n"
-      "movdqu    %%xmm1,%%xmm3                   \n"
-      "psubusb   %%xmm2,%%xmm1                   \n"
-      "psubusb   %%xmm3,%%xmm2                   \n"
-      "por       %%xmm2,%%xmm1                   \n"
-      "movdqu    %%xmm1,%%xmm2                   \n"
-      "punpcklbw %%xmm5,%%xmm1                   \n"
-      "punpckhbw %%xmm5,%%xmm2                   \n"
-      "pmaddwd   %%xmm1,%%xmm1                   \n"
-      "pmaddwd   %%xmm2,%%xmm2                   \n"
-      "paddd     %%xmm1,%%xmm0                   \n"
-      "paddd     %%xmm2,%%xmm0                   \n"
-      "sub       $0x10,%2                        \n"
-      "ja        1b                              \n"
-
-      "pshufd    $0xee,%%xmm0,%%xmm1             \n"
-      "paddd     %%xmm1,%%xmm0                   \n"
-      "pshufd    $0x1,%%xmm0,%%xmm1              \n"
-      "paddd     %%xmm1,%%xmm0                   \n"
-      "movd      %%xmm0,%3                       \n"
-
-      : "+r"(src_a),  // %0
-        "+r"(src_b),  // %1
-        "+r"(count),  // %2
-        "=g"(sse)     // %3
-      :
-      : "memory", "cc"
-#if defined(__SSE2__)
-        ,
-        "xmm0", "xmm1", "xmm2", "xmm3", "xmm5"
-#endif
-  );  // NOLINT
-  return sse;
-}
 #endif  // LIBYUV_DISABLE_X86 etc
 
-#if defined(HAS_SUMSQUAREERROR_SSE2)
-#if (defined(__pic__) || defined(__APPLE__)) && defined(__i386__)
-static __inline void __cpuid(int cpu_info[4], int info_type) {
-  asm volatile(  // NOLINT
-      "mov %%ebx, %%edi                          \n"
-      "cpuid                                     \n"
-      "xchg %%edi, %%ebx                         \n"
-      : "=a"(cpu_info[0]), "=D"(cpu_info[1]), "=c"(cpu_info[2]),
-        "=d"(cpu_info[3])
-      : "a"(info_type));
-}
-// For gcc/clang but not clangcl.
-#elif !defined(_MSC_VER) && (defined(__i386__) || defined(__x86_64__))
-static __inline void __cpuid(int cpu_info[4], int info_type) {
-  asm volatile(  // NOLINT
-      "cpuid                                     \n"
-      : "=a"(cpu_info[0]), "=b"(cpu_info[1]), "=c"(cpu_info[2]),
-        "=d"(cpu_info[3])
-      : "a"(info_type));
-}
-#endif
-
-static int CpuHasSSE2() {
-#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86)
-  int cpu_info[4];
-  __cpuid(cpu_info, 1);
-  if (cpu_info[3] & 0x04000000) {
-    return 1;
-  }
-#endif
-  return 0;
-}
-#endif  // HAS_SUMSQUAREERROR_SSE2
 
 static uint32_t SumSquareError_C(const uint8_t* src_a,
                                  const uint8_t* src_b,
@@ -246,11 +128,6 @@ double ComputeSumSquareError(const uint8_t* src_a,
                              int count) = SumSquareError_C;
 #if defined(HAS_SUMSQUAREERROR_NEON)
   SumSquareError = SumSquareError_NEON;
-#endif
-#if defined(HAS_SUMSQUAREERROR_SSE2)
-  if (CpuHasSSE2()) {
-    SumSquareError = SumSquareError_SSE2;
-  }
 #endif
   const int kBlockSize = 1 << 15;
   uint64_t sse = 0;

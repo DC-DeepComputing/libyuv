@@ -892,11 +892,6 @@ TEST_F(LibYUVRotateTest, Transpose4x4_Test) {
       Transpose4x4_32_NEON((const uint8_t*)src_pixels, height * 4,
                            (uint8_t*)dst_pixels_opt, width * 4, width);
     } else
-#elif defined(HAS_TRANSPOSE4X4_32_SSE2)
-    if (TestCpuFlag(kCpuHasSSE2)) {
-      Transpose4x4_32_SSE2((const uint8_t*)src_pixels, height * 4,
-                           (uint8_t*)dst_pixels_opt, width * 4, width);
-    } else
 #endif
     {
       Transpose4x4_32_C((const uint8_t*)src_pixels, height * 4,
@@ -936,9 +931,6 @@ TEST_F(LibYUVRotateTest, Transpose4x4_Opt) {
 #elif defined(HAS_TRANSPOSE4X4_32_AVX2)
     if (TestCpuFlag(kCpuHasAVX2)) {
       Transpose4x4_32_AVX2((const uint8_t*)src_pixels, height * 4,
-                           (uint8_t*)dst_pixels_opt, width * 4, width);
-    } else if (TestCpuFlag(kCpuHasSSE2)) {
-      Transpose4x4_32_SSE2((const uint8_t*)src_pixels, height * 4,
                            (uint8_t*)dst_pixels_opt, width * 4, width);
     } else
 #endif

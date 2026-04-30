@@ -39,10 +39,6 @@ static const int kCpuHasRVVZVFH = 0x200;
 
 // These flags are only valid on x86 processors.
 static const int kCpuHasX86 = 0x8;
-static const int kCpuHasSSE2 = 0x100;
-static const int kCpuHasSSSE3 = 0x200;
-static const int kCpuHasSSE41 = 0x400;
-static const int kCpuHasSSE42 = 0x800;
 static const int kCpuHasAVX = 0x1000;
 static const int kCpuHasAVX2 = 0x2000;
 static const int kCpuHasERMS = 0x4000;
@@ -71,7 +67,6 @@ static const int kCpuHasLASX = 0x200;
 LIBYUV_API
 int InitCpuFlags(void);
 
-// Detect CPU has SSE2 etc.
 // Test_flag parameter should be one of kCpuHas constants above.
 // Returns non-zero if instruction set is detected
 static __inline int TestCpuFlag(int test_flag) {
@@ -100,7 +95,6 @@ int AArch64CpuCaps();
 #endif
 
 // For testing, allow CPU flags to be disabled.
-// ie MaskCpuFlags(~kCpuHasSSSE3) to disable SSSE3.
 // MaskCpuFlags(-1) to enable all cpu specific optimizations.
 // MaskCpuFlags(1) to disable all cpu specific optimizations.
 // MaskCpuFlags(0) to reset state so next call will auto init.
