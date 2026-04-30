@@ -88,6 +88,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd35bea2_0684417a",
+        "filename": "source/compare.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-30T00:02:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a4f7da05_1ccf9ae1",
+      "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bc29b57d_0dc62a81",
@@ -101,6 +119,24 @@
       "writtenOn": "2026-04-29T23:38:01Z",
       "side": 1,
       "message": "Clean these cases up as well.",
+      "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce30f4e1_05c34e59",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-04-30T00:02:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bc29b57d_0dc62a81",
       "revId": "3fbdc763b00b2bac9bd528eb57815a6d596300a5",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
