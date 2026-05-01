@@ -2904,6 +2904,9 @@ TEST_F(LibYUVConvertTest, TestI400LargeSize) {
       EXPECT_EQ(dst_y_c[i], dst_y_opt[i]);                                     \
     }                                                                          \
     for (int i = 0; i < kSizeUV; ++i) {                                        \
+      if (dst_uv_c[i] != dst_uv_opt[i]) {                                      \
+        printf("Mismatch at i=%d: c=%d, opt=%d\n", i, dst_uv_c[i], dst_uv_opt[i]); \
+      }                                                                        \
       EXPECT_EQ(dst_uv_c[i], dst_uv_opt[i]);                                   \
     }                                                                          \
     free_aligned_buffer_page_end(src_argb);                                    \
