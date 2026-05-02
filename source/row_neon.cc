@@ -126,8 +126,10 @@ extern "C" {
   "vqshrn.u16 d2, q1, #6                     \n" /* G */ \
   "vqshrn.u16 d0, q0, #6                     \n" /* B */
 
-#define YUVTORGB_REGS \
-  "q0", "q1", "q2", "q4", "q8", "q9", "q10", "q11", "q12", "q13", "q14", "d31"
+#define YUVTORGB_REGS                                                         \
+  "d0", "d1", "d2", "d3", "d4", "d5", "d8", "d9", "d16", "d17", "d18", "d19", \
+      "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29",   \
+      "d31"
 
 #define STORERGBA                                \
   "vmov.u8    d1, d0                         \n" \
@@ -370,7 +372,7 @@ void I422ToARGB1555Row_NEON(const uint8_t* src_y,
         [width] "+r"(width)                                // %[width]
       : [kUVCoeff] "r"(&yuvconstants->kUVCoeff),           // %[kUVCoeff]
         [kRGBCoeffBias] "r"(&yuvconstants->kRGBCoeffBias)  // %[kRGBCoeffBias]
-      : "cc", "memory", YUVTORGB_REGS, "q3");
+      : "cc", "memory", YUVTORGB_REGS, "d6", "d7");
 }
 
 #define ARGBTOARGB4444                                                      \
@@ -404,7 +406,7 @@ void I422ToARGB4444Row_NEON(const uint8_t* src_y,
         [width] "+r"(width)                                // %[width]
       : [kUVCoeff] "r"(&yuvconstants->kUVCoeff),           // %[kUVCoeff]
         [kRGBCoeffBias] "r"(&yuvconstants->kRGBCoeffBias)  // %[kRGBCoeffBias]
-      : "cc", "memory", YUVTORGB_REGS, "q3");
+      : "cc", "memory", YUVTORGB_REGS, "d6", "d7");
 }
 
 void I400ToARGBRow_NEON(const uint8_t* src_y,
@@ -606,12 +608,12 @@ void SplitUVRow_NEON(const uint8_t* src_uv,
       "vst1.8      {q0}, [%1]!                   \n"  // store U
       "vst1.8      {q1}, [%2]!                   \n"  // store V
       "bgt         1b                            \n"
-      : "+r"(src_uv),               // %0
-        "+r"(dst_u),                // %1
-        "+r"(dst_v),                // %2
-        "+r"(width)                 // %3  // Output registers
-      :                             // Input registers
-      : "cc", "memory", "q0", "q1"  // Clobber List
+      : "+r"(src_uv),                           // %0
+        "+r"(dst_u),                            // %1
+        "+r"(dst_v),                            // %2
+        "+r"(width)                             // %3  // Output registers
+      :                                         // Input registers
+      : "cc", "memory", "d0", "d1", "d2", "d3"  // Clobber List
   );
 }
 
@@ -630,11 +632,11 @@ void DetileRow_NEON(const uint8_t* src,
       "pld         [%0, #1792]                   \n"
       "vst1.8      {q0}, [%1]!                   \n"  // store 16 bytes
       "bgt         1b                            \n"
-      : "+r"(src),            // %0
-        "+r"(dst),            // %1
-        "+r"(width)           // %2
-      : "r"(src_tile_stride)  // %3
-      : "cc", "memory", "q0"  // Clobber List
+      : "+r"(src),                  // %0
+        "+r"(dst),                  // %1
+        "+r"(width)                 // %2
+      : "r"(src_tile_stride)        // %3
+      : "cc", "memory", "d0", "d1"  // Clobber List
   );
 }
 
@@ -650,11 +652,11 @@ void DetileRow_16_NEON(const uint16_t* src,
       "pld         [%0, #3584]                   \n"
       "vst1.16     {q0, q1}, [%1]!               \n"  // store 16 pixels
       "bgt         1b                            \n"
-      : "+r"(src),                  // %0
-        "+r"(dst),                  // %1
-        "+r"(width)                 // %2
-      : "r"(src_tile_stride * 2)    // %3
-      : "cc", "memory", "q0", "q1"  // Clobber List
+      : "+r"(src),                              // %0
+        "+r"(dst),                              // %1
+        "+r"(width)                             // %2
+      : "r"(src_tile_stride * 2)                // %3
+      : "cc", "memory", "d0", "d1", "d2", "d3"  // Clobber List
   );
 }
 
@@ -725,13 +727,14 @@ void DetileToYUY2_NEON(const uint8_t* src_y,
       "pld         [%1, #1792]                   \n"
       "vst1.8      {q0, q1}, [%2]!               \n"
       "bgt         1b                            \n"
-      : "+r"(src_y),                            // %0
-        "+r"(src_uv),                           // %1
-        "+r"(dst_yuy2),                         // %2
-        "+r"(width)                             // %3
-      : "r"(src_y_tile_stride),                 // %4
-        "r"(src_uv_tile_stride)                 // %5
-      : "cc", "memory", "q0", "q1", "q2", "q3"  // Clobber list
+      : "+r"(src_y),             // %0
+        "+r"(src_uv),            // %1
+        "+r"(dst_yuy2),          // %2
+        "+r"(width)              // %3
+      : "r"(src_y_tile_stride),  // %4
+        "r"(src_uv_tile_stride)  // %5
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
+        "d7"  // Clobber list
   );
 }
 #endif
@@ -773,7 +776,8 @@ void UnpackMT2T_NEON(const uint8_t* src, uint16_t* dst, size_t size) {
         "+r"(dst),  // %1
         "+r"(size)  // %2
       :
-      : "cc", "memory", "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15");
+      : "cc", "memory", "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23",
+        "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31");
 }
 
 // Reads 16 U's and V's and writes out 16 pairs of UV.
@@ -788,12 +792,12 @@ void MergeUVRow_NEON(const uint8_t* src_u,
       "subs        %3, %3, #16                   \n"  // 16 processed per loop
       "vst2.8      {q0, q1}, [%2]!               \n"  // store 16 pairs of UV
       "bgt         1b                            \n"
-      : "+r"(src_u),                // %0
-        "+r"(src_v),                // %1
-        "+r"(dst_uv),               // %2
-        "+r"(width)                 // %3  // Output registers
-      :                             // Input registers
-      : "cc", "memory", "q0", "q1"  // Clobber List
+      : "+r"(src_u),                            // %0
+        "+r"(src_v),                            // %1
+        "+r"(dst_uv),                           // %2
+        "+r"(width)                             // %3  // Output registers
+      :                                         // Input registers
+      : "cc", "memory", "d0", "d1", "d2", "d3"  // Clobber List
   );
 }
 
@@ -812,13 +816,13 @@ void SplitRGBRow_NEON(const uint8_t* src_rgb,
       "vst1.8      {q1}, [%2]!                   \n"  // store G
       "vst1.8      {q2}, [%3]!                   \n"  // store B
       "bgt         1b                            \n"
-      : "+r"(src_rgb),                    // %0
-        "+r"(dst_r),                      // %1
-        "+r"(dst_g),                      // %2
-        "+r"(dst_b),                      // %3
-        "+r"(width)                       // %4
-      :                                   // Input registers
-      : "cc", "memory", "q0", "q1", "q2"  // Clobber List
+      : "+r"(src_rgb),                                      // %0
+        "+r"(dst_r),                                        // %1
+        "+r"(dst_g),                                        // %2
+        "+r"(dst_b),                                        // %3
+        "+r"(width)                                         // %4
+      :                                                     // Input registers
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5"  // Clobber List
   );
 }
 
@@ -837,13 +841,13 @@ void MergeRGBRow_NEON(const uint8_t* src_r,
       "vst3.8      {d0, d2, d4}, [%3]!           \n"  // store 8 RGB
       "vst3.8      {d1, d3, d5}, [%3]!           \n"  // next 8 RGB
       "bgt         1b                            \n"
-      : "+r"(src_r),                      // %0
-        "+r"(src_g),                      // %1
-        "+r"(src_b),                      // %2
-        "+r"(dst_rgb),                    // %3
-        "+r"(width)                       // %4
-      :                                   // Input registers
-      : "cc", "memory", "q0", "q1", "q2"  // Clobber List
+      : "+r"(src_r),                                        // %0
+        "+r"(src_g),                                        // %1
+        "+r"(src_b),                                        // %2
+        "+r"(dst_rgb),                                      // %3
+        "+r"(width)                                         // %4
+      :                                                     // Input registers
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5"  // Clobber List
   );
 }
 
@@ -864,14 +868,15 @@ void SplitARGBRow_NEON(const uint8_t* src_argb,
       "vst1.8      {q2}, [%1]!                   \n"  // store R
       "vst1.8      {q3}, [%4]!                   \n"  // store A
       "bgt         1b                            \n"
-      : "+r"(src_argb),                         // %0
-        "+r"(dst_r),                            // %1
-        "+r"(dst_g),                            // %2
-        "+r"(dst_b),                            // %3
-        "+r"(dst_a),                            // %4
-        "+r"(width)                             // %5
-      :                                         // Input registers
-      : "cc", "memory", "q0", "q1", "q2", "q3"  // Clobber List
+      : "+r"(src_argb),  // %0
+        "+r"(dst_r),     // %1
+        "+r"(dst_g),     // %2
+        "+r"(dst_b),     // %3
+        "+r"(dst_a),     // %4
+        "+r"(width)      // %5
+      :                  // Input registers
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
+        "d7"  // Clobber List
   );
 }
 
@@ -892,14 +897,15 @@ void MergeARGBRow_NEON(const uint8_t* src_r,
       "vst4.8      {d0, d2, d4, d6}, [%4]!       \n"  // store 8 ARGB
       "vst4.8      {d1, d3, d5, d7}, [%4]!       \n"  // next 8 ARGB
       "bgt         1b                            \n"
-      : "+r"(src_r),                            // %0
-        "+r"(src_g),                            // %1
-        "+r"(src_b),                            // %2
-        "+r"(src_a),                            // %3
-        "+r"(dst_argb),                         // %4
-        "+r"(width)                             // %5
-      :                                         // Input registers
-      : "cc", "memory", "q0", "q1", "q2", "q3"  // Clobber List
+      : "+r"(src_r),     // %0
+        "+r"(src_g),     // %1
+        "+r"(src_b),     // %2
+        "+r"(src_a),     // %3
+        "+r"(dst_argb),  // %4
+        "+r"(width)      // %5
+      :                  // Input registers
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
+        "d7"  // Clobber List
   );
 }
 
@@ -918,13 +924,14 @@ void SplitXRGBRow_NEON(const uint8_t* src_argb,
       "vst1.8      {q1}, [%2]!                   \n"  // store G
       "vst1.8      {q2}, [%1]!                   \n"  // store R
       "bgt         1b                            \n"
-      : "+r"(src_argb),                         // %0
-        "+r"(dst_r),                            // %1
-        "+r"(dst_g),                            // %2
-        "+r"(dst_b),                            // %3
-        "+r"(width)                             // %4
-      :                                         // Input registers
-      : "cc", "memory", "q0", "q1", "q2", "q3"  // Clobber List
+      : "+r"(src_argb),  // %0
+        "+r"(dst_r),     // %1
+        "+r"(dst_g),     // %2
+        "+r"(dst_b),     // %3
+        "+r"(width)      // %4
+      :                  // Input registers
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
+        "d7"  // Clobber List
   );
 }
 
@@ -944,13 +951,14 @@ void MergeXRGBRow_NEON(const uint8_t* src_r,
       "vst4.8      {d0, d2, d4, d6}, [%3]!       \n"  // store 8 ARGB
       "vst4.8      {d1, d3, d5, d7}, [%3]!       \n"  // next 8 ARGB
       "bgt         1b                            \n"
-      : "+r"(src_r),                            // %0
-        "+r"(src_g),                            // %1
-        "+r"(src_b),                            // %2
-        "+r"(dst_argb),                         // %3
-        "+r"(width)                             // %4
-      :                                         // Input registers
-      : "cc", "memory", "q0", "q1", "q2", "q3"  // Clobber List
+      : "+r"(src_r),     // %0
+        "+r"(src_g),     // %1
+        "+r"(src_b),     // %2
+        "+r"(dst_argb),  // %3
+        "+r"(width)      // %4
+      :                  // Input registers
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
+        "d7"  // Clobber List
   );
 }
 
@@ -989,7 +997,8 @@ void MergeXR30Row_NEON(const uint16_t* src_r,
         "+r"(dst_ar30),  // %3
         "+r"(width)      // %4
       : "r"(shift)       // %5
-      : "memory", "cc", "q0", "q1", "q2", "q14", "q15");
+      : "memory", "cc", "d0", "d1", "d2", "d3", "d4", "d5", "d28", "d29", "d30",
+        "d31");
 }
 
 void MergeXR30Row_10_NEON(const uint16_t* src_r,
@@ -1023,7 +1032,7 @@ void MergeXR30Row_10_NEON(const uint16_t* src_r,
         "+r"(dst_ar30),  // %3
         "+r"(width)      // %4
       :
-      : "memory", "cc", "q0", "q1", "q2", "q14");
+      : "memory", "cc", "d0", "d1", "d2", "d3", "d4", "d5", "d28", "d29");
 }
 
 void MergeAR64Row_NEON(const uint16_t* src_r,
@@ -1064,7 +1073,8 @@ void MergeAR64Row_NEON(const uint16_t* src_r,
         "+r"(width)      // %5
       : "r"(shift),      // %6
         "r"(mask)        // %7
-      : "memory", "cc", "q0", "q1", "q2", "q3", "q15");
+      : "memory", "cc", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d30",
+        "d31");
 }
 
 void MergeXR64Row_NEON(const uint16_t* src_r,
@@ -1101,7 +1111,8 @@ void MergeXR64Row_NEON(const uint16_t* src_r,
         "+r"(width)      // %4
       : "r"(shift),      // %5
         "r"(mask)        // %6
-      : "memory", "cc", "q0", "q1", "q2", "q3", "q15");
+      : "memory", "cc", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d30",
+        "d31");
 }
 
 void MergeARGB16To8Row_NEON(const uint16_t* src_r,
@@ -1138,7 +1149,8 @@ void MergeARGB16To8Row_NEON(const uint16_t* src_r,
         "+r"(dst_argb),  // %4
         "+r"(width)      // %5
       : "r"(shift)       // %6
-      : "memory", "cc", "q0", "q1", "q2", "q3", "q15");
+      : "memory", "cc", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d30",
+        "d31");
 }
 
 void MergeXRGB16To8Row_NEON(const uint16_t* src_r,
@@ -1171,7 +1183,7 @@ void MergeXRGB16To8Row_NEON(const uint16_t* src_r,
         "+r"(dst_argb),  // %3
         "+r"(width)      // %4
       : "r"(shift)       // %5
-      : "memory", "cc", "q0", "q1", "q2", "d6", "q15");
+      : "memory", "cc", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d30", "d31");
 }
 
 // Copy multiple of 32.  vld4.8  allow unaligned and is fastest on a15.
@@ -1182,11 +1194,11 @@ void CopyRow_NEON(const uint8_t* src, uint8_t* dst, int width) {
       "subs        %2, %2, #32                   \n"  // 32 processed per loop
       "vst1.8      {d0, d1, d2, d3}, [%1]!       \n"  // store 32
       "bgt         1b                            \n"
-      : "+r"(src),                  // %0
-        "+r"(dst),                  // %1
-        "+r"(width)                 // %2  // Output registers
-      :                             // Input registers
-      : "cc", "memory", "q0", "q1"  // Clobber List
+      : "+r"(src),                              // %0
+        "+r"(dst),                              // %1
+        "+r"(width)                             // %2  // Output registers
+      :                                         // Input registers
+      : "cc", "memory", "d0", "d1", "d2", "d3"  // Clobber List
   );
 }
 
@@ -1201,7 +1213,7 @@ void SetRow_NEON(uint8_t* dst, uint8_t v8, int width) {
       : "+r"(dst),   // %0
         "+r"(width)  // %1
       : "r"(v8)      // %2
-      : "cc", "memory", "q0");
+      : "cc", "memory", "d0", "d1");
 }
 
 // ARGBSetRow writes 'width' pixels using an 32 bit value repeated.
@@ -1215,7 +1227,7 @@ void ARGBSetRow_NEON(uint8_t* dst, uint32_t v32, int width) {
       : "+r"(dst),   // %0
         "+r"(width)  // %1
       : "r"(v32)     // %2
-      : "cc", "memory", "q0");
+      : "cc", "memory", "d0", "d1");
 }
 
 void MirrorRow_NEON(const uint8_t* src, uint8_t* dst, int width) {
@@ -1237,7 +1249,7 @@ void MirrorRow_NEON(const uint8_t* src, uint8_t* dst, int width) {
         "+r"(dst),   // %1
         "+r"(width)  // %2
       : "r"(-32)     // %3
-      : "cc", "memory", "q0", "q1", "q2");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5");
 }
 
 void MirrorUVRow_NEON(const uint8_t* src_uv, uint8_t* dst_uv, int width) {
@@ -1257,7 +1269,7 @@ void MirrorUVRow_NEON(const uint8_t* src_uv, uint8_t* dst_uv, int width) {
         "+r"(dst_uv),  // %1
         "+r"(width)    // %2
       :
-      : "cc", "memory", "r12", "q0");
+      : "cc", "memory", "r12", "d0", "d1");
 }
 
 void MirrorSplitUVRow_NEON(const uint8_t* src_uv,
@@ -1282,7 +1294,7 @@ void MirrorSplitUVRow_NEON(const uint8_t* src_uv,
         "+r"(dst_v),   // %2
         "+r"(width)    // %3
       :
-      : "cc", "memory", "r12", "q0");
+      : "cc", "memory", "r12", "d0", "d1");
 }
 
 void ARGBMirrorRow_NEON(const uint8_t* src_argb, uint8_t* dst_argb, int width) {
@@ -1421,7 +1433,8 @@ void RGB565ToARGBRow_NEON(const uint8_t* src_rgb565,
         "+r"(dst_argb),    // %1
         "+r"(width)        // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3"  // Clobber List
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
+        "d7"  // Clobber List
   );
 }
 
@@ -1467,7 +1480,8 @@ void ARGB1555ToARGBRow_NEON(const uint8_t* src_argb1555,
         "+r"(dst_argb),      // %1
         "+r"(width)          // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3"  // Clobber List
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
+        "d7"  // Clobber List
   );
 }
 
@@ -1496,7 +1510,7 @@ void ARGB4444ToARGBRow_NEON(const uint8_t* src_argb4444,
         "+r"(dst_argb),      // %1
         "+r"(width)          // %2
       :
-      : "cc", "memory", "q0", "q1", "q2"  // Clobber List
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5"  // Clobber List
   );
 }
 
@@ -1515,7 +1529,8 @@ void ARGBToRGB24Row_NEON(const uint8_t* src_argb,
         "+r"(dst_rgb24),  // %1
         "+r"(width)       // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3"  // Clobber List
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
+        "d7"  // Clobber List
   );
 }
 
@@ -1546,7 +1561,7 @@ void YUY2ToYRow_NEON(const uint8_t* src_yuy2, uint8_t* dst_y, int width) {
         "+r"(dst_y),     // %1
         "+r"(width)      // %2
       :
-      : "cc", "memory", "q0", "q1"  // Clobber List
+      : "cc", "memory", "d0", "d1", "d2", "d3"  // Clobber List
   );
 }
 
@@ -1561,7 +1576,7 @@ void UYVYToYRow_NEON(const uint8_t* src_uyvy, uint8_t* dst_y, int width) {
         "+r"(dst_y),     // %1
         "+r"(width)      // %2
       :
-      : "cc", "memory", "q0", "q1"  // Clobber List
+      : "cc", "memory", "d0", "d1", "d2", "d3"  // Clobber List
   );
 }
 
@@ -1696,11 +1711,11 @@ void ARGBShuffleRow_NEON(const uint8_t* src_argb,
       "vtbl.8      d3, {d0, d1}, d5              \n"  // look up 2 next pixels
       "vst1.8      {q1}, [%1]!                   \n"  // store 4.
       "bgt         1b                            \n"
-      : "+r"(src_argb),                   // %0
-        "+r"(dst_argb),                   // %1
-        "+r"(width)                       // %2
-      : "r"(shuffler)                     // %3
-      : "cc", "memory", "q0", "q1", "q2"  // Clobber List
+      : "+r"(src_argb),                                     // %0
+        "+r"(dst_argb),                                     // %1
+        "+r"(width)                                         // %2
+      : "r"(shuffler)                                       // %3
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5"  // Clobber List
   );
 }
 
@@ -1762,7 +1777,7 @@ void ARGBToRGB565Row_NEON(const uint8_t* src_argb,
         "+r"(dst_rgb565),  // %1
         "+r"(width)        // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "d6");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6");
 }
 
 void ARGBToRGB565DitherRow_NEON(const uint8_t* src_argb,
@@ -1784,7 +1799,7 @@ void ARGBToRGB565DitherRow_NEON(const uint8_t* src_argb,
       : "r"(src_argb),  // %1
         "r"(dither4),   // %2
         "r"(width)      // %3
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 void ARGBToARGB1555Row_NEON(const uint8_t* src_argb,
@@ -1801,7 +1816,7 @@ void ARGBToARGB1555Row_NEON(const uint8_t* src_argb,
         "+r"(dst_argb1555),  // %1
         "+r"(width)          // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 void ARGBToARGB4444Row_NEON(const uint8_t* src_argb,
@@ -1820,7 +1835,7 @@ void ARGBToARGB4444Row_NEON(const uint8_t* src_argb,
         "+r"(dst_argb4444),  // %1
         "+r"(width)          // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 void ARGBExtractAlphaRow_NEON(const uint8_t* src_argb,
@@ -1837,7 +1852,8 @@ void ARGBExtractAlphaRow_NEON(const uint8_t* src_argb,
         "+r"(dst_a),     // %1
         "+r"(width)      // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3"  // Clobber List
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
+        "d7"  // Clobber List
   );
 }
 
@@ -1878,15 +1894,16 @@ void ARGBToUV444MatrixRow_NEON(const uint8_t* src_argb,
       "vst1.8      {d0}, [%1]!                   \n"  // store 8 pixels U.
       "vst1.8      {d1}, [%2]!                   \n"  // store 8 pixels V.
       "bgt         1b                            \n"
-      : "+r"(src_argb),     // %0
-        "+r"(dst_u),        // %1
-        "+r"(dst_v),        // %2
-        "+r"(width)         // %3
-      : "r"(&c->kRGBToU),   // %4
-        "r"(&c->kRGBToV),   // %5
-        "r"(&c->kAddUV)     // %6
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q8", "q9", "q10", "q11",
-        "q12", "q13", "q14", "q15");
+      : "+r"(src_argb),    // %0
+        "+r"(dst_u),       // %1
+        "+r"(dst_v),       // %2
+        "+r"(width)        // %3
+      : "r"(&c->kRGBToU),  // %4
+        "r"(&c->kRGBToV),  // %5
+        "r"(&c->kAddUV)    // %6
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d16",
+        "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26",
+        "d27", "d28", "d29", "d30", "d31");
 }
 
 void ARGBToUV444Row_NEON(const uint8_t* src_argb,
@@ -1924,12 +1941,14 @@ void ARGBToUVMatrixRow_NEON(const uint8_t* src_argb,
                             uint8_t* dst_v,
                             int width,
                             const struct ArgbConstants* c) {
-  asm volatile (
+  asm volatile(
       "add         %1, %0, %1                    \n"  // src_stride + src_argb
       "vld1.8      {d18}, [%5]                   \n"  // load kRGBToU
       "vld1.8      {d19}, [%6]                   \n"  // load kRGBToV
-      "vmovl.s8    q8, d18                       \n"  // U coeffs in q8 (d16, d17)
-      "vmovl.s8    q9, d19                       \n"  // V coeffs in q9 (d18, d19)
+      "vmovl.s8    q8, d18                       \n"  // U coeffs in q8 (d16,
+                                                      // d17)
+      "vmovl.s8    q9, d19                       \n"  // V coeffs in q9 (d18,
+                                                      // d19)
       "vdup.16     q10, d16[0]                   \n"  // U0
       "vdup.16     q11, d16[1]                   \n"  // U1
       "vdup.16     q12, d16[2]                   \n"  // U2
@@ -1938,13 +1957,16 @@ void ARGBToUVMatrixRow_NEON(const uint8_t* src_argb,
       "vdup.16     q15, d18[2]                   \n"  // V2
       "1:          \n"
       "vld4.8      {d0, d2, d4, d6}, [%0]!       \n"  // load 8 ARGB pixels.
-      "vld4.8      {d1, d3, d5, d7}, [%0]!       \n"  // load next 8 ARGB pixels.
+      "vld4.8      {d1, d3, d5, d7}, [%0]!       \n"  // load next 8 ARGB
+                                                      // pixels.
       "subs        %4, %4, #16                   \n"  // 16 processed per loop.
       "vpaddl.u8   q0, q0                        \n"  // B 16 bytes -> 8 shorts.
       "vpaddl.u8   q1, q1                        \n"  // G 16 bytes -> 8 shorts.
       "vpaddl.u8   q2, q2                        \n"  // R 16 bytes -> 8 shorts.
-      "vld4.8      {d8, d10, d12, d14}, [%1]!    \n"  // load 8 more ARGB pixels.
-      "vld4.8      {d9, d11, d13, d15}, [%1]!    \n"  // load last 8 ARGB pixels.
+      "vld4.8      {d8, d10, d12, d14}, [%1]!    \n"  // load 8 more ARGB
+                                                      // pixels.
+      "vld4.8      {d9, d11, d13, d15}, [%1]!    \n"  // load last 8 ARGB
+                                                      // pixels.
       "vpadal.u8   q0, q4                        \n"  // B 16 bytes -> 8 shorts.
       "vpadal.u8   q1, q5                        \n"  // G 16 bytes -> 8 shorts.
       "vpadal.u8   q2, q6                        \n"  // R 16 bytes -> 8 shorts.
@@ -1972,16 +1994,17 @@ void ARGBToUVMatrixRow_NEON(const uint8_t* src_argb,
       "vst1.8      {d0}, [%2]!                   \n"  // store 8 pixels U.
       "vst1.8      {d1}, [%3]!                   \n"  // store 8 pixels V.
       "bgt         1b                            \n"
-  : "+r"(src_argb),  // %0
-    "+r"(src_stride_argb),  // %1
-    "+r"(dst_u),     // %2
-    "+r"(dst_v),     // %3
-    "+r"(width)        // %4
-  : "r"(&c->kRGBToU),  // %5
-    "r"(&c->kRGBToV)   // %6
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
-  );
+      : "+r"(src_argb),         // %0
+        "+r"(src_stride_argb),  // %1
+        "+r"(dst_u),            // %2
+        "+r"(dst_v),            // %3
+        "+r"(width)             // %4
+      : "r"(&c->kRGBToU),       // %5
+        "r"(&c->kRGBToV)        // %6
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d9", "d10", "d11", "d12", "d13", "d14", "d15", "d16", "d17", "d18",
+        "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28",
+        "d29", "d30", "d31");
 }
 
 void ARGBToUVRow_NEON(const uint8_t* src_argb,
@@ -2024,8 +2047,8 @@ void ARGBToUVRow_NEON(const uint8_t* src_argb,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2069,8 +2092,8 @@ void ARGBToUVJRow_NEON(const uint8_t* src_argb,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2114,8 +2137,8 @@ void ABGRToUVJRow_NEON(const uint8_t* src_abgr,
     "+r"(dst_vj),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2159,8 +2182,8 @@ void RGB24ToUVJRow_NEON(const uint8_t* src_rgb24,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2204,8 +2227,8 @@ void RAWToUVJRow_NEON(const uint8_t* src_raw,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2249,8 +2272,8 @@ void BGRAToUVRow_NEON(const uint8_t* src_bgra,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2294,8 +2317,8 @@ void ABGRToUVRow_NEON(const uint8_t* src_abgr,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2339,8 +2362,8 @@ void RGBAToUVRow_NEON(const uint8_t* src_rgba,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2384,8 +2407,8 @@ void RGB24ToUVRow_NEON(const uint8_t* src_rgb24,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2429,8 +2452,8 @@ void RAWToUVRow_NEON(const uint8_t* src_raw,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   :
-  : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-    "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+  : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15",
+    "d16", "d17", "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31"
   );
 }
 
@@ -2495,8 +2518,10 @@ void RGB565ToUVRow_NEON(const uint8_t* src_rgb565,
         "+r"(dst_v),              // %3
         "+r"(width)               // %4
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8",
-        "q9", "q10", "q11", "q12", "q13", "q14", "q15");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d9", "d10", "d11", "d12", "d13", "d14", "d15", "d16", "d17", "d18",
+        "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28",
+        "d29", "d30", "d31");
 }
 
 // 16x2 pixels -> 8x1.  width is number of argb pixels. e.g. 16.
@@ -2560,8 +2585,10 @@ void ARGB1555ToUVRow_NEON(const uint8_t* src_argb1555,
         "+r"(dst_v),                // %3
         "+r"(width)                 // %4
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8",
-        "q9", "q10", "q11", "q12", "q13", "q14", "q15");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d9", "d10", "d11", "d12", "d13", "d14", "d15", "d16", "d17", "d18",
+        "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28",
+        "d29", "d30", "d31");
 }
 
 // 16x2 pixels -> 8x1.  width is number of argb pixels. e.g. 16.
@@ -2616,8 +2643,8 @@ void ARGB4444ToUVRow_NEON(const uint8_t* src_argb4444,
         "+r"(dst_v),                // %3
         "+r"(width)                 // %4
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8",
-        "q9", "q10", "q11", "q12", "q13", "q14", "q15");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "d11", "d12", "d13", "d14", "d15", "d16", "d17",
+        "d18", "d19", "d20", "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30", "d31");
 }
 
 void RGB565ToYRow_NEON(const uint8_t* src_rgb565, uint8_t* dst_y, int width) {
@@ -2641,7 +2668,8 @@ void RGB565ToYRow_NEON(const uint8_t* src_rgb565, uint8_t* dst_y, int width) {
         "+r"(dst_y),       // %1
         "+r"(width)        // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q12", "q13");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d24",
+        "d25", "d26", "d27");
 }
 
 void ARGB1555ToYRow_NEON(const uint8_t* src_argb1555,
@@ -2667,7 +2695,8 @@ void ARGB1555ToYRow_NEON(const uint8_t* src_argb1555,
         "+r"(dst_y),         // %1
         "+r"(width)          // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q12", "q13");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d24",
+        "d25", "d26", "d27");
 }
 
 void ARGB4444ToYRow_NEON(const uint8_t* src_argb4444,
@@ -2693,7 +2722,8 @@ void ARGB4444ToYRow_NEON(const uint8_t* src_argb4444,
         "+r"(dst_y),         // %1
         "+r"(width)          // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q12", "q13");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d24",
+        "d25", "d26", "d27");
 }
 
 void ARGBToAR64Row_NEON(const uint8_t* src_argb,
@@ -2713,7 +2743,7 @@ void ARGBToAR64Row_NEON(const uint8_t* src_argb,
         "+r"(dst_ar64),  // %1
         "+r"(width)      // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 static const uvec8 kShuffleARGBToABGR = {2,  1, 0, 3,  6,  5,  4,  7,
@@ -2742,7 +2772,8 @@ void ARGBToAB64Row_NEON(const uint8_t* src_argb,
         "+r"(dst_ab64),           // %1
         "+r"(width)               // %2
       : "r"(&kShuffleARGBToABGR)  // %3
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q4");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d9");
 }
 
 void AR64ToARGBRow_NEON(const uint16_t* src_ar64,
@@ -2766,7 +2797,7 @@ void AR64ToARGBRow_NEON(const uint16_t* src_ar64,
         "+r"(dst_argb),  // %1
         "+r"(width)      // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 static const uvec8 kShuffleAB64ToARGB = {5, 3, 1, 7, 13, 11, 9, 15};
@@ -2794,7 +2825,8 @@ void AB64ToARGBRow_NEON(const uint16_t* src_ab64,
         "+r"(dst_argb),           // %1
         "+r"(width)               // %2
       : "r"(&kShuffleAB64ToARGB)  // %3
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q4");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d9");
 }
 
 // ARGB expects first 3 values to contain RGB and 4th value is ignored.
@@ -2828,8 +2860,8 @@ void ARGBToYMatrixRow_NEON(const uint8_t* src_argb,
         "+r"(dst_y)        // %2
       : "r"(&c->kRGBToY),  // %3
         "r"(&c->kAddY)     // %4
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q8", "q9", "d20", "d21", "d22",
-        "q12");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d16",
+        "d17", "d18", "d19", "d20", "d21", "d22", "d24", "d25");
 }
 
 void ARGBToYRow_NEON(const uint8_t* src_argb, uint8_t* dst_y, int width) {
@@ -2880,8 +2912,8 @@ static void RGBAToYMatrixRow_NEON(const uint8_t* src_rgba,
         "+r"(width)        // %2
       : "r"(&c->kRGBToY),  // %3
         "r"(&c->kAddY)     // %4
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q8", "q9", "d20", "d21", "d22",
-        "q12");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d16",
+        "d17", "d18", "d19", "d20", "d21", "d22", "d24", "d25");
 }
 
 void RGBAToYRow_NEON(const uint8_t* src_rgba, uint8_t* dst_y, int width) {
@@ -2927,8 +2959,8 @@ void RGBToYMatrixRow_NEON(const uint8_t* src_rgb,
         "+r"(width)        // %2
       : "r"(&c->kRGBToY),  // %3
         "r"(&c->kAddY)     // %4
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q8", "q9", "d20", "d21", "d22",
-        "q12");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d16",
+        "d17", "d18", "d19", "d20", "d21", "d22", "d24", "d25");
 }
 
 
@@ -2991,7 +3023,8 @@ void InterpolateRow_NEON(uint8_t* dst_ptr,
         "+r"(dst_width),   // %3
         "+r"(y1_fraction)  // %4
       :
-      : "cc", "memory", "q0", "q1", "d4", "d5", "q13", "q14");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d26", "d27", "d28",
+        "d29");
 }
 
 // Bilinear filter 8x2 -> 8x1
@@ -3051,7 +3084,8 @@ void InterpolateRow_16_NEON(uint16_t* dst_ptr,
         "+r"(dst_width)    // %3
       : "r"(y1_fraction),  // %4
         "r"(y0_fraction)   // %5
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q8");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d16",
+        "d17");
 }
 
 // dr * (256 - sa) / 256 + sr = dr - dr * sa / 256 + sr
@@ -3111,7 +3145,8 @@ void ARGBBlendRow_NEON(const uint8_t* src_argb,
         "+r"(dst_argb),   // %2
         "+r"(width)       // %3
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q10", "q11", "q12");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d20",
+        "d21", "d22", "d23", "d24", "d25");
 }
 
 // Attenuate 8 pixels at a time.
@@ -3137,7 +3172,8 @@ void ARGBAttenuateRow_NEON(const uint8_t* src_argb,
         "+r"(dst_argb),  // %1
         "+r"(width)      // %2
       :
-      : "cc", "memory", "q0", "q1", "q10", "q11", "q12", "q15");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d20", "d21", "d22", "d23",
+        "d24", "d25", "d30", "d31");
 }
 
 // Quantize 8 ARGB pixels (32 bytes).
@@ -3179,7 +3215,8 @@ void ARGBQuantizeRow_NEON(uint8_t* dst_argb,
       : "r"(scale),           // %2
         "r"(interval_size),   // %3
         "r"(interval_offset)  // %4
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q8", "q9", "q10");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d16",
+        "d17", "d18", "d19", "d20", "d21");
 }
 
 // Shade 8 pixels at a time by specified value.
@@ -3216,7 +3253,8 @@ void ARGBShadeRow_NEON(const uint8_t* src_argb,
         "+r"(dst_argb),  // %1
         "+r"(width)      // %2
       : "r"(value)       // %3
-      : "cc", "memory", "q0", "q10", "q11", "q12", "q13");
+      : "cc", "memory", "d0", "d1", "d20", "d21", "d22", "d23", "d24", "d25",
+        "d26", "d27");
 }
 
 // Convert 8 ARGB pixels (64 bytes) to 8 Gray ARGB pixels
@@ -3242,7 +3280,8 @@ void ARGBGrayRow_NEON(const uint8_t* src_argb, uint8_t* dst_argb, int width) {
         "+r"(dst_argb),  // %1
         "+r"(width)      // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q12", "q13");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d24", "d25", "d26",
+        "d27");
 }
 
 // Convert 8 ARGB pixels (32 bytes) to 8 Sepia ARGB pixels.
@@ -3280,8 +3319,9 @@ void ARGBSepiaRow_NEON(uint8_t* dst_argb, int width) {
       : "+r"(dst_argb),  // %0
         "+r"(width)      // %1
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q10", "q11", "q12", "q13",
-        "q14", "q15");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d20",
+        "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30",
+        "d31");
 }
 
 // Tranform 8 ARGB pixels (32 bytes) with color matrix.
@@ -3341,8 +3381,10 @@ void ARGBColorMatrixRow_NEON(const uint8_t* src_argb,
         "+r"(dst_argb),   // %1
         "+r"(width)       // %2
       : "r"(matrix_argb)  // %3
-      : "cc", "memory", "q0", "q1", "q2", "q4", "q5", "q6", "q7", "q8", "q9",
-        "q10", "q11", "q12", "q13", "q14", "q15");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d8", "d9", "d10",
+        "d11", "d12", "d13", "d14", "d15", "d16", "d17", "d18", "d19", "d20",
+        "d21", "d22", "d23", "d24", "d25", "d26", "d27", "d28", "d29", "d30",
+        "d31");
 }
 
 // Multiply 2 rows of ARGB pixels together, 8 pixels at a time.
@@ -3371,7 +3413,7 @@ void ARGBMultiplyRow_NEON(const uint8_t* src_argb,
         "+r"(dst_argb),   // %2
         "+r"(width)       // %3
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 // Add 2 rows of ARGB pixels together, 8 pixels at a time.
@@ -3394,7 +3436,7 @@ void ARGBAddRow_NEON(const uint8_t* src_argb,
         "+r"(dst_argb),   // %2
         "+r"(width)       // %3
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 // Subtract 2 rows of ARGB pixels, 8 pixels at a time.
@@ -3417,7 +3459,7 @@ void ARGBSubtractRow_NEON(const uint8_t* src_argb,
         "+r"(dst_argb),   // %2
         "+r"(width)       // %3
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 // Adds Sobel X and Sobel Y and stores Sobel into ARGB.
@@ -3446,7 +3488,7 @@ void SobelRow_NEON(const uint8_t* src_sobelx,
         "+r"(dst_argb),    // %2
         "+r"(width)        // %3
       :
-      : "cc", "memory", "q0", "q1");
+      : "cc", "memory", "d0", "d1", "d2", "d3");
 }
 
 // Adds Sobel X and Sobel Y and stores Sobel into plane.
@@ -3468,7 +3510,7 @@ void SobelToPlaneRow_NEON(const uint8_t* src_sobelx,
         "+r"(dst_y),       // %2
         "+r"(width)        // %3
       :
-      : "cc", "memory", "q0", "q1");
+      : "cc", "memory", "d0", "d1", "d2", "d3");
 }
 
 // Mixes Sobel X, Sobel Y and Sobel into ARGB.
@@ -3495,7 +3537,7 @@ void SobelXYRow_NEON(const uint8_t* src_sobelx,
         "+r"(dst_argb),    // %2
         "+r"(width)        // %3
       :
-      : "cc", "memory", "q0", "q1");
+      : "cc", "memory", "d0", "d1", "d2", "d3");
 }
 
 // SobelX as a matrix is
@@ -3526,14 +3568,14 @@ void SobelXRow_NEON(const uint8_t* src_y0,
       "vqmovn.u16  d0, q0                        \n"
       "vst1.8      {d0}, [%3]!                   \n"  // store 8 sobelx
       "bgt         1b                            \n"
-      : "+r"(src_y0),               // %0
-        "+r"(src_y1),               // %1
-        "+r"(src_y2),               // %2
-        "+r"(dst_sobelx),           // %3
-        "+r"(width)                 // %4
-      : "r"(2),                     // %5
-        "r"(6)                      // %6
-      : "cc", "memory", "q0", "q1"  // Clobber List
+      : "+r"(src_y0),                           // %0
+        "+r"(src_y1),                           // %1
+        "+r"(src_y2),                           // %2
+        "+r"(dst_sobelx),                       // %3
+        "+r"(width)                             // %4
+      : "r"(2),                                 // %5
+        "r"(6)                                  // %6
+      : "cc", "memory", "d0", "d1", "d2", "d3"  // Clobber List
   );
 }
 
@@ -3564,13 +3606,13 @@ void SobelYRow_NEON(const uint8_t* src_y0,
       "vqmovn.u16  d0, q0                        \n"
       "vst1.8      {d0}, [%2]!                   \n"  // store 8 sobely
       "bgt         1b                            \n"
-      : "+r"(src_y0),               // %0
-        "+r"(src_y1),               // %1
-        "+r"(dst_sobely),           // %2
-        "+r"(width)                 // %3
-      : "r"(1),                     // %4
-        "r"(6)                      // %5
-      : "cc", "memory", "q0", "q1"  // Clobber List
+      : "+r"(src_y0),                           // %0
+        "+r"(src_y1),                           // %1
+        "+r"(dst_sobely),                       // %2
+        "+r"(width)                             // %3
+      : "r"(1),                                 // %4
+        "r"(6)                                  // %5
+      : "cc", "memory", "d0", "d1", "d2", "d3"  // Clobber List
   );
 }
 
@@ -3609,7 +3651,8 @@ void HalfFloatRow_NEON(const uint16_t* src,
         "+r"(dst),                      // %1
         "+r"(width)                     // %2
       : "w"(scale * 1.9259299444e-34f)  // %3
-      : "cc", "memory", "q0", "q1", "q8", "q9", "q10", "q11");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d16", "d17", "d18", "d19",
+        "d20", "d21", "d22", "d23");
 }
 
 void ByteToFloatRow_NEON(const uint8_t* src,
@@ -3634,7 +3677,7 @@ void ByteToFloatRow_NEON(const uint8_t* src,
         "+r"(dst),   // %1
         "+r"(width)  // %2
       : "w"(scale)   // %3
-      : "cc", "memory", "q1", "q2", "q3");
+      : "cc", "memory", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 // filter 5 rows with 1, 4, 6, 4, 1 coefficients to produce 1 row.
@@ -3674,7 +3717,7 @@ void GaussCol_NEON(const uint16_t* src0,
         "+r"(dst),   // %5
         "+r"(width)  // %6
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 // filter 5 rows with 1, 4, 6, 4, 1 coefficients to produce 1 row.
@@ -3712,7 +3755,8 @@ void GaussRow_NEON(const uint32_t* src, uint16_t* dst, int width) {
         "+r"(dst),   // %4
         "+r"(width)  // %5
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q8", "q9", "q10", "q11");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d16",
+        "d17", "d18", "d19", "d20", "d21", "d22", "d23");
 }
 
 // Convert biplanar NV21 to packed YUV24
@@ -3737,7 +3781,7 @@ void NV21ToYUV24Row_NEON(const uint8_t* src_y,
         "+r"(dst_yuv24),  // %2
         "+r"(width)       // %3
       :
-      : "cc", "memory", "q0", "q1", "q2");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5");
 }
 
 void AYUVToUVRow_NEON(const uint8_t* src_ayuv,
@@ -3768,7 +3812,8 @@ void AYUVToUVRow_NEON(const uint8_t* src_ayuv,
         "+r"(dst_uv),           // %2
         "+r"(width)             // %3
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d9", "d10", "d11", "d12", "d13", "d14", "d15");
 }
 
 void AYUVToVURow_NEON(const uint8_t* src_ayuv,
@@ -3799,7 +3844,8 @@ void AYUVToVURow_NEON(const uint8_t* src_ayuv,
         "+r"(dst_vu),           // %2
         "+r"(width)             // %3
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d9", "d10", "d11", "d12", "d13", "d14", "d15");
 }
 
 // Copy row of AYUV Y's into Y.
@@ -3816,7 +3862,7 @@ void AYUVToYRow_NEON(const uint8_t* src_ayuv, uint8_t* dst_y, int width) {
         "+r"(dst_y),     // %1
         "+r"(width)      // %2
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 // Convert UV plane of NV12 to VU of NV21.
@@ -3833,7 +3879,7 @@ void SwapUVRow_NEON(const uint8_t* src_uv, uint8_t* dst_vu, int width) {
         "+r"(dst_vu),  // %1
         "+r"(width)    // %2
       :
-      : "cc", "memory", "q0", "q1", "q2");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5");
 }
 
 void HalfMergeUVRow_NEON(const uint8_t* src_u,
@@ -3866,7 +3912,7 @@ void HalfMergeUVRow_NEON(const uint8_t* src_u,
         "+r"(dst_uv),   // %4
         "+r"(width)     // %5
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7");
 }
 
 void SplitUVRow_16_NEON(const uint16_t* src_uv,
@@ -3890,7 +3936,7 @@ void SplitUVRow_16_NEON(const uint16_t* src_uv,
         "+r"(dst_v),   // %2
         "+r"(width)    // %3
       : "r"(shift)     // %4
-      : "cc", "memory", "q0", "q1", "q2");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5");
 }
 
 void MergeUVRow_16_NEON(const uint16_t* src_u,
@@ -3914,7 +3960,7 @@ void MergeUVRow_16_NEON(const uint16_t* src_u,
         "+r"(dst_uv),  // %2
         "+r"(width)    // %3
       : "r"(shift)     // %4
-      : "cc", "memory", "q0", "q1", "q2");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5");
 }
 
 void MultiplyRow_16_NEON(const uint16_t* src_y,
@@ -3936,7 +3982,7 @@ void MultiplyRow_16_NEON(const uint16_t* src_y,
         "+r"(dst_y),  // %1
         "+r"(width)   // %2
       : "r"(scale)    // %3
-      : "cc", "memory", "q0", "q1", "q2");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5");
 }
 
 void DivideRow_16_NEON(const uint16_t* src_y,
@@ -3962,7 +4008,7 @@ void DivideRow_16_NEON(const uint16_t* src_y,
         "+r"(dst_y),  // %1
         "+r"(width)   // %2
       : "r"(scale)    // %3
-      : "cc", "memory", "q0", "q1", "q2", "q3", "d8");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8");
 }
 
 // Use scale to convert lsb formats to msb, depending how many bits there are:
@@ -3991,7 +4037,7 @@ void Convert16To8Row_NEON(const uint16_t* src_y,
         "+r"(dst_y),  // %1
         "+r"(width)   // %2
       : "r"(shift)    // %3
-      : "cc", "memory", "q0", "q1", "q2");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5");
 }
 
 // Use scale to convert J420 to I420
@@ -4026,7 +4072,8 @@ void Convert8To8Row_NEON(const uint8_t* src_y,
         "+r"(width)   // %2
       : "r"(scale),   // %3
         "r"(bias)     // %4
-      : "cc", "memory", "q0", "q1", "q2", "q3", "d8", "q5");
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d10", "d11");
 }
 
 #endif  // !defined(LIBYUV_DISABLE_NEON) && defined(__ARM_NEON__)..
