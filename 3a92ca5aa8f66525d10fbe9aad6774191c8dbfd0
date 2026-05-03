@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b9f7b5db_aeb93aca",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2834,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-03T22:45:53Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by Trailing Whitespace: Please remove the trailing whitespace.\n\nPlease remove the trailing whitespace.",
+      "range": {
+        "startLine": 2834,
+        "startChar": 0,
+        "endLine": 2834,
+        "endChar": 8
+      },
+      "revId": "3a92ca5aa8f66525d10fbe9aad6774191c8dbfd0",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
