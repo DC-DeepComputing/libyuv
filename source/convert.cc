@@ -2247,7 +2247,9 @@ ARGBToUVMatrixRow_C;
 
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON)
     if (TestCpuFlag(kCpuHasNEON)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
+      if (IS_ALIGNED(width, 2)) {
+        ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
+      }
       if (IS_ALIGNED(width, 16)) {
         ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON;
       }
@@ -2255,7 +2257,9 @@ ARGBToUVMatrixRow_C;
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON_I8MM)
     if (TestCpuFlag(kCpuHasNEON) && TestCpuFlag(kCpuHasNeonI8MM)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
+      if (IS_ALIGNED(width, 2)) {
+        ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
+      }
       if (IS_ALIGNED(width, 16)) {
         ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON_I8MM;
       }
@@ -2263,12 +2267,16 @@ ARGBToUVMatrixRow_C;
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SVE2)
     if (TestCpuFlag(kCpuHasSVE2)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
+      if (IS_ALIGNED(width, 2)) {
+        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
+      }
     }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SME)
     if (TestCpuFlag(kCpuHasSME)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
+      if (IS_ALIGNED(width, 2)) {
+        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
+      }
     }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SSSE3)
