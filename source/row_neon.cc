@@ -1964,8 +1964,19 @@ void ARGBToUVMatrixRow_NEON(const uint8_t* src_argb,
       "vmla.s16    q9, q1, q14                   \n"  // V += G * V1
       "vmla.s16    q9, q2, q15                   \n"  // V += R * V2
 
+<<<<<<< PATCH SET (7413eebc96cd6937d7022857213d3e1268a10ede libyuv: Optimize Convert8To8Row_NEON for 32-bit ARM)
+      "vsubhn.i16  d0, q3, q8                    \n"  // 128.0 - U
+      "vsubhn.i16  d1, q3, q9                    \n"  // 128.0 - V
+||||||| BASE      (f2ac6db694d1e5b0af1d7b05dc431e0e455fe228 RAWToNV21 using SME, SVE, I8MM or Neon)
+      "vsub.u16    q8, q3, q8                    \n"  // 128.0 - U
+      "vsub.u16    q9, q3, q9                    \n"  // 128.0 - V
+
+      "vqshrn.u16  d0, q8, #8                    \n"  // Saturating shift right
+      "vqshrn.u16  d1, q9, #8                    \n"
+=======
       "vsubhn.s16  d0, q3, q8                    \n"  // 128.0 - U
       "vsubhn.s16  d1, q3, q9                    \n"  // 128.0 - V
+>>>>>>> BASE      (2143edfa7a807b5ea59aff235b7d722729bcb19c ARGBToUVMatrixRow_NEON arm32 reimplemented for GCC)
 
       "vst1.8      {d0}, [%2]!                   \n"  // store 8 pixels U.
       "vst1.8      {d1}, [%3]!                   \n"  // store 8 pixels V.
@@ -4011,12 +4022,10 @@ void Convert8To8Row_NEON(const uint8_t* src_y,
       "vmull.u8    q1, d5, d8                    \n"
       "vmull.u8    q2, d6, d8                    \n"
       "vmull.u8    q3, d7, d8                    \n"
-      "vshrn.u16   d0, q0, #8                    \n"
-      "vshrn.u16   d1, q1, #8                    \n"
-      "vshrn.u16   d2, q2, #8                    \n"
-      "vshrn.u16   d3, q3, #8                    \n"
-      "vadd.u8     q0, q0, q5                    \n"
-      "vadd.u8     q1, q1, q5                    \n"
+      "vuzp.8      q0, q1                        \n"
+      "vuzp.8      q2, q3                        \n"
+      "vadd.u8     q0, q1, q5                    \n"
+      "vadd.u8     q1, q3, q5                    \n"
       "vst1.8      {q0, q1}, [%1]!               \n"  // store 32 pixels
       "bgt         1b                            \n"
       : "+r"(src_y),  // %0
