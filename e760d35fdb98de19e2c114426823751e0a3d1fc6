@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c4b67fa2_cd40c46f",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1979,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-04T19:47:34Z",
+      "side": 1,
+      "message": "Please fix this ERROR reported by Conflict Markers: Complete set of diff3 style conflict markers found. If this is a false alarm, ad...\n\nComplete set of diff3 style conflict markers found. If this is a false alarm, add IGNORE_MERGE_CONFLICT_CHECK\u003d\u003d\u003creason\u003e to your commit message.",
+      "range": {
+        "startLine": 1967,
+        "startChar": 0,
+        "endLine": 1979,
+        "endChar": 0
+      },
+      "revId": "e760d35fdb98de19e2c114426823751e0a3d1fc6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
