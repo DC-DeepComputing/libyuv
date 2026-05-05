@@ -3628,18 +3628,13 @@ void OMITFP I422ToRGBARow_SSSE3(const uint8_t* y_buf,
 
 #define YUVTORGB_SETUP_AVX512BW(yuvconstants)                         \
   "vpcmpeqb   %%xmm13,%%xmm13,%%xmm13                             \n" \
-  "movdqa     (%[yuvconstants]),%%xmm8                            \n" \
-  "vpbroadcastq %%xmm8, %%zmm8                                    \n" \
+  "vpbroadcastq (%[yuvconstants]),%%zmm8                          \n" \
   "vpsllw     $7,%%xmm13,%%xmm13                                  \n" \
   "vpbroadcastb %%xmm13,%%zmm13                                   \n" \
-  "movq       32(%[yuvconstants]),%%xmm9                          \n" \
-  "vpbroadcastq %%xmm9,%%zmm9                                     \n" \
-  "movq       64(%[yuvconstants]),%%xmm10                         \n" \
-  "vpbroadcastq %%xmm10,%%zmm10                                   \n" \
-  "movq       96(%[yuvconstants]),%%xmm11                         \n" \
-  "vpbroadcastq %%xmm11,%%zmm11                                   \n" \
-  "movq       128(%[yuvconstants]),%%xmm12                        \n" \
-  "vpbroadcastq %%xmm12,%%zmm12                                   \n" \
+  "vpbroadcastq 32(%[yuvconstants]),%%zmm9                        \n" \
+  "vpbroadcastq 64(%[yuvconstants]),%%zmm10                       \n" \
+  "vpbroadcastq 96(%[yuvconstants]),%%zmm11                       \n" \
+  "vpbroadcastq 128(%[yuvconstants]),%%zmm12                      \n" \
   "vmovups    (%[quadsplitperm]),%%zmm16                          \n" \
   "vmovups    (%[dquadsplitperm]),%%zmm17                         \n" \
   "vmovups    (%[unperm]),%%zmm18                                 \n"
