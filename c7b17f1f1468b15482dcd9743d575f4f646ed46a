@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8bec8eb2_d3aa2ba5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-05T20:56:19Z",
+      "side": 1,
+      "message": "nicely done!  did you use gemini?\nthere are 2 refactors in progress that will affect this\n-row_win (and row_common) is being refactored to use intrinsics to work on 64 bit as well as 32 bit, as will scale_win.\n-sse is being removed and/or ported to avx and avx512.  sse support will rely on scale_common being compiled as sse and hopefully vectorized.  when profiling on new cpus, avx512 should be used, or at least avx.\nI\u0027ll likely throw away this sse and recreate avx and neon.  both neon and avx have a rounding multiply that might work well here.  so i vote we should land this as is and followup with performance improvements later\n\nthere is a good chance this will cause \u0027golden test\u0027 failures",
+      "revId": "c7b17f1f1468b15482dcd9743d575f4f646ed46a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9070c898_2d40aeab",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 698,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-05T20:56:19Z",
+      "side": 1,
+      "message": "consider PMULHRSW",
+      "revId": "c7b17f1f1468b15482dcd9743d575f4f646ed46a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
