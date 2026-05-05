@@ -37,6 +37,41 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0074a138_d0c98fe7",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 818,
+      "author": {
+        "id": 1002030
+      },
+      "writtenOn": "2026-05-05T22:55:14Z",
+      "side": 1,
+      "message": "Or perhaps just a named constant even because a single function may have a challenge with different parameters?",
+      "parentUuid": "52ab272d_f5add497",
+      "revId": "c7b17f1f1468b15482dcd9743d575f4f646ed46a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c75ca02e_d4a16470",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 901,
+      "author": {
+        "id": 1002030
+      },
+      "writtenOn": "2026-05-05T22:55:14Z",
+      "side": 1,
+      "message": "Everyone knows 65536 and 32768 but same idea? just readability if you didn\u0027t want separate function comment from before. named number?",
+      "revId": "c7b17f1f1468b15482dcd9743d575f4f646ed46a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9070c898_2d40aeab",
         "filename": "source/scale_gcc.cc",
         "patchSetId": 4
