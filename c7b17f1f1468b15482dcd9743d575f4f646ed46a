@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "52ab272d_f5add497",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 818,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-05-05T22:12:40Z",
+      "side": 1,
+      "message": "Probably cleaner to have a SumPixelsRounded() you can use here and in the other file instead of duplicating the rounding constant everywhere.",
+      "revId": "c7b17f1f1468b15482dcd9743d575f4f646ed46a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9070c898_2d40aeab",
         "filename": "source/scale_gcc.cc",
         "patchSetId": 4
