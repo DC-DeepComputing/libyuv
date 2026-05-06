@@ -53,6 +53,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f34fa87e_bcd56d90",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 818,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-06T02:05:30Z",
+      "side": 1,
+      "message": "I like it as is... a 32768 immediate before the \u003e\u003e 16 is adding .5 in fixed point.  If its coming up alot a macro could be done, but its only 2 occurances",
+      "parentUuid": "0074a138_d0c98fe7",
+      "revId": "c7b17f1f1468b15482dcd9743d575f4f646ed46a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c75ca02e_d4a16470",
@@ -70,6 +88,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5ccd669_1ec1540b",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 901,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-06T02:05:30Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "c75ca02e_d4a16470",
+      "revId": "c7b17f1f1468b15482dcd9743d575f4f646ed46a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9070c898_2d40aeab",
@@ -83,6 +119,24 @@
       "writtenOn": "2026-05-05T20:56:19Z",
       "side": 1,
       "message": "consider PMULHRSW",
+      "revId": "c7b17f1f1468b15482dcd9743d575f4f646ed46a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "738713a8_fc820cc7",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 698,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-06T02:05:30Z",
+      "side": 1,
+      "message": "I\u0027ll likely rewrite this function from scratch for avx512, so lets leave it as is.",
+      "parentUuid": "9070c898_2d40aeab",
       "revId": "c7b17f1f1468b15482dcd9743d575f4f646ed46a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
