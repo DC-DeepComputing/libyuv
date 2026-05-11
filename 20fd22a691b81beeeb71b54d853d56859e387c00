@@ -16,6 +16,24 @@
       "message": "This is the same as the rounding constant in the next file?",
       "revId": "20fd22a691b81beeeb71b54d853d56859e387c00",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "205f539d_3f435948",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1831,
+      "author": {
+        "id": 1245309
+      },
+      "writtenOn": "2026-05-11T07:26:25Z",
+      "side": 1,
+      "message": "Same as shuffle mask in the next file (_win.cc). Not the same as rounding constant in this and the next file.",
+      "parentUuid": "9ffa244d_0fe66eca",
+      "revId": "20fd22a691b81beeeb71b54d853d56859e387c00",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
