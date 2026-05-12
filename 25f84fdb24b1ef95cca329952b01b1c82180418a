@@ -16,6 +16,40 @@
       "message": "removed blank lines and trailing spaces",
       "revId": "25f84fdb24b1ef95cca329952b01b1c82180418a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8213c54_21d9761c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-05-12T20:41:55Z",
+      "side": 1,
+      "message": "Can you run `git cl format`?",
+      "revId": "25f84fdb24b1ef95cca329952b01b1c82180418a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c36b221_8ff01ebd",
+        "filename": "source/row_win.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-05-12T20:41:55Z",
+      "side": 1,
+      "message": "Did you mean to add these functions too? Update the CL description if so.",
+      "revId": "25f84fdb24b1ef95cca329952b01b1c82180418a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
