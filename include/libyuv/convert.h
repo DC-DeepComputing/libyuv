@@ -847,6 +847,22 @@ int ARGBToI420Matrix(const uint8_t* src_argb,
                      int width,
                      int height);
 
+// Convert ARGB to I420 with Alpha and Matrix
+LIBYUV_API
+int ARGBToI420AlphaMatrix(const uint8_t* src_argb,
+                          int src_stride_argb,
+                          uint8_t* dst_y,
+                          int dst_stride_y,
+                          uint8_t* dst_u,
+                          int dst_stride_u,
+                          uint8_t* dst_v,
+                          int dst_stride_v,
+                          uint8_t* dst_a,
+                          int dst_stride_a,
+                          const struct ArgbConstants* argbconstants,
+                          int width,
+                          int height);
+
 // Convert ARGB to I420 with Alpha
 LIBYUV_API
 int ARGBToI420Alpha(const uint8_t* src_argb,
