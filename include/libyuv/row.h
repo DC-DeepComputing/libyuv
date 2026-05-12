@@ -356,18 +356,18 @@ extern "C" {
     ((defined(_MSC_VER) && !defined(__clang__)) || \
      defined(LIBYUV_ENABLE_ROWWIN))
 #define HAS_RAWTOARGBROW_AVX2
-#if defined(__x86_64__) || defined(_M_X64)
-#define HAS_RAWTOARGBROW_AVX512BW
-#define HAS_RGB24TOARGBROW_AVX512BW
-#endif
-#define HAS_ARGBTOYROW_AVX2
 #define HAS_ARGBTOYMATRIXROW_AVX2
+#define HAS_ARGBTOUV444MATRIXROW_AVX2
 #define HAS_ABGRTOYROW_AVX2
 #define HAS_ARGBTOYJROW_AVX2
 #define HAS_ABGRTOYJROW_AVX2
 #define HAS_RGBATOYJROW_AVX2
 #define HAS_RGBATOYROW_AVX2
 #define HAS_BGRATOYROW_AVX2
+#if defined(__x86_64__) || defined(_M_X64)
+#define HAS_RAWTOARGBROW_AVX512BW
+#define HAS_RGB24TOARGBROW_AVX512BW
+#endif
 #endif
 
 // The following are available for AVX512 clang x86 platforms:
