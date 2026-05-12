@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7cde381c_53d49e63",
+        "filename": "source/row_rvv.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1417,
+      "author": {
+        "id": 1002030
+      },
+      "writtenOn": "2026-05-12T21:51:37Z",
+      "side": 1,
+      "message": "extra spaces?",
+      "revId": "32be285bee190ef52b2210c70fb5b22dca26d8b5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8194e1c3_489ec9ab",
+        "filename": "source/row_win.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1002030
+      },
+      "writtenOn": "2026-05-12T21:51:37Z",
+      "side": 1,
+      "message": "spaces?",
+      "revId": "32be285bee190ef52b2210c70fb5b22dca26d8b5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7cf9c9d3_6bccfd61",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1002030
+      },
+      "writtenOn": "2026-05-12T21:51:37Z",
+      "side": 1,
+      "message": "Is this right? All expected not asserted error?",
+      "revId": "32be285bee190ef52b2210c70fb5b22dca26d8b5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
