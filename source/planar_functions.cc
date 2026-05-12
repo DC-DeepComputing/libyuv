@@ -4778,7 +4778,7 @@ static int ARGBSobelize(const uint8_t* src_argb,
     }
   }
 #endif
-#if defined(HAS_ARGBTOYROW_AVX512BW)
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     ARGBToYJRow = ARGBToYJRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {

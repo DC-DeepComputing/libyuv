@@ -1306,10 +1306,8 @@ void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
 }
 #endif
 
-#ifdef HAS_ARGBTOYROW_RVV
-void ARGBToYRow_RVV(const uint8_t* src_argb, uint8_t* dst_y, int width) {
-  ARGBToYMatrixRow_RVV(src_argb, dst_y, width, &kRgb24I601Constants);
-}
+#ifdef HAS_ARGBTOYMATRIXROW_RVV
+
 #endif
 
 #ifdef HAS_ARGBTOYJROW_RVV

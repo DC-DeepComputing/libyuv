@@ -1909,7 +1909,7 @@ int RGBAToJ400(const uint8_t* src_rgba,
     }
   }
 #endif
-#if defined(HAS_ARGBTOYROW_AVX512BW)
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     RGBAToYJRow = RGBAToYJRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
