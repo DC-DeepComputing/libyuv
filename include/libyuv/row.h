@@ -362,6 +362,7 @@ extern "C" {
 #endif
 #define HAS_ARGBTOYROW_AVX2
 #define HAS_ARGBTOYMATRIXROW_AVX2
+#define HAS_ARGBTOUV444MATRIXROW_AVX2
 #define HAS_ABGRTOYROW_AVX2
 #define HAS_ARGBTOYJROW_AVX2
 #define HAS_ABGRTOYJROW_AVX2
@@ -391,8 +392,6 @@ extern "C" {
 #if !defined(LIBYUV_DISABLE_X86) && defined(__x86_64__) && \
     (defined(CLANG_HAS_AVX512))
 #define HAS_I422TOARGBROW_AVX512BW
-#define HAS_I444TOARGBROW_AVX512BW
-#define HAS_I444TORGB24ROW_AVX512BW
 #define HAS_ARGBTOUV444ROW_AVX512BW
 #define HAS_ARGBTOUV444MATRIXROW_AVX512BW
 #define HAS_ARGBTOYROW_AVX512BW
@@ -4604,12 +4603,6 @@ void I444ToARGBRow_AVX2(const uint8_t* y_buf,
                         uint8_t* dst_argb,
                         const struct YuvConstants* yuvconstants,
                         int width);
-void I444ToARGBRow_AVX512BW(const uint8_t* y_buf,
-                            const uint8_t* u_buf,
-                            const uint8_t* v_buf,
-                            uint8_t* dst_argb,
-                            const struct YuvConstants* yuvconstants,
-                            int width);
 void I444ToRGB24Row_SSSE3(const uint8_t* y_buf,
                           const uint8_t* u_buf,
                           const uint8_t* v_buf,
@@ -4975,12 +4968,6 @@ void I444ToARGBRow_Any_AVX2(const uint8_t* y_buf,
                             uint8_t* dst_ptr,
                             const struct YuvConstants* yuvconstants,
                             int width);
-void I444ToARGBRow_Any_AVX512BW(const uint8_t* y_buf,
-                                const uint8_t* u_buf,
-                                const uint8_t* v_buf,
-                                uint8_t* dst_ptr,
-                                const struct YuvConstants* yuvconstants,
-                                int width);
 void I444ToRGB24Row_Any_AVX2(const uint8_t* y_buf,
                              const uint8_t* u_buf,
                              const uint8_t* v_buf,
