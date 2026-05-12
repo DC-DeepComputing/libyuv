@@ -1306,11 +1306,6 @@ void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
 }
 #endif
 
-#ifdef HAS_ARGBTOYROW_RVV
-void ARGBToYRow_RVV(const uint8_t* src_argb, uint8_t* dst_y, int width) {
-  ARGBToYMatrixRow_RVV(src_argb, dst_y, width, &kRgb24I601Constants);
-}
-#endif
 
 #ifdef HAS_ARGBTOYJROW_RVV
 void ARGBToYJRow_RVV(const uint8_t* src_argb, uint8_t* dst_yj, int width) {
@@ -1419,17 +1414,9 @@ static void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
 }
 #endif
 
-#ifdef HAS_RGB24TOYJROW_RVV
-#endif
 
-#ifdef HAS_RAWTOYJROW_RVV
-#endif
 
-#ifdef HAS_RGB24TOYROW_RVV
-#endif
 
-#ifdef HAS_RAWTOYROW_RVV
-#endif
 
 // Blend src_argb over src_argb1 and store to dst_argb.
 // dst_argb may be src_argb or src_argb1.

@@ -102,23 +102,11 @@ extern "C" {
   _mm_storeu_si128((__m128i*)(dst_argb + 16), xmm1); \
   dst_argb += 32;
 
-#if defined(HAS_I422TOARGBROW_SSSE3)
 
-#endif
 
-#if defined(HAS_I422ALPHATOARGBROW_SSSE3)
 
-#endif
 
-#if defined(HAS_I444TOARGBROW_SSSE3)
-
-#endif
-
-#if defined(HAS_I444ALPHATOARGBROW_SSSE3)
-
-#endif
-
-#if defined(HAS_ARGBTOYROW_AVX2)
+#if defined(HAS_ARGBTOYMATRIXROW_AVX2)
 
 #if defined(__clang__) || defined(__GNUC__)
 #define LIBYUV_TARGET_AVX2 __attribute__((target("avx2")))
@@ -128,6 +116,89 @@ extern "C" {
 #define LIBYUV_TARGET_AVX512BW
 #endif
 
+
+// Convert 32 ARGB pixels (128 bytes) to 32 UV444 values.
+#if defined(HAS_ARGBTOYMATRIXROW_AVX2) || defined(HAS_ARGBTOUV444MATRIXROW_AVX2)
+LIBYUV_TARGET_AVX2
+void ARGBToUV444MatrixRow_AVX2(const uint8_t* src_argb,
+                               uint8_t* dst_u,
+                               uint8_t* dst_v,
+                               int width,
+                               const struct ArgbConstants* c) {
+  __m256i ymm5 = _mm256_set1_epi8((char)0x80);
+  __m128i kRGBToU = _mm_loadu_si128((const __m128i*)c->kRGBToU);
+  __m256i ymm_u = _mm256_broadcastsi128_si256(kRGBToU);
+  __m128i kRGBToV = _mm_loadu_si128((const __m128i*)c->kRGBToV);
+  __m256i ymm_v = _mm256_broadcastsi128_si256(kRGBToV);
+  __m128i kAddUV = _mm_loadu_si128((const __m128i*)c->kAddUV);
+  __m256i ymm_add = _mm256_broadcastsi128_si256(kAddUV);
+  __m256i ymm_u_bias = _mm256_maddubs_epi16(ymm_u, ymm5);
+  ymm_u_bias = _mm256_hadd_epi16(ymm_u_bias, ymm_u_bias);
+  __m256i ymm_add_u = _mm256_sub_epi16(ymm_add, ymm_u_bias);
+  __m256i ymm_v_bias = _mm256_maddubs_epi16(ymm_v, ymm5);
+  ymm_v_bias = _mm256_hadd_epi16(ymm_v_bias, ymm_v_bias);
+  __m256i ymm_add_v = _mm256_sub_epi16(ymm_add, ymm_v_bias);
+  __m256i perm_mask = _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7);
+
+  while (width > 0) {
+    __m256i ymm0 = _mm256_loadu_si256((const __m256i*)src_argb);
+    __m256i ymm1 = _mm256_loadu_si256((const __m256i*)(src_argb + 32));
+    __m256i ymm2 = _mm256_loadu_si256((const __m256i*)(src_argb + 64));
+    __m256i ymm3 = _mm256_loadu_si256((const __m256i*)(src_argb + 96));
+    src_argb += 128;
+
+    __m256i ymm0_u = _mm256_sub_epi8(ymm0, ymm5);
+    __m256i ymm1_u = _mm256_sub_epi8(ymm1, ymm5);
+    __m256i ymm2_u = _mm256_sub_epi8(ymm2, ymm5);
+    __m256i ymm3_u = _mm256_sub_epi8(ymm3, ymm5);
+
+    __m256i ymm0_v = ymm0_u;
+    __m256i ymm1_v = ymm1_u;
+    __m256i ymm2_v = ymm2_u;
+    __m256i ymm3_v = ymm3_u;
+
+    ymm0_u = _mm256_maddubs_epi16(ymm_u, ymm0_u);
+    ymm1_u = _mm256_maddubs_epi16(ymm_u, ymm1_u);
+    ymm2_u = _mm256_maddubs_epi16(ymm_u, ymm2_u);
+    ymm3_u = _mm256_maddubs_epi16(ymm_u, ymm3_u);
+
+    ymm0_v = _mm256_maddubs_epi16(ymm_v, ymm0_v);
+    ymm1_v = _mm256_maddubs_epi16(ymm_v, ymm1_v);
+    ymm2_v = _mm256_maddubs_epi16(ymm_v, ymm2_v);
+    ymm3_v = _mm256_maddubs_epi16(ymm_v, ymm3_v);
+
+    ymm0_u = _mm256_hadd_epi16(ymm0_u, ymm1_u);
+    ymm2_u = _mm256_hadd_epi16(ymm2_u, ymm3_u);
+
+    ymm0_v = _mm256_hadd_epi16(ymm0_v, ymm1_v);
+    ymm2_v = _mm256_hadd_epi16(ymm2_v, ymm3_v);
+
+    ymm0_u = _mm256_add_epi16(ymm0_u, ymm_add_u);
+    ymm2_u = _mm256_add_epi16(ymm2_u, ymm_add_u);
+
+    ymm0_v = _mm256_add_epi16(ymm0_v, ymm_add_v);
+    ymm2_v = _mm256_add_epi16(ymm2_v, ymm_add_v);
+
+    ymm0_u = _mm256_srli_epi16(ymm0_u, 8);
+    ymm2_u = _mm256_srli_epi16(ymm2_u, 8);
+
+    ymm0_v = _mm256_srli_epi16(ymm0_v, 8);
+    ymm2_v = _mm256_srli_epi16(ymm2_v, 8);
+
+    ymm0_u = _mm256_packus_epi16(ymm0_u, ymm2_u);
+    ymm0_u = _mm256_permutevar8x32_epi32(ymm0_u, perm_mask);
+
+    ymm0_v = _mm256_packus_epi16(ymm0_v, ymm2_v);
+    ymm0_v = _mm256_permutevar8x32_epi32(ymm0_v, perm_mask);
+
+    _mm256_storeu_si256((__m256i*)dst_u, ymm0_u);
+    _mm256_storeu_si256((__m256i*)dst_v, ymm0_v);
+    dst_u += 32;
+    dst_v += 32;
+    width -= 32;
+  }
+}
+#endif
 LIBYUV_TARGET_AVX2
 void ARGBToYMatrixRow_AVX2(const uint8_t* src_argb,
                            uint8_t* dst_y,
@@ -179,9 +250,7 @@ void ARGBToYMatrixRow_AVX2(const uint8_t* src_argb,
 }
 
 LIBYUV_TARGET_AVX2
-void ARGBToYRow_AVX2(const uint8_t* src_argb, uint8_t* dst_y, int width) {
-  ARGBToYMatrixRow_AVX2(src_argb, dst_y, width, &kArgbI601Constants);
-}
+
 
 LIBYUV_TARGET_AVX2
 void ABGRToYRow_AVX2(const uint8_t* src_abgr, uint8_t* dst_y, int width) {
