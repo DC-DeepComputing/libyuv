@@ -787,80 +787,7 @@ void UYVYToUV422Row_LASX(const uint8_t* src_uyvy,
   }
 }
 
-void ARGBToUVRow_LASX(const uint8_t* src_argb0,
-                      int src_stride_argb,
-                      uint8_t* dst_u,
-                      uint8_t* dst_v,
-                      int width) {
-  int x;
-  int len = width / 32;
-  const uint8_t* src_argb1 = src_argb0 + src_stride_argb;
 
-  __m256i src0, src1, src2, src3, src4, src5, src6, src7;
-  __m256i vec0, vec1, vec2, vec3;
-  __m256i tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, dst0, dst1;
-  __m256i const_0x70 = __lasx_xvldi(0x470);
-  __m256i const_0x4A = __lasx_xvldi(0x44A);
-  __m256i const_0x26 = __lasx_xvldi(0x426);
-  __m256i const_0x5E = __lasx_xvldi(0x45E);
-  __m256i const_0x12 = __lasx_xvldi(0x412);
-
-  __m256i control = {0x0000000400000000, 0x0000000500000001, 0x0000000600000002,
-                     0x0000000700000003};
-  __m256i const_0x8000 = (__m256i)v4u64{0x8000800080008000, 0x8000800080008000,
-                                        0x8000800080008000, 0x8000800080008000};
-
-  for (x = 0; x < len; x++) {
-    DUP4_ARG2(__lasx_xvld, src_argb0, 0, src_argb0, 32, src_argb0, 64,
-              src_argb0, 96, src0, src1, src2, src3);
-    DUP4_ARG2(__lasx_xvld, src_argb1, 0, src_argb1, 32, src_argb1, 64,
-              src_argb1, 96, src4, src5, src6, src7);
-    vec0 = __lasx_xvaddwev_h_bu(src0, src4);
-    vec1 = __lasx_xvaddwev_h_bu(src1, src5);
-    vec2 = __lasx_xvaddwev_h_bu(src2, src6);
-    vec3 = __lasx_xvaddwev_h_bu(src3, src7);
-    tmp0 = __lasx_xvpickev_h(vec1, vec0);
-    tmp1 = __lasx_xvpickev_h(vec3, vec2);
-    tmp2 = __lasx_xvpickod_h(vec1, vec0);
-    tmp3 = __lasx_xvpickod_h(vec3, vec2);
-    vec0 = __lasx_xvaddwod_h_bu(src0, src4);
-    vec1 = __lasx_xvaddwod_h_bu(src1, src5);
-    vec2 = __lasx_xvaddwod_h_bu(src2, src6);
-    vec3 = __lasx_xvaddwod_h_bu(src3, src7);
-    tmp4 = __lasx_xvpickev_h(vec1, vec0);
-    tmp5 = __lasx_xvpickev_h(vec3, vec2);
-    vec0 = __lasx_xvpickev_h(tmp1, tmp0);
-    vec1 = __lasx_xvpickod_h(tmp1, tmp0);
-    src0 = __lasx_xvadd_h(vec0, vec1);
-    src0 = __lasx_xvsrari_h(src0, 2);
-    vec0 = __lasx_xvpickev_h(tmp3, tmp2);
-    vec1 = __lasx_xvpickod_h(tmp3, tmp2);
-    src1 = __lasx_xvadd_h(vec0, vec1);
-    src1 = __lasx_xvsrari_h(src1, 2);
-    vec0 = __lasx_xvpickev_h(tmp5, tmp4);
-    vec1 = __lasx_xvpickod_h(tmp5, tmp4);
-    src2 = __lasx_xvadd_h(vec0, vec1);
-    src2 = __lasx_xvsrari_h(src2, 2);
-    dst0 = __lasx_xvmadd_h(const_0x8000, src0, const_0x70);
-    dst0 = __lasx_xvmsub_h(dst0, src2, const_0x4A);
-    dst0 = __lasx_xvmsub_h(dst0, src1, const_0x26);
-    dst1 = __lasx_xvmadd_h(const_0x8000, src1, const_0x70);
-    dst1 = __lasx_xvmsub_h(dst1, src2, const_0x5E);
-    dst1 = __lasx_xvmsub_h(dst1, src0, const_0x12);
-    dst0 = __lasx_xvperm_w(dst0, control);
-    dst1 = __lasx_xvperm_w(dst1, control);
-    dst0 = __lasx_xvssrani_b_h(dst0, dst0, 8);
-    dst1 = __lasx_xvssrani_b_h(dst1, dst1, 8);
-    __lasx_xvstelm_d(dst0, dst_u, 0, 0);
-    __lasx_xvstelm_d(dst0, dst_u, 8, 2);
-    __lasx_xvstelm_d(dst1, dst_v, 0, 0);
-    __lasx_xvstelm_d(dst1, dst_v, 8, 2);
-    src_argb0 += 128;
-    src_argb1 += 128;
-    dst_u += 16;
-    dst_v += 16;
-  }
-}
 
 void ARGBToRGB24Row_LASX(const uint8_t* src_argb, uint8_t* dst_rgb, int width) {
   int x;
@@ -1034,58 +961,7 @@ void ARGBToARGB4444Row_LASX(const uint8_t* src_argb,
   }
 }
 
-void ARGBToUV444Row_LASX(const uint8_t* src_argb,
-                         uint8_t* dst_u,
-                         uint8_t* dst_v,
-                         int32_t width) {
-  int x;
-  int len = width / 32;
-  __m256i src0, src1, src2, src3;
-  __m256i tmp0, tmp1, tmp2, tmp3;
-  __m256i reg0, reg1, reg2, reg3, dst0, dst1;
-  __m256i const_112 = __lasx_xvldi(112);
-  __m256i const_74 = __lasx_xvldi(74);
-  __m256i const_38 = __lasx_xvldi(38);
-  __m256i const_94 = __lasx_xvldi(94);
-  __m256i const_18 = __lasx_xvldi(18);
-  __m256i const_0x8000 = (__m256i)v4u64{0x8000800080008000, 0x8000800080008000,
-                                        0x8000800080008000, 0x8000800080008000};
-  __m256i control = {0x0000000400000000, 0x0000000500000001, 0x0000000600000002,
-                     0x0000000700000003};
-  for (x = 0; x < len; x++) {
-    DUP4_ARG2(__lasx_xvld, src_argb, 0, src_argb, 32, src_argb, 64, src_argb,
-              96, src0, src1, src2, src3);
-    tmp0 = __lasx_xvpickev_h(src1, src0);
-    tmp1 = __lasx_xvpickod_h(src1, src0);
-    tmp2 = __lasx_xvpickev_h(src3, src2);
-    tmp3 = __lasx_xvpickod_h(src3, src2);
-    reg0 = __lasx_xvmaddwev_h_bu(const_0x8000, tmp0, const_112);
-    reg1 = __lasx_xvmaddwev_h_bu(const_0x8000, tmp2, const_112);
-    reg2 = __lasx_xvmulwod_h_bu(tmp0, const_74);
-    reg3 = __lasx_xvmulwod_h_bu(tmp2, const_74);
-    reg2 = __lasx_xvmaddwev_h_bu(reg2, tmp1, const_38);
-    reg3 = __lasx_xvmaddwev_h_bu(reg3, tmp3, const_38);
-    reg0 = __lasx_xvsub_h(reg0, reg2);
-    reg1 = __lasx_xvsub_h(reg1, reg3);
-    dst0 = __lasx_xvssrani_b_h(reg1, reg0, 8);
-    dst0 = __lasx_xvperm_w(dst0, control);
-    reg0 = __lasx_xvmaddwev_h_bu(const_0x8000, tmp1, const_112);
-    reg1 = __lasx_xvmaddwev_h_bu(const_0x8000, tmp3, const_112);
-    reg2 = __lasx_xvmulwev_h_bu(tmp0, const_18);
-    reg3 = __lasx_xvmulwev_h_bu(tmp2, const_18);
-    reg2 = __lasx_xvmaddwod_h_bu(reg2, tmp0, const_94);
-    reg3 = __lasx_xvmaddwod_h_bu(reg3, tmp2, const_94);
-    reg0 = __lasx_xvsub_h(reg0, reg2);
-    reg1 = __lasx_xvsub_h(reg1, reg3);
-    dst1 = __lasx_xvssrani_b_h(reg1, reg0, 8);
-    dst1 = __lasx_xvperm_w(dst1, control);
-    __lasx_xvst(dst0, dst_u, 0);
-    __lasx_xvst(dst1, dst_v, 0);
-    dst_u += 32;
-    dst_v += 32;
-    src_argb += 128;
-  }
-}
+
 
 void ARGBMultiplyRow_LASX(const uint8_t* src_argb0,
                           const uint8_t* src_argb1,
@@ -2092,9 +1968,7 @@ void ARGBToYMatrixRow_LASX(const uint8_t* src_argb,
       : "memory");
 }
 
-void ARGBToYRow_LASX(const uint8_t* src_argb, uint8_t* dst_y, int width) {
-  ARGBToYMatrixRow_LASX(src_argb, dst_y, width, &kRgb24I601Constants);
-}
+
 
 void ARGBToYJRow_LASX(const uint8_t* src_argb, uint8_t* dst_yj, int width) {
   ARGBToYMatrixRow_LASX(src_argb, dst_yj, width, &kRgb24JPEGConstants);

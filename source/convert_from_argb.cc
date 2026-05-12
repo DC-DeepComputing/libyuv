@@ -24,16 +24,16 @@ extern "C" {
 LIBYUV_API
 int ARGBToI444(const uint8_t* src_argb,
                int src_stride_argb,
+               uint8_t* dst_y,
+               int dst_stride_y,
                uint8_t* dst_u,
                int dst_stride_u,
                uint8_t* dst_v,
                int dst_stride_v,
-               uint8_t* dst_y,
-               int dst_stride_y,
                int width,
                int height) {
-  return ARGBToI444Matrix(src_argb, src_stride_argb, dst_u, dst_stride_u, dst_v,
-                          dst_stride_v, dst_y, dst_stride_y, &kArgbI601Constants,
+  return ARGBToI444Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_u,
+                          dst_stride_u, dst_v, dst_stride_v, &kArgbI601Constants,
                           width, height);
 }
 
@@ -1809,16 +1809,16 @@ int ARGBToAR30(const uint8_t* src_argb,
 LIBYUV_API
 int ARGBToJ444(const uint8_t* src_argb,
                int src_stride_argb,
+               uint8_t* dst_y,
+               int dst_stride_y,
                uint8_t* dst_u,
                int dst_stride_u,
                uint8_t* dst_v,
                int dst_stride_v,
-               uint8_t* dst_y,
-               int dst_stride_y,
                int width,
                int height) {
-  return ARGBToI444Matrix(src_argb, src_stride_argb, dst_u, dst_stride_u, dst_v,
-                          dst_stride_v, dst_y, dst_stride_y, &kArgbJPEGConstants,
+  return ARGBToI444Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_u,
+                          dst_stride_u, dst_v, dst_stride_v, &kArgbJPEGConstants,
                           width, height);
 }
 
@@ -1909,7 +1909,7 @@ int RGBAToJ400(const uint8_t* src_rgba,
     }
   }
 #endif
-#if defined(HAS_ARGBTOYROW_AVX512BW)
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     RGBAToYJRow = RGBAToYJRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
