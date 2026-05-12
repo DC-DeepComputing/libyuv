@@ -4354,6 +4354,7 @@ void I444ToRGB24Row_AVX2(const uint8_t* src_y,
 }
 #endif
 
+
 #if defined(HAS_NV12TORGB565ROW_AVX2)
 void NV12ToRGB565Row_AVX2(const uint8_t* src_y,
                           const uint8_t* src_uv,
