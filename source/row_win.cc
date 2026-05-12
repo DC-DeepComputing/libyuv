@@ -118,7 +118,7 @@ extern "C" {
 
 #endif
 
-#if defined(HAS_ARGBTOYROW_AVX2)
+#if defined(HAS_ARGBTOYROW_AVX2) || defined(HAS_ARGBTOUV444ROW_AVX2)
 
 #if defined(__clang__) || defined(__GNUC__)
 #define LIBYUV_TARGET_AVX2 __attribute__((target("avx2")))
@@ -174,6 +174,68 @@ void ARGBToYMatrixRow_AVX2(const uint8_t* src_argb,
 
     _mm256_storeu_si256((__m256i*)dst_y, ymm0);
     dst_y += 32;
+    width -= 32;
+  }
+}
+
+LIBYUV_TARGET_AVX2
+void ARGBToUV444MatrixRow_AVX2(const uint8_t* src_argb,
+                               uint8_t* dst_u,
+                               uint8_t* dst_v,
+                               int width,
+                               const struct ArgbConstants* c) {
+  __m256i ymm3 = _mm256_loadu_si256((const __m256i*)c->kRGBToU);
+  __m256i ymm4 = _mm256_loadu_si256((const __m256i*)c->kRGBToV);
+  __m256i ymm5 = _mm256_set1_epi16((short)0x8000);
+  __m256i perm_mask = _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7);
+
+  while (width > 0) {
+    __m256i ymm0 = _mm256_loadu_si256((const __m256i*)src_argb);
+    __m256i ymm1 = _mm256_loadu_si256((const __m256i*)(src_argb + 32));
+    __m256i ymm2 = _mm256_loadu_si256((const __m256i*)(src_argb + 64));
+    __m256i ymm6 = _mm256_loadu_si256((const __m256i*)(src_argb + 96));
+    src_argb += 128;
+
+    __m256i u0 = _mm256_maddubs_epi16(ymm0, ymm3);
+    __m256i u1 = _mm256_maddubs_epi16(ymm1, ymm3);
+    __m256i u2 = _mm256_maddubs_epi16(ymm2, ymm3);
+    __m256i u6 = _mm256_maddubs_epi16(ymm6, ymm3);
+
+    u0 = _mm256_hadd_epi16(u0, u1);
+    u2 = _mm256_hadd_epi16(u2, u6);
+
+    u0 = _mm256_sub_epi16(ymm5, u0);
+    u2 = _mm256_sub_epi16(ymm5, u2);
+
+    u0 = _mm256_srli_epi16(u0, 8);
+    u2 = _mm256_srli_epi16(u2, 8);
+
+    u0 = _mm256_packus_epi16(u0, u2);
+    u0 = _mm256_permutevar8x32_epi32(u0, perm_mask);
+
+    _mm256_storeu_si256((__m256i*)dst_u, u0);
+
+    __m256i v0 = _mm256_maddubs_epi16(ymm0, ymm4);
+    __m256i v1 = _mm256_maddubs_epi16(ymm1, ymm4);
+    __m256i v2 = _mm256_maddubs_epi16(ymm2, ymm4);
+    __m256i v6 = _mm256_maddubs_epi16(ymm6, ymm4);
+
+    v0 = _mm256_hadd_epi16(v0, v1);
+    v2 = _mm256_hadd_epi16(v2, v6);
+
+    v0 = _mm256_sub_epi16(ymm5, v0);
+    v2 = _mm256_sub_epi16(ymm5, v2);
+
+    v0 = _mm256_srli_epi16(v0, 8);
+    v2 = _mm256_srli_epi16(v2, 8);
+
+    v0 = _mm256_packus_epi16(v0, v2);
+    v0 = _mm256_permutevar8x32_epi32(v0, perm_mask);
+
+    _mm256_storeu_si256((__m256i*)dst_v, v0);
+
+    dst_u += 32;
+    dst_v += 32;
     width -= 32;
   }
 }
