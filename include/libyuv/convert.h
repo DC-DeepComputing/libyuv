@@ -888,45 +888,6 @@ int ABGRToI420(const uint8_t* src_abgr,
                int width,
                int height);
 
-// BGRA little endian (argb in memory) to I422.
-LIBYUV_API
-int BGRAToI422(const uint8_t* src_bgra,
-               int src_stride_bgra,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_u,
-               int dst_stride_u,
-               uint8_t* dst_v,
-               int dst_stride_v,
-               int width,
-               int height);
-
-// ABGR little endian (rgba in memory) to I422.
-LIBYUV_API
-int ABGRToI422(const uint8_t* src_abgr,
-               int src_stride_abgr,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_u,
-               int dst_stride_u,
-               uint8_t* dst_v,
-               int dst_stride_v,
-               int width,
-               int height);
-
-// RGBA little endian (abgr in memory) to I422.
-LIBYUV_API
-int RGBAToI422(const uint8_t* src_rgba,
-               int src_stride_rgba,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_u,
-               int dst_stride_u,
-               uint8_t* dst_v,
-               int dst_stride_v,
-               int width,
-               int height);
-
 // RGBA little endian (abgr in memory) to I420.
 LIBYUV_API
 int RGBAToI420(const uint8_t* src_rgba,
@@ -1061,8 +1022,8 @@ int ARGB4444ToI420(const uint8_t* src_argb4444,
 LIBYUV_API
 int RGB24ToJ400(const uint8_t* src_rgb24,
                 int src_stride_rgb24,
-                uint8_t* dst_yj,
-                int dst_stride_yj,
+                uint8_t* dst_y,
+                int dst_stride_y,
                 int width,
                 int height);
 
@@ -1070,8 +1031,8 @@ int RGB24ToJ400(const uint8_t* src_rgb24,
 LIBYUV_API
 int RAWToJ400(const uint8_t* src_raw,
               int src_stride_raw,
-              uint8_t* dst_yj,
-              int dst_stride_yj,
+              uint8_t* dst_y,
+              int dst_stride_y,
               int width,
               int height);
 
