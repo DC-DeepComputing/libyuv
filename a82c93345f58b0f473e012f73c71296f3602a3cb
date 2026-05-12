@@ -16,6 +16,24 @@
       "message": "On l.387 you used `__m256i ymm_u \u003d _mm256_broadcastsi128_si256(_mm_loadu_si128((const __m128i*)c-\u003ekRGBToU));` should that be done here or vice versa?",
       "revId": "a82c93345f58b0f473e012f73c71296f3602a3cb",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b878dad4_a732a10a",
+        "filename": "source/row_win.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-12T20:10:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c77bc017_b6a4f7a5",
+      "revId": "a82c93345f58b0f473e012f73c71296f3602a3cb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
