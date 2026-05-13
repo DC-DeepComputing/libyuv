@@ -4662,28 +4662,7 @@ void MirrorRow_SSSE3(const uint8_t* src, uint8_t* dst, int width) {
 }
 #endif  // HAS_MIRRORROW_SSSE3
 
-#ifdef HAS_MIRRORROW_AVX2
-void MirrorRow_AVX2(const uint8_t* src, uint8_t* dst, int width) {
-  ptrdiff_t temp_width = (ptrdiff_t)(width);
-      asm volatile("vbroadcasti128 %3,%%ymm5                  \n"
 
-               LABELALIGN
-      "1:          \n"
-      "vmovdqu     -0x20(%0,%2,1),%%ymm0         \n"
-      "vpshufb     %%ymm5,%%ymm0,%%ymm0          \n"
-      "vpermq      $0x4e,%%ymm0,%%ymm0           \n"
-      "vmovdqu     %%ymm0,(%1)                   \n"
-      "lea         0x20(%1),%1                   \n"
-      "sub         $0x20,%2                      \n"
-      "jg          1b                            \n"
-      "vzeroupper  \n"
-               : "+r"(src),           // %0
-                 "+r"(dst),           // %1
-                 "+r"(temp_width)     // %2
-               : "m"(kShuffleMirror)  // %3
-               : "memory", "cc", "xmm0", "xmm5");
-}
-#endif  // HAS_MIRRORROW_AVX2
 
 #ifdef HAS_MIRRORUVROW_SSSE3
 // Shuffle table for reversing the UV.

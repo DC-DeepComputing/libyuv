@@ -470,6 +470,58 @@ void MergeUVRow_AVX2(const uint8_t* src_u,
 }
 #endif
 
+#ifdef HAS_MIRRORROW_AVX2
+LIBYUV_TARGET_AVX2
+void MirrorRow_AVX2(const uint8_t* src, uint8_t* dst, int width) {
+  __m256i ymm_shuf =
+      _mm256_broadcastsi128_si256(_mm_setr_epi8(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0));
+  src += width;
+  while (width > 0) {
+    src -= 32;
+    __m256i ymm0 = _mm256_loadu_si256((const __m256i*)src);
+    ymm0 = _mm256_shuffle_epi8(ymm0, ymm_shuf);
+    ymm0 = _mm256_permute4x64_epi64(ymm0, 0x4e);
+    _mm256_storeu_si256((__m256i*)dst, ymm0);
+    dst += 32;
+    width -= 32;
+  }
+}
+#endif
+
+#ifdef HAS_MIRRORUVROW_AVX2
+LIBYUV_TARGET_AVX2
+void MirrorUVRow_AVX2(const uint8_t* src_uv, uint8_t* dst_uv, int width) {
+  __m256i ymm_shuf =
+      _mm256_broadcastsi128_si256(_mm_setr_epi8(14, 15, 12, 13, 10, 11, 8, 9, 6, 7, 4, 5, 2, 3, 0, 1));
+  src_uv += width * 2;
+  while (width > 0) {
+    src_uv -= 32;
+    __m256i ymm0 = _mm256_loadu_si256((const __m256i*)src_uv);
+    ymm0 = _mm256_shuffle_epi8(ymm0, ymm_shuf);
+    ymm0 = _mm256_permute4x64_epi64(ymm0, 0x4e);
+    _mm256_storeu_si256((__m256i*)dst_uv, ymm0);
+    dst_uv += 32;
+    width -= 16;
+  }
+}
+#endif
+
+#ifdef HAS_ARGBMIRRORROW_AVX2
+LIBYUV_TARGET_AVX2
+void ARGBMirrorRow_AVX2(const uint8_t* src, uint8_t* dst, int width) {
+  __m256i ymm_shuf = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0);
+  src += width * 4;
+  while (width > 0) {
+    src -= 32;
+    __m256i ymm0 = _mm256_loadu_si256((const __m256i*)src);
+    ymm0 = _mm256_permutevar8x32_epi32(ymm0, ymm_shuf);
+    _mm256_storeu_si256((__m256i*)dst, ymm0);
+    dst += 32;
+    width -= 8;
+  }
+}
+#endif
+
 #endif
 
 #ifdef __cplusplus

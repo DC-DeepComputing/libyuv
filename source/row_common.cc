@@ -37,9 +37,7 @@ extern "C" {
 // LIBYUV_UNLIMITED_BT709
 // LIBYUV_UNLIMITED_BT2020
 
-#if defined(LIBYUV_BIT_EXACT)
 #define LIBYUV_UNATTENUATE_DUP 1
-#endif
 
 // llvm x86 is poor at ternary operator, so use branchless min/max.
 

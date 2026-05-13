@@ -142,8 +142,11 @@ extern "C" {
 #if !defined(LIBYUV_DISABLE_X86) && \
     (defined(__x86_64__) || defined(__i386__) || \
      defined(_M_X64) || defined(_M_X86))
+#define HAS_ARGBMIRRORROW_AVX2
 #define HAS_ARGBTOUVMATRIXROW_AVX2
 #define HAS_MERGEUVROW_AVX2
+#define HAS_MIRRORROW_AVX2
+#define HAS_MIRRORUVROW_AVX2
 #endif
 
 #if !defined(LIBYUV_DISABLE_X86) && defined(USE_ROW_GCC) && \
