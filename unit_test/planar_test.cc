@@ -29,11 +29,7 @@
 #include "libyuv/row.h" /* For ScaleSumSamples_Neon */
 #endif
 
-#if defined(LIBYUV_BIT_EXACT)
 #define EXPECTED_UNATTENUATE_DIFF 0
-#else
-#define EXPECTED_UNATTENUATE_DIFF 2
-#endif
 
 namespace libyuv {
 
