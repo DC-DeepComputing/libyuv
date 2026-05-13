@@ -50,11 +50,11 @@ extern "C" {
 #define HAS_COPYROW_ERMS
 #define HAS_COPYROW_SSE2
 #define HAS_H422TOARGBROW_SSSE3
-#define HAS_I422TOARGB1555ROW_SSSE3
-#define HAS_I422TOARGB4444ROW_SSSE3
+//#define HAS_I422TOARGB1555ROW_SSSE3
+//#define HAS_I422TOARGB4444ROW_SSSE3
 #define HAS_I422TOARGBROW_SSSE3
 #define HAS_I422TORGB24ROW_SSSE3
-#define HAS_I422TORGB565ROW_SSSE3
+//#define HAS_I422TORGB565ROW_SSSE3
 #define HAS_I422TORGBAROW_SSSE3
 #define HAS_I422TOUYVYROW_SSE2
 #define HAS_I422TOYUY2ROW_SSE2
@@ -67,10 +67,10 @@ extern "C" {
 #define HAS_MIRRORROW_SSSE3
 #define HAS_MIRRORSPLITUVROW_SSSE3
 #define HAS_NV12TOARGBROW_SSSE3
-#define HAS_NV12TORGB24ROW_SSSE3
-#define HAS_NV12TORGB565ROW_SSSE3
+//#define HAS_NV12TORGB24ROW_SSSE3
+//#define HAS_NV12TORGB565ROW_SSSE3
 #define HAS_NV21TOARGBROW_SSSE3
-#define HAS_NV21TORGB24ROW_SSSE3
+//#define HAS_NV21TORGB24ROW_SSSE3
 #define HAS_RAWTOARGBROW_SSSE3
 #define HAS_RAWTORGB24ROW_SSSE3
 #define HAS_RGB24TOARGBROW_SSSE3
@@ -159,22 +159,22 @@ extern "C" {
 #define HAS_COPYROW_AVX
 #define HAS_H422TOARGBROW_AVX2
 #define HAS_HALFFLOATROW_AVX2
-#define HAS_I422TOARGB1555ROW_AVX2
-#define HAS_I422TOARGB4444ROW_AVX2
+//#define HAS_I422TOARGB1555ROW_AVX2
+//#define HAS_I422TOARGB4444ROW_AVX2
 #define HAS_I422TOARGBROW_AVX2
-#define HAS_I422TORGB24ROW_AVX2
-#define HAS_I422TORGB565ROW_AVX2
+//#define HAS_I422TORGB24ROW_AVX2
+//#define HAS_I422TORGB565ROW_AVX2
 #define HAS_I422TORGBAROW_AVX2
 #define HAS_I444TOARGBROW_AVX2
-#define HAS_I444TORGB24ROW_AVX2
+//#define HAS_I444TORGB24ROW_AVX2
 #define HAS_INTERPOLATEROW_AVX2
 #define HAS_J422TOARGBROW_AVX2
 #define HAS_MIRRORROW_AVX2
 #define HAS_NV12TOARGBROW_AVX2
-#define HAS_NV12TORGB24ROW_AVX2
-#define HAS_NV12TORGB565ROW_AVX2
+//#define HAS_NV12TORGB24ROW_AVX2
+//#define HAS_NV12TORGB565ROW_AVX2
 #define HAS_NV21TOARGBROW_AVX2
-#define HAS_NV21TORGB24ROW_AVX2
+//#define HAS_NV21TORGB24ROW_AVX2
 #define HAS_SPLITUVROW_AVX2
 #define HAS_UYVYTOARGBROW_AVX2
 #define HAS_UYVYTOUV422ROW_AVX2
@@ -317,7 +317,7 @@ extern "C" {
 #define HAS_I422TOAR30ROW_AVX2
 #define HAS_I422TOUYVYROW_AVX2
 #define HAS_I422TOYUY2ROW_AVX2
-#define HAS_INTERPOLATEROW_16TO8_AVX2
+//#define HAS_INTERPOLATEROW_16TO8_AVX2
 #define HAS_MERGEAR64ROW_AVX2
 #define HAS_MERGEARGB16TO8ROW_AVX2
 #define HAS_MERGEARGBROW_AVX2
@@ -362,7 +362,6 @@ extern "C" {
 #endif
 #define HAS_ARGBTOYROW_AVX2
 #define HAS_ARGBTOYMATRIXROW_AVX2
-#define HAS_ARGBTOUV444MATRIXROW_AVX2
 #define HAS_ABGRTOYROW_AVX2
 #define HAS_ARGBTOYJROW_AVX2
 #define HAS_ABGRTOYJROW_AVX2
@@ -392,8 +391,6 @@ extern "C" {
 #if !defined(LIBYUV_DISABLE_X86) && defined(__x86_64__) && \
     (defined(CLANG_HAS_AVX512))
 #define HAS_I422TOARGBROW_AVX512BW
-#define HAS_I444TOARGBROW_AVX512BW
-#define HAS_I444TORGB24ROW_AVX512BW
 #define HAS_ARGBTOUV444ROW_AVX512BW
 #define HAS_ARGBTOUV444MATRIXROW_AVX512BW
 #define HAS_ARGBTOYROW_AVX512BW
@@ -429,9 +426,7 @@ extern "C" {
 #define HAS_ARGBTORGB24ROW_NEON
 #define HAS_ARGBTORGB565DITHERROW_NEON
 #define HAS_ARGBTORGB565ROW_NEON
-#if !defined(__aarch64__)
 #define HAS_ARGBTOUV444MATRIXROW_NEON
-#endif
 #define HAS_ARGBTOUV444ROW_NEON
 #define HAS_ARGBTOUVJ444ROW_NEON
 #define HAS_ARGBTOUVJROW_NEON
@@ -440,9 +435,7 @@ extern "C" {
 #endif
 #define HAS_ARGBTOUVROW_NEON
 #define HAS_ARGBTOYJROW_NEON
-#if !defined(__aarch64__)
 #define HAS_ARGBTOYMATRIXROW_NEON
-#endif
 #define HAS_ARGBTOYROW_NEON
 #define HAS_AYUVTOUVROW_NEON
 #define HAS_AYUVTOVUROW_NEON
@@ -1812,7 +1805,6 @@ void ARGBToYJRow_LASX(const uint8_t* src_argb0, uint8_t* dst_y, int width);
 void ABGRToYJRow_LASX(const uint8_t* src_abgr, uint8_t* dst_yj, int width);
 void RGBAToYJRow_LASX(const uint8_t* src_rgba, uint8_t* dst_yj, int width);
 
-#if !defined(__aarch64__)
 void ARGBToUV444MatrixRow_NEON(const uint8_t* src_argb,
                                uint8_t* dst_u,
                                uint8_t* dst_v,
@@ -1831,7 +1823,6 @@ void ARGBToYMatrixRow_Any_NEON(const uint8_t* src_argb,
                                uint8_t* dst_y,
                                int width,
                                const struct ArgbConstants* c);
-#endif
 void ARGBToUV444Row_NEON(const uint8_t* src_argb,
                          uint8_t* dst_u,
                          uint8_t* dst_v,
@@ -4605,12 +4596,6 @@ void I444ToARGBRow_AVX2(const uint8_t* y_buf,
                         uint8_t* dst_argb,
                         const struct YuvConstants* yuvconstants,
                         int width);
-void I444ToARGBRow_AVX512BW(const uint8_t* y_buf,
-                            const uint8_t* u_buf,
-                            const uint8_t* v_buf,
-                            uint8_t* dst_argb,
-                            const struct YuvConstants* yuvconstants,
-                            int width);
 void I444ToRGB24Row_SSSE3(const uint8_t* y_buf,
                           const uint8_t* u_buf,
                           const uint8_t* v_buf,
@@ -4976,12 +4961,6 @@ void I444ToARGBRow_Any_AVX2(const uint8_t* y_buf,
                             uint8_t* dst_ptr,
                             const struct YuvConstants* yuvconstants,
                             int width);
-void I444ToARGBRow_Any_AVX512BW(const uint8_t* y_buf,
-                                const uint8_t* u_buf,
-                                const uint8_t* v_buf,
-                                uint8_t* dst_ptr,
-                                const struct YuvConstants* yuvconstants,
-                                int width);
 void I444ToRGB24Row_Any_AVX2(const uint8_t* y_buf,
                              const uint8_t* u_buf,
                              const uint8_t* v_buf,

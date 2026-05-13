@@ -24,16 +24,16 @@ extern "C" {
 LIBYUV_API
 int ARGBToI444(const uint8_t* src_argb,
                int src_stride_argb,
-               uint8_t* dst_y,
-               int dst_stride_y,
                uint8_t* dst_u,
                int dst_stride_u,
                uint8_t* dst_v,
                int dst_stride_v,
+               uint8_t* dst_y,
+               int dst_stride_y,
                int width,
                int height) {
-  return ARGBToI444Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_u,
-                          dst_stride_u, dst_v, dst_stride_v, &kArgbI601Constants,
+  return ARGBToI444Matrix(src_argb, src_stride_argb, dst_u, dst_stride_u, dst_v,
+                          dst_stride_v, dst_y, dst_stride_y, &kArgbI601Constants,
                           width, height);
 }
 
@@ -1809,16 +1809,16 @@ int ARGBToAR30(const uint8_t* src_argb,
 LIBYUV_API
 int ARGBToJ444(const uint8_t* src_argb,
                int src_stride_argb,
-               uint8_t* dst_y,
-               int dst_stride_y,
                uint8_t* dst_u,
                int dst_stride_u,
                uint8_t* dst_v,
                int dst_stride_v,
+               uint8_t* dst_y,
+               int dst_stride_y,
                int width,
                int height) {
-  return ARGBToI444Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_u,
-                          dst_stride_u, dst_v, dst_stride_v, &kArgbJPEGConstants,
+  return ARGBToI444Matrix(src_argb, src_stride_argb, dst_u, dst_stride_u, dst_v,
+                          dst_stride_v, dst_y, dst_stride_y, &kArgbJPEGConstants,
                           width, height);
 }
 
@@ -1876,91 +1876,8 @@ int RGBAToJ400(const uint8_t* src_rgba,
                int dst_stride_yj,
                int width,
                int height) {
-  int y;
-  void (*RGBAToYJRow)(const uint8_t* src_rgba, uint8_t* dst_yj, int width) =
-      RGBAToYJRow_C;
-  if (!src_rgba || !dst_yj || width <= 0 || height == 0) {
-    return -1;
-  }
-  if (height < 0) {
-    height = -height;
-    src_rgba = src_rgba + (height - 1) * src_stride_rgba;
-    src_stride_rgba = -src_stride_rgba;
-  }
-  // Coalesce rows.
-  if (src_stride_rgba == width * 4 && dst_stride_yj == width) {
-    width *= height;
-    height = 1;
-    src_stride_rgba = dst_stride_yj = 0;
-  }
-#if defined(HAS_RGBATOYJROW_SSSE3)
-  if (TestCpuFlag(kCpuHasSSSE3)) {
-    RGBAToYJRow = RGBAToYJRow_Any_SSSE3;
-    if (IS_ALIGNED(width, 16)) {
-      RGBAToYJRow = RGBAToYJRow_SSSE3;
-    }
-  }
-#endif
-#if defined(HAS_RGBATOYJROW_AVX2)
-  if (TestCpuFlag(kCpuHasAVX2)) {
-    RGBAToYJRow = RGBAToYJRow_Any_AVX2;
-    if (IS_ALIGNED(width, 32)) {
-      RGBAToYJRow = RGBAToYJRow_AVX2;
-    }
-  }
-#endif
-#if defined(HAS_ARGBTOYROW_AVX512BW)
-  if (TestCpuFlag(kCpuHasAVX512BW)) {
-    RGBAToYJRow = RGBAToYJRow_Any_AVX512BW;
-    if (IS_ALIGNED(width, 64)) {
-      RGBAToYJRow = RGBAToYJRow_AVX512BW;
-    }
-  }
-#endif
-#if defined(HAS_RGBATOYJROW_NEON)
-  if (TestCpuFlag(kCpuHasNEON)) {
-    RGBAToYJRow = RGBAToYJRow_Any_NEON;
-    if (IS_ALIGNED(width, 16)) {
-      RGBAToYJRow = RGBAToYJRow_NEON;
-    }
-  }
-#endif
-#if defined(HAS_RGBATOYJROW_NEON_DOTPROD)
-  if (TestCpuFlag(kCpuHasNeonDotProd)) {
-    RGBAToYJRow = RGBAToYJRow_Any_NEON_DotProd;
-    if (IS_ALIGNED(width, 16)) {
-      RGBAToYJRow = RGBAToYJRow_NEON_DotProd;
-    }
-  }
-#endif
-#if defined(HAS_RGBATOYJROW_LSX)
-  if (TestCpuFlag(kCpuHasLSX)) {
-    RGBAToYJRow = RGBAToYJRow_Any_LSX;
-    if (IS_ALIGNED(width, 16)) {
-      RGBAToYJRow = RGBAToYJRow_LSX;
-    }
-  }
-#endif
-#if defined(HAS_RGBATOYJROW_LASX)
-  if (TestCpuFlag(kCpuHasLASX)) {
-    RGBAToYJRow = RGBAToYJRow_Any_LASX;
-    if (IS_ALIGNED(width, 32)) {
-      RGBAToYJRow = RGBAToYJRow_LASX;
-    }
-  }
-#endif
-#if defined(HAS_RGBATOYJROW_RVV)
-  if (TestCpuFlag(kCpuHasRVV)) {
-    RGBAToYJRow = RGBAToYJRow_RVV;
-  }
-#endif
-
-  for (y = 0; y < height; ++y) {
-    RGBAToYJRow(src_rgba, dst_yj, width);
-    src_rgba += src_stride_rgba;
-    dst_yj += dst_stride_yj;
-  }
-  return 0;
+  return ARGBToI400Matrix(src_rgba, src_stride_rgba, dst_yj, dst_stride_yj,
+                          &kRgbaJPEGConstants, width, height);
 }
 
 // Convert ABGR to J420. (JPeg full range I420).

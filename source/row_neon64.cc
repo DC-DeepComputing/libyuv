@@ -2742,55 +2742,46 @@ void ARGBToUV444MatrixRow_NEON(const uint8_t* src_argb,
                                int width,
                                const struct ArgbConstants* c) {
   asm volatile(
-      "ldr        q16, [%[c], #16]               \n" // kRGBToU
-      "ldr        q17, [%[c], #32]               \n" // kRGBToV
-      "ldr        s0, [%[c], #64]                \n" // kAddUV
-      "sxtl       v16.8h, v16.8b                 \n" // sign extend U coeffs to 16-bit
-      "sxtl       v17.8h, v17.8b                 \n" // sign extend V coeffs to 16-bit
-      "dup        v20.8h, v16.h[0]               \n" // U0
-      "dup        v21.8h, v16.h[1]               \n" // U1
-      "dup        v22.8h, v16.h[2]               \n" // U2
-      "dup        v23.8h, v16.h[3]               \n" // U3
-      "dup        v24.8h, v17.h[0]               \n" // V0
-      "dup        v26.8h, v17.h[1]               \n" // V1
-      "dup        v27.8h, v17.h[2]               \n" // V2
-      "dup        v28.8h, v17.h[3]               \n" // V3
-      "dup        v25.8h, v0.h[0]                \n" // kAddUV
+      "ldr        d0, [%[c], #16]                \n" // kRGBToU
+      "ldr        d1, [%[c], #32]                \n" // kRGBToV
+      "ldr        s2, [%[c], #64]                \n" // kAddUV
+      "sxtl       v0.8h, v0.8b                   \n" // sign extend U coeffs to 16-bit
+      "sxtl       v1.8h, v1.8b                   \n" // sign extend V coeffs to 16-bit
+      "dup        v2.8h, v2.h[0]                 \n" // kAddUV
       "1:          \n"
-      "ld4         {v0.8b,v1.8b,v2.8b,v3.8b}, [%0], #32 \n"  // load 8 ARGB
+      "ld4         {v4.8b,v5.8b,v6.8b,v7.8b}, [%0], #32 \n"  // load 8 ARGB
       "subs        %w3, %w3, #8                  \n"  // 8 processed per loop.
 
-      "uxtl        v4.8h, v0.8b                  \n"
-      "uxtl        v5.8h, v1.8b                  \n"
-      "uxtl        v6.8h, v2.8b                  \n"
-      "uxtl        v7.8h, v3.8b                  \n"
+      "uxtl        v8.8h, v4.8b                  \n"  // B
+      "uxtl        v9.8h, v5.8b                  \n"  // G
+      "uxtl        v10.8h, v6.8b                 \n"  // R
+      "uxtl        v11.8h, v7.8b                 \n"  // A
 
       // U = B*U0 + G*U1 + R*U2 + A*U3
-      "mul         v18.8h, v4.8h, v20.8h         \n"
-      "mla         v18.8h, v5.8h, v21.8h         \n"
-      "mla         v18.8h, v6.8h, v22.8h         \n"
-      "mla         v18.8h, v7.8h, v23.8h         \n"
+      "mul         v12.8h, v8.8h, v0.h[0]        \n"
+      "mla         v12.8h, v9.8h, v0.h[1]        \n"
+      "mla         v12.8h, v10.8h, v0.h[2]       \n"
+      "mla         v12.8h, v11.8h, v0.h[3]       \n"
 
       // V = B*V0 + G*V1 + R*V2 + A*V3
-      "mul         v19.8h, v4.8h, v24.8h         \n"
-      "mla         v19.8h, v5.8h, v26.8h         \n"
-      "mla         v19.8h, v6.8h, v27.8h         \n"
-      "mla         v19.8h, v7.8h, v28.8h         \n"
+      "mul         v13.8h, v8.8h, v1.h[0]        \n"
+      "mla         v13.8h, v9.8h, v1.h[1]        \n"
+      "mla         v13.8h, v10.8h, v1.h[2]       \n"
+      "mla         v13.8h, v11.8h, v1.h[3]       \n"
 
-      "subhn       v0.8b, v25.8h, v18.8h         \n"
-      "subhn       v1.8b, v25.8h, v19.8h         \n"
+      "subhn       v4.8b, v2.8h, v12.8h          \n"
+      "subhn       v5.8b, v2.8h, v13.8h          \n"
 
-      "st1         {v0.8b}, [%1], #8             \n"
-      "st1         {v1.8b}, [%2], #8             \n"
+      "st1         {v4.8b}, [%1], #8             \n"
+      "st1         {v5.8b}, [%2], #8             \n"
       "b.gt        1b                            \n"
       : "+r"(src_argb),     // %0
         "+r"(dst_u),        // %1
         "+r"(dst_v),        // %2
         "+r"(width)         // %3
       : [c] "r"(c)          // %4
-      : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-        "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25",
-        "v26", "v27", "v28");
+      : "cc", "memory", "v0", "v1", "v2", "v4", "v5", "v6", "v7",
+        "v8", "v9", "v10", "v11", "v12", "v13");
 }
 
 static void ARGBToUV444MatrixRow_NEON_I8MM(
@@ -2904,59 +2895,51 @@ void ARGBToUVMatrixRow_NEON(const uint8_t* src_argb,
                             const struct ArgbConstants* c) {
   const uint8_t* src_argb_1 = src_argb + src_stride_argb;
   asm volatile (
-      "ldr        q16, [%[c], #16]               \n" // kRGBToU
-      "ldr        q17, [%[c], #32]               \n" // kRGBToV
-      "sxtl       v16.8h, v16.8b                 \n" // sign extend U coeffs to 16-bit
-      "sxtl       v17.8h, v17.8b                 \n" // sign extend V coeffs to 16-bit
-      "dup        v20.8h, v16.h[0]               \n" // U0
-      "dup        v21.8h, v16.h[1]               \n" // U1
-      "dup        v22.8h, v16.h[2]               \n" // U2
-      "dup        v23.8h, v16.h[3]               \n" // U3
-      "dup        v24.8h, v17.h[0]               \n" // V0
-      "dup        v26.8h, v17.h[1]               \n" // V1
-      "dup        v27.8h, v17.h[2]               \n" // V2
-      "dup        v28.8h, v17.h[3]               \n" // V3
-      "movi       v25.8h, #0x80, lsl #8          \n" // 128.0 in 16-bit (0x8000)
+      "ldr        d0, [%[c], #16]                \n" // kRGBToU
+      "ldr        d1, [%[c], #32]                \n" // kRGBToV
+      "sxtl       v0.8h, v0.8b                   \n" // sign extend U coeffs to 16-bit
+      "sxtl       v1.8h, v1.8b                   \n" // sign extend V coeffs to 16-bit
+      "movi       v2.8h, #0x80, lsl #8           \n" // 128.0 in 16-bit (0x8000)
 
       "1:          \n"
-      "ld4         {v0.16b,v1.16b,v2.16b,v3.16b}, [%0], #64 \n"  // load 16 pixels.
+      "ld4         {v4.16b,v5.16b,v6.16b,v7.16b}, [%0], #64 \n"  // load 16 pixels.
       "subs        %w4, %w4, #16                 \n"  // 16 processed per loop.
-      "uaddlp      v0.8h, v0.16b                 \n"  // B 16 bytes -> 8 shorts.
+      "uaddlp      v8.8h, v4.16b                 \n"  // B 16 bytes -> 8 shorts.
       "prfm        pldl1keep, [%0, 448]          \n"
-      "uaddlp      v1.8h, v1.16b                 \n"  // G 16 bytes -> 8 shorts.
-      "uaddlp      v2.8h, v2.16b                 \n"  // R 16 bytes -> 8 shorts.
-      "uaddlp      v18.8h, v3.16b                \n"  // A 16 bytes -> 8 shorts.
+      "uaddlp      v9.8h, v5.16b                 \n"  // G 16 bytes -> 8 shorts.
+      "uaddlp      v10.8h, v6.16b                \n"  // R 16 bytes -> 8 shorts.
+      "uaddlp      v11.8h, v7.16b                \n"  // A 16 bytes -> 8 shorts.
 
       "ld4         {v4.16b,v5.16b,v6.16b,v7.16b}, [%1], #64 \n"  // load 16 more.
-      "uadalp      v0.8h, v4.16b                 \n"  // B 16 bytes -> 8 shorts.
+      "uadalp      v8.8h, v4.16b                 \n"  // B 16 bytes -> 8 shorts.
       "prfm        pldl1keep, [%1, 448]          \n"
-      "uadalp      v1.8h, v5.16b                 \n"  // G 16 bytes -> 8 shorts.
-      "uadalp      v2.8h, v6.16b                 \n"  // R 16 bytes -> 8 shorts.
-      "uadalp      v18.8h, v7.16b                \n"  // A 16 bytes -> 8 shorts.
+      "uadalp      v9.8h, v5.16b                 \n"  // G 16 bytes -> 8 shorts.
+      "uadalp      v10.8h, v6.16b                \n"  // R 16 bytes -> 8 shorts.
+      "uadalp      v11.8h, v7.16b                \n"  // A 16 bytes -> 8 shorts.
 
-      "urshr       v0.8h, v0.8h, #2              \n"  // average of 4
-      "urshr       v1.8h, v1.8h, #2              \n"
-      "urshr       v2.8h, v2.8h, #2              \n"
-      "urshr       v18.8h, v18.8h, #2             \n"
+      "urshr       v8.8h, v8.8h, #2              \n"  // average of 4
+      "urshr       v9.8h, v9.8h, #2              \n"
+      "urshr       v10.8h, v10.8h, #2            \n"
+      "urshr       v11.8h, v11.8h, #2            \n"
 
       // U = B*U0 + G*U1 + R*U2 + A*U3
-      "mul        v3.8h, v0.8h, v20.8h          \n"
-      "mla        v3.8h, v1.8h, v21.8h          \n"
-      "mla        v3.8h, v2.8h, v22.8h          \n"
-      "mla        v3.8h, v18.8h, v23.8h         \n"
+      "mul        v12.8h, v8.8h, v0.h[0]        \n"
+      "mla        v12.8h, v9.8h, v0.h[1]        \n"
+      "mla        v12.8h, v10.8h, v0.h[2]       \n"
+      "mla        v12.8h, v11.8h, v0.h[3]       \n"
 
       // V = B*V0 + G*V1 + R*V2 + A*V3
-      "mul        v4.8h, v0.8h, v24.8h          \n"
-      "mla        v4.8h, v1.8h, v26.8h          \n"
-      "mla        v4.8h, v2.8h, v27.8h          \n"
-      "mla        v4.8h, v18.8h, v28.8h         \n"
+      "mul        v13.8h, v8.8h, v1.h[0]        \n"
+      "mla        v13.8h, v9.8h, v1.h[1]        \n"
+      "mla        v13.8h, v10.8h, v1.h[2]       \n"
+      "mla        v13.8h, v11.8h, v1.h[3]       \n"
 
       // U = (128.0 - U) >> 8, V = (128.0 - V) >> 8
-      "subhn      v0.8b, v25.8h, v3.8h           \n"
-      "subhn      v1.8b, v25.8h, v4.8h           \n"
+      "subhn      v4.8b, v2.8h, v12.8h           \n"
+      "subhn      v5.8b, v2.8h, v13.8h           \n"
 
-      "st1         {v0.8b}, [%2], #8             \n"  // store 8 pixels U.
-      "st1         {v1.8b}, [%3], #8             \n"  // store 8 pixels V.
+      "st1         {v4.8b}, [%2], #8             \n"  // store 8 pixels U.
+      "st1         {v5.8b}, [%3], #8             \n"  // store 8 pixels V.
       "b.gt        1b                            \n"
   : "+r"(src_argb),  // %0
     "+r"(src_argb_1),  // %1
@@ -2964,9 +2947,8 @@ void ARGBToUVMatrixRow_NEON(const uint8_t* src_argb,
     "+r"(dst_v),     // %3
     "+r"(width)        // %4
   : [c] "r"(c)         // %5
-  : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-    "v16", "v17", "v18", "v20", "v21", "v22", "v23", "v24", "v25", "v26",
-    "v27", "v28"
+  : "cc", "memory", "v0", "v1", "v2", "v4", "v5", "v6", "v7",
+    "v8", "v9", "v10", "v11", "v12", "v13"
   );
 }
 
@@ -3560,41 +3542,40 @@ void ARGB4444ToYRow_NEON(const uint8_t* src_argb4444,
 
 
 
-// ARGB expects first 3 values to contain RGB and 4th value is ignored.
 void ARGBToYMatrixRow_NEON(const uint8_t* src_argb,
                                   uint8_t* dst_y,
                                   int width,
                                   const struct ArgbConstants* c) {
   asm volatile(
-      "ldr         s16, [%3]                     \n"  // load 4 coeffs
-      "ldr         s17, [%3, #48]                \n"  // load kAddY[0]
-      "dup         v18.16b, v16.b[0]             \n"  // B
-      "dup         v19.16b, v16.b[1]             \n"  // G
-      "dup         v20.16b, v16.b[2]             \n"  // R
-      "dup         v21.16b, v16.b[3]             \n"  // A
-      "dup         v22.8h,  v17.h[0]             \n"  // bias
+      "ldr         s0, [%3]                      \n"  // load 4 coeffs
+      "ldr         s1, [%3, #48]                 \n"  // load kAddY[0]
+      "dup         v2.16b, v0.b[0]               \n"  // B
+      "dup         v3.16b, v0.b[1]               \n"  // G
+      "dup         v4.16b, v0.b[2]               \n"  // R
+      "dup         v5.16b, v0.b[3]               \n"  // A
+      "dup         v6.8h,  v1.h[0]               \n"  // bias
       "1:          \n"
-      "ld4         {v2.16b,v3.16b,v4.16b,v5.16b}, [%0], #64 \n"  // load 16
+      "ld4         {v16.16b,v17.16b,v18.16b,v19.16b}, [%0], #64 \n"  // load 16
       "subs        %w2, %w2, #16                 \n"  // 16 processed per loop.
-      "umull       v0.8h, v2.8b, v18.8b          \n"  // B
-      "umull2      v1.8h, v2.16b, v18.16b        \n"
+      "umull       v20.8h, v16.8b, v2.8b         \n"  // B
+      "umull2      v21.8h, v16.16b, v2.16b       \n"
       "prfm        pldl1keep, [%0, 448]          \n"
-      "umlal       v0.8h, v3.8b, v19.8b          \n"  // G
-      "umlal2      v1.8h, v3.16b, v19.16b        \n"
-      "umlal       v0.8h, v4.8b, v20.8b          \n"  // R
-      "umlal2      v1.8h, v4.16b, v20.16b        \n"
-      "umlal       v0.8h, v5.8b, v21.8b          \n"  // A
-      "umlal2      v1.8h, v5.16b, v21.16b        \n"
-      "addhn       v0.8b, v0.8h, v22.8h          \n"  // 16 bit to 8 bit Y
-      "addhn       v1.8b, v1.8h, v22.8h          \n"
-      "st1         {v0.8b, v1.8b}, [%1], #16     \n"  // store 16 pixels Y.
+      "umlal       v20.8h, v17.8b, v3.8b         \n"  // G
+      "umlal2      v21.8h, v17.16b, v3.16b       \n"
+      "umlal       v20.8h, v18.8b, v4.8b         \n"  // R
+      "umlal2      v21.8h, v18.16b, v4.16b       \n"
+      "umlal       v20.8h, v19.8b, v5.8b         \n"  // A
+      "umlal2      v21.8h, v19.16b, v5.16b       \n"
+      "addhn       v16.8b, v20.8h, v6.8h         \n"  // 16 bit to 8 bit Y
+      "addhn       v17.8b, v21.8h, v6.8h         \n"
+      "st1         {v16.8b, v17.8b}, [%1], #16   \n"  // store 16 pixels Y.
       "b.gt        1b                            \n"
       : "+r"(src_argb),    // %0
         "+r"(dst_y),       // %1
         "+r"(width)        // %2
       : "r"(c)             // %3
-      : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v16", "v17", "v18",
-        "v19", "v20", "v21", "v22");
+      : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v6",
+        "v16", "v17", "v18", "v19", "v20", "v21");
 }
 
 
