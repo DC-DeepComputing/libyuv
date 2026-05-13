@@ -4637,31 +4637,6 @@ void I400ToARGBRow_AVX2(const uint8_t* y_buf,
 }
 #endif  // HAS_I400TOARGBROW_AVX2
 
-#ifdef HAS_MIRRORROW_SSSE3
-// Shuffle table for reversing the bytes.
-static const uvec8 kShuffleMirror = {15u, 14u, 13u, 12u, 11u, 10u, 9u, 8u,
-                                     7u,  6u,  5u,  4u,  3u,  2u,  1u, 0u};
-
-void MirrorRow_SSSE3(const uint8_t* src, uint8_t* dst, int width) {
-  ptrdiff_t temp_width = (ptrdiff_t)(width);
-      asm volatile("movdqa      %3,%%xmm5                     \n"
-
-               LABELALIGN
-      "1:          \n"
-      "movdqu      -0x10(%0,%2,1),%%xmm0         \n"
-      "pshufb      %%xmm5,%%xmm0                 \n"
-      "movdqu      %%xmm0,(%1)                   \n"
-      "lea         0x10(%1),%1                   \n"
-      "sub         $0x10,%2                      \n"
-      "jg          1b                            \n"
-               : "+r"(src),           // %0
-                 "+r"(dst),           // %1
-                 "+r"(temp_width)     // %2
-               : "m"(kShuffleMirror)  // %3
-               : "memory", "cc", "xmm0", "xmm5");
-}
-#endif  // HAS_MIRRORROW_SSSE3
-
 #ifdef HAS_MIRRORROW_AVX2
 void MirrorRow_AVX2(const uint8_t* src, uint8_t* dst, int width) {
   ptrdiff_t temp_width = (ptrdiff_t)(width);
@@ -4684,31 +4659,6 @@ void MirrorRow_AVX2(const uint8_t* src, uint8_t* dst, int width) {
                : "memory", "cc", "xmm0", "xmm5");
 }
 #endif  // HAS_MIRRORROW_AVX2
-
-#ifdef HAS_MIRRORUVROW_SSSE3
-// Shuffle table for reversing the UV.
-static const uvec8 kShuffleMirrorUV = {14u, 15u, 12u, 13u, 10u, 11u, 8u, 9u,
-                                       6u,  7u,  4u,  5u,  2u,  3u,  0u, 1u};
-
-void MirrorUVRow_SSSE3(const uint8_t* src_uv, uint8_t* dst_uv, int width) {
-  ptrdiff_t temp_width = (ptrdiff_t)(width);
-      asm volatile("movdqa      %3,%%xmm5                     \n"
-
-               LABELALIGN
-      "1:          \n"
-      "movdqu      -0x10(%0,%2,2),%%xmm0         \n"
-      "pshufb      %%xmm5,%%xmm0                 \n"
-      "movdqu      %%xmm0,(%1)                   \n"
-      "lea         0x10(%1),%1                   \n"
-      "sub         $0x8,%2                       \n"
-      "jg          1b                            \n"
-               : "+r"(src_uv),          // %0
-                 "+r"(dst_uv),          // %1
-                 "+r"(temp_width)       // %2
-               : "m"(kShuffleMirrorUV)  // %3
-               : "memory", "cc", "xmm0", "xmm5");
-}
-#endif  // HAS_MIRRORUVROW_SSSE3
 
 #ifdef HAS_MIRRORUVROW_AVX2
 void MirrorUVRow_AVX2(const uint8_t* src_uv, uint8_t* dst_uv, int width) {
@@ -4766,75 +4716,59 @@ void MirrorSplitUVRow_SSSE3(const uint8_t* src,
 }
 #endif  // HAS_MIRRORSPLITUVROW_SSSE3
 
-#ifdef HAS_RGB24MIRRORROW_SSSE3
+#ifdef HAS_RGB24MIRRORROW_AVX2
+// Shuffle first 10 pixels to last 10 mirrored.  first byte zero
+static const uvec8 kShuffleMirrorRGB0_AVX = {
+    128u, 12u, 13u, 14u, 9u, 10u, 11u, 6u, 7u, 8u, 3u, 4u, 5u, 0u, 1u, 2u
+};
 
-// Shuffle first 5 pixels to last 5 mirrored.  first byte zero
-static const uvec8 kShuffleMirrorRGB0 = {128u, 12u, 13u, 14u, 9u, 10u, 11u, 6u,
-                                         7u,   8u,  3u,  4u,  5u, 0u,  1u,  2u};
+// Shuffle last 2 pixels to first 2 mirrored.  last byte zero
+static const uvec8 kShuffleMirrorRGB1_AVX = {
+    13u, 14u, 15u, 10u, 11u, 12u, 7u, 8u, 9u, 4u, 5u, 6u, 1u, 2u, 3u, 128u
+};
 
-// Shuffle last 5 pixels to first 5 mirrored.  last byte zero
-static const uvec8 kShuffleMirrorRGB1 = {
-    13u, 14u, 15u, 10u, 11u, 12u, 7u, 8u, 9u, 4u, 5u, 6u, 1u, 2u, 3u, 128u};
-
-// Shuffle 5 pixels at a time (15 bytes)
-void RGB24MirrorRow_SSSE3(const uint8_t* src_rgb24,
-                          uint8_t* dst_rgb24,
-                          int width) {
+void RGB24MirrorRow_AVX2(const uint8_t* src_rgb24,
+                         uint8_t* dst_rgb24,
+                         int width) {
   ptrdiff_t temp_width = (ptrdiff_t)(width);
-  src_rgb24 += width * 3 - 48;
+  src_rgb24 += width * 3 - 96;
   asm volatile(
-      "movdqa      %3,%%xmm4                     \n"
-      "movdqa      %4,%%xmm5                     \n"
+      "vbroadcasti128 %3,%%ymm4                  \n"
+      "vmovdqa     %4,%%xmm5                     \n"
 
       LABELALIGN
       "1:          \n"
-      "movdqu      (%0),%%xmm0                   \n"  // first 5
-      "movdqu      15(%0),%%xmm1                 \n"  // next 5
-      "movdqu      30(%0),%%xmm2                 \n"  // next 5
-      "movdqu      32(%0),%%xmm3                 \n"  // last 1 special
-      "pshufb      %%xmm4,%%xmm0                 \n"
-      "pshufb      %%xmm4,%%xmm1                 \n"
-      "pshufb      %%xmm4,%%xmm2                 \n"
-      "pshufb      %%xmm5,%%xmm3                 \n"
-      "lea         -0x30(%0),%0                  \n"
-      "movdqu      %%xmm0,32(%1)                 \n"  // last 5
-      "movdqu      %%xmm1,17(%1)                 \n"  // next 5
-      "movdqu      %%xmm2,2(%1)                  \n"  // next 5
-      "movlpd      %%xmm3,0(%1)                  \n"  // first 1
-      "lea         0x30(%1),%1                   \n"
-      "sub         $0x10,%2                      \n"
+      "vmovdqu     (%0),%%xmm0                   \n"  // first 10
+      "vinserti128 $1,15(%0),%%ymm0,%%ymm0       \n"
+      "vmovdqu     30(%0),%%xmm1                 \n"  // next 10
+      "vinserti128 $1,45(%0),%%ymm1,%%ymm1       \n"
+      "vmovdqu     60(%0),%%xmm2                 \n"  // next 10
+      "vinserti128 $1,75(%0),%%ymm2,%%ymm2       \n"
+      "vmovdqu     80(%0),%%xmm3                 \n"  // last 2 special
+      "vpshufb     %%ymm4,%%ymm0,%%ymm0          \n"
+      "vpshufb     %%ymm4,%%ymm1,%%ymm1          \n"
+      "vpshufb     %%ymm4,%%ymm2,%%ymm2          \n"
+      "vpshufb     %%xmm5,%%xmm3,%%xmm3          \n"
+      "lea         -0x60(%0),%0                  \n"
+      "vmovdqu     %%xmm0,80(%1)                 \n"
+      "vextracti128 $1,%%ymm0,65(%1)             \n"
+      "vmovdqu     %%xmm1,50(%1)                 \n"
+      "vextracti128 $1,%%ymm1,35(%1)             \n"
+      "vmovdqu     %%xmm2,20(%1)                 \n"
+      "vextracti128 $1,%%ymm2,5(%1)              \n"
+      "vmovq       %%xmm3,0(%1)                  \n"
+      "lea         0x60(%1),%1                   \n"
+      "sub         $0x20,%2                      \n"
       "jg          1b                            \n"
+      "vzeroupper  \n"
       : "+r"(src_rgb24),          // %0
         "+r"(dst_rgb24),          // %1
         "+r"(temp_width)          // %2
-      : "m"(kShuffleMirrorRGB0),  // %3
-        "m"(kShuffleMirrorRGB1)   // %4
+      : "m"(kShuffleMirrorRGB0_AVX),  // %3
+        "m"(kShuffleMirrorRGB1_AVX)   // %4
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
 }
-#endif  // HAS_RGB24MIRRORROW_SSSE3
-
-#ifdef HAS_ARGBMIRRORROW_SSE2
-
-void ARGBMirrorRow_SSE2(const uint8_t* src, uint8_t* dst, int width) {
-  ptrdiff_t temp_width = (ptrdiff_t)(width);
-      asm volatile("lea         -0x10(%0,%2,4),%0             \n"
-
-               LABELALIGN
-      "1:          \n"
-      "movdqu      (%0),%%xmm0                   \n"
-      "pshufd      $0x1b,%%xmm0,%%xmm0           \n"
-      "lea         -0x10(%0),%0                  \n"
-      "movdqu      %%xmm0,(%1)                   \n"
-      "lea         0x10(%1),%1                   \n"
-      "sub         $0x4,%2                       \n"
-      "jg          1b                            \n"
-               : "+r"(src),        // %0
-                 "+r"(dst),        // %1
-                 "+r"(temp_width)  // %2
-               :
-               : "memory", "cc", "xmm0");
-}
-#endif  // HAS_ARGBMIRRORROW_SSE2
+#endif  // HAS_RGB24MIRRORROW_AVX2
 
 #ifdef HAS_ARGBMIRRORROW_AVX2
 // Shuffle table for reversing the bytes.
