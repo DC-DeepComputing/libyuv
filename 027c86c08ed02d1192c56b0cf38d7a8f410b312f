@@ -41,6 +41,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e3a4eced_a9298edf",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 8934,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-18T21:14:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b932fc8c_afd2f399",
+      "range": {
+        "startLine": 8934,
+        "startChar": 0,
+        "endLine": 8934,
+        "endChar": 0
+      },
+      "revId": "027c86c08ed02d1192c56b0cf38d7a8f410b312f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f31d4c43_81359747",
@@ -54,6 +78,30 @@
       "writtenOn": "2026-05-18T19:13:19Z",
       "side": 1,
       "message": "Please fix this WARNING reported by autoreview issue finding: Explaining the derivation of this constant (32768 * 256 + 128) would help maintainers understand the rounding logic.",
+      "range": {
+        "startLine": 8937,
+        "startChar": 0,
+        "endLine": 8937,
+        "endChar": 0
+      },
+      "revId": "027c86c08ed02d1192c56b0cf38d7a8f410b312f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a691aa05_62a33dc3",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 8937,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-18T21:14:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f31d4c43_81359747",
       "range": {
         "startLine": 8937,
         "startChar": 0,
