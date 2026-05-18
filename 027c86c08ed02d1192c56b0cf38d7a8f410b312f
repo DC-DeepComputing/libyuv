@@ -16,6 +16,52 @@
       "message": "InterpolateRow_16_AVX2 based on InterpolateRow_16_NEON and InterpolateRow_AVX2",
       "revId": "027c86c08ed02d1192c56b0cf38d7a8f410b312f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b932fc8c_afd2f399",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 8934,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-05-18T19:13:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: Adding a comment explaining that 0x80008000 is used to bias unsigned words to signed range for vpmaddwd would be helpful.",
+      "range": {
+        "startLine": 8934,
+        "startChar": 0,
+        "endLine": 8934,
+        "endChar": 0
+      },
+      "revId": "027c86c08ed02d1192c56b0cf38d7a8f410b312f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f31d4c43_81359747",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 8937,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-05-18T19:13:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: Explaining the derivation of this constant (32768 * 256 + 128) would help maintainers understand the rounding logic.",
+      "range": {
+        "startLine": 8937,
+        "startChar": 0,
+        "endLine": 8937,
+        "endChar": 0
+      },
+      "revId": "027c86c08ed02d1192c56b0cf38d7a8f410b312f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
