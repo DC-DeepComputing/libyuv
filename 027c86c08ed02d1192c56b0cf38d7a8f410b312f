@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70f75536_7636866f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-18T03:50:25Z",
+      "side": 1,
+      "message": "InterpolateRow_16_AVX2 based on InterpolateRow_16_NEON and InterpolateRow_AVX2",
+      "revId": "027c86c08ed02d1192c56b0cf38d7a8f410b312f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
