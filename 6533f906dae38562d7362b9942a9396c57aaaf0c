@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f65a65a8_ca29fc94",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-26T18:09:05Z",
+      "side": 1,
+      "message": "Can you also fix libyuv.gyp?  AI review:\n\nYes, this CL makes sense.\n\n  Here is the analysis of why the change is correct and beneficial:\n\n  ### What the CL does\n\n  It removes the manual configuration of the  --dynamic-linker  linker flag ( ldflags ) for Android from the  libyuv_config  in  BUILD.gn .\n\n  ### Why it is correct\n\n  1. Redundancy: Modern toolchains (LLVM/Clang) automatically determine and set the correct dynamic linker (e.g.,  /system/bin/linker  for 32-bit ARM/x86 and  /system/bin/linker64  for 64-bit\n  ARM/x86-64) when building executables for Android. Setting this manually is no longer necessary.\n  2. Incorrect Propagation to Shared Libraries: In  BUILD.gn ,  libyuv_config  is applied to the  libyuv  target via  all_dependent_configs :\n    group(\"libyuv\") {\n      all_dependent_configs \u003d [ \":libyuv_config\" ]\n      ...\n    }\n  This means the config (including these  ldflags ) propagates to all targets that depend on  libyuv .\n  If a target depending on  libyuv  is a shared library, forcing  --dynamic-linker  onto it is incorrect. Shared libraries should not have an ELF interpreter ( .interp  section) defined. While\n  some linkers (like  lld ) might ignore this flag when building shared libraries, other linkers (like the one mentioned in the CL description) might respect it and incorrectly insert an  .     \n  interp  section, leading to malformed shared libraries.\n\n  ### Additional Recommendation\n\n  If the project still maintains the GYP build system (as indicated by recent CLs adding files to GYP),  libyuv.gyp  has the exact same logic that should probably be removed for the same\n  reasons.\n\n  In  libyuv.gyp  (lines 125-136):\n\n\t  \u0027direct_dependent_settings\u0027: {\n            \u0027include_dirs\u0027: [\n              \u0027include\u0027,\n              \u0027.\u0027,\n            ],\n            \u0027conditions\u0027: [\n              [\u0027OS \u003d\u003d \"android\" and target_arch \u003d\u003d \"arm64\"\u0027, {\n\t\t\u0027ldflags\u0027: [\n                  \u0027-Wl,--dynamic-linker,/system/bin/linker64\u0027,\n\t\t],\n              }],\n              [\u0027OS \u003d\u003d \"android\" and target_arch !\u003d \"arm64\"\u0027, {\n\t\t\u0027ldflags\u0027: [\n                  \u0027-Wl,--dynamic-linker,/system/bin/linker\u0027,\n\t\t],\n              }],\n            ], #conditions\n\t  },\n\n  If you want to maintain parity between GN and GYP builds, you should suggest applying the same clean-up to  libyuv.gyp .",
+      "revId": "6533f906dae38562d7362b9942a9396c57aaaf0c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
