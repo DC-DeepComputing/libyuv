@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a5c18b2_24adac40",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-26T17:59:13Z",
+      "side": 1,
+      "message": "Makes sense.  I\u0027ve updated row_rvv.cc, mainly for the ARGBToI420 etc conversions to take ArgbConstants.\n\nJust to be sure, I asked antigravity cli to review this CL and this is what it said\n\n  Yes, this CL makes perfect sense.\n\n  Here is a detailed breakdown of why the changes are correct and safe:\n\n  ### What the CL does\n\n  The CL adds two RISC-V Vector (RVV) source files to  libyuv.gypi , which is the shared source list for the GYP build system:\n\n  •  source/row_rvv.cc \n  •  source/scale_rvv.cc \n\n  ### Why it makes sense\n\n  1. Parity with other build systems: These two files already exist in the codebase and are actively used by all other supported build systems. They are already present in:\n      •  BUILD.gn \n      •  CMakeLists.txt \n      •  Android.bp \n      GYP was simply lagging behind and missing these files.\n  2. Safe Unconditional Inclusion: GYP in  libyuv  is structured to list all architecture-specific files unconditionally. This is safe because the files themselves are gated by preprocessor\n  macros.\n  Both  row_rvv.cc  and  scale_rvv.cc  start with:\n    #if !defined(LIBYUV_DISABLE_RVV) \u0026\u0026 defined(__riscv_vector)\n  If you are not compiling for RISC-V with vector support, these files will compile to empty translation units, causing no build issues on other architectures (like x86 or ARM). This matches how\n  NEON and LoongArch (LSX/LASX) files are already handled in  libyuv.gypi .\n  3. Correct Alphabetical Order: The files are inserted in the correct alphabetical order in  libyuv.gypi :\n      •  row_rvv.cc  is inserted between  row_neon64.cc  and  row_win.cc .\n      •  scale_rvv.cc  is inserted between  scale_rgb.cc  and  scale_uv.cc .\n\n\n  ### Additional Context\n\n  While there are other SIMD extensions also missing from the GYP build (specifically AArch64 SVE and SME files like  row_sve.cc  and  row_sme.cc ), the CL author explicitly stated in the\n  description that this CL is scoped only to RISC-V RVV in preparation for fixing RISC-V GYP builds.\n\n  For the scope it defines, the CL is correct, safe, and complete.",
+      "revId": "efc3659e53b60e65d730a211228b960c44e8a0f9",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
