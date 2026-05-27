@@ -984,9 +984,7 @@ ANY11(ABGRToAR30Row_Any_AVX2, ABGRToAR30Row_AVX2, 0, 4, 4, 7)
 #if defined(HAS_ARGBTOAR30ROW_AVX2)
 ANY11(ARGBToAR30Row_Any_AVX2, ARGBToAR30Row_AVX2, 0, 4, 4, 7)
 #endif
-#if defined(HAS_J400TOARGBROW_SSE2)
-ANY11(J400ToARGBRow_Any_SSE2, J400ToARGBRow_SSE2, 0, 1, 4, 7)
-#endif
+
 #if defined(HAS_J400TOARGBROW_AVX2)
 ANY11(J400ToARGBRow_Any_AVX2, J400ToARGBRow_AVX2, 0, 1, 4, 15)
 #endif
@@ -1062,7 +1060,6 @@ ANY11(ABGRToYRow_Any_AVX2, ABGRToYRow_AVX2, 0, 4, 1, 31)
 ANY11(ARGBToYJRow_Any_AVX2, ARGBToYJRow_AVX2, 0, 4, 1, 31)
 #endif
 #ifdef HAS_ABGRTOYJROW_AVX2
-ANY11(ABGRToYJRow_Any_AVX2, ABGRToYJRow_AVX2, 0, 4, 1, 31)
 #endif
 #ifdef HAS_RGBATOYJROW_AVX2
 ANY11(RGBAToYJRow_Any_AVX2, RGBAToYJRow_AVX2, 0, 4, 1, 31)
@@ -1110,10 +1107,8 @@ ANY11(ARGBToYJRow_Any_SSSE3, ARGBToYJRow_SSSE3, 0, 4, 1, 15)
 ANY11(ARGBToYJRow_Any_AVX512BW, ARGBToYJRow_AVX512BW, 0, 4, 1, 63)
 #endif
 #ifdef HAS_ABGRTOYJROW_SSSE3
-ANY11(ABGRToYJRow_Any_SSSE3, ABGRToYJRow_SSSE3, 0, 4, 1, 15)
 #endif
 #ifdef HAS_ARGBTOYROW_AVX512BW
-ANY11(ABGRToYJRow_Any_AVX512BW, ABGRToYJRow_AVX512BW, 0, 4, 1, 63)
 #endif
 #ifdef HAS_RGBATOYJROW_SSSE3
 ANY11(RGBAToYJRow_Any_SSSE3, RGBAToYJRow_SSSE3, 0, 4, 1, 15)
@@ -1140,10 +1135,8 @@ ANY11(ARGBToYJRow_Any_NEON, ARGBToYJRow_NEON, 0, 4, 1, 15)
 ANY11(ARGBToYJRow_Any_NEON_DotProd, ARGBToYJRow_NEON_DotProd, 0, 4, 1, 15)
 #endif
 #ifdef HAS_ABGRTOYJROW_NEON
-ANY11(ABGRToYJRow_Any_NEON, ABGRToYJRow_NEON, 0, 4, 1, 15)
 #endif
 #ifdef HAS_ABGRTOYJROW_NEON_DOTPROD
-ANY11(ABGRToYJRow_Any_NEON_DotProd, ABGRToYJRow_NEON_DotProd, 0, 4, 1, 15)
 #endif
 #ifdef HAS_RGBATOYJROW_NEON
 ANY11(RGBAToYJRow_Any_NEON, RGBAToYJRow_NEON, 0, 4, 1, 15)
@@ -1158,7 +1151,6 @@ ANY11(ARGBToYJRow_Any_LSX, ARGBToYJRow_LSX, 0, 4, 1, 15)
 ANY11(RGBAToYJRow_Any_LSX, RGBAToYJRow_LSX, 0, 4, 1, 15)
 #endif
 #ifdef HAS_ABGRTOYJROW_LSX
-ANY11(ABGRToYJRow_Any_LSX, ABGRToYJRow_LSX, 0, 4, 1, 15)
 #endif
 #ifdef HAS_RGBATOYJROW_LASX
 ANY11(RGBAToYJRow_Any_LASX, RGBAToYJRow_LASX, 0, 4, 1, 31)
@@ -1167,7 +1159,6 @@ ANY11(RGBAToYJRow_Any_LASX, RGBAToYJRow_LASX, 0, 4, 1, 31)
 ANY11(ARGBToYJRow_Any_LASX, ARGBToYJRow_LASX, 0, 4, 1, 31)
 #endif
 #ifdef HAS_ABGRTOYJROW_LASX
-ANY11(ABGRToYJRow_Any_LASX, ABGRToYJRow_LASX, 0, 4, 1, 31)
 #endif
 #ifdef HAS_BGRATOYROW_NEON
 ANY11(BGRAToYRow_Any_NEON, BGRAToYRow_NEON, 0, 4, 1, 15)
@@ -1830,8 +1821,17 @@ ANY11C(UYVYToARGBRow_Any_LSX, UYVYToARGBRow_LSX, 1, 4, 4, 7)
     memcpy(dst_ptr + np * BPP, vout, r * BPP * sizeof(TD));          \
   }
 
-#if defined(HAS_INTERPOLATEROW_AVX2)
+#ifdef HAS_INTERPOLATEROW_AVX2
 ANY11I(InterpolateRow_Any_AVX2, InterpolateRow_AVX2, uint8_t, uint8_t, 1, 1, 31)
+#endif
+#ifdef HAS_INTERPOLATEROW_SSSE3
+ANY11I(InterpolateRow_Any_SSSE3,
+       InterpolateRow_SSSE3,
+       uint8_t,
+       uint8_t,
+       1,
+       1,
+       15)
 #endif
 #ifdef HAS_INTERPOLATEROW_NEON
 ANY11I(InterpolateRow_Any_NEON, InterpolateRow_NEON, uint8_t, uint8_t, 1, 1, 15)
@@ -1848,15 +1848,6 @@ ANY11I(InterpolateRow_16_Any_NEON,
        1,
        1,
        7)
-#endif
-#ifdef HAS_INTERPOLATEROW_16_AVX2
-ANY11I(InterpolateRow_16_Any_AVX2,
-       InterpolateRow_16_AVX2,
-       uint16_t,
-       uint16_t,
-       1,
-       1,
-       15)
 #endif
 #undef ANY11I
 
@@ -1906,8 +1897,8 @@ ANY11IS(InterpolateRow_16To8_Any_AVX2,
 // Any 1 to 1 mirror.
 #define ANY11M(NAMEANY, ANY_SIMD, BPP, MASK)                          \
   void NAMEANY(const uint8_t* src_ptr, uint8_t* dst_ptr, int width) { \
-    SIMD_ALIGNED(uint8_t vin[128]);                                   \
-    SIMD_ALIGNED(uint8_t vout[128]);                                  \
+    SIMD_ALIGNED(uint8_t vin[64]);                                    \
+    SIMD_ALIGNED(uint8_t vout[64]);                                   \
     memset(vin, 0, sizeof(vin)); /* for msan */                       \
     int r = width & MASK;                                             \
     int n = width & ~MASK;                                            \
@@ -1915,7 +1906,7 @@ ANY11IS(InterpolateRow_16To8_Any_AVX2,
       ANY_SIMD(src_ptr + r * BPP, dst_ptr, n);                        \
     }                                                                 \
     ptrdiff_t np = n;                                                 \
-    memcpy(vin, src_ptr, r * BPP);                                    \
+    memcpy(vin, src_ptr, r* BPP);                                     \
     ANY_SIMD(vin, vout, MASK + 1);                                    \
     memcpy(dst_ptr + np * BPP, vout + (MASK + 1 - r) * BPP, r * BPP); \
   }
@@ -1937,6 +1928,9 @@ ANY11M(MirrorRow_Any_LASX, MirrorRow_LASX, 1, 63)
 #endif
 #ifdef HAS_MIRRORUVROW_AVX2
 ANY11M(MirrorUVRow_Any_AVX2, MirrorUVRow_AVX2, 2, 15)
+#endif
+#ifdef HAS_MIRRORUVROW_SSSE3
+ANY11M(MirrorUVRow_Any_SSSE3, MirrorUVRow_SSSE3, 2, 7)
 #endif
 #ifdef HAS_MIRRORUVROW_NEON
 ANY11M(MirrorUVRow_Any_NEON, MirrorUVRow_NEON, 2, 31)
@@ -1962,8 +1956,8 @@ ANY11M(ARGBMirrorRow_Any_LSX, ARGBMirrorRow_LSX, 4, 7)
 #ifdef HAS_ARGBMIRRORROW_LASX
 ANY11M(ARGBMirrorRow_Any_LASX, ARGBMirrorRow_LASX, 4, 15)
 #endif
-#ifdef HAS_RGB24MIRRORROW_AVX2
-ANY11M(RGB24MirrorRow_Any_AVX2, RGB24MirrorRow_AVX2, 3, 31)
+#ifdef HAS_RGB24MIRRORROW_SSSE3
+ANY11M(RGB24MirrorRow_Any_SSSE3, RGB24MirrorRow_SSSE3, 3, 15)
 #endif
 #ifdef HAS_RGB24MIRRORROW_NEON
 ANY11M(RGB24MirrorRow_Any_NEON, RGB24MirrorRow_NEON, 3, 15)
@@ -2349,16 +2343,13 @@ ANY12S(ARGBToUVJRow_Any_AVX2, ARGBToUVJRow_AVX2, 0, 4, 31)
 ANY12S(ARGBToUVJRow_Any_AVX512BW, ARGBToUVJRow_AVX512BW, 0, 4, 63)
 #endif
 #ifdef HAS_ABGRTOUVJROW_AVX2
-ANY12S(ABGRToUVJRow_Any_AVX2, ABGRToUVJRow_AVX2, 0, 4, 31)
 #endif
 #ifdef HAS_ABGRTOUVJROW_AVX512BW
-ANY12S(ABGRToUVJRow_Any_AVX512BW, ABGRToUVJRow_AVX512BW, 0, 4, 63)
 #endif
 #ifdef HAS_ARGBTOUVJROW_SSSE3
 ANY12S(ARGBToUVJRow_Any_SSSE3, ARGBToUVJRow_SSSE3, 0, 4, 15)
 #endif
 #ifdef HAS_ABGRTOUVJROW_SSSE3
-ANY12S(ABGRToUVJRow_Any_SSSE3, ABGRToUVJRow_SSSE3, 0, 4, 15)
 #endif
 #ifdef HAS_ARGBTOUVROW_SSSE3
 ANY12S(ARGBToUVRow_Any_SSSE3, ARGBToUVRow_SSSE3, 0, 4, 15)
@@ -2405,16 +2396,12 @@ ANY12S(ARGBToUVJRow_Any_SVE2, ARGBToUVJRow_SVE2, 0, 4, 1)
 ANY12S(ARGBToUVJRow_Any_SME, ARGBToUVJRow_SME, 0, 4, 1)
 #endif
 #ifdef HAS_ABGRTOUVJROW_NEON
-ANY12S(ABGRToUVJRow_Any_NEON, ABGRToUVJRow_NEON, 0, 4, 15)
 #endif
 #ifdef HAS_ABGRTOUVJROW_NEON_I8MM
-ANY12S(ABGRToUVJRow_Any_NEON_I8MM, ABGRToUVJRow_NEON_I8MM, 0, 4, 15)
 #endif
 #ifdef HAS_ABGRTOUVJROW_SVE2
-ANY12S(ABGRToUVJRow_Any_SVE2, ABGRToUVJRow_SVE2, 0, 4, 1)
 #endif
 #ifdef HAS_ABGRTOUVJROW_SME
-ANY12S(ABGRToUVJRow_Any_SME, ABGRToUVJRow_SME, 0, 4, 1)
 #endif
 #ifdef HAS_ARGBTOUVJROW_LSX
 ANY12S(ARGBToUVJRow_Any_LSX, ARGBToUVJRow_LSX, 0, 4, 15)
