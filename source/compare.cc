@@ -11,6 +11,7 @@
 #include "libyuv/compare.h"
 
 #include <float.h>
+#include <limits.h>
 #include <math.h>
 #ifdef _OPENMP
 #include <omp.h>
@@ -107,7 +108,7 @@ uint32_t ARGBDetect(const uint8_t* argb,
   int h;
 
   // Coalesce rows.
-  if (stride_argb == width * 4) {
+  if (stride_argb == width * 4 && height > 0 && width <= INT_MAX / height) {
     width *= height;
     height = 1;
     stride_argb = 0;
@@ -246,7 +247,8 @@ uint64_t ComputeSumSquareErrorPlane(const uint8_t* src_a,
   uint64_t sse = 0;
   int h;
   // Coalesce rows.
-  if (stride_a == width && stride_b == width) {
+  if (stride_a == width && stride_b == width && height > 0 &&
+      width <= INT_MAX / height) {
     width *= height;
     height = 1;
     stride_a = stride_b = 0;
