@@ -69,7 +69,7 @@ static void ScaleUVDown2(int src_width,
                          int dy,
                          enum FilterMode filtering) {
   int j;
-  int row_stride = src_stride * (dy >> 16);
+  ptrdiff_t row_stride = (ptrdiff_t)((dy >> 16) * (intptr_t)src_stride);
   void (*ScaleUVRowDown2)(const uint8_t* src_uv, ptrdiff_t src_stride,
                           uint8_t* dst_uv, int dst_width) =
       filtering == kFilterNone
@@ -188,7 +188,7 @@ static int ScaleUVDown4Box(int src_width,
   align_buffer_64(row, row_size * 2);
   if (!row)
     return 1;
-  int row_stride = src_stride * (dy >> 16);
+  ptrdiff_t row_stride = (ptrdiff_t)((dy >> 16) * (intptr_t)src_stride);
   void (*ScaleUVRowDown2)(const uint8_t* src_uv, ptrdiff_t src_stride,
                           uint8_t* dst_uv, int dst_width) =
       ScaleUVRowDown2Box_C;
@@ -237,8 +237,8 @@ static int ScaleUVDown4Box(int src_width,
 
   for (j = 0; j < dst_height; ++j) {
     ScaleUVRowDown2(src_uv, src_stride, row, dst_width * 2);
-    ScaleUVRowDown2(src_uv + src_stride * 2, src_stride, row + row_size,
-                    dst_width * 2);
+    ScaleUVRowDown2(src_uv + (ptrdiff_t)src_stride * 2, src_stride,
+                    row + row_size, dst_width * 2);
     ScaleUVRowDown2(row, row_size, dst_uv, dst_width);
     src_uv += row_stride;
     dst_uv += dst_stride;

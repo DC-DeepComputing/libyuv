@@ -48,7 +48,7 @@ static void ScaleARGBDown2(int src_width,
                            int dy,
                            enum FilterMode filtering) {
   int j;
-  int row_stride = src_stride * (dy >> 16);
+  ptrdiff_t row_stride = (ptrdiff_t)((dy >> 16) * (intptr_t)src_stride);
   void (*ScaleARGBRowDown2)(const uint8_t* src_argb, ptrdiff_t src_stride,
                             uint8_t* dst_argb, int dst_width) =
       filtering == kFilterNone
@@ -169,7 +169,7 @@ static int ScaleARGBDown4Box(int src_width,
   align_buffer_64(row, row_size * 2);
   if (!row)
     return 1;
-  int row_stride = src_stride * (dy >> 16);
+  ptrdiff_t row_stride = (ptrdiff_t)((dy >> 16) * (intptr_t)src_stride);
   void (*ScaleARGBRowDown2)(const uint8_t* src_argb, ptrdiff_t src_stride,
                             uint8_t* dst_argb, int dst_width) =
       ScaleARGBRowDown2Box_C;
@@ -209,8 +209,8 @@ static int ScaleARGBDown4Box(int src_width,
 
   for (j = 0; j < dst_height; ++j) {
     ScaleARGBRowDown2(src_argb, src_stride, row, dst_width * 2);
-    ScaleARGBRowDown2(src_argb + src_stride * 2, src_stride, row + row_size,
-                      dst_width * 2);
+    ScaleARGBRowDown2(src_argb + (ptrdiff_t)src_stride * 2, src_stride,
+                      row + row_size, dst_width * 2);
     ScaleARGBRowDown2(row, row_size, dst_argb, dst_width);
     src_argb += row_stride;
     dst_argb += dst_stride;

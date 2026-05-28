@@ -51,7 +51,7 @@ static void ScalePlaneDown2(int src_width,
           ? ScaleRowDown2_C
           : (filtering == kFilterLinear ? ScaleRowDown2Linear_C
                                         : ScaleRowDown2Box_C);
-  int row_stride = src_stride * 2;
+  ptrdiff_t row_stride = (ptrdiff_t)src_stride * 2;
   (void)src_width;
   (void)src_height;
   if (!filtering) {
@@ -163,7 +163,7 @@ static void ScalePlaneDown2_16(int src_width,
           ? ScaleRowDown2_16_C
           : (filtering == kFilterLinear ? ScaleRowDown2Linear_16_C
                                         : ScaleRowDown2Box_16_C);
-  int row_stride = src_stride * 2;
+  ptrdiff_t row_stride = (ptrdiff_t)src_stride * 2;
   (void)src_width;
   (void)src_height;
   if (!filtering) {
@@ -228,7 +228,7 @@ void ScalePlaneDown2_16To8(int src_width,
                  ? ScaleRowDown2_16To8_C
                  : (filtering == kFilterLinear ? ScaleRowDown2Linear_16To8_C
                                                : ScaleRowDown2Box_16To8_C));
-  int row_stride = src_stride * 2;
+  ptrdiff_t row_stride = (ptrdiff_t)src_stride * 2;
   (void)dst_height;
   if (!filtering) {
     src_ptr += src_stride;  // Point to odd rows.
@@ -268,7 +268,7 @@ static void ScalePlaneDown4(int src_width,
   void (*ScaleRowDown4)(const uint8_t* src_ptr, ptrdiff_t src_stride,
                         uint8_t* dst_ptr, int dst_width) =
       filtering ? ScaleRowDown4Box_C : ScaleRowDown4_C;
-  int row_stride = src_stride * 4;
+  ptrdiff_t row_stride = (ptrdiff_t)src_stride * 4;
   (void)src_width;
   (void)src_height;
   if (!filtering) {
@@ -340,7 +340,7 @@ static void ScalePlaneDown4_16(int src_width,
   void (*ScaleRowDown4)(const uint16_t* src_ptr, ptrdiff_t src_stride,
                         uint16_t* dst_ptr, int dst_width) =
       filtering ? ScaleRowDown4Box_16_C : ScaleRowDown4_16_C;
-  int row_stride = src_stride * 4;
+  ptrdiff_t row_stride = (ptrdiff_t)src_stride * 4;
   (void)src_width;
   (void)src_height;
   if (!filtering) {
