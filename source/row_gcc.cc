@@ -117,34 +117,46 @@ static const lvec8 kShuffleNV21 = {
 };
 #endif  // HAS_RGB24TOARGBROW_SSSE3
 
-#ifdef HAS_J400TOARGBROW_SSE2
-void J400ToARGBRow_SSE2(const uint8_t* src_y, uint8_t* dst_argb, int width) {
+#ifdef HAS_J400TOARGBROW_AVX2
+alignas(32) static const uint8_t kShuffleMaskJ400ToARGB_0[32] = {
+    0u, 0u, 0u, 128u, 1u, 1u, 1u, 128u, 2u, 2u, 2u, 128u, 3u, 3u, 3u, 128u,
+    4u, 4u, 4u, 128u, 5u, 5u, 5u, 128u, 6u, 6u, 6u, 128u, 7u, 7u, 7u, 128u
+};
+alignas(32) static const uint8_t kShuffleMaskJ400ToARGB_1[32] = {
+    8u, 8u, 8u, 128u, 9u, 9u, 9u, 128u, 10u, 10u, 10u, 128u, 11u, 11u, 11u, 128u,
+    12u, 12u, 12u, 128u, 13u, 13u, 13u, 128u, 14u, 14u, 14u, 128u, 15u, 15u, 15u, 128u
+};
+
+void J400ToARGBRow_AVX2(const uint8_t* src_y, uint8_t* dst_argb, int width) {
   asm volatile(
-      "pcmpeqb     %%xmm5,%%xmm5                 \n"
-      "pslld       $0x18,%%xmm5                  \n"
+      "vpcmpeqb    %%ymm7,%%ymm7,%%ymm7          \n"
+      "vpslld      $0x18,%%ymm7,%%ymm7           \n"
+      "vmovdqu     %3,%%ymm5                     \n"
+      "vmovdqu     %4,%%ymm6                     \n"
 
       LABELALIGN
       "1:          \n"
-      "movq        (%0),%%xmm0                   \n"
-      "lea         0x8(%0),%0                    \n"
-      "punpcklbw   %%xmm0,%%xmm0                 \n"
-      "movdqa      %%xmm0,%%xmm1                 \n"
-      "punpcklwd   %%xmm0,%%xmm0                 \n"
-      "punpckhwd   %%xmm1,%%xmm1                 \n"
-      "por         %%xmm5,%%xmm0                 \n"
-      "por         %%xmm5,%%xmm1                 \n"
-      "movdqu      %%xmm0,(%1)                   \n"
-      "movdqu      %%xmm1,0x10(%1)               \n"
-      "lea         0x20(%1),%1                   \n"
-      "sub         $0x8,%2                       \n"
+      "vmovdqu     (%0),%%xmm0                   \n"
+      "vinserti128 $1,%%xmm0,%%ymm0,%%ymm0       \n"
+      "vpshufb     %%ymm5,%%ymm0,%%ymm1          \n"
+      "vpshufb     %%ymm6,%%ymm0,%%ymm2          \n"
+      "vpor        %%ymm7,%%ymm1,%%ymm1          \n"
+      "vpor        %%ymm7,%%ymm2,%%ymm2          \n"
+      "vmovdqu     %%ymm1,(%1)                   \n"
+      "vmovdqu     %%ymm2,0x20(%1)               \n"
+      "lea         0x10(%0),%0                   \n"
+      "lea         0x40(%1),%1                   \n"
+      "sub         $0x10,%2                      \n"
       "jg          1b                            \n"
+      "vzeroupper  \n"
       : "+r"(src_y),     // %0
         "+r"(dst_argb),  // %1
         "+r"(width)      // %2
-        ::"memory",
-        "cc", "xmm0", "xmm1", "xmm5");
+      : "m"(kShuffleMaskJ400ToARGB_0), // %3
+        "m"(kShuffleMaskJ400ToARGB_1)  // %4
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm5", "xmm6", "xmm7");
 }
-#endif  // HAS_J400TOARGBROW_SSE2
+#endif  // HAS_J400TOARGBROW_AVX2
 
 #ifdef HAS_RGB24TOARGBROW_SSSE3
 void RGB24ToARGBRow_SSSE3(const uint8_t* src_rgb24,
