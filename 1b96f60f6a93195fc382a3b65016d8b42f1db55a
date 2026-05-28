@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e837d6f3_9b418cf7",
+        "filename": "source/planar_functions.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1511,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-05-28T22:27:16Z",
+      "side": 1,
+      "message": "The original assertion of `height \u003e 0` is incorrect. The caller of this function allows a zero `height` to be passed to be this function.",
+      "revId": "1b96f60f6a93195fc382a3b65016d8b42f1db55a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
