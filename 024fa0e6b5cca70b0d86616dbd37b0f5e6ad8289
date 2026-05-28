@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a1f0ec07_783e95be",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-28T18:28:25Z",
+      "side": 1,
+      "message": "overall nicely done!  It points to the API should really use ptrdiff_t everywhere, publically.  Maybe the header could provide an \u0027int\u0027 overload to maintain backward compatiability.\n\nSome of these cases it might also be good to add asserts, but a followup could do that.",
+      "revId": "024fa0e6b5cca70b0d86616dbd37b0f5e6ad8289",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fcf7411a_31c03ce6",
+        "filename": "unit_test/scale_plane_test.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-28T18:28:25Z",
+      "side": 1,
+      "message": "These are dangerous and likely to cause \u0027Nexus5\u0027 failures, because allocators do not fail gracefully - the process terminates, instead of returning nullptr.\n\nThere are 3 work arounds\n1. detect advanced features such as dot product, I8MM etc, and infer its a new device that has more than 2GB of memory.\n2. wrap it in an #if !defined(DISABLE_SLOW_TESTS) so its not automatrically run on bots\nAlso this test and all the changes, are not really relevant on 32 bit.  int and ptrdiff are the same, and you cant have a valid memory block largers than 2GB.\nAlso they really are slow.  I made some passes at speeding up tests, really for the benefit of gemini running tests alot, and the \u0027Large\u0027 test is the single slowest test left.",
+      "revId": "024fa0e6b5cca70b0d86616dbd37b0f5e6ad8289",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
