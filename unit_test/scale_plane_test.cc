@@ -42,6 +42,63 @@
 
 namespace libyuv {
 
+// POC: int row_stride = src_stride * 2 overflows to a small negative value
+// when src_stride is close to INT_MAX, causing src_ptr to walk backward
+// past the start of the source allocation on the second loop iteration.
+// With src_stride = 0x7FFFFFFE, row_stride = (int)0xFFFFFFFC = -4, so on
+// y=1 ScaleRowDown2Box reads 4 bytes before the heap allocation.
+TEST_F(LibYUVScaleTest, ScalePlaneDown2_RowStrideOverflow) {
+  const int kSrcStride = 0x7FFFFFFE;  // INT_MAX - 1
+  const int kSrcW = 64;
+  const int kSrcH = 4;
+  const int kDstW = 32;
+  const int kDstH = 2;
+  // Large enough that a correct (ptrdiff_t) row_stride implementation would
+  // stay in-bounds for all kSrcH rows: (kSrcH-1)*stride + width.
+  const size_t kSrcSize =
+      static_cast<size_t>(kSrcH - 1) * static_cast<size_t>(kSrcStride) + 256u;
+  uint8_t* src = new (std::nothrow) uint8_t[kSrcSize];
+  ASSERT_NE(src, nullptr) << "Failed to allocate " << kSrcSize
+                          << " bytes (need ~6.4 GiB free)";
+  uint8_t dst[kDstW * kDstH] = {};
+  // Touch the rows ScaleRowDown2Box will legitimately read so the OOB read
+  // is the first fault ASAN sees.
+  memset(src, 0x41, 256);
+  memset(src + static_cast<size_t>(kSrcStride), 0x42, 256);
+  // Force the C row kernel: the SSSE3/AVX2 kernels are inline asm that ASAN
+  // does not instrument, so they silently read OOB without a report.
+  MaskCpuFlags(1);
+  // 2*dst == src on both axes -> ScalePlane dispatches to ScalePlaneDown2.
+  // int row_stride = kSrcStride * 2 wraps to -4; on y=1 src_ptr underflows.
+  ScalePlane(src, kSrcStride, kSrcW, kSrcH, dst, kDstW, kDstW, kDstH,
+             kFilterBox);
+  MaskCpuFlags(0);
+  delete[] src;
+}
+
+// POC: same defect in the 1/4 fast path. src_stride = 0x3FFFFFFF gives
+// int row_stride = src_stride * 4 = (int)0xFFFFFFFC = -4.
+TEST_F(LibYUVScaleTest, ScalePlaneDown4_RowStrideOverflow) {
+  const int kSrcStride = 0x3FFFFFFF;  // INT_MAX / 4 (rounded down)
+  const int kSrcW = 64;
+  const int kSrcH = 8;
+  const int kDstW = 16;
+  const int kDstH = 2;
+  const size_t kSrcSize =
+      static_cast<size_t>(kSrcH - 1) * static_cast<size_t>(kSrcStride) + 256u;
+  uint8_t* src = new (std::nothrow) uint8_t[kSrcSize];
+  ASSERT_NE(src, nullptr) << "Failed to allocate " << kSrcSize
+                          << " bytes (need ~7.5 GiB free)";
+  uint8_t dst[kDstW * kDstH] = {};
+  memset(src, 0x41, 256);
+  MaskCpuFlags(1);  // Force C kernel; SIMD inline asm is uninstrumented.
+  // 4*dst == src on both axes with kFilterBox -> ScalePlaneDown4.
+  ScalePlane(src, kSrcStride, kSrcW, kSrcH, dst, kDstW, kDstW, kDstH,
+             kFilterBox);
+  MaskCpuFlags(0);
+  delete[] src;
+}
+
 #ifdef ENABLE_ROW_TESTS
 #ifdef HAS_SCALEROWDOWN2_SSSE3
 TEST_F(LibYUVScaleTest, TestScaleRowDown2Box_Odd_SSSE3) {
