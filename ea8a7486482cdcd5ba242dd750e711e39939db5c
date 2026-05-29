@@ -36,6 +36,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c08b3b7a_bf1444c7",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-29T01:06:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4c0e54ea_4f94bc50",
+      "revId": "ea8a7486482cdcd5ba242dd750e711e39939db5c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d1288b58_a727e7f0",
@@ -49,6 +67,24 @@
       "writtenOn": "2026-05-28T21:19:14Z",
       "side": 1,
       "message": "Does this one need _mm256_zeroupper?",
+      "revId": "ea8a7486482cdcd5ba242dd750e711e39939db5c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e3ca76ad_143e51c7",
+        "filename": "source/row_win.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 704,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-29T01:06:23Z",
+      "side": 1,
+      "message": "its needed but implicite.  I test in 2 ways\nbuild and profile to see the real code.  But I used clang and dont have actual visual studio builds to confirm.",
+      "parentUuid": "d1288b58_a727e7f0",
       "revId": "ea8a7486482cdcd5ba242dd750e711e39939db5c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
