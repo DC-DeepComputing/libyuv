@@ -50,6 +50,24 @@
       "message": "fine in practice for todays 64 bit cpus, but imagine in an int128_t world where we cast from a larger int down to int64",
       "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1e0b234_ff8b066f",
+        "filename": "source/convert.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1441,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-05-29T00:34:10Z",
+      "side": 1,
+      "message": "I just realized that we can use the `ptrdiff_t` type. Given that the strides are equal to `width`, we know `width * height` must fit in `ptrdiff_t` because the `src_y` and `dst_y` buffers have been allocated successfully. Do you agree?",
+      "parentUuid": "aa6287a1_3f0ed32b",
+      "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
