@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0363b550_6125036b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-29T00:42:08Z",
+      "side": 1,
+      "message": "this is the gemini review\n\n Okay, I see the comments from you (Frank Barchard):\n  The change in CL 7883816 definitely makes sense and is a highly recommended security and robustness fix.\n\n  Here is a detailed review of the change, incorporating the context from your own comments on the code review:\n  ### What the CL Solves (and why it makes sense)\n\n  The CL addresses a systemic issue in  libyuv  where it attempts to coalesce rows into a single flat 1D array to optimize processing speed when there is no padding (i.e.,       \n  stride \u003d\u003d width * bytes_per_pixel ).\n\n  The historical code did this:\n\n    if (stride_argb \u003d\u003d width * 4) {\n      width *\u003d height; // \u003c-- POTENTIAL INTEGER OVERFLOW\n      height \u003d 1;\n      stride_argb \u003d 0;\n    }\n\n  If  width * height  overflows  INT_MAX ,  width  becomes either negative or a small truncated positive number. This leads to:\n\n  1. Buffer Overflows / Out-of-Bounds Access: If  width  overflows to a small positive number, subsequent processing might assume the image is smaller than it is, but if it\n  overflows to a negative number and is cast to unsigned, it could lead to massive out-of-bounds reads/writes.\n  2. Bypassing existing safety checks: In functions that had stack allocation limits (like YUY2 conversion which checked  width * height \u003c\u003d 32768 ), the overflow could allow huge\n  images to pass the check (e.g., $65536 \\times 65536 \u003d 0 \\le 32768$), leading to stack buffer overflow.\n\n  By casting to  int64_t  before multiplying:\n\n    (int64_t)width * height \u003c\u003d INT_MAX\n\n  the CL guarantees that the multiplication is performed in 64-bit space (which cannot overflow for 32-bit inputs) and safely checks if the result fits back into the  int width \n  variable before coalescing. If it doesn\u0027t fit, it safely skips coalescing and processes the image row-by-row, which is slower but entirely safe.\n  ──────\n  ### Evaluation of your Reviewer Comments\n\n  Your comments as the reviewer ( fbarchard@ ) are very astute and highlight areas where  libyuv \u0027s architectural handling of negative heights is currently a bit inconsistent:\n\n  #### 1. Negative Height Handling ( compare.cc )\n\n  You noted that adding  height \u003e 0  to the coalesce check in  compare.cc  is a bit of a workaround:\n\n  │ \" height \u003e 0  is somewhat wrong here. the negative height should first be converted to positive, flipping the stride and pointer...\"\n\n  • Why you are right: Ideally, public API entry points in  libyuv  should normalize negative heights (which represent vertically flipped images, common in Windows GDI) at the\n  very beginning of the function by flipping the pointer to the last row, negating the stride, and making  height  positive.\n  • Current behavior in CL: By adding  height \u003e 0  to the check, the CL prevents coalescing when  height  is negative.\n      • Without CL:  width *\u003d height  makes  width  negative, which is passed to row-processing functions, potentially causing crashes/undefined behavior in optimized assembly.\n      • With CL: Coalescing is skipped. The subsequent loop  for (h \u003d 0; h \u003c height; ++h)  doesn\u0027t run because  height  is negative. The function safely returns  0  (fail-safe).\n  • Verdict: While the CL doesn\u0027t fix the lack of support for negative heights in these specific comparison functions, it makes them fail-safe instead of potentially\n  exploitable/crash-prone.\n\n  #### 2. Correcting the Assert in  planar_functions.cc \n\n  The CL also corrected a buggy assert:\n\n    -  assert(height \u003e 0);\n    +  assert(height \u003e\u003d 0);\n       if (width \u003c\u003d 0 || height \u003d\u003d 0) {\n\t return;\n       }\n\n  As Wan-Teh noted, callers are allowed to pass  height \u003d\u003d 0  (which returns early safely), so the original  assert(height \u003e 0)  would incorrectly trigger in debug builds. Fixing\n  this to  height \u003e\u003d 0  is correct.\n  ──────\n  ### Conclusion\n\n  Yes, the CL should be approved (Code-Review+1).\n\n  It successfully mitigates a class of integer overflow vulnerabilities across the entire library. The design discussion about properly normalizing negative heights in           \n  compare.cc  is valid, but it shouldn\u0027t block this security hardening, especially since this CL already improves the negative-height behavior by making it fail-safe.",
+      "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "033156b1_9fc5889d",
@@ -66,6 +83,24 @@
       "side": 1,
       "message": "I just realized that we can use the `ptrdiff_t` type. Given that the strides are equal to `width`, we know `width * height` must fit in `ptrdiff_t` because the `src_y` and `dst_y` buffers have been allocated successfully. Do you agree?",
       "parentUuid": "aa6287a1_3f0ed32b",
+      "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca3f2aa8_40bbf2a4",
+        "filename": "source/convert.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1441,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-29T00:42:08Z",
+      "side": 1,
+      "message": "yes",
+      "parentUuid": "a1e0b234_ff8b066f",
       "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
