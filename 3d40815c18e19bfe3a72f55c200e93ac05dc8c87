@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "033156b1_9fc5889d",
+        "filename": "source/compare.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-29T00:18:53Z",
+      "side": 1,
+      "message": "height \u003e 0 is somewhat wrong here.  the negative height should first be converted to positive, flipping the stride and pointer.  now that its not a divide, 0 is harmless.  And both height and INT_MAX checks are not super useful in 32 bit builds, but a 64 bit size in 32 bit addressing, is more than a coalesce issue... it should probably assert and/or return with an error code",
+      "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "303c4235_37dff93a",
+        "filename": "source/compare.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-29T00:18:53Z",
+      "side": 1,
+      "message": "ditto.  removing the height \u003e 0 wouldnt affect the outcome, but its weird we dont support negative heights here.  they come from gdi as negative for converted types.",
+      "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa6287a1_3f0ed32b",
+        "filename": "source/convert.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1441,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-29T00:18:53Z",
+      "side": 1,
+      "message": "fine in practice for todays 64 bit cpus, but imagine in an int128_t world where we cast from a larger int down to int64",
+      "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
