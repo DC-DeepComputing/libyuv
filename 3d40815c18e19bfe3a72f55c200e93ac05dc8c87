@@ -103,6 +103,24 @@
       "parentUuid": "a1e0b234_ff8b066f",
       "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c03200f_1c69a6ec",
+        "filename": "source/convert.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1441,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-05-29T01:37:44Z",
+      "side": 1,
+      "message": "Done. Changed `int64_t` casts to `ptrdiff_t` casts.",
+      "parentUuid": "ca3f2aa8_40bbf2a4",
+      "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
