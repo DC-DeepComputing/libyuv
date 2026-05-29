@@ -37,6 +37,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "5d77ce21_22ede7ab",
+        "filename": "source/compare.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-05-29T18:31:56Z",
+      "side": 1,
+      "message": "Done. This function only has an input buffer and doesn\u0027t have an output buffer, so flipping doesn\u0027t make sense. I added a check for invalid parameters:\n\n```\n  if (!argb || width \u003c\u003d 0 || height \u003c\u003d 0) {\n    return fourcc;\n  }\n```",
+      "parentUuid": "033156b1_9fc5889d",
+      "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "303c4235_37dff93a",
         "filename": "source/compare.cc",
         "patchSetId": 3
@@ -48,6 +66,24 @@
       "writtenOn": "2026-05-29T00:18:53Z",
       "side": 1,
       "message": "ditto.  removing the height \u003e 0 wouldnt affect the outcome, but its weird we dont support negative heights here.  they come from gdi as negative for converted types.",
+      "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21032b42_0acc1b93",
+        "filename": "source/compare.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-05-29T18:31:56Z",
+      "side": 1,
+      "message": "Done. This function only has input buffers and doesn\u0027t have any output buffers, so flipping doesn\u0027t make sense. I added a check for invalid parameters:\n\n```\n  if (!src_a || !src_b || width \u003c\u003d 0 || height \u003c\u003d 0) {\n    return sse;\n  }\n```\n\nNote that it is not clear what value should be returned on error. I am returning 0 right now (which means src_a and src_b are identical when there are no errors).",
+      "parentUuid": "303c4235_37dff93a",
       "revId": "3d40815c18e19bfe3a72f55c200e93ac05dc8c87",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
