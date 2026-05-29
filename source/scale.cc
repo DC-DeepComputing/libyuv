@@ -1947,6 +1947,11 @@ int ScalePlane(const uint8_t* src,
                int dst_width,
                int dst_height,
                enum FilterMode filtering) {
+  if (!src || src_width <= 0 || src_height == 0 ||
+      src_width > 32768 || src_height < -32768 || src_height > 32768 ||
+      !dst || dst_width <= 0 || dst_height <= 0) {
+    return -1;
+  }
   // Simplify filtering when possible.
   filtering = ScaleFilterReduce(src_width, src_height, dst_width, dst_height,
                                 filtering);
@@ -2047,6 +2052,11 @@ int ScalePlane_16(const uint16_t* src,
                   int dst_width,
                   int dst_height,
                   enum FilterMode filtering) {
+  if (!src || src_width <= 0 || src_height == 0 ||
+      src_width > 32768 || src_height < -32768 || src_height > 32768 ||
+      !dst || dst_width <= 0 || dst_height <= 0) {
+    return -1;
+  }
   // Simplify filtering when possible.
   filtering = ScaleFilterReduce(src_width, src_height, dst_width, dst_height,
                                 filtering);
@@ -2151,6 +2161,11 @@ int ScalePlane_12(const uint16_t* src,
                   int dst_width,
                   int dst_height,
                   enum FilterMode filtering) {
+  if (!src || src_width <= 0 || src_height == 0 ||
+      src_width > 32768 || src_height < -32768 || src_height > 32768 ||
+      !dst || dst_width <= 0 || dst_height <= 0) {
+    return -1;
+  }
   // Simplify filtering when possible.
   filtering = ScaleFilterReduce(src_width, src_height, dst_width, dst_height,
                                 filtering);
