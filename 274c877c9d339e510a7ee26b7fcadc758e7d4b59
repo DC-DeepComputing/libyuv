@@ -16,6 +16,24 @@
       "message": "Nit: Add a comment to explain the 32768 limit, otherwise one needs to search for the commit message for the reason. You can copy the following description in the commit message:\n\n   Reject dimensions larger than 32768 (or smaller than -32768 for\n   height). This prevents FixedDiv signed integer overflows that can\n   lead to division by zero/overflow crashes (SIGFPE on x86) or\n   incorrect step calculations.",
       "revId": "274c877c9d339e510a7ee26b7fcadc758e7d4b59",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2dec755_42553607",
+        "filename": "source/scale.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1949,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-30T01:11:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "38d83c0b_df0324a7",
+      "revId": "274c877c9d339e510a7ee26b7fcadc758e7d4b59",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
