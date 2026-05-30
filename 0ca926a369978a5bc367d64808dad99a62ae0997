@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc432a03_9c95c2e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-30T02:14:10Z",
+      "side": 1,
+      "message": "guess its okay but the aligned width is really a stride and/or pixel count that takes into account subsampling.  if we put it in its own variable it could be ptrdiff_t and avoid casting.  we use it in multiply by width to figure out stride so i think ptrdiff_t is the right type.  checked with a compiler/math guy and he agrees",
+      "revId": "0ca926a369978a5bc367d64808dad99a62ae0997",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
