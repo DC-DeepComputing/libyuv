@@ -16,6 +16,23 @@
       "message": "guess its okay but the aligned width is really a stride and/or pixel count that takes into account subsampling.  if we put it in its own variable it could be ptrdiff_t and avoid casting.  we use it in multiply by width to figure out stride so i think ptrdiff_t is the right type.  checked with a compiler/math guy and he agrees",
       "revId": "0ca926a369978a5bc367d64808dad99a62ae0997",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bcef531a_8a4855fb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-05-30T02:15:13Z",
+      "side": 1,
+      "message": "Here is a quick summary of why it is a highly correct and necessary security fix:\n\n  1. Crop Parameter Bounds Checks: It adds crucial validation to ensure crop parameters ( crop_x ,  crop_y ,  crop_width ,         \n  crop_height ) are non-negative and fit entirely within the source image dimensions, preventing out-of-bounds reads from the      \n  sample  buffer.\n  2. Overflow-Safe Temp Buffer Allocation: It changes buffer sizes to  size_t  and adds explicit overflow checks ( uv_size \u003e       \n  SIZE_MAX / 2  and  y_size \u003e SIZE_MAX - uv_size * 2 ) before allocating the rotation buffer, preventing heap overflows.\n  3. 64-bit Pointer Arithmetic Promotion: It casts  src_width  to  ptrdiff_t  in pointer offset calculations (e.g.,  sample +      \n  (ptrdiff_t)src_width * crop_y ). This forces the multiplication to be performed in 64-bit instead of 32-bit signed  int ,\n  preventing wrapping before adding to the pointer.",
+      "revId": "0ca926a369978a5bc367d64808dad99a62ae0997",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
