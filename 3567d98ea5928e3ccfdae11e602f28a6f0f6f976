@@ -16,6 +16,24 @@
       "message": "Defer to Richard for review, but OOC how is the performance of this change?",
       "revId": "3567d98ea5928e3ccfdae11e602f28a6f0f6f976",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "66ab9de0_8cef9f5a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-01T19:21:40Z",
+      "side": 1,
+      "message": "compared to 1 pass (RGB565) about 50% slower, partially due to SSE.  Planning to followup with AVX and/or mixed ISA (AVX512+AVX)\n\nThis should be the last set of non-matrix functions",
+      "parentUuid": "6b6d232a_6cbbac19",
+      "revId": "3567d98ea5928e3ccfdae11e602f28a6f0f6f976",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
