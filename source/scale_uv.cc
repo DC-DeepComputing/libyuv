@@ -885,7 +885,7 @@ static int UVCopy(const uint8_t* src_uv,
                   int dst_stride_uv,
                   int width,
                   int height) {
-  if (!src_uv || !dst_uv || width <= 0 || height == 0) {
+  if (!src_uv || !dst_uv || width <= 0 || height == 0 || height == INT_MIN) {
     return -1;
   }
   // Negative height means invert the image.
@@ -905,7 +905,7 @@ static int UVCopy_16(const uint16_t* src_uv,
                      int dst_stride_uv,
                      int width,
                      int height) {
-  if (!src_uv || !dst_uv || width <= 0 || height == 0) {
+  if (!src_uv || !dst_uv || width <= 0 || height == 0 || height == INT_MIN) {
     return -1;
   }
   // Negative height means invert the image.
@@ -1062,8 +1062,9 @@ int UVScale(const uint8_t* src_uv,
             int dst_width,
             int dst_height,
             enum FilterMode filtering) {
-  if (!src_uv || src_width <= 0 || src_height == 0 || src_width > 32768 ||
-      src_height > 32768 || !dst_uv || dst_width <= 0 || dst_height <= 0) {
+  if (!src_uv || src_width <= 0 || src_height == 0 || src_height == INT_MIN ||
+      src_width > 32768 || src_height > 32768 || !dst_uv || dst_width <= 0 ||
+      dst_height <= 0) {
     return -1;
   }
   return ScaleUV(src_uv, src_stride_uv, src_width, src_height, dst_uv,
@@ -1085,8 +1086,9 @@ int UVScale_16(const uint16_t* src_uv,
                enum FilterMode filtering) {
   int dy = 0;
 
-  if (!src_uv || src_width <= 0 || src_height == 0 || src_width > 32768 ||
-      src_height > 32768 || !dst_uv || dst_width <= 0 || dst_height <= 0) {
+  if (!src_uv || src_width <= 0 || src_height == 0 || src_height == INT_MIN ||
+      src_width > 32768 || src_height > 32768 || !dst_uv || dst_width <= 0 ||
+      dst_height <= 0) {
     return -1;
   }
 
@@ -1104,7 +1106,8 @@ int UVScale_16(const uint16_t* src_uv,
   src_width = Abs(src_width);
 
 #ifdef HAS_UVCOPY
-  if (!filtering && src_width == dst_width && (src_height % dst_height == 0)) {
+  if (!filtering && src_width == dst_width &&
+      (src_height % dst_height == 0 || dst_height == INT_MIN)) {
     if (dst_height == 1) {
       UVCopy_16(src_uv + ((src_height - 1) / 2) * (ptrdiff_t)src_stride_uv,
                 src_stride_uv, dst_uv, dst_stride_uv, dst_width, dst_height);
