@@ -265,6 +265,30 @@
       },
       "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7086695f_948fcd5a",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 9222,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T19:47:44Z",
+      "side": 1,
+      "message": "i didnt test this specifically here but 2x is a good rule of thumb on x86 and arm.  most cpus have 2 vector units.  on x86 all intel have 2 vector units... on spr and later they are 512 bits.  amd zen4 has 4 avx vector units but with avx512 ports that double pump them efficiently.  zen5 is 4 avx512 ports.  zen5c (compact) is 2 vector units.\non arm current gen, the \u0027prime\u0027 cores are 4 vector units and big, medium and little cores are 2 vector units.\non in-order little cores the a53, a55 only have 1 vector unit but instructions take 4 cycles and unrolling allows the next instruction to issue without waiting.\n\nbottom linux is 2x unrolling is always a win.\n4x unrolling sometimes is, but is more hardware specific.\n\nOn the recent J400ToARGB the AI port to avx512 did 4x unrolling and I asked it to evaluate 1x or 2x, and it decided 2x is best.  But on none of them there was a substantial performance difference.",
+      "parentUuid": "e6a77fd4_ebe23bd9",
+      "range": {
+        "startLine": 9216,
+        "startChar": 0,
+        "endLine": 9222,
+        "endChar": 35
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
