@@ -35,6 +35,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1493ad90_bc00c1c1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-02T23:12:41Z",
+      "side": 1,
+      "message": "Understood. It\u0027s similar to the check for 0.",
+      "parentUuid": "d5c245fe_5336636f",
+      "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1c59d7bf_70dc925d",
@@ -48,6 +66,24 @@
       "writtenOn": "2026-06-02T22:44:07Z",
       "side": 1,
       "message": "this would overflow if height \u003d\u003d INT_MAX.  ditto for width.\nmay need to break c89 compatability and move the sanity check before this and add INT_MAX check too?",
+      "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ffe500c_217eb45c",
+        "filename": "source/convert_from.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-02T23:12:41Z",
+      "side": 1,
+      "message": "This CL is already very large. I will file a separate issue on the potential integer overflow when calculating `halfwidth` and `halfheight`.",
+      "parentUuid": "1c59d7bf_70dc925d",
       "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -82,6 +118,30 @@
       "writtenOn": "2026-06-02T22:41:27Z",
       "side": 1,
       "message": "should these be \u003e\u003d 32768?",
+      "range": {
+        "startLine": 2279,
+        "startChar": 30,
+        "endLine": 2279,
+        "endChar": 50
+      },
+      "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4152deb1_1e78db65",
+        "filename": "source/scale.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2279,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-02T23:12:41Z",
+      "side": 1,
+      "message": "This CL is already very large. Let\u0027s deal with this issue in a separate CL.\n\n---\n\nDetails:\n\ngit history shows that this check ultimately comes from the following old commit of yours:\n\n```\ncommit 1e4a14f41028fa7e0fd5d64af24f6957e534a972\nAuthor: fbarchard@google.com \u003cfbarchard@google.com\u003e\nDate:   Tue Mar 10 22:30:47 2015 +0000\n\n    scale avoid math overflow in fixed point for large images\n    BUG\u003d410\n    TESTED\u003dset LIBYUV_WIDTH\u003d65536 out\\release\\libyuv_unittest.exe --gtest_catch_exceptions\u003d0 --gtest_filter\u003dlibyuvTest.ScaleTo320x240_None\n    R\u003dharryjin@google.com\n    \n    Review URL: https://webrtc-codereview.appspot.com/42319004\n    \n    git-svn-id: http://libyuv.googlecode.com/svn/trunk@1320 16f28f9a-4ce2-e073-06de-1de4eb20be90\n```\n\nThis check comes up again in a recent CL of yours:\nhttps://chromium-review.googlesource.com/c/libyuv/libyuv/+/7886217\n\nThis is all I know. I don\u0027t know whether the check should be \u003e 32768 or \u003e\u003d 32768. But based on the following comment added in the recent CL:\n\n```\n  // Reject dimensions larger than 32768 (or smaller than -32768 for height).\n  // This prevents FixedDiv signed integer overflows that can lead to division\n  // by zero/overflow crashes (SIGFPE on x86) or incorrect step calculations.\n```\n\nthe answer to your question is in the FixedDiv function.",
+      "parentUuid": "f18e6160_048bf640",
       "range": {
         "startLine": 2279,
         "startChar": 30,
