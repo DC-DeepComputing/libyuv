@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb8ea421_83c36c64",
+        "filename": "source/convert.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 2139,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-06-02T17:45:22Z",
+      "side": 1,
+      "message": "Should this be 32? Ditto on all other AVX2 calls?",
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "757a9f96_d83af093",
+        "filename": "source/convert.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 2147,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-06-02T17:45:22Z",
+      "side": 1,
+      "message": "Should this be 64? Ditto on other AVX512 calls.",
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcbd43b5_aa67a560",
+        "filename": "source/row_any.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 2283,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-06-02T17:45:22Z",
+      "side": 1,
+      "message": "Should these 15\u0027s be 31s since this is AVX2?",
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
