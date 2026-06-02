@@ -50,6 +50,144 @@
       "message": "Should these 15\u0027s be 31s since this is AVX2?",
       "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a86e56f_77e8b1b7",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 661,
+      "author": {
+        "id": 1526622
+      },
+      "writtenOn": "2026-06-02T18:04:56Z",
+      "side": 1,
+      "message": "```\nvpsllw $0x1,%%ymm0,%%ymm1\nvpsllw $0xb,%%ymm0,%%ymm2\n```",
+      "range": {
+        "startLine": 658,
+        "startChar": 0,
+        "endLine": 661,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "317d8bc6_8fa3ce4e",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 669,
+      "author": {
+        "id": 1526622
+      },
+      "writtenOn": "2026-06-02T18:04:56Z",
+      "side": 1,
+      "message": "```\nvpsraw $0x8,%%ymm0,%%ymm2\nvpand %%ymm4,%%ymm0,%%ymm0\n```",
+      "range": {
+        "startLine": 667,
+        "startChar": 0,
+        "endLine": 669,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94cbf9a2_9e08b0ec",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 744,
+      "author": {
+        "id": 1526622
+      },
+      "writtenOn": "2026-06-02T18:04:56Z",
+      "side": 1,
+      "message": "```\nvpand %%ymm5,%%ymm0,%%ymm2\nvpand %%ymm4,%%ymm0,%%ymm0\n```",
+      "range": {
+        "startLine": 742,
+        "startChar": 0,
+        "endLine": 744,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e775537_c5c9ec7f",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 1526622
+      },
+      "writtenOn": "2026-06-02T18:04:56Z",
+      "side": 1,
+      "message": "```\nvpsllw $0x4,%%ymm0,%%ymm1\nvpsrlw $0x4,%%ymm2,%%ymm3\n```",
+      "range": {
+        "startLine": 745,
+        "startChar": 0,
+        "endLine": 748,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "672237b6_6d512d38",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 753,
+      "author": {
+        "id": 1526622
+      },
+      "writtenOn": "2026-06-02T18:04:56Z",
+      "side": 1,
+      "message": "```\nvpunpckhbw %%ymm2,%%ymm0,%%ymm1\nvpunpcklbw %%ymm2,%%ymm0,%%ymm0\n```",
+      "range": {
+        "startLine": 751,
+        "startChar": 0,
+        "endLine": 753,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6a77fd4_ebe23bd9",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 9222,
+      "author": {
+        "id": 1526622
+      },
+      "writtenOn": "2026-06-02T18:04:56Z",
+      "side": 1,
+      "message": "Is there a notable speed improvement from this 2X unroll? Have you tested 4X, 8X, etc?",
+      "range": {
+        "startLine": 9216,
+        "startChar": 0,
+        "endLine": 9222,
+        "endChar": 35
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
