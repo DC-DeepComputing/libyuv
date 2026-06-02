@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57717090_7e82e1eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T22:47:49Z",
+      "side": 1,
+      "message": "  AVX2 uses 256-bit (32-byte) YMM registers.\n  \n  • Input (ARGB4444): 2 bytes per pixel. To fill one 32-byte YMM register for the initial load ( vmovdqu ), we need exactly  32 bytes / 2 bytes/pixel \u003d  \n  16 pixels .\n  • Output (ARGB): 4 bytes per pixel. 16 pixels require  16 * 4 \u003d 64 bytes  of output. This is why the assembly/intrinsic version performs two 32-byte   \n  writes (stores) per iteration:\n    vmovdqu     %%ymm2,(%1,%0,2)              # Store first 32 bytes (8 pixels)\n    vmovdqu     %%ymm1,0x20(%1,%0,2)          # Store next 32 bytes (8 pixels)\n  \n\n  ### 3. Tail Handling (Any Version)\n  \n  In  source/row_any.cc , the fallback handler is defined as:\n  \n    ANY11(ARGB4444ToARGBRow_Any_AVX2, ARGB4444ToARGBRow_AVX2, 0, 2, 4, 15)\n  \n  The last parameter  15  is the mask ( alignment - 1 ), which also confirms that the SIMD function expects blocks of  15 + 1 \u003d 16  pixels.              \n  \n  ### Conclusion\n  \n  Since the optimized AVX2 loop strictly processes data in steps of 16 pixels, the  width  must be a multiple of 16 to safely use the fully optimized    \n  ARGB4444ToARGBRow_AVX2  without overflowing the buffers. If the width is not a multiple of 16, the  ARGB4444ToARGBRow_Any_AVX2  wrapper is correctly   \n  selected to handle the remaining pixels.",
+      "revId": "2f85af078f10614b32d7abf38be2df65537901c1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
