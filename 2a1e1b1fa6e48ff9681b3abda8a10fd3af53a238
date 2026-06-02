@@ -20,6 +20,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "d5c245fe_5336636f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T22:41:27Z",
+      "side": 1,
+      "message": "its a bit nonsense to have to check for INT_MIN but sure",
+      "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "87f45da8_032f4f08",
         "filename": "source/scale.cc",
         "patchSetId": 3
@@ -31,6 +48,29 @@
       "writtenOn": "2026-06-02T22:23:02Z",
       "side": 1,
       "message": "There are some duplicate checks for invalid arguments. Here is an example. This function calls the public API function `ScalePlane()`, which checks for invalid arguments. So this function could omit its own check for invalid arguments. I did not try to elimiate such duplication.",
+      "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f18e6160_048bf640",
+        "filename": "source/scale.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2279,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T22:41:27Z",
+      "side": 1,
+      "message": "should these be \u003e\u003d 32768?",
+      "range": {
+        "startLine": 2279,
+        "startChar": 30,
+        "endLine": 2279,
+        "endChar": 50
+      },
       "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
