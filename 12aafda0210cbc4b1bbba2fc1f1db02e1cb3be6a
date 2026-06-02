@@ -54,6 +54,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b9253933_6479831c",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 1526622
+      },
+      "writtenOn": "2026-06-02T18:18:40Z",
+      "side": 1,
+      "message": "```\nvpsrlw $0x6,%%ymm3,%%ymm4\n```",
+      "range": {
+        "startLine": 648,
+        "startChar": 0,
+        "endLine": 649,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5a86e56f_77e8b1b7",
         "filename": "source/row_gcc.cc",
         "patchSetId": 6
