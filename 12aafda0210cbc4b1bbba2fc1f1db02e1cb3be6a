@@ -129,6 +129,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f185f67f_93ba99fe",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T21:25:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b9253933_6479831c",
+      "range": {
+        "startLine": 648,
+        "startChar": 0,
+        "endLine": 649,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5a86e56f_77e8b1b7",
@@ -175,6 +199,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "347d9d6e_f1df6fb8",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 669,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T21:25:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "317d8bc6_8fa3ce4e",
+      "range": {
+        "startLine": 667,
+        "startChar": 0,
+        "endLine": 669,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "94cbf9a2_9e08b0ec",
@@ -188,6 +236,30 @@
       "writtenOn": "2026-06-02T18:04:56Z",
       "side": 1,
       "message": "```\nvpand %%ymm5,%%ymm0,%%ymm2\nvpand %%ymm4,%%ymm0,%%ymm0\n```",
+      "range": {
+        "startLine": 742,
+        "startChar": 0,
+        "endLine": 744,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0a4656b_9c07a5c3",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 744,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T21:25:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94cbf9a2_9e08b0ec",
       "range": {
         "startLine": 742,
         "startChar": 0,
@@ -221,6 +293,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b79f754e_8e45920a",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T21:25:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4e775537_c5c9ec7f",
+      "range": {
+        "startLine": 745,
+        "startChar": 0,
+        "endLine": 748,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "672237b6_6d512d38",
@@ -234,6 +330,30 @@
       "writtenOn": "2026-06-02T18:04:56Z",
       "side": 1,
       "message": "```\nvpunpckhbw %%ymm2,%%ymm0,%%ymm1\nvpunpcklbw %%ymm2,%%ymm0,%%ymm0\n```",
+      "range": {
+        "startLine": 751,
+        "startChar": 0,
+        "endLine": 753,
+        "endChar": 52
+      },
+      "revId": "12aafda0210cbc4b1bbba2fc1f1db02e1cb3be6a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2a88f4a_4eaedfdf",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 753,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T21:25:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "672237b6_6d512d38",
       "range": {
         "startLine": 751,
         "startChar": 0,
