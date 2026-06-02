@@ -55,6 +55,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3bce751c_a64ecafa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-06-02T23:20:41Z",
+      "side": 1,
+      "message": "Can we just enforce [-32768, 32768] for all resolutions everywhere?",
+      "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1c59d7bf_70dc925d",
         "filename": "source/convert_from.cc",
         "patchSetId": 3
