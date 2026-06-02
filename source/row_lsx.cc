@@ -2874,21 +2874,9 @@ void ARGBToYMatrixRow_LSX(const uint8_t* src_argb,
       : "memory");
 }
 
-void ARGBToYRow_LSX(const uint8_t* src_argb, uint8_t* dst_y, int width) {
-  ARGBToYMatrixRow_LSX(src_argb, dst_y, width, &kRgb24I601Constants);
-}
 
-void ARGBToYJRow_LSX(const uint8_t* src_argb, uint8_t* dst_yj, int width) {
-  ARGBToYMatrixRow_LSX(src_argb, dst_yj, width, &kRgb24JPEGConstants);
-}
 
-void ABGRToYRow_LSX(const uint8_t* src_abgr, uint8_t* dst_y, int width) {
-  ARGBToYMatrixRow_LSX(src_abgr, dst_y, width, &kRawI601Constants);
-}
 
-void ABGRToYJRow_LSX(const uint8_t* src_abgr, uint8_t* dst_yj, int width) {
-  ARGBToYMatrixRow_LSX(src_abgr, dst_yj, width, &kRawJPEGConstants);
-}
 
 // RGBA expects first value to be A and ignored, then 3 values to contain RGB.
 // Same code as ARGB, except the LD4
@@ -2933,17 +2921,8 @@ static void RGBAToYMatrixRow_LSX(const uint8_t* src_rgba,
       : "memory");
 }
 
-void RGBAToYRow_LSX(const uint8_t* src_rgba, uint8_t* dst_y, int width) {
-  RGBAToYMatrixRow_LSX(src_rgba, dst_y, width, &kRgb24I601Constants);
-}
 
-void RGBAToYJRow_LSX(const uint8_t* src_rgba, uint8_t* dst_yj, int width) {
-  RGBAToYMatrixRow_LSX(src_rgba, dst_yj, width, &kRgb24JPEGConstants);
-}
 
-void BGRAToYRow_LSX(const uint8_t* src_bgra, uint8_t* dst_y, int width) {
-  RGBAToYMatrixRow_LSX(src_bgra, dst_y, width, &kRawI601Constants);
-}
 
 static void RGBToYMatrixRow_LSX(const uint8_t* src_rgba,
                                 uint8_t* dst_y,

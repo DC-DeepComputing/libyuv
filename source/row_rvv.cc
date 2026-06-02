@@ -1307,27 +1307,15 @@ void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
 #endif
 
 #ifdef HAS_ARGBTOYROW_RVV
-void ARGBToYRow_RVV(const uint8_t* src_argb, uint8_t* dst_y, int width) {
-  ARGBToYMatrixRow_RVV(src_argb, dst_y, width, &kRgb24I601Constants);
-}
 #endif
 
 #ifdef HAS_ARGBTOYJROW_RVV
-void ARGBToYJRow_RVV(const uint8_t* src_argb, uint8_t* dst_yj, int width) {
-  ARGBToYMatrixRow_RVV(src_argb, dst_yj, width, &kRgb24JPEGConstants);
-}
 #endif
 
 #ifdef HAS_ABGRTOYROW_RVV
-void ABGRToYRow_RVV(const uint8_t* src_abgr, uint8_t* dst_y, int width) {
-  ARGBToYMatrixRow_RVV(src_abgr, dst_y, width, &kRawI601Constants);
-}
 #endif
 
 #ifdef HAS_ABGRTOYJROW_RVV
-void ABGRToYJRow_RVV(const uint8_t* src_abgr, uint8_t* dst_yj, int width) {
-  ARGBToYMatrixRow_RVV(src_abgr, dst_yj, width, &kRawJPEGConstants);
-}
 #endif
 
 // RGBA expects first value to be A and ignored, then 3 values to contain RGB.
@@ -1367,21 +1355,12 @@ static void RGBAToYMatrixRow_RVV(const uint8_t* src_rgba,
 #endif
 
 #ifdef HAS_RGBATOYROW_RVV
-void RGBAToYRow_RVV(const uint8_t* src_rgba, uint8_t* dst_y, int width) {
-  RGBAToYMatrixRow_RVV(src_rgba, dst_y, width, &kRgb24I601Constants);
-}
 #endif
 
 #ifdef HAS_RGBATOYJROW_RVV
-void RGBAToYJRow_RVV(const uint8_t* src_rgba, uint8_t* dst_yj, int width) {
-  RGBAToYMatrixRow_RVV(src_rgba, dst_yj, width, &kRgb24JPEGConstants);
-}
 #endif
 
 #ifdef HAS_BGRATOYROW_RVV
-void BGRAToYRow_RVV(const uint8_t* src_bgra, uint8_t* dst_y, int width) {
-  RGBAToYMatrixRow_RVV(src_bgra, dst_y, width, &kRawI601Constants);
-}
 #endif
 
 #ifdef HAS_RGBTOYMATRIXROW_RVV

@@ -2101,6 +2101,32 @@ TEST_F(LibYUVConvertTest, TestRGB24ToI420) {
   free_aligned_buffer_page_end(dest_i420);
 }
 
+// Test RAW to I420 is exact
+TEST_F(LibYUVConvertTest, TestRAWToI420) {
+  const int kSize = 256;
+  align_buffer_page_end(orig_raw, kSize * 3 * 2);  // 2 rows of RAW
+  align_buffer_page_end(dest_i420, kSize * 3 / 2 * 2);
+  int iterations256 = (benchmark_width_ * benchmark_height_ + (kSize * 2 - 1)) /
+                      (kSize * 2) * benchmark_iterations_;
+
+  for (int i = 0; i < kSize * 3 * 2; ++i) {
+    orig_raw[i] = i;
+  }
+
+  for (int i = 0; i < iterations256; ++i) {
+    RAWToI420(orig_raw, kSize * 3, dest_i420, kSize,  // Y plane
+              dest_i420 + kSize * 2, kSize / 2,         // U plane
+              dest_i420 + kSize * 5 / 2, kSize / 2,     // V plane
+              kSize, 2);
+  }
+
+  uint32_t checksum = HashDjb2(dest_i420, kSize * 3 / 2 * 2, 5381);
+  ASSERT_EQ(3700923069u, checksum);
+
+  free_aligned_buffer_page_end(orig_raw);
+  free_aligned_buffer_page_end(dest_i420);
+}
+
 TEST_F(LibYUVConvertTest, TestJ420ToI420) {
   const uint8_t src_y[12] = {0, 0, 128, 128, 255, 255,
                              0, 0, 128, 128, 255, 255};
