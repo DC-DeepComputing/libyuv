@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3809b340_67a87f1d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T19:34:08Z",
+      "side": 1,
+      "message": "Performance of avx512 on AMD Zen4\nWas AVX2\nBGRAToARGB_Opt (85 ms)\n77.48% ARGBShuffleRow_AVX2\nNow AVX512\nBGRAToARGB_Opt (83 ms)\n82.03% ARGBShuffleRow_AVX512BW\n\nWas SSE\nBGRAToI420_Opt (169 ms)\n68.25% BGRAToUVRow_SSSE3 \n24.57% BGRAToYRow_AVX512BW \n\nNow AVX512\nBGRAToI420_Opt (114 ms)\n49.77% ARGBToUVMatrixRow_AVX512BW \n38.95% ARGBToYMatrixRow_AVX512BW",
+      "revId": "ea5517154920fea05cca0dc63637480b924d99d8",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f38fd00c_336314c5",
+        "filename": "source/convert.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 3682,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T19:34:08Z",
+      "side": 1,
+      "message": "antigravity - can you handle alignment for neon the same as avx2.  check here and use an Any version if not aligned.",
+      "revId": "ea5517154920fea05cca0dc63637480b924d99d8",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
