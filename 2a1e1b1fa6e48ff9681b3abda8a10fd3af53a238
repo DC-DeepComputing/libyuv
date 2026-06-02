@@ -35,6 +35,23 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c59d7bf_70dc925d",
+        "filename": "source/convert_from.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-02T22:44:07Z",
+      "side": 1,
+      "message": "this would overflow if height \u003d\u003d INT_MAX.  ditto for width.\nmay need to break c89 compatability and move the sanity check before this and add INT_MAX check too?",
+      "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "87f45da8_032f4f08",
