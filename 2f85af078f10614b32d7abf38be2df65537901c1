@@ -35,6 +35,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "951223a0_7e884706",
+        "filename": "source/convert.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 3609,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-03T01:12:48Z",
+      "side": 1,
+      "message": "16 pixels of RGB565 is 32 bytes.  also tested with asan",
+      "parentUuid": "469c459b_392fdaa0",
+      "revId": "2f85af078f10614b32d7abf38be2df65537901c1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "142bf22c_571c41cc",
@@ -48,6 +66,24 @@
       "writtenOn": "2026-06-02T22:51:23Z",
       "side": 1,
       "message": "Ditto.",
+      "revId": "2f85af078f10614b32d7abf38be2df65537901c1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e773361f_33c220a3",
+        "filename": "source/convert.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 3688,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-03T01:12:48Z",
+      "side": 1,
+      "message": "16 pixels of RGB565 is 32 bytes.",
+      "parentUuid": "142bf22c_571c41cc",
       "revId": "2f85af078f10614b32d7abf38be2df65537901c1",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
