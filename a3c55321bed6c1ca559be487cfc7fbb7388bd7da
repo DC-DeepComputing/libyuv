@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63cfe620_72de85d7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002219
+      },
+      "writtenOn": "2026-06-03T03:48:55Z",
+      "side": 1,
+      "message": "I made this change quite some time ago in libwebp, libvpx and other libraries to prevent any unexpected behavior with the soong transition.",
+      "revId": "a3c55321bed6c1ca559be487cfc7fbb7388bd7da",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
