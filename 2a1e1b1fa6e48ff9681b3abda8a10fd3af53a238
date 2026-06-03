@@ -70,6 +70,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b11a866c_017db3ab",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-03T19:50:30Z",
+      "side": 1,
+      "message": "I also considered imposing a maximum on width, height, and stride so that arithmetic operations can be performed using the `int` type with no risk of overflow. I think this maximum should be large enough to support the maximum VP9 and AV1 frame size (65536 x 65536).\n\nBut I believe only some libyuv functions (related to scaling) need this 32768 limit. The other libyuv functions can potentially support `width,height,stride\u003dINT_MAX` if implemented correctly. That\u0027s why I am going down this route.",
+      "parentUuid": "3bce751c_a64ecafa",
+      "revId": "2a1e1b1fa6e48ff9681b3abda8a10fd3af53a238",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1c59d7bf_70dc925d",
