@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "146db502_e2cdf412",
+        "filename": "source/row_win.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-04T23:52:45Z",
+      "side": 1,
+      "message": "Frank: Do you remember why you added `__attribute__((no_sanitize(\"cfi-icall\")))` in patchset 7?\n\nSee https://chromium-review.googlesource.com/c/libyuv/libyuv/+/7802432/6..7\n\nNo other libyuv function is marked with this attribute, so this is suspicous.",
+      "revId": "f2ac6db694d1e5b0af1d7b05dc431e0e455fe228",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
