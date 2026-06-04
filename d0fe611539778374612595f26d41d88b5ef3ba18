@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ffa74760_83ac705d",
+        "filename": "source/row_win.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1002219
+      },
+      "writtenOn": "2026-06-04T23:20:56Z",
+      "side": 1,
+      "message": "This should be OK as a start, since I don\u0027t think `gcc` has this sanitizer. It might be possible to have this be a `__has_feature__` check, but I\u0027m not sure if `__has_feature(\"cfi\")` and `__has_attribute(no_sanitize)` would be sufficient.",
+      "range": {
+        "startLine": 117,
+        "startChar": 52,
+        "endLine": 117,
+        "endChar": 63
+      },
+      "revId": "d0fe611539778374612595f26d41d88b5ef3ba18",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
