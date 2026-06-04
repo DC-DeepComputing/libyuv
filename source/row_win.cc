@@ -113,6 +113,12 @@ extern "C" {
 #define LIBYUV_TARGET_AVX512BW
 #endif
 
+#if defined(__clang__)
+#define LIBYUV_NO_SANITIZE_CFI_ICALL __attribute__((no_sanitize("cfi-icall")))
+#else
+#define LIBYUV_NO_SANITIZE_CFI_ICALL
+#endif
+
 // Convert 32 ARGB pixels (128 bytes) to 32 UV444 values.
 #if defined(HAS_ARGBTOYMATRIXROW_AVX2) || defined(HAS_ARGBTOUV444MATRIXROW_AVX2)
 LIBYUV_TARGET_AVX2
@@ -364,13 +370,13 @@ void RGB24ToARGBRow_AVX512BW(const uint8_t* src_rgb24, uint8_t* dst_argb, int wi
 #endif
 
 #ifdef HAS_ARGBTOUVMATRIXROW_AVX2
-LIBYUV_TARGET_AVX2 __attribute__((no_sanitize("cfi-icall")))
-void ARGBToUVMatrixRow_AVX2(const uint8_t* src_argb,
-                            int src_stride_argb,
-                            uint8_t* dst_u,
-                            uint8_t* dst_v,
-                            int width,
-                            const struct ArgbConstants* c) {
+LIBYUV_TARGET_AVX2 LIBYUV_NO_SANITIZE_CFI_ICALL void ARGBToUVMatrixRow_AVX2(
+    const uint8_t* src_argb,
+    int src_stride_argb,
+    uint8_t* dst_u,
+    uint8_t* dst_v,
+    int width,
+    const struct ArgbConstants* c) {
   __m256i ymm_u = _mm256_broadcastsi128_si256(_mm_loadu_si128((const __m128i*)c->kRGBToU));
   __m256i ymm_v = _mm256_broadcastsi128_si256(_mm_loadu_si128((const __m128i*)c->kRGBToV));
   __m256i ymm_0101 = _mm256_set1_epi16(0x0101);
