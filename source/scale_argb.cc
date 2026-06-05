@@ -34,18 +34,10 @@ static __inline int Abs(int v) {
 // ScaleARGB ARGB, 1/2
 // This is an optimized version for scaling down a ARGB to 1/2 of
 // its original size.
-static void ScaleARGBDown2(int src_width,
-                           int src_height,
-                           int dst_width,
-                           int dst_height,
-                           ptrdiff_t src_stride,
-                           ptrdiff_t dst_stride,
-                           const uint8_t* src_argb,
-                           uint8_t* dst_argb,
-                           int x,
-                           int dx,
-                           int y,
-                           int dy,
+static void ScaleARGBDown2(int src_width, int src_height, int dst_width,
+                           int dst_height, ptrdiff_t src_stride,
+                           ptrdiff_t dst_stride, const uint8_t* src_argb,
+                           uint8_t* dst_argb, int x, int dx, int y, int dy,
                            enum FilterMode filtering) {
   int j;
   ptrdiff_t row_stride = src_stride * (dy >> 16);
@@ -148,18 +140,10 @@ static void ScaleARGBDown2(int src_width,
 // ScaleARGB ARGB, 1/4
 // This is an optimized version for scaling down a ARGB to 1/4 of
 // its original size.
-static int ScaleARGBDown4Box(int src_width,
-                             int src_height,
-                             int dst_width,
-                             int dst_height,
-                             ptrdiff_t src_stride,
-                             ptrdiff_t dst_stride,
-                             const uint8_t* src_argb,
-                             uint8_t* dst_argb,
-                             int x,
-                             int dx,
-                             int y,
-                             int dy) {
+static int ScaleARGBDown4Box(int src_width, int src_height, int dst_width,
+                             int dst_height, ptrdiff_t src_stride,
+                             ptrdiff_t dst_stride, const uint8_t* src_argb,
+                             uint8_t* dst_argb, int x, int dx, int y, int dy) {
   int j;
   // Allocate 2 rows of ARGB.
   const int row_size = (dst_width * 2 * 4 + 31) & ~31;
@@ -222,18 +206,10 @@ static int ScaleARGBDown4Box(int src_width,
 // ScaleARGB ARGB Even
 // This is an optimized version for scaling down a ARGB to even
 // multiple of its original size.
-static void ScaleARGBDownEven(int src_width,
-                              int src_height,
-                              int dst_width,
-                              int dst_height,
-                              ptrdiff_t src_stride,
-                              ptrdiff_t dst_stride,
-                              const uint8_t* src_argb,
-                              uint8_t* dst_argb,
-                              int x,
-                              int dx,
-                              int y,
-                              int dy,
+static void ScaleARGBDownEven(int src_width, int src_height, int dst_width,
+                              int dst_height, ptrdiff_t src_stride,
+                              ptrdiff_t dst_stride, const uint8_t* src_argb,
+                              uint8_t* dst_argb, int x, int dx, int y, int dy,
                               enum FilterMode filtering) {
   int j;
   int col_step = dx >> 16;
@@ -298,19 +274,11 @@ static void ScaleARGBDownEven(int src_width,
 }
 
 // Scale ARGB down with bilinear interpolation.
-static int ScaleARGBBilinearDown(int src_width,
-                                 int src_height,
-                                 int dst_width,
-                                 int dst_height,
-                                 ptrdiff_t src_stride,
-                                 ptrdiff_t dst_stride,
-                                 const uint8_t* src_argb,
-                                 uint8_t* dst_argb,
-                                 int x,
-                                 int dx,
-                                 int y,
-                                 int dy,
-                                 enum FilterMode filtering) {
+static int ScaleARGBBilinearDown(int src_width, int src_height, int dst_width,
+                                 int dst_height, ptrdiff_t src_stride,
+                                 ptrdiff_t dst_stride, const uint8_t* src_argb,
+                                 uint8_t* dst_argb, int x, int dx, int y,
+                                 int dy, enum FilterMode filtering) {
   int j;
   void (*InterpolateRow)(uint8_t* dst_argb, const uint8_t* src_argb,
                          ptrdiff_t src_stride, int dst_width,
@@ -425,18 +393,10 @@ static int ScaleARGBBilinearDown(int src_width,
 }
 
 // Scale ARGB up with bilinear interpolation.
-static int ScaleARGBBilinearUp(int src_width,
-                               int src_height,
-                               int dst_width,
-                               int dst_height,
-                               ptrdiff_t src_stride,
-                               ptrdiff_t dst_stride,
-                               const uint8_t* src_argb,
-                               uint8_t* dst_argb,
-                               int x,
-                               int dx,
-                               int y,
-                               int dy,
+static int ScaleARGBBilinearUp(int src_width, int src_height, int dst_width,
+                               int dst_height, ptrdiff_t src_stride,
+                               ptrdiff_t dst_stride, const uint8_t* src_argb,
+                               uint8_t* dst_argb, int x, int dx, int y, int dy,
                                enum FilterMode filtering) {
   int j;
   void (*InterpolateRow)(uint8_t* dst_argb, const uint8_t* src_argb,
@@ -604,18 +564,10 @@ static int ScaleARGBBilinearUp(int src_width,
 // of x and dx is the integer part of the source position and
 // the lower 16 bits are the fixed decimal part.
 
-static void ScaleARGBSimple(int src_width,
-                            int src_height,
-                            int dst_width,
-                            int dst_height,
-                            ptrdiff_t src_stride,
-                            ptrdiff_t dst_stride,
-                            const uint8_t* src_argb,
-                            uint8_t* dst_argb,
-                            int x,
-                            int dx,
-                            int y,
-                            int dy) {
+static void ScaleARGBSimple(int src_width, int src_height, int dst_width,
+                            int dst_height, ptrdiff_t src_stride,
+                            ptrdiff_t dst_stride, const uint8_t* src_argb,
+                            uint8_t* dst_argb, int x, int dx, int y, int dy) {
   int j;
   void (*ScaleARGBCols)(uint8_t* dst_argb, const uint8_t* src_argb,
                         int dst_width, int x, int dx) =
