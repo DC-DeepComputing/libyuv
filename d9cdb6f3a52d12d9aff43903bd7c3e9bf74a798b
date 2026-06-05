@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "241812d0_58c6164c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-05T01:13:18Z",
+      "side": 1,
+      "message": "virtually all functions support negative height and will have height \u003d -height\n\nbut in practice a height of 2 billion is likely problematic for other reasons, especially on 32 bit cpus",
+      "revId": "d9cdb6f3a52d12d9aff43903bd7c3e9bf74a798b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
