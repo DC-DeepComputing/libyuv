@@ -16,6 +16,24 @@
       "message": "note that this breaks c89 compatability.  which i think is fine.\nbut if we did want to declare variables after there are 2 ways\n\n  int uv_width;\n  int uv_height;\n  int scale;\n\n  if ((!src_y \u0026\u0026 dst_y) || !src_u || !src_v || !dst_u || !dst_v || width \u003c\u003d 0 ||\n      height \u003d\u003d 0 || height \u003d\u003d INT_MIN) {\n    return -1;\n  }\n\n  uv_width \u003d SUBSAMPLE(width, subsample_x, subsample_x);\n  uv_height \u003d SUBSAMPLE(height, subsample_y, subsample_y);\n  scale \u003d 1 \u003c\u003c (24 - depth);\n\nor with scoping\n\n\n  if ((!src_y \u0026\u0026 dst_y) || !src_u || !src_v || !dst_u || !dst_v || width \u003c\u003d 0 ||\n      height \u003d\u003d 0 || height \u003d\u003d INT_MIN) {\n    return -1;\n  }\n  {\n    int uv_width \u003d SUBSAMPLE(width, subsample_x, subsample_x);\n    int uv_height \u003d SUBSAMPLE(height, subsample_y, subsample_y);\n    int scale \u003d 1 \u003c\u003c (24 - depth);\n...\n  }\n\nsome other projects are adopting c11 which has compile time assert and alignment related support.\n\nunrelated i was just asked about fp16 and that would be C23 that adds _Float16 and a ton of other things... basically everything C++ can do, except classes.\nnotable would be templates and overloads.\nif/when we need better fp16 support it may be worth consideration.",
       "revId": "b7c959cab59f863d787b3c683dcfb4b427cd2a56",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c70f0f3b_ba2d831d",
+        "filename": "source/convert.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-05T04:39:58Z",
+      "side": 0,
+      "message": "Thanks for the review. I recommend upgrading to C11. `static_assert()` alone is worth the upgrade. Earlier this year I upgraded libavif, libaom, libvpx, and AVM (the AV2 reference software) to C11 while keeping their public headers C99.\n\nI would love to upgrade to C23, but for a project like libyuv that needs to support LTS (long-term support) versions of Linux distributions, we still need to wait for a few years.",
+      "parentUuid": "7dbbafcc_a36118d0",
+      "revId": "b7c959cab59f863d787b3c683dcfb4b427cd2a56",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
