@@ -36,15 +36,10 @@ static __inline int Abs(int v) {
 // This is an optimized version for scaling down a plane to 1/2 of
 // its original size.
 
-static void ScalePlaneDown2(int src_width,
-                            int src_height,
-                            int dst_width,
-                            int dst_height,
-                            ptrdiff_t src_stride,
-                            ptrdiff_t dst_stride,
-                            const uint8_t* src_ptr,
-                            uint8_t* dst_ptr,
-                            enum FilterMode filtering) {
+static void ScalePlaneDown2(int src_width, int src_height, int dst_width,
+                            int dst_height, ptrdiff_t src_stride,
+                            ptrdiff_t dst_stride, const uint8_t* src_ptr,
+                            uint8_t* dst_ptr, enum FilterMode filtering) {
   int y;
   void (*ScaleRowDown2)(const uint8_t* src_ptr, ptrdiff_t src_stride,
                         uint8_t* dst_ptr, int dst_width) =
@@ -148,15 +143,10 @@ static void ScalePlaneDown2(int src_width,
   }
 }
 
-static void ScalePlaneDown2_16(int src_width,
-                               int src_height,
-                               int dst_width,
-                               int dst_height,
-                               ptrdiff_t src_stride,
-                               ptrdiff_t dst_stride,
-                               const uint16_t* src_ptr,
-                               uint16_t* dst_ptr,
-                               enum FilterMode filtering) {
+static void ScalePlaneDown2_16(int src_width, int src_height, int dst_width,
+                               int dst_height, ptrdiff_t src_stride,
+                               ptrdiff_t dst_stride, const uint16_t* src_ptr,
+                               uint16_t* dst_ptr, enum FilterMode filtering) {
   int y;
   void (*ScaleRowDown2)(const uint16_t* src_ptr, ptrdiff_t src_stride,
                         uint16_t* dst_ptr, int dst_width) =
@@ -256,15 +246,10 @@ void ScalePlaneDown2_16To8(int src_width,
 // This is an optimized version for scaling down a plane to 1/4 of
 // its original size.
 
-static void ScalePlaneDown4(int src_width,
-                            int src_height,
-                            int dst_width,
-                            int dst_height,
-                            ptrdiff_t src_stride,
-                            ptrdiff_t dst_stride,
-                            const uint8_t* src_ptr,
-                            uint8_t* dst_ptr,
-                            enum FilterMode filtering) {
+static void ScalePlaneDown4(int src_width, int src_height, int dst_width,
+                            int dst_height, ptrdiff_t src_stride,
+                            ptrdiff_t dst_stride, const uint8_t* src_ptr,
+                            uint8_t* dst_ptr, enum FilterMode filtering) {
   int y;
   void (*ScaleRowDown4)(const uint8_t* src_ptr, ptrdiff_t src_stride,
                         uint8_t* dst_ptr, int dst_width) =
@@ -328,15 +313,10 @@ static void ScalePlaneDown4(int src_width,
   }
 }
 
-static void ScalePlaneDown4_16(int src_width,
-                               int src_height,
-                               int dst_width,
-                               int dst_height,
-                               ptrdiff_t src_stride,
-                               ptrdiff_t dst_stride,
-                               const uint16_t* src_ptr,
-                               uint16_t* dst_ptr,
-                               enum FilterMode filtering) {
+static void ScalePlaneDown4_16(int src_width, int src_height, int dst_width,
+                               int dst_height, ptrdiff_t src_stride,
+                               ptrdiff_t dst_stride, const uint16_t* src_ptr,
+                               uint16_t* dst_ptr, enum FilterMode filtering) {
   int y;
   void (*ScaleRowDown4)(const uint16_t* src_ptr, ptrdiff_t src_stride,
                         uint16_t* dst_ptr, int dst_width) =
@@ -372,15 +352,10 @@ static void ScalePlaneDown4_16(int src_width,
 }
 
 // Scale plane down, 3/4
-static void ScalePlaneDown34(int src_width,
-                             int src_height,
-                             int dst_width,
-                             int dst_height,
-                             ptrdiff_t src_stride,
-                             ptrdiff_t dst_stride,
-                             const uint8_t* src_ptr,
-                             uint8_t* dst_ptr,
-                             enum FilterMode filtering) {
+static void ScalePlaneDown34(int src_width, int src_height, int dst_width,
+                             int dst_height, ptrdiff_t src_stride,
+                             ptrdiff_t dst_stride, const uint8_t* src_ptr,
+                             uint8_t* dst_ptr, enum FilterMode filtering) {
   int y;
   void (*ScaleRowDown34_0)(const uint8_t* src_ptr, ptrdiff_t src_stride,
                            uint8_t* dst_ptr, int dst_width);
@@ -499,15 +474,10 @@ static void ScalePlaneDown34(int src_width,
   }
 }
 
-static void ScalePlaneDown34_16(int src_width,
-                                int src_height,
-                                int dst_width,
-                                int dst_height,
-                                ptrdiff_t src_stride,
-                                ptrdiff_t dst_stride,
-                                const uint16_t* src_ptr,
-                                uint16_t* dst_ptr,
-                                enum FilterMode filtering) {
+static void ScalePlaneDown34_16(int src_width, int src_height, int dst_width,
+                                int dst_height, ptrdiff_t src_stride,
+                                ptrdiff_t dst_stride, const uint16_t* src_ptr,
+                                uint16_t* dst_ptr, enum FilterMode filtering) {
   int y;
   void (*ScaleRowDown34_0)(const uint16_t* src_ptr, ptrdiff_t src_stride,
                            uint16_t* dst_ptr, int dst_width);
@@ -585,15 +555,10 @@ static void ScalePlaneDown34_16(int src_width,
 // ggghhhii
 // Boxes are 3x3, 2x3, 3x2 and 2x2
 
-static void ScalePlaneDown38(int src_width,
-                             int src_height,
-                             int dst_width,
-                             int dst_height,
-                             ptrdiff_t src_stride,
-                             ptrdiff_t dst_stride,
-                             const uint8_t* src_ptr,
-                             uint8_t* dst_ptr,
-                             enum FilterMode filtering) {
+static void ScalePlaneDown38(int src_width, int src_height, int dst_width,
+                             int dst_height, ptrdiff_t src_stride,
+                             ptrdiff_t dst_stride, const uint8_t* src_ptr,
+                             uint8_t* dst_ptr, enum FilterMode filtering) {
   int y;
   void (*ScaleRowDown38_3)(const uint8_t* src_ptr, ptrdiff_t src_stride,
                            uint8_t* dst_ptr, int dst_width);
@@ -705,15 +670,10 @@ static void ScalePlaneDown38(int src_width,
   }
 }
 
-static void ScalePlaneDown38_16(int src_width,
-                                int src_height,
-                                int dst_width,
-                                int dst_height,
-                                ptrdiff_t src_stride,
-                                ptrdiff_t dst_stride,
-                                const uint16_t* src_ptr,
-                                uint16_t* dst_ptr,
-                                enum FilterMode filtering) {
+static void ScalePlaneDown38_16(int src_width, int src_height, int dst_width,
+                                int dst_height, ptrdiff_t src_stride,
+                                ptrdiff_t dst_stride, const uint16_t* src_ptr,
+                                uint16_t* dst_ptr, enum FilterMode filtering) {
   int y;
   void (*ScaleRowDown38_3)(const uint16_t* src_ptr, ptrdiff_t src_stride,
                            uint16_t* dst_ptr, int dst_width);
@@ -898,13 +858,9 @@ static void ScaleAddCols1_16_C(int dst_width,
 // one pixel of destination using fixed point (16.16) to step
 // through source, sampling a box of pixel with simple
 // averaging.
-static int ScalePlaneBox(int src_width,
-                         int src_height,
-                         int dst_width,
-                         int dst_height,
-                         ptrdiff_t src_stride,
-                         ptrdiff_t dst_stride,
-                         const uint8_t* src_ptr,
+static int ScalePlaneBox(int src_width, int src_height, int dst_width,
+                         int dst_height, ptrdiff_t src_stride,
+                         ptrdiff_t dst_stride, const uint8_t* src_ptr,
                          uint8_t* dst_ptr) {
   int j, k;
   // Initial source x/y coordinate and step values as 16.16 fixed point.
@@ -987,13 +943,9 @@ static int ScalePlaneBox(int src_width,
   return 0;
 }
 
-static int ScalePlaneBox_16(int src_width,
-                            int src_height,
-                            int dst_width,
-                            int dst_height,
-                            ptrdiff_t src_stride,
-                            ptrdiff_t dst_stride,
-                            const uint16_t* src_ptr,
+static int ScalePlaneBox_16(int src_width, int src_height, int dst_width,
+                            int dst_height, ptrdiff_t src_stride,
+                            ptrdiff_t dst_stride, const uint16_t* src_ptr,
                             uint16_t* dst_ptr) {
   int j, k;
   // Initial source x/y coordinate and step values as 16.16 fixed point.
@@ -1045,15 +997,10 @@ static int ScalePlaneBox_16(int src_width,
 }
 
 // Scale plane down with bilinear interpolation.
-static int ScalePlaneBilinearDown(int src_width,
-                                  int src_height,
-                                  int dst_width,
-                                  int dst_height,
-                                  ptrdiff_t src_stride,
-                                  ptrdiff_t dst_stride,
-                                  const uint8_t* src_ptr,
-                                  uint8_t* dst_ptr,
-                                  enum FilterMode filtering) {
+static int ScalePlaneBilinearDown(int src_width, int src_height, int dst_width,
+                                  int dst_height, ptrdiff_t src_stride,
+                                  ptrdiff_t dst_stride, const uint8_t* src_ptr,
+                                  uint8_t* dst_ptr, enum FilterMode filtering) {
   // Initial source x/y coordinate and step values as 16.16 fixed point.
   int x = 0;
   int y = 0;
@@ -1157,14 +1104,10 @@ static int ScalePlaneBilinearDown(int src_width,
   return 0;
 }
 
-static int ScalePlaneBilinearDown_16(int src_width,
-                                     int src_height,
-                                     int dst_width,
-                                     int dst_height,
-                                     ptrdiff_t src_stride,
-                                     ptrdiff_t dst_stride,
-                                     const uint16_t* src_ptr,
-                                     uint16_t* dst_ptr,
+static int ScalePlaneBilinearDown_16(int src_width, int src_height,
+                                     int dst_width, int dst_height,
+                                     ptrdiff_t src_stride, ptrdiff_t dst_stride,
+                                     const uint16_t* src_ptr, uint16_t* dst_ptr,
                                      enum FilterMode filtering) {
   // Initial source x/y coordinate and step values as 16.16 fixed point.
   int x = 0;
@@ -1249,15 +1192,10 @@ static int ScalePlaneBilinearDown_16(int src_width,
 }
 
 // Scale up down with bilinear interpolation.
-static int ScalePlaneBilinearUp(int src_width,
-                                int src_height,
-                                int dst_width,
-                                int dst_height,
-                                ptrdiff_t src_stride,
-                                ptrdiff_t dst_stride,
-                                const uint8_t* src_ptr,
-                                uint8_t* dst_ptr,
-                                enum FilterMode filtering) {
+static int ScalePlaneBilinearUp(int src_width, int src_height, int dst_width,
+                                int dst_height, ptrdiff_t src_stride,
+                                ptrdiff_t dst_stride, const uint8_t* src_ptr,
+                                uint8_t* dst_ptr, enum FilterMode filtering) {
   int j;
   // Initial source x/y coordinate and step values as 16.16 fixed point.
   int x = 0;
@@ -1398,13 +1336,9 @@ static int ScalePlaneBilinearUp(int src_width,
 // This is an optimized version for scaling up a plane to 2 times of
 // its original width, using linear interpolation.
 // This is used to scale U and V planes of I422 to I444.
-static void ScalePlaneUp2_Linear(int src_width,
-                                 int src_height,
-                                 int dst_width,
-                                 int dst_height,
-                                 ptrdiff_t src_stride,
-                                 ptrdiff_t dst_stride,
-                                 const uint8_t* src_ptr,
+static void ScalePlaneUp2_Linear(int src_width, int src_height, int dst_width,
+                                 int dst_height, ptrdiff_t src_stride,
+                                 ptrdiff_t dst_stride, const uint8_t* src_ptr,
                                  uint8_t* dst_ptr) {
   void (*ScaleRowUp)(const uint8_t* src_ptr, uint8_t* dst_ptr, int dst_width) =
       ScaleRowUp2_Linear_Any_C;
@@ -1463,13 +1397,9 @@ static void ScalePlaneUp2_Linear(int src_width,
 // This is an optimized version for scaling up a plane to 2 times of
 // its original size, using bilinear interpolation.
 // This is used to scale U and V planes of I420 to I444.
-static void ScalePlaneUp2_Bilinear(int src_width,
-                                   int src_height,
-                                   int dst_width,
-                                   int dst_height,
-                                   ptrdiff_t src_stride,
-                                   ptrdiff_t dst_stride,
-                                   const uint8_t* src_ptr,
+static void ScalePlaneUp2_Bilinear(int src_width, int src_height, int dst_width,
+                                   int dst_height, ptrdiff_t src_stride,
+                                   ptrdiff_t dst_stride, const uint8_t* src_ptr,
                                    uint8_t* dst_ptr) {
   void (*Scale2RowUp)(const uint8_t* src_ptr, ptrdiff_t src_stride,
                       uint8_t* dst_ptr, ptrdiff_t dst_stride, int dst_width) =
@@ -1529,12 +1459,9 @@ static void ScalePlaneUp2_Bilinear(int src_width,
 // its original width, using linear interpolation.
 // stride is in count of uint16_t.
 // This is used to scale U and V planes of I210 to I410 and I212 to I412.
-static void ScalePlaneUp2_12_Linear(int src_width,
-                                    int src_height,
-                                    int dst_width,
-                                    int dst_height,
-                                    ptrdiff_t src_stride,
-                                    ptrdiff_t dst_stride,
+static void ScalePlaneUp2_12_Linear(int src_width, int src_height,
+                                    int dst_width, int dst_height,
+                                    ptrdiff_t src_stride, ptrdiff_t dst_stride,
                                     const uint16_t* src_ptr,
                                     uint16_t* dst_ptr) {
   void (*ScaleRowUp)(const uint16_t* src_ptr, uint16_t* dst_ptr,
@@ -1584,10 +1511,8 @@ static void ScalePlaneUp2_12_Linear(int src_width,
 // its original size, using bilinear interpolation.
 // stride is in count of uint16_t.
 // This is used to scale U and V planes of I010 to I410 and I012 to I412.
-static void ScalePlaneUp2_12_Bilinear(int src_width,
-                                      int src_height,
-                                      int dst_width,
-                                      int dst_height,
+static void ScalePlaneUp2_12_Bilinear(int src_width, int src_height,
+                                      int dst_width, int dst_height,
                                       ptrdiff_t src_stride,
                                       ptrdiff_t dst_stride,
                                       const uint16_t* src_ptr,
@@ -1632,12 +1557,9 @@ static void ScalePlaneUp2_12_Bilinear(int src_width,
   }
 }
 
-static void ScalePlaneUp2_16_Linear(int src_width,
-                                    int src_height,
-                                    int dst_width,
-                                    int dst_height,
-                                    ptrdiff_t src_stride,
-                                    ptrdiff_t dst_stride,
+static void ScalePlaneUp2_16_Linear(int src_width, int src_height,
+                                    int dst_width, int dst_height,
+                                    ptrdiff_t src_stride, ptrdiff_t dst_stride,
                                     const uint16_t* src_ptr,
                                     uint16_t* dst_ptr) {
   void (*ScaleRowUp)(const uint16_t* src_ptr, uint16_t* dst_ptr,
@@ -1682,10 +1604,8 @@ static void ScalePlaneUp2_16_Linear(int src_width,
   }
 }
 
-static void ScalePlaneUp2_16_Bilinear(int src_width,
-                                      int src_height,
-                                      int dst_width,
-                                      int dst_height,
+static void ScalePlaneUp2_16_Bilinear(int src_width, int src_height,
+                                      int dst_width, int dst_height,
                                       ptrdiff_t src_stride,
                                       ptrdiff_t dst_stride,
                                       const uint16_t* src_ptr,
@@ -1730,14 +1650,10 @@ static void ScalePlaneUp2_16_Bilinear(int src_width,
   }
 }
 
-static int ScalePlaneBilinearUp_16(int src_width,
-                                   int src_height,
-                                   int dst_width,
-                                   int dst_height,
-                                   ptrdiff_t src_stride,
+static int ScalePlaneBilinearUp_16(int src_width, int src_height, int dst_width,
+                                   int dst_height, ptrdiff_t src_stride,
                                    ptrdiff_t dst_stride,
-                                   const uint16_t* src_ptr,
-                                   uint16_t* dst_ptr,
+                                   const uint16_t* src_ptr, uint16_t* dst_ptr,
                                    enum FilterMode filtering) {
   int j;
   // Initial source x/y coordinate and step values as 16.16 fixed point.
@@ -1864,13 +1780,9 @@ static int ScalePlaneBilinearUp_16(int src_width,
 // of x and dx is the integer part of the source position and
 // the lower 16 bits are the fixed decimal part.
 
-static void ScalePlaneSimple(int src_width,
-                             int src_height,
-                             int dst_width,
-                             int dst_height,
-                             ptrdiff_t src_stride,
-                             ptrdiff_t dst_stride,
-                             const uint8_t* src_ptr,
+static void ScalePlaneSimple(int src_width, int src_height, int dst_width,
+                             int dst_height, ptrdiff_t src_stride,
+                             ptrdiff_t dst_stride, const uint8_t* src_ptr,
                              uint8_t* dst_ptr) {
   int i;
   void (*ScaleCols)(uint8_t* dst_ptr, const uint8_t* src_ptr, int dst_width,
@@ -1900,13 +1812,9 @@ static void ScalePlaneSimple(int src_width,
   }
 }
 
-static void ScalePlaneSimple_16(int src_width,
-                                int src_height,
-                                int dst_width,
-                                int dst_height,
-                                ptrdiff_t src_stride,
-                                ptrdiff_t dst_stride,
-                                const uint16_t* src_ptr,
+static void ScalePlaneSimple_16(int src_width, int src_height, int dst_width,
+                                int dst_height, ptrdiff_t src_stride,
+                                ptrdiff_t dst_stride, const uint16_t* src_ptr,
                                 uint16_t* dst_ptr) {
   int i;
   void (*ScaleCols)(uint16_t* dst_ptr, const uint16_t* src_ptr, int dst_width,
@@ -1951,9 +1859,9 @@ int ScalePlane(const uint8_t* src,
   // Reject dimensions larger than 32768 (or smaller than -32768 for height).
   // This prevents FixedDiv signed integer overflows that can lead to division
   // by zero/overflow crashes (SIGFPE on x86) or incorrect step calculations.
-  if (!src || src_width <= 0 || src_height == 0 ||
-      src_width > 32768 || src_height < -32768 || src_height > 32768 ||
-      !dst || dst_width <= 0 || dst_height <= 0) {
+  if (!src || src_width <= 0 || src_height == 0 || src_width > 32768 ||
+      src_height < -32768 || src_height > 32768 || !dst || dst_width <= 0 ||
+      dst_height <= 0) {
     return -1;
   }
   // Simplify filtering when possible.
@@ -2059,9 +1967,9 @@ int ScalePlane_16(const uint16_t* src,
   // Reject dimensions larger than 32768 (or smaller than -32768 for height).
   // This prevents FixedDiv signed integer overflows that can lead to division
   // by zero/overflow crashes (SIGFPE on x86) or incorrect step calculations.
-  if (!src || src_width <= 0 || src_height == 0 ||
-      src_width > 32768 || src_height < -32768 || src_height > 32768 ||
-      !dst || dst_width <= 0 || dst_height <= 0) {
+  if (!src || src_width <= 0 || src_height == 0 || src_width > 32768 ||
+      src_height < -32768 || src_height > 32768 || !dst || dst_width <= 0 ||
+      dst_height <= 0) {
     return -1;
   }
   // Simplify filtering when possible.
@@ -2171,9 +2079,9 @@ int ScalePlane_12(const uint16_t* src,
   // Reject dimensions larger than 32768 (or smaller than -32768 for height).
   // This prevents FixedDiv signed integer overflows that can lead to division
   // by zero/overflow crashes (SIGFPE on x86) or incorrect step calculations.
-  if (!src || src_width <= 0 || src_height == 0 ||
-      src_width > 32768 || src_height < -32768 || src_height > 32768 ||
-      !dst || dst_width <= 0 || dst_height <= 0) {
+  if (!src || src_width <= 0 || src_height == 0 || src_width > 32768 ||
+      src_height < -32768 || src_height > 32768 || !dst || dst_width <= 0 ||
+      dst_height <= 0) {
     return -1;
   }
   // Simplify filtering when possible.

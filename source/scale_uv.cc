@@ -56,18 +56,10 @@ static __inline int Abs(int v) {
 // This is an optimized version for scaling down a UV to 1/2 of
 // its original size.
 #if HAS_SCALEUVDOWN2
-static void ScaleUVDown2(int src_width,
-                         int src_height,
-                         int dst_width,
-                         int dst_height,
-                         ptrdiff_t src_stride,
-                         ptrdiff_t dst_stride,
-                         const uint8_t* src_uv,
-                         uint8_t* dst_uv,
-                         int x,
-                         int dx,
-                         int y,
-                         int dy,
+static void ScaleUVDown2(int src_width, int src_height, int dst_width,
+                         int dst_height, ptrdiff_t src_stride,
+                         ptrdiff_t dst_stride, const uint8_t* src_uv,
+                         uint8_t* dst_uv, int x, int dx, int y, int dy,
                          enum FilterMode filtering) {
   int j;
   ptrdiff_t row_stride = src_stride * (dy >> 16);
@@ -171,18 +163,10 @@ static void ScaleUVDown2(int src_width,
 // This is an optimized version for scaling down a UV to 1/4 of
 // its original size.
 #if HAS_SCALEUVDOWN4BOX
-static int ScaleUVDown4Box(int src_width,
-                           int src_height,
-                           int dst_width,
-                           int dst_height,
-                           ptrdiff_t src_stride,
-                           ptrdiff_t dst_stride,
-                           const uint8_t* src_uv,
-                           uint8_t* dst_uv,
-                           int x,
-                           int dx,
-                           int y,
-                           int dy) {
+static int ScaleUVDown4Box(int src_width, int src_height, int dst_width,
+                           int dst_height, ptrdiff_t src_stride,
+                           ptrdiff_t dst_stride, const uint8_t* src_uv,
+                           uint8_t* dst_uv, int x, int dx, int y, int dy) {
   int j;
   // Allocate 2 rows of UV.
   const int row_size = (dst_width * 2 * 2 + 15) & ~15;
@@ -253,18 +237,10 @@ static int ScaleUVDown4Box(int src_width,
 // This is an optimized version for scaling down a UV to even
 // multiple of its original size.
 #if HAS_SCALEUVDOWNEVEN
-static void ScaleUVDownEven(int src_width,
-                            int src_height,
-                            int dst_width,
-                            int dst_height,
-                            ptrdiff_t src_stride,
-                            ptrdiff_t dst_stride,
-                            const uint8_t* src_uv,
-                            uint8_t* dst_uv,
-                            int x,
-                            int dx,
-                            int y,
-                            int dy,
+static void ScaleUVDownEven(int src_width, int src_height, int dst_width,
+                            int dst_height, ptrdiff_t src_stride,
+                            ptrdiff_t dst_stride, const uint8_t* src_uv,
+                            uint8_t* dst_uv, int x, int dx, int y, int dy,
                             enum FilterMode filtering) {
   int j;
   int col_step = dx >> 16;
@@ -331,18 +307,10 @@ static void ScaleUVDownEven(int src_width,
 
 // Scale UV down with bilinear interpolation.
 #if HAS_SCALEUVBILINEARDOWN
-static int ScaleUVBilinearDown(int src_width,
-                               int src_height,
-                               int dst_width,
-                               int dst_height,
-                               ptrdiff_t src_stride,
-                               ptrdiff_t dst_stride,
-                               const uint8_t* src_uv,
-                               uint8_t* dst_uv,
-                               int x,
-                               int dx,
-                               int y,
-                               int dy,
+static int ScaleUVBilinearDown(int src_width, int src_height, int dst_width,
+                               int dst_height, ptrdiff_t src_stride,
+                               ptrdiff_t dst_stride, const uint8_t* src_uv,
+                               uint8_t* dst_uv, int x, int dx, int y, int dy,
                                enum FilterMode filtering) {
   int j;
   void (*InterpolateRow)(uint8_t* dst_uv, const uint8_t* src_uv,
@@ -445,18 +413,10 @@ static int ScaleUVBilinearDown(int src_width,
 
 // Scale UV up with bilinear interpolation.
 #if HAS_SCALEUVBILINEARUP
-static int ScaleUVBilinearUp(int src_width,
-                             int src_height,
-                             int dst_width,
-                             int dst_height,
-                             ptrdiff_t src_stride,
-                             ptrdiff_t dst_stride,
-                             const uint8_t* src_uv,
-                             uint8_t* dst_uv,
-                             int x,
-                             int dx,
-                             int y,
-                             int dy,
+static int ScaleUVBilinearUp(int src_width, int src_height, int dst_width,
+                             int dst_height, ptrdiff_t src_stride,
+                             ptrdiff_t dst_stride, const uint8_t* src_uv,
+                             uint8_t* dst_uv, int x, int dx, int y, int dy,
                              enum FilterMode filtering) {
   int j;
   void (*InterpolateRow)(uint8_t* dst_uv, const uint8_t* src_uv,
@@ -603,13 +563,9 @@ static int ScaleUVBilinearUp(int src_width,
 // This is an optimized version for scaling up a plane to 2 times of
 // its original width, using linear interpolation.
 // This is used to scale U and V planes of NV16 to NV24.
-static void ScaleUVLinearUp2(int src_width,
-                             int src_height,
-                             int dst_width,
-                             int dst_height,
-                             ptrdiff_t src_stride,
-                             ptrdiff_t dst_stride,
-                             const uint8_t* src_uv,
+static void ScaleUVLinearUp2(int src_width, int src_height, int dst_width,
+                             int dst_height, ptrdiff_t src_stride,
+                             ptrdiff_t dst_stride, const uint8_t* src_uv,
                              uint8_t* dst_uv) {
   void (*ScaleRowUp)(const uint8_t* src_uv, uint8_t* dst_uv, int dst_width) =
       ScaleUVRowUp2_Linear_Any_C;
@@ -723,13 +679,9 @@ static void ScaleUVBilinearUp2(int src_width,
 // This is an optimized version for scaling up a plane to 2 times of
 // its original width, using linear interpolation.
 // This is used to scale U and V planes of P210 to P410.
-static void ScaleUVLinearUp2_16(int src_width,
-                                int src_height,
-                                int dst_width,
-                                int dst_height,
-                                ptrdiff_t src_stride,
-                                ptrdiff_t dst_stride,
-                                const uint16_t* src_uv,
+static void ScaleUVLinearUp2_16(int src_width, int src_height, int dst_width,
+                                int dst_height, ptrdiff_t src_stride,
+                                ptrdiff_t dst_stride, const uint16_t* src_uv,
                                 uint16_t* dst_uv) {
   void (*ScaleRowUp)(const uint16_t* src_uv, uint16_t* dst_uv, int dst_width) =
       ScaleUVRowUp2_Linear_16_Any_C;
@@ -831,18 +783,10 @@ static void ScaleUVBilinearUp2_16(int src_width,
 // of x and dx is the integer part of the source position and
 // the lower 16 bits are the fixed decimal part.
 
-static void ScaleUVSimple(int src_width,
-                          int src_height,
-                          int dst_width,
-                          int dst_height,
-                          ptrdiff_t src_stride,
-                          ptrdiff_t dst_stride,
-                          const uint8_t* src_uv,
-                          uint8_t* dst_uv,
-                          int x,
-                          int dx,
-                          int y,
-                          int dy) {
+static void ScaleUVSimple(int src_width, int src_height, int dst_width,
+                          int dst_height, ptrdiff_t src_stride,
+                          ptrdiff_t dst_stride, const uint8_t* src_uv,
+                          uint8_t* dst_uv, int x, int dx, int y, int dy) {
   int j;
   void (*ScaleUVCols)(uint8_t* dst_uv, const uint8_t* src_uv, int dst_width,
                       int x, int dx) =
