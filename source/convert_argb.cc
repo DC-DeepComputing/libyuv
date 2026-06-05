@@ -5098,8 +5098,7 @@ int Android420ToARGBMatrix(const uint8_t* src_y,
 
   // General case fallback creates NV12
   const uint64_t uv_size = (uint64_t)halfwidth * 2 * halfheight;
-  if (uv_size > SIZE_MAX)
-    return 1;
+  if (uv_size > SIZE_MAX) return 1;
   align_buffer_64(plane_uv, (size_t)uv_size);
   if (!plane_uv)
     return 1;

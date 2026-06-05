@@ -35,8 +35,8 @@ int ARGBToI444(const uint8_t* src_argb,
                int width,
                int height) {
   return ARGBToI444Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_u,
-                          dst_stride_u, dst_v, dst_stride_v, &kArgbI601Constants,
-                          width, height);
+                          dst_stride_u, dst_v, dst_stride_v,
+                          &kArgbI601Constants, width, height);
 }
 
 LIBYUV_API
@@ -188,8 +188,8 @@ int ARGBToI422(const uint8_t* src_argb,
                int width,
                int height) {
   return ARGBToI422Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_u,
-                          dst_stride_u, dst_v, dst_stride_v, &kArgbI601Constants,
-                          width, height);
+                          dst_stride_u, dst_v, dst_stride_v,
+                          &kArgbI601Constants, width, height);
 }
 
 LIBYUV_API
@@ -275,34 +275,34 @@ ARGBToUVMatrixRow_C;
 #endif
 
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON)
-    if (TestCpuFlag(kCpuHasNEON)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
-      if (IS_ALIGNED(width, 16)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON;
-      }
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON_I8MM)
-    if (TestCpuFlag(kCpuHasNEON) && TestCpuFlag(kCpuHasNeonI8MM)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
-      if (IS_ALIGNED(width, 16)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON_I8MM;
-      }
+  if (TestCpuFlag(kCpuHasNEON) && TestCpuFlag(kCpuHasNeonI8MM)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON_I8MM;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SVE2)
-    if (TestCpuFlag(kCpuHasSVE2)) {
-      if (IS_ALIGNED(width, 2)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
-      }
+  if (TestCpuFlag(kCpuHasSVE2)) {
+    if (IS_ALIGNED(width, 2)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SME)
-    if (TestCpuFlag(kCpuHasSME)) {
-      if (IS_ALIGNED(width, 2)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
-      }
+  if (TestCpuFlag(kCpuHasSME)) {
+    if (IS_ALIGNED(width, 2)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SSSE3)
   if (TestCpuFlag(kCpuHasSSSE3)) {
@@ -445,34 +445,34 @@ ARGBToUVMatrixRow_C;
 #endif
 
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON)
-    if (TestCpuFlag(kCpuHasNEON)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
-      if (IS_ALIGNED(width, 16)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON;
-      }
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON_I8MM)
-    if (TestCpuFlag(kCpuHasNEON) && TestCpuFlag(kCpuHasNeonI8MM)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
-      if (IS_ALIGNED(width, 16)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON_I8MM;
-      }
+  if (TestCpuFlag(kCpuHasNEON) && TestCpuFlag(kCpuHasNeonI8MM)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON_I8MM;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SVE2)
-    if (TestCpuFlag(kCpuHasSVE2)) {
-      if (IS_ALIGNED(width, 2)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
-      }
+  if (TestCpuFlag(kCpuHasSVE2)) {
+    if (IS_ALIGNED(width, 2)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SME)
-    if (TestCpuFlag(kCpuHasSME)) {
-      if (IS_ALIGNED(width, 2)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
-      }
+  if (TestCpuFlag(kCpuHasSME)) {
+    if (IS_ALIGNED(width, 2)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SSSE3)
   if (TestCpuFlag(kCpuHasSSSE3)) {
@@ -579,14 +579,10 @@ ARGBToUVMatrixRow_C;
   return 0;
 }
 
-int ARGBToNV21Matrix(const uint8_t* src_argb,
-                     int src_stride_argb,
-                     uint8_t* dst_y,
-                     int dst_stride_y,
-                     uint8_t* dst_vu,
+int ARGBToNV21Matrix(const uint8_t* src_argb, int src_stride_argb,
+                     uint8_t* dst_y, int dst_stride_y, uint8_t* dst_vu,
                      int dst_stride_uv,
-                     const struct ArgbConstants* argbconstants,
-                     int width,
+                     const struct ArgbConstants* argbconstants, int width,
                      int height) {
   int y;
   int halfwidth = (width + 1) >> 1;
@@ -595,7 +591,7 @@ int ARGBToNV21Matrix(const uint8_t* src_argb,
   void (*ARGBToUVMatrixRow)(const uint8_t* src_argb, int src_stride_argb,
                             uint8_t* dst_u, uint8_t* dst_v, int width,
                             const struct ArgbConstants* c) =
-ARGBToUVMatrixRow_C;
+      ARGBToUVMatrixRow_C;
 
 #if defined(HAS_ARGBTOYMATRIXROW_SSSE3)
   if (TestCpuFlag(kCpuHasSSSE3)) {
@@ -660,34 +656,34 @@ ARGBToUVMatrixRow_C;
 #endif
 
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON)
-    if (TestCpuFlag(kCpuHasNEON)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
-      if (IS_ALIGNED(width, 16)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON;
-      }
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON_I8MM)
-    if (TestCpuFlag(kCpuHasNEON) && TestCpuFlag(kCpuHasNeonI8MM)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
-      if (IS_ALIGNED(width, 16)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON_I8MM;
-      }
+  if (TestCpuFlag(kCpuHasNEON) && TestCpuFlag(kCpuHasNeonI8MM)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON_I8MM;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SVE2)
-    if (TestCpuFlag(kCpuHasSVE2)) {
-      if (IS_ALIGNED(width, 2)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
-      }
+  if (TestCpuFlag(kCpuHasSVE2)) {
+    if (IS_ALIGNED(width, 2)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SME)
-    if (TestCpuFlag(kCpuHasSME)) {
-      if (IS_ALIGNED(width, 2)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
-      }
+  if (TestCpuFlag(kCpuHasSME)) {
+    if (IS_ALIGNED(width, 2)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SSSE3)
   if (TestCpuFlag(kCpuHasSSSE3)) {
@@ -771,8 +767,7 @@ ARGBToUVMatrixRow_C;
   // Allocate a rows of uv.
   align_buffer_64(row_u, ((halfwidth + 31) & ~31) * 2);
   uint8_t* row_v = row_u + ((halfwidth + 31) & ~31);
-  if (!row_u)
-    return 1;
+  if (!row_u) return 1;
 
   for (y = 0; y < height - 1; y += 2) {
     ARGBToUVMatrixRow(src_argb, src_stride_argb, row_u, row_v, width,
@@ -780,7 +775,7 @@ ARGBToUVMatrixRow_C;
     MergeUVRow(row_u, row_v, dst_vu, halfwidth);
     ARGBToYMatrixRow(src_argb, dst_y, width, argbconstants);
     ARGBToYMatrixRow(src_argb + src_stride_argb, dst_y + dst_stride_y, width,
-                      argbconstants);
+                     argbconstants);
     src_argb += src_stride_argb * 2;
     dst_y += dst_stride_y * 2;
     dst_vu += dst_stride_uv;
@@ -794,12 +789,9 @@ ARGBToUVMatrixRow_C;
   return 0;
 }
 LIBYUV_API
-int ARGBToI400Matrix(const uint8_t* src_argb,
-                     int src_stride_argb,
-                     uint8_t* dst_y,
-                     int dst_stride_y,
-                     const struct ArgbConstants* constants,
-                     int width,
+int ARGBToI400Matrix(const uint8_t* src_argb, int src_stride_argb,
+                     uint8_t* dst_y, int dst_stride_y,
+                     const struct ArgbConstants* constants, int width,
                      int height) {
   int y;
   void (*ARGBToYMatrixRow)(const uint8_t* src_argb, uint8_t* dst_y, int width,
@@ -854,17 +846,15 @@ int ARGBToI400Matrix(const uint8_t* src_argb,
   return 0;
 }
 LIBYUV_API
-int ARGBToYUY2Matrix(const uint8_t* src_argb,
-                     int src_stride_argb,
-                     uint8_t* dst_yuy2,
-                     int dst_stride_yuy2,
-                     const struct ArgbConstants* constants,
-                     int width,
+int ARGBToYUY2Matrix(const uint8_t* src_argb, int src_stride_argb,
+                     uint8_t* dst_yuy2, int dst_stride_yuy2,
+                     const struct ArgbConstants* constants, int width,
                      int height) {
   int y;
   void (*ARGBToUVMatrixRow)(const uint8_t* src_argb, int src_stride_argb,
                             uint8_t* dst_u, uint8_t* dst_v, int width,
-                            const struct ArgbConstants* c) = ARGBToUVMatrixRow_C;
+                            const struct ArgbConstants* c) =
+      ARGBToUVMatrixRow_C;
   void (*ARGBToYMatrixRow)(const uint8_t* src_argb, uint8_t* dst_y, int width,
                            const struct ArgbConstants* c) = ARGBToYMatrixRow_C;
   void (*I422ToYUY2Row)(const uint8_t* src_y, const uint8_t* src_u,
@@ -966,17 +956,15 @@ int ARGBToYUY2Matrix(const uint8_t* src_argb,
 }
 
 LIBYUV_API
-int ARGBToUYVYMatrix(const uint8_t* src_argb,
-                     int src_stride_argb,
-                     uint8_t* dst_uyvy,
-                     int dst_stride_uyvy,
-                     const struct ArgbConstants* constants,
-                     int width,
+int ARGBToUYVYMatrix(const uint8_t* src_argb, int src_stride_argb,
+                     uint8_t* dst_uyvy, int dst_stride_uyvy,
+                     const struct ArgbConstants* constants, int width,
                      int height) {
   int y;
   void (*ARGBToUVMatrixRow)(const uint8_t* src_argb, int src_stride_argb,
                             uint8_t* dst_u, uint8_t* dst_v, int width,
-                            const struct ArgbConstants* c) = ARGBToUVMatrixRow_C;
+                            const struct ArgbConstants* c) =
+      ARGBToUVMatrixRow_C;
   void (*ARGBToYMatrixRow)(const uint8_t* src_argb, uint8_t* dst_y, int width,
                            const struct ArgbConstants* c) = ARGBToYMatrixRow_C;
   void (*I422ToUYVYRow)(const uint8_t* src_y, const uint8_t* src_u,
@@ -1077,69 +1065,47 @@ int ARGBToUYVYMatrix(const uint8_t* src_argb,
   return 0;
 }
 
-
-
 // Same as NV12 but U and V swapped.
 LIBYUV_API
-int ARGBToNV21(const uint8_t* src_argb,
-               int src_stride_argb,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_vu,
-               int dst_stride_vu,
-               int width,
+int ARGBToNV21(const uint8_t* src_argb, int src_stride_argb, uint8_t* dst_y,
+               int dst_stride_y, uint8_t* dst_vu, int dst_stride_vu, int width,
                int height) {
-  return ARGBToNV21Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_vu,
-                          dst_stride_vu, &kArgbI601Constants, width, height);
+  return ARGBToNV21Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y,
+                          dst_vu, dst_stride_vu, &kArgbI601Constants, width,
+                          height);
 }
 
 LIBYUV_API
-int ABGRToNV12(const uint8_t* src_abgr,
-               int src_stride_abgr,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_uv,
-               int dst_stride_uv,
-               int width,
+int ABGRToNV12(const uint8_t* src_abgr, int src_stride_abgr, uint8_t* dst_y,
+               int dst_stride_y, uint8_t* dst_uv, int dst_stride_uv, int width,
                int height) {
-  return ARGBToNV12Matrix(src_abgr, src_stride_abgr, dst_y, dst_stride_y, dst_uv,
-                          dst_stride_uv, &kAbgrI601Constants, width, height);
+  return ARGBToNV12Matrix(src_abgr, src_stride_abgr, dst_y, dst_stride_y,
+                          dst_uv, dst_stride_uv, &kAbgrI601Constants, width,
+                          height);
 }
 
 // Same as NV12 but U and V swapped.
 LIBYUV_API
-int ABGRToNV21(const uint8_t* src_abgr,
-               int src_stride_abgr,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_vu,
-               int dst_stride_vu,
-               int width,
+int ABGRToNV21(const uint8_t* src_abgr, int src_stride_abgr, uint8_t* dst_y,
+               int dst_stride_y, uint8_t* dst_vu, int dst_stride_vu, int width,
                int height) {
-  return ARGBToNV21Matrix(src_abgr, src_stride_abgr, dst_y, dst_stride_y, dst_vu,
-                          dst_stride_vu, &kAbgrI601Constants, width, height);
+  return ARGBToNV21Matrix(src_abgr, src_stride_abgr, dst_y, dst_stride_y,
+                          dst_vu, dst_stride_vu, &kAbgrI601Constants, width,
+                          height);
 }
 
 // Convert ARGB to YUY2.
 LIBYUV_API
-int ARGBToYUY2(const uint8_t* src_argb,
-               int src_stride_argb,
-               uint8_t* dst_yuy2,
-               int dst_stride_yuy2,
-               int width,
-               int height) {
+int ARGBToYUY2(const uint8_t* src_argb, int src_stride_argb, uint8_t* dst_yuy2,
+               int dst_stride_yuy2, int width, int height) {
   return ARGBToYUY2Matrix(src_argb, src_stride_argb, dst_yuy2, dst_stride_yuy2,
                           &kArgbI601Constants, width, height);
 }
 
 // Convert ARGB to UYVY.
 LIBYUV_API
-int ARGBToUYVY(const uint8_t* src_argb,
-               int src_stride_argb,
-               uint8_t* dst_uyvy,
-               int dst_stride_uyvy,
-               int width,
-               int height) {
+int ARGBToUYVY(const uint8_t* src_argb, int src_stride_argb, uint8_t* dst_uyvy,
+               int dst_stride_uyvy, int width, int height) {
   return ARGBToUYVYMatrix(src_argb, src_stride_argb, dst_uyvy, dst_stride_uyvy,
                           &kArgbI601Constants, width, height);
 }
@@ -1808,63 +1774,38 @@ int ARGBToAR30(const uint8_t* src_argb,
 
 // ARGB little endian (bgra in memory) to J444
 LIBYUV_API
-int ARGBToJ444(const uint8_t* src_argb,
-               int src_stride_argb,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_u,
-               int dst_stride_u,
-               uint8_t* dst_v,
-               int dst_stride_v,
-               int width,
-               int height) {
+int ARGBToJ444(const uint8_t* src_argb, int src_stride_argb, uint8_t* dst_y,
+               int dst_stride_y, uint8_t* dst_u, int dst_stride_u,
+               uint8_t* dst_v, int dst_stride_v, int width, int height) {
   return ARGBToI444Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_u,
-                          dst_stride_u, dst_v, dst_stride_v, &kArgbJPEGConstants,
-                          width, height);
+                          dst_stride_u, dst_v, dst_stride_v,
+                          &kArgbJPEGConstants, width, height);
 }
 
 // Convert ARGB to J420. (JPeg full range I420).
 LIBYUV_API
-int ARGBToJ420(const uint8_t* src_argb,
-               int src_stride_argb,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_u,
-               int dst_stride_u,
-               uint8_t* dst_v,
-               int dst_stride_v,
-               int width,
-               int height) {
+int ARGBToJ420(const uint8_t* src_argb, int src_stride_argb, uint8_t* dst_y,
+               int dst_stride_y, uint8_t* dst_u, int dst_stride_u,
+               uint8_t* dst_v, int dst_stride_v, int width, int height) {
   return ARGBToI420Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_u,
-                          dst_stride_u, dst_v, dst_stride_v, &kArgbJPEGConstants,
-                          width, height);
+                          dst_stride_u, dst_v, dst_stride_v,
+                          &kArgbJPEGConstants, width, height);
 }
 
 // Convert ARGB to J422. (JPeg full range I422).
 LIBYUV_API
-int ARGBToJ422(const uint8_t* src_argb,
-               int src_stride_argb,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_u,
-               int dst_stride_u,
-               uint8_t* dst_v,
-               int dst_stride_v,
-               int width,
-               int height) {
+int ARGBToJ422(const uint8_t* src_argb, int src_stride_argb, uint8_t* dst_y,
+               int dst_stride_y, uint8_t* dst_u, int dst_stride_u,
+               uint8_t* dst_v, int dst_stride_v, int width, int height) {
   return ARGBToI422Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y, dst_u,
-                          dst_stride_u, dst_v, dst_stride_v, &kArgbJPEGConstants,
-                          width, height);
+                          dst_stride_u, dst_v, dst_stride_v,
+                          &kArgbJPEGConstants, width, height);
 }
 
 // Convert ARGB to J400.
 LIBYUV_API
-int ARGBToJ400(const uint8_t* src_argb,
-               int src_stride_argb,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               int width,
-               int height) {
+int ARGBToJ400(const uint8_t* src_argb, int src_stride_argb, uint8_t* dst_y,
+               int dst_stride_y, int width, int height) {
   return ARGBToI400Matrix(src_argb, src_stride_argb, dst_y, dst_stride_y,
                           &kArgbJPEGConstants, width, height);
 }
@@ -1967,36 +1908,22 @@ int RGBAToJ400(const uint8_t* src_rgba,
 
 // Convert ABGR to J420. (JPeg full range I420).
 LIBYUV_API
-int ABGRToJ420(const uint8_t* src_abgr,
-               int src_stride_abgr,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_u,
-               int dst_stride_u,
-               uint8_t* dst_v,
-               int dst_stride_v,
-               int width,
-               int height) {
+int ABGRToJ420(const uint8_t* src_abgr, int src_stride_abgr, uint8_t* dst_y,
+               int dst_stride_y, uint8_t* dst_u, int dst_stride_u,
+               uint8_t* dst_v, int dst_stride_v, int width, int height) {
   return ARGBToI420Matrix(src_abgr, src_stride_abgr, dst_y, dst_stride_y, dst_u,
-                          dst_stride_u, dst_v, dst_stride_v, &kAbgrJPEGConstants,
-                          width, height);
+                          dst_stride_u, dst_v, dst_stride_v,
+                          &kAbgrJPEGConstants, width, height);
 }
 
 // Convert ABGR to J422. (JPeg full range I422).
 LIBYUV_API
-int ABGRToJ422(const uint8_t* src_abgr,
-               int src_stride_abgr,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_u,
-               int dst_stride_u,
-               uint8_t* dst_v,
-               int dst_stride_v,
-               int width,
-               int height) {
+int ABGRToJ422(const uint8_t* src_abgr, int src_stride_abgr, uint8_t* dst_y,
+               int dst_stride_y, uint8_t* dst_u, int dst_stride_u,
+               uint8_t* dst_v, int dst_stride_v, int width, int height) {
   return ARGBToI422Matrix(src_abgr, src_stride_abgr, dst_y, dst_stride_y, dst_u,
-                          dst_stride_u, dst_v, dst_stride_v, &kAbgrJPEGConstants,
-                          width, height);
+                          dst_stride_u, dst_v, dst_stride_v,
+                          &kAbgrJPEGConstants, width, height);
 }
 
 // Convert ABGR to J400.
@@ -2298,34 +2225,34 @@ int RAWToNV21Matrix(const uint8_t* src_raw,
   }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON)
-    if (TestCpuFlag(kCpuHasNEON)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
-      if (IS_ALIGNED(width, 16)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON;
-      }
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON_I8MM)
-    if (TestCpuFlag(kCpuHasNEON) && TestCpuFlag(kCpuHasNeonI8MM)) {
-      ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
-      if (IS_ALIGNED(width, 16)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON_I8MM;
-      }
+  if (TestCpuFlag(kCpuHasNEON) && TestCpuFlag(kCpuHasNeonI8MM)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_Any_NEON_I8MM;
+    if (IS_ALIGNED(width, 16)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_NEON_I8MM;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SVE2)
-    if (TestCpuFlag(kCpuHasSVE2)) {
-      if (IS_ALIGNED(width, 2)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
-      }
+  if (TestCpuFlag(kCpuHasSVE2)) {
+    if (IS_ALIGNED(width, 2)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SVE2;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SME)
-    if (TestCpuFlag(kCpuHasSME)) {
-      if (IS_ALIGNED(width, 2)) {
-        ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
-      }
+  if (TestCpuFlag(kCpuHasSME)) {
+    if (IS_ALIGNED(width, 2)) {
+      ARGBToUVMatrixRow = ARGBToUVMatrixRow_SME;
     }
+  }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_SSSE3)
   if (TestCpuFlag(kCpuHasSSSE3)) {
