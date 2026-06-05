@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "66950250_7c62af7d",
+        "filename": "source/convert_to_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-05T18:45:57Z",
+      "side": 1,
+      "message": "Before we negate `src_height` and `crop_height`, we need to make sure they are not equal to `INT_MIN`. So I moved the validation of parameters to the beginning of the function.",
+      "revId": "91ca74f2e84cc1c45d5ba5bcf755899af81d45e5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a56246da_72346154",
+        "filename": "source/convert_to_i420.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-05T18:45:57Z",
+      "side": 1,
+      "message": "Before we negate `src_height` and `crop_height`, we need to make sure they are not equal to `INT_MIN`.\n\nThe validation of parameters uses the local variables `abs_src_height` and `abs_crop_height`, so it needs to be split into two parts.",
+      "revId": "91ca74f2e84cc1c45d5ba5bcf755899af81d45e5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
