@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a6e7cc6_6c789e57",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-05T23:09:33Z",
+      "side": 1,
+      "message": "I looked at this one and considered that most of these are \u0027width\u0027 being used as a stride that should really be a ptrdiff_t src_stride but its not quite consistent enough, so casting for now.",
+      "revId": "d7512da57b0489090688403d5a2a02ffef2ff980",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
