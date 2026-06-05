@@ -44,6 +44,12 @@ int ConvertToI420(const uint8_t* sample,
                   int crop_height,
                   enum RotationMode rotation,
                   uint32_t fourcc) {
+  if (!dst_y || !dst_u || !dst_v || !sample || src_width <= 0 ||
+      src_width > INT_MAX / 4 || crop_width <= 0 || src_height == 0 ||
+      src_height == INT_MIN || crop_height == 0 || crop_height == INT_MIN ||
+      crop_x < 0 || crop_y < 0 || crop_width > src_width) {
+    return -1;
+  }
   uint32_t format = CanonicalFourCC(fourcc);
   const uint8_t* src;
   const uint8_t* src_uv;
@@ -64,11 +70,7 @@ int ConvertToI420(const uint8_t* sample,
   const int inv_crop_height =
       (src_height < 0) ? -abs_crop_height : abs_crop_height;
 
-  if (!dst_y || !dst_u || !dst_v || !sample || src_width <= 0 ||
-      src_width > INT_MAX / 4 || crop_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || crop_height == 0 || crop_height == INT_MIN ||
-      crop_x < 0 || crop_y < 0 || crop_width > src_width ||
-      crop_x > src_width - crop_width || abs_crop_height > abs_src_height ||
+  if (crop_x > src_width - crop_width || abs_crop_height > abs_src_height ||
       crop_y > abs_src_height - abs_crop_height) {
     return -1;
   }
