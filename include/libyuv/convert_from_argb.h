@@ -247,16 +247,9 @@ int ARGBToI422(const uint8_t* src_argb,
 
 // Convert ABGR To I422.
 LIBYUV_API
-int ABGRToI422(const uint8_t* src_abgr,
-               int src_stride_abgr,
-               uint8_t* dst_y,
-               int dst_stride_y,
-               uint8_t* dst_u,
-               int dst_stride_u,
-               uint8_t* dst_v,
-               int dst_stride_v,
-               int width,
-               int height);
+int ABGRToI422(const uint8_t* src_abgr, int src_stride_abgr, uint8_t* dst_y,
+               int dst_stride_y, uint8_t* dst_u, int dst_stride_u,
+               uint8_t* dst_v, int dst_stride_v, int width, int height);
 
 // RGB to I444 with matrix. See ArgbConstants at the top of this file for usage.
 LIBYUV_API

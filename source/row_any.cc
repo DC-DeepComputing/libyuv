@@ -1500,12 +1500,8 @@ ANY11P(ARGBShuffleRow_Any_SSSE3, ARGBShuffleRow_SSSE3, const uint8_t*, 4, 4, 7)
 ANY11P(ARGBShuffleRow_Any_AVX2, ARGBShuffleRow_AVX2, const uint8_t*, 4, 4, 15)
 #endif
 #ifdef HAS_ARGBSHUFFLEROW_AVX512BW
-ANY11P(ARGBShuffleRow_Any_AVX512BW,
-       ARGBShuffleRow_AVX512BW,
-       const uint8_t*,
-       4,
-       4,
-       31)
+ANY11P(ARGBShuffleRow_Any_AVX512BW, ARGBShuffleRow_AVX512BW, const uint8_t*, 4,
+       4, 31)
 #endif
 #ifdef HAS_ARGBSHUFFLEROW_NEON
 ANY11P(ARGBShuffleRow_Any_NEON, ARGBShuffleRow_NEON, const uint8_t*, 4, 4, 3)
@@ -1849,13 +1845,8 @@ ANY11I(InterpolateRow_16_Any_NEON,
        7)
 #endif
 #ifdef HAS_INTERPOLATEROW_16_AVX2
-ANY11I(InterpolateRow_16_Any_AVX2,
-       InterpolateRow_16_AVX2,
-       uint16_t,
-       uint16_t,
-       1,
-       1,
-       15)
+ANY11I(InterpolateRow_16_Any_AVX2, InterpolateRow_16_AVX2, uint16_t, uint16_t,
+       1, 1, 15)
 #endif
 #undef ANY11I
 
@@ -1919,6 +1910,9 @@ ANY11IS(InterpolateRow_16To8_Any_AVX2,
     memcpy(dst_ptr + np * BPP, vout + (MASK + 1 - r) * BPP, r * BPP); \
   }
 
+#ifdef HAS_MIRRORROW_AVX512BW
+ANY11M(MirrorRow_Any_AVX512BW, MirrorRow_AVX512BW, 1, 63)
+#endif
 #ifdef HAS_MIRRORROW_AVX2
 ANY11M(MirrorRow_Any_AVX2, MirrorRow_AVX2, 1, 31)
 #endif
@@ -2021,6 +2015,9 @@ ANY1(ARGBSetRow_Any_LSX, ARGBSetRow_LSX, uint32_t, 4, 3)
 
 #ifdef HAS_SPLITUVROW_SSE2
 ANY12(SplitUVRow_Any_SSE2, SplitUVRow_SSE2, 0, 2, 0, 15)
+#endif
+#ifdef HAS_SPLITUVROW_AVX512BW
+ANY12(SplitUVRow_Any_AVX512BW, SplitUVRow_AVX512BW, 0, 2, 0, 63)
 #endif
 #ifdef HAS_SPLITUVROW_AVX2
 ANY12(SplitUVRow_Any_AVX2, SplitUVRow_AVX2, 0, 2, 0, 31)
@@ -2290,6 +2287,9 @@ ANY12MS(ARGB4444ToUVMatrixRow_Any_AVX2, ARGB4444ToUVMatrixRow_AVX2, 0, 2, 31)
 #endif
 #ifdef HAS_ARGBTOUVMATRIXROW_AVX512BW
 ANY12MS(ARGBToUVMatrixRow_Any_AVX512BW, ARGBToUVMatrixRow_AVX512BW, 0, 4, 63)
+#endif
+#ifdef HAS_RGBTOUVMATRIXROW_AVX512BW
+ANY12MS(RGBToUVMatrixRow_Any_AVX512BW, RGBToUVMatrixRow_AVX512BW, 0, 3, 63)
 #endif
 #ifdef HAS_ARGBTOUVMATRIXROW_SSSE3
 ANY12MS(ARGBToUVMatrixRow_Any_SSSE3, ARGBToUVMatrixRow_SSSE3, 0, 4, 7)
