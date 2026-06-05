@@ -22,6 +22,30 @@
       },
       "revId": "d0fe611539778374612595f26d41d88b5ef3ba18",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a1d3cde_04402d32",
+        "filename": "source/row_win.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-05T00:00:13Z",
+      "side": 1,
+      "message": "I wonder if we should simply delete `__attribute__((no_sanitize(\"cfi-icall\")))` from the `ARGBToUVMatrixRow_AVX2()` function. No other libyuv function is marked with this attribute.",
+      "parentUuid": "ffa74760_83ac705d",
+      "range": {
+        "startLine": 117,
+        "startChar": 52,
+        "endLine": 117,
+        "endChar": 63
+      },
+      "revId": "d0fe611539778374612595f26d41d88b5ef3ba18",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
