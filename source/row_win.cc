@@ -973,6 +973,101 @@ void ARGBShuffleRow_AVX512BW(const uint8_t* src_argb,
 
 #endif
 
+#ifdef HAS_I422TORGB24ROW_AVX2
+LIBYUV_TARGET_AVX2
+void I422ToRGB24Row_AVX2(const uint8_t* src_y,
+                         const uint8_t* src_u,
+                         const uint8_t* src_v,
+                         uint8_t* dst_rgb24,
+                         const struct YuvConstants* yuvconstants,
+                         int width) {
+  // Constants
+  __m256i ymm_kUVToB = _mm256_loadu_si256((const __m256i*)yuvconstants->kUVToB);
+  __m256i ymm_kUVToG = _mm256_loadu_si256((const __m256i*)yuvconstants->kUVToG);
+  __m256i ymm_kUVToR = _mm256_loadu_si256((const __m256i*)yuvconstants->kUVToR);
+  __m256i ymm_kYToRgb = _mm256_loadu_si256((const __m256i*)yuvconstants->kYToRgb);
+  __m256i ymm_kYBiasToRgb = _mm256_loadu_si256((const __m256i*)yuvconstants->kYBiasToRgb);
+  __m256i ymm_128 = _mm256_set1_epi8((char)0x80);
+  
+  __m128i shuf0 = _mm_setr_epi8(0, 1, 2, 4, 5, 6, 8, 9, (char)0x80, (char)0x80, (char)0x80, (char)0x80, 10, 12, 13, 14);
+  __m128i shuf1 = _mm_setr_epi8(0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, (char)0x80, (char)0x80, (char)0x80, (char)0x80);
+  __m256i ymm_shuf0 = _mm256_broadcastsi128_si256(shuf0);
+  __m256i ymm_shuf1 = _mm256_broadcastsi128_si256(shuf1);
+  __m256i ymm_u_zero = _mm256_setzero_si256();
+
+  ptrdiff_t offset = src_v - src_u;
+
+  while (width >= 16) {
+    // READYUV422_AVX2
+    __m128i xmm_u = _mm_loadl_epi64((const __m128i*)src_u);
+    __m128i xmm_v = _mm_loadl_epi64((const __m128i*)(src_u + offset));
+    src_u += 8;
+
+    __m256i ymm3 = _mm256_insertf128_si256(ymm_u_zero, xmm_u, 0);
+    __m256i ymm1 = _mm256_insertf128_si256(ymm_u_zero, xmm_v, 0);
+    
+    ymm3 = _mm256_unpacklo_epi8(ymm3, ymm1);
+    ymm3 = _mm256_permute4x64_epi64(ymm3, 0xd8);
+    ymm3 = _mm256_unpacklo_epi16(ymm3, ymm3);
+
+    __m128i xmm_y = _mm_loadu_si128((const __m128i*)src_y);
+    src_y += 16;
+    __m256i ymm4 = _mm256_insertf128_si256(ymm_u_zero, xmm_y, 0);
+    ymm4 = _mm256_permute4x64_epi64(ymm4, 0xd8);
+    ymm4 = _mm256_unpacklo_epi8(ymm4, ymm4);
+
+    // YUVTORGB_AVX2
+    ymm3 = _mm256_sub_epi8(ymm3, ymm_128);
+    ymm4 = _mm256_mulhi_epu16(ymm4, ymm_kYToRgb);
+    
+    __m256i ymm0 = _mm256_maddubs_epi16(ymm_kUVToB, ymm3);
+    ymm1 = _mm256_maddubs_epi16(ymm_kUVToG, ymm3);
+    __m256i ymm2 = _mm256_maddubs_epi16(ymm_kUVToR, ymm3);
+    
+    ymm4 = _mm256_add_epi16(ymm4, ymm_kYBiasToRgb);
+    
+    ymm0 = _mm256_adds_epi16(ymm0, ymm4);
+    ymm1 = _mm256_subs_epi16(ymm4, ymm1);
+    ymm2 = _mm256_adds_epi16(ymm2, ymm4);
+    
+    ymm0 = _mm256_srai_epi16(ymm0, 6);
+    ymm1 = _mm256_srai_epi16(ymm1, 6);
+    ymm2 = _mm256_srai_epi16(ymm2, 6);
+    
+    ymm0 = _mm256_packus_epi16(ymm0, ymm0);
+    ymm1 = _mm256_packus_epi16(ymm1, ymm1);
+    ymm2 = _mm256_packus_epi16(ymm2, ymm2);
+
+    // STORERGB24_AVX2
+    __m256i ymm0_packed = _mm256_unpacklo_epi8(ymm0, ymm1);
+    __m256i ymm2_packed = _mm256_unpacklo_epi8(ymm2, ymm2);
+    __m256i ymm1_packed = ymm0_packed;
+    
+    ymm0_packed = _mm256_unpacklo_epi16(ymm0_packed, ymm2_packed);
+    ymm1_packed = _mm256_unpackhi_epi16(ymm1_packed, ymm2_packed);
+    
+    ymm0_packed = _mm256_shuffle_epi8(ymm0_packed, ymm_shuf0);
+    ymm1_packed = _mm256_shuffle_epi8(ymm1_packed, ymm_shuf1);
+    
+    ymm1_packed = _mm256_alignr_epi8(ymm1_packed, ymm0_packed, 0xc);
+    
+    __m128i xmm0_store = _mm256_castsi256_si128(ymm0_packed);
+    __m128i xmm1_store = _mm256_castsi256_si128(ymm1_packed);
+    __m128i xmm2_store = _mm256_extractf128_si256(ymm0_packed, 1);
+    __m128i xmm3_store = _mm256_extractf128_si256(ymm1_packed, 1);
+
+    _mm_storel_epi64((__m128i*)dst_rgb24, xmm0_store);
+    _mm_storeu_si128((__m128i*)(dst_rgb24 + 8), xmm1_store);
+    _mm_storel_epi64((__m128i*)(dst_rgb24 + 24), xmm2_store);
+    _mm_storeu_si128((__m128i*)(dst_rgb24 + 32), xmm3_store);
+
+    dst_rgb24 += 48;
+    width -= 16;
+  }
+  _mm256_zeroupper();
+}
+#endif
+
 #ifdef __cplusplus
 }  // extern "C"
 }  // namespace libyuv

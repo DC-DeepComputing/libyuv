@@ -5551,7 +5551,7 @@ int I420ToRGB24Matrix(const uint8_t* src_y,
 #if defined(HAS_I422TORGB24ROW_AVX2)
   if (TestCpuFlag(kCpuHasAVX2)) {
     I422ToRGB24Row = I422ToRGB24Row_Any_AVX2;
-    if (IS_ALIGNED(width, 32)) {
+    if (IS_ALIGNED(width, 16)) {
       I422ToRGB24Row = I422ToRGB24Row_AVX2;
     }
   }
@@ -5772,7 +5772,7 @@ int I422ToRGB24Matrix(const uint8_t* src_y,
 #if defined(HAS_I422TORGB24ROW_AVX2)
   if (TestCpuFlag(kCpuHasAVX2)) {
     I422ToRGB24Row = I422ToRGB24Row_Any_AVX2;
-    if (IS_ALIGNED(width, 32)) {
+    if (IS_ALIGNED(width, 16)) {
       I422ToRGB24Row = I422ToRGB24Row_AVX2;
     }
   }

@@ -3775,6 +3775,58 @@ void OMITFP I422ToARGBRow_AVX2(const uint8_t* y_buf,
 }
 #endif  // HAS_I422TOARGBROW_AVX2
 
+#if defined(HAS_I422TORGB24ROW_AVX2)
+// 16 pixels
+// 8 UV values upsampled to 16 UV, mixed with 16 Y producing 16 RGB24 (48 bytes).
+void OMITFP I422ToRGB24Row_AVX2(const uint8_t* y_buf,
+                                const uint8_t* u_buf,
+                                const uint8_t* v_buf,
+                                uint8_t* dst_rgb24,
+                                const struct YuvConstants* yuvconstants,
+                                int width) {
+  asm volatile (
+    YUVTORGB_SETUP_AVX2(yuvconstants)
+      "vbroadcasti128 %[kShuffleMaskARGBToRGB24_0],%%ymm5 \n"
+      "vbroadcasti128 %[kShuffleMaskARGBToRGB24],%%ymm6 \n"
+      "sub         %[u_buf],%[v_buf]             \n"
+
+    LABELALIGN
+      "1:          \n"
+    READYUV422_AVX2
+    YUVTORGB_AVX2(yuvconstants)
+      "vpunpcklbw   %%ymm1,%%ymm0,%%ymm0                                \n"
+      "vpunpcklbw   %%ymm2,%%ymm2,%%ymm2                                \n"
+      "vmovdqa      %%ymm0,%%ymm1                                       \n"
+      "vpunpcklwd   %%ymm2,%%ymm0,%%ymm0                                \n"
+      "vpunpckhwd   %%ymm2,%%ymm1,%%ymm1                                \n"
+      "vpshufb      %%ymm5,%%ymm0,%%ymm0                                \n"
+      "vpshufb      %%ymm6,%%ymm1,%%ymm1                                \n"
+      "vpalignr     $0xc,%%ymm0,%%ymm1,%%ymm1                           \n"
+      "vextracti128 $1,%%ymm0,%%xmm2                                    \n"
+      "vextracti128 $1,%%ymm1,%%xmm3                                    \n"
+      "vmovq        %%xmm0,(%[dst_rgb24])                               \n"
+      "vmovdqu      %%xmm1,0x8(%[dst_rgb24])                            \n"
+      "vmovq        %%xmm2,0x18(%[dst_rgb24])                           \n"
+      "vmovdqu      %%xmm3,0x20(%[dst_rgb24])                           \n"
+      "lea          0x30(%[dst_rgb24]),%[dst_rgb24]                     \n"
+      "sub         $0x10,%[width]                \n"
+      "jg          1b                            \n"
+      "vzeroupper  \n"
+  : [y_buf]"+r"(y_buf),    // %[y_buf]
+    [u_buf]"+r"(u_buf),    // %[u_buf]
+    [v_buf]"+r"(v_buf),    // %[v_buf]
+    [dst_rgb24]"+r"(dst_rgb24),  // %[dst_rgb24]
+    [width]"+rm"(width)    // %[width]
+  : [yuvconstants]"r"(yuvconstants),  // %[yuvconstants]
+    [kShuffleMaskARGBToRGB24_0]"m"(kShuffleMaskARGBToRGB24_0),
+    [kShuffleMaskARGBToRGB24]"m"(kShuffleMaskARGBToRGB24)
+  : "memory", "cc", YUVTORGB_REGS_AVX2
+    "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6"
+  );
+}
+#endif  // HAS_I422TORGB24ROW_AVX2
+
+
 #if defined(HAS_I422TOARGBROW_AVX512BW)
 static const uint64_t kSplitQuadWords[8] = {0, 2, 2, 2, 1, 2, 2, 2};
 static const uint64_t kSplitDoubleQuadWords[8] = {0, 1, 4, 4, 2, 3, 4, 4};
