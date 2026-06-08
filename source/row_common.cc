@@ -4276,7 +4276,8 @@ void I422ToARGB4444Row_AVX2(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_I422TOARGBROW_AVX2) && defined(HAS_ARGBTORGB24ROW_AVX2)
+#if defined(HAS_I422TOARGBROW_AVX2) && defined(HAS_ARGBTORGB24ROW_AVX2) && \
+    !defined(HAS_I422TORGB24ROW_AVX2)
 void I422ToRGB24Row_AVX2(const uint8_t* src_y,
                          const uint8_t* src_u,
                          const uint8_t* src_v,
@@ -4298,7 +4299,8 @@ void I422ToRGB24Row_AVX2(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_I422TOARGBROW_AVX512BW) && defined(HAS_ARGBTORGB24ROW_AVX512VBMI)
+#if defined(HAS_I422TOARGBROW_AVX512BW) && defined(HAS_ARGBTORGB24ROW_AVX512VBMI) && \
+    !defined(HAS_I422TORGB24ROW_AVX512VBMI)
 void I422ToRGB24Row_AVX512VBMI(const uint8_t* src_y,
                                const uint8_t* src_u,
                                const uint8_t* src_v,
