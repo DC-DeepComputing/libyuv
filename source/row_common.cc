@@ -97,7 +97,9 @@ static __inline uint32_t Clamp10(int32_t val) {
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || \
     defined(_M_IX86) || defined(__arm__) || defined(_M_ARM) ||     \
     (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-#define WRITEWORD(p, v) *(uint32_t*)(p) = v
+static inline void WRITEWORD(uint8_t* p, uint32_t v) {
+  memcpy(p, &v, 4);
+}
 #else
 static inline void WRITEWORD(uint8_t* p, uint32_t v) {
   p[0] = (uint8_t)(v & 255);
@@ -4276,7 +4278,8 @@ void I422ToARGB4444Row_AVX2(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_I422TOARGBROW_AVX2) && defined(HAS_ARGBTORGB24ROW_AVX2)
+#if defined(HAS_I422TOARGBROW_AVX2) && defined(HAS_ARGBTORGB24ROW_AVX2) && \
+    !defined(HAS_I422TORGB24ROW_AVX2)
 void I422ToRGB24Row_AVX2(const uint8_t* src_y,
                          const uint8_t* src_u,
                          const uint8_t* src_v,
@@ -4298,7 +4301,8 @@ void I422ToRGB24Row_AVX2(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_I422TOARGBROW_AVX512BW) && defined(HAS_ARGBTORGB24ROW_AVX512VBMI)
+#if defined(HAS_I422TOARGBROW_AVX512BW) && defined(HAS_ARGBTORGB24ROW_AVX512VBMI) && \
+    !defined(HAS_I422TORGB24ROW_AVX512VBMI)
 void I422ToRGB24Row_AVX512VBMI(const uint8_t* src_y,
                                const uint8_t* src_u,
                                const uint8_t* src_v,
@@ -4320,7 +4324,7 @@ void I422ToRGB24Row_AVX512VBMI(const uint8_t* src_y,
 }
 #endif
 
-#if defined(HAS_I422TOARGBROW_AVX512BW) && defined(HAS_ARGBTORGB24ROW_AVX2)
+#if defined(HAS_I422TOARGBROW_AVX512BW) && defined(HAS_ARGBTORGB24ROW_AVX2) && !defined(HAS_I422TORGB24ROW_AVX512BW)
 void I422ToRGB24Row_AVX512BW(const uint8_t* src_y,
                              const uint8_t* src_u,
                              const uint8_t* src_v,
