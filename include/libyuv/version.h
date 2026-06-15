@@ -11,6 +11,8 @@
 #ifndef INCLUDE_LIBYUV_VERSION_H_
 #define INCLUDE_LIBYUV_VERSION_H_
 
+// Whenever a breaking change happens in the libyuv's ABI
+// YUV_VER_MAJOR has to be updated in the CM_linux_packages.cmake
 #define LIBYUV_VERSION 1949
 
 #endif  // INCLUDE_LIBYUV_VERSION_H_
