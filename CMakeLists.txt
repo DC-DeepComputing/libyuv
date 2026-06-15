@@ -240,13 +240,16 @@ if(UNIT_TEST)
   endif()
 endif()
 
+# create the .deb and .rpm packages using cpack
+include ( CM_linux_packages.cmake )
+
+set_target_properties(${ly_lib_shared} PROPERTIES
+  VERSION ${YUV_VERSION} SOVERSION ${YUV_VER_MAJOR}
+)
 
 # install the conversion tool, .so, .a, and all the header files
 install ( TARGETS yuvconvert DESTINATION bin )
 install ( TARGETS ${ly_lib_static}						DESTINATION lib )
 install ( TARGETS ${ly_lib_shared} LIBRARY DESTINATION lib RUNTIME DESTINATION bin ARCHIVE DESTINATION lib )
 install ( DIRECTORY ${PROJECT_SOURCE_DIR}/include/		DESTINATION include )
-
-# create the .deb and .rpm packages using cpack
-include ( CM_linux_packages.cmake )
 
