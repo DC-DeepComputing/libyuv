@@ -16,6 +16,23 @@
       "message": "Thanks for the change!  Makes sense to me.\n\ntrivia: in the early days (circa chrome v3) the version.h was auto-generated from SVN that chrome used.\nit is manually bumped with a script now, and is intended to reflect public api changes so you can #if compiler against the new api",
       "revId": "50867438ada8f763406af1210569f7754cd1b627",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e7832e6_5b4cb1e3",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-16T19:06:16Z",
+      "side": 1,
+      "message": "Frank, Vyacheslav: CM_linux_packages.cmake sets `YUV_VER_MAJOR` to a constant, currently 0. After this CL, we will need to remember to bump `YUV_VER_MAJOR` in CM_linux_packages.cmake whenever we make an incompatible (breaking) change to libyuv\u0027s ABI. I suggest adding a comment about this to include/libyuv/version.h as a reminder.",
+      "revId": "50867438ada8f763406af1210569f7754cd1b627",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
