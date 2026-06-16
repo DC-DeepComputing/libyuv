@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b39e88a_fea67d66",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-06-16T01:20:31Z",
+      "side": 1,
+      "message": "Thanks for the change!  Makes sense to me.\n\ntrivia: in the early days (circa chrome v3) the version.h was auto-generated from SVN that chrome used.\nit is manually bumped with a script now, and is intended to reflect public api changes so you can #if compiler against the new api",
+      "revId": "50867438ada8f763406af1210569f7754cd1b627",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
