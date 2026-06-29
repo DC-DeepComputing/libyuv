@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "31fbe19a_e42092c1",
+        "filename": "source/convert_to_argb.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-06-29T16:53:40Z",
+      "side": 1,
+      "message": "Note: These were reported when Coverity scanned libyuv as a dependency of libavif.\n\nGCC or Clang also has a warning option that warns about this. We can try enabling that warning to detect this during compilation.",
+      "revId": "22c91c1347fc46d1a216a35c500a6333066f0f7d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
