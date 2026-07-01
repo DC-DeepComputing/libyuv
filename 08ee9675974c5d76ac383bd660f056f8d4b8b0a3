@@ -33,6 +33,24 @@
       "message": "hi sorry for slow review. LG\nThanks for the change.  We also need another reviewer",
       "revId": "08ee9675974c5d76ac383bd660f056f8d4b8b0a3",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b3e05d8_376240b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-01T20:08:39Z",
+      "side": 1,
+      "message": "This patch needs two reviews.",
+      "parentUuid": "ab6b0ad9_401b5837",
+      "revId": "08ee9675974c5d76ac383bd660f056f8d4b8b0a3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
