@@ -3,6 +3,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "a935dcfd_ccdc28c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-01T19:15:58Z",
+      "side": 1,
+      "message": "the code is fine.. alignment needs to match the any function, and the any function needs to match the row function.\n\nthe test is not great.  we already have a more general purpose way to catch overread/overwrite - allocate pages and return a pointer to the last n bytes.  then run with asan.\nshould work for all cpus and tests as long as each buffer has its own allocation in the test itself.",
+      "revId": "b3928156dff62a044feb91c43ee5f3a5caeb9387",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "c45563bc_f1def636",
         "filename": "source/convert.cc",
         "patchSetId": 3
