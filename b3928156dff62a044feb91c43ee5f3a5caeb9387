@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c45563bc_f1def636",
+        "filename": "source/convert.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 699,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-01T17:06:35Z",
+      "side": 1,
+      "message": "I verified `Convert16To8Row_SSSE3` requires its `width` parameter be a multiple of 16 (0x10).",
+      "revId": "b3928156dff62a044feb91c43ee5f3a5caeb9387",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eddcc446_e1a961dc",
+        "filename": "source/convert.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 707,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-01T17:06:35Z",
+      "side": 1,
+      "message": "I verified `Convert16To8Row_AVX2` requires its `width` parameter be a multiple of 32 (0x20).",
+      "revId": "b3928156dff62a044feb91c43ee5f3a5caeb9387",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e1d63cfc_0d6d8387",
+        "filename": "source/convert.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 715,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-01T17:06:35Z",
+      "side": 1,
+      "message": "I verified `Convert16To8Row_AVX512BW` requires its `width` parameter be a multiple of 64 (0x40).",
+      "revId": "b3928156dff62a044feb91c43ee5f3a5caeb9387",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
