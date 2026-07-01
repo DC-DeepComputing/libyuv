@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2188d5d3_7917ca25",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-01T19:42:49Z",
+      "side": 1,
+      "message": "needs another owner reviewer to land",
+      "revId": "6278db2f2df5a8f5cd87d8bd9c2163414a797ae4",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f9550e4_f2c92968",
+        "filename": "source/row_lasx.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 2061,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-01T19:42:49Z",
+      "side": 1,
+      "message": "wow... really obvious bug.  ideally caught with asan reading off the end of rgbconstants.\nas well as tests should easily catch this, if run.\nI dont have an easy way to test for lasx, but thanks for the fix.",
+      "revId": "6278db2f2df5a8f5cd87d8bd9c2163414a797ae4",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
