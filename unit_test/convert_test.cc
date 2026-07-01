@@ -12,6 +12,11 @@
 #include <stdlib.h>
 #include <time.h>
 
+#if defined(__linux__)
+#include <sys/mman.h>
+#include <unistd.h>
+#endif
+
 #include "libyuv/basic_types.h"
 #include "libyuv/compare.h"
 #include "libyuv/convert.h"
@@ -455,6 +460,80 @@ TESTPLANARTOBP(I010, uint16_t, 2, 2, 2, P010, uint16_t, 2, 2, 2, 10)
 TESTPLANARTOBP(I210, uint16_t, 2, 2, 1, P210, uint16_t, 2, 2, 1, 10)
 TESTPLANARTOBP(I012, uint16_t, 2, 2, 2, P012, uint16_t, 2, 2, 2, 12)
 TESTPLANARTOBP(I212, uint16_t, 2, 2, 1, P212, uint16_t, 2, 2, 1, 12)
+
+#if defined(__linux__)
+// I010ToNV12 with a width whose chroma half-width is not a multiple of the
+// widest SIMD register. The source chroma planes are placed against an
+// inaccessible page so any access past the last row faults.
+TEST_F(LibYUVConvertTest, I010ToNV12_HalfWidth) {
+  const int kWidth = 192;
+  const int kHeight = 2;
+  const int kHalfWidth = (kWidth + 1) / 2;
+  const int kHalfHeight = (kHeight + 1) / 2;
+  const long kPage = sysconf(_SC_PAGESIZE);
+  const int kUVSize =
+      kHalfWidth * kHalfHeight * static_cast<int>(sizeof(uint16_t));
+  ASSERT_LE(kUVSize, kPage);
+
+  align_buffer_page_end(src_y,
+                        kWidth * kHeight * static_cast<int>(sizeof(uint16_t)));
+  align_buffer_page_end(dst_y_c, kWidth * kHeight);
+  align_buffer_page_end(dst_uv_c, kHalfWidth * kHalfHeight * 2);
+  align_buffer_page_end(dst_y_opt, kWidth * kHeight);
+  align_buffer_page_end(dst_uv_opt, kHalfWidth * kHalfHeight * 2);
+  uint8_t* src_u_mem = static_cast<uint8_t*>(
+      mmap(NULL, kPage * 2, PROT_READ | PROT_WRITE,
+           MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
+  uint8_t* src_v_mem = static_cast<uint8_t*>(
+      mmap(NULL, kPage * 2, PROT_READ | PROT_WRITE,
+           MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
+  ASSERT_NE(MAP_FAILED, src_u_mem);
+  ASSERT_NE(MAP_FAILED, src_v_mem);
+  ASSERT_EQ(0, mprotect(src_u_mem + kPage, kPage, PROT_NONE));
+  ASSERT_EQ(0, mprotect(src_v_mem + kPage, kPage, PROT_NONE));
+  uint16_t* src_y_p = reinterpret_cast<uint16_t*>(src_y);
+  uint16_t* src_u_p = reinterpret_cast<uint16_t*>(src_u_mem + kPage - kUVSize);
+  uint16_t* src_v_p = reinterpret_cast<uint16_t*>(src_v_mem + kPage - kUVSize);
+
+  MemRandomize(src_y, kWidth * kHeight * static_cast<int>(sizeof(uint16_t)));
+  MemRandomize(reinterpret_cast<uint8_t*>(src_u_p), kUVSize);
+  MemRandomize(reinterpret_cast<uint8_t*>(src_v_p), kUVSize);
+  for (int i = 0; i < kWidth * kHeight; ++i) {
+    src_y_p[i] &= 0x3ff;
+  }
+  for (int i = 0; i < kHalfWidth * kHalfHeight; ++i) {
+    src_u_p[i] &= 0x3ff;
+    src_v_p[i] &= 0x3ff;
+  }
+  memset(dst_y_c, 1, kWidth * kHeight);
+  memset(dst_uv_c, 2, kHalfWidth * kHalfHeight * 2);
+  memset(dst_y_opt, 101, kWidth * kHeight);
+  memset(dst_uv_opt, 102, kHalfWidth * kHalfHeight * 2);
+
+  MaskCpuFlags(disable_cpu_flags_);
+  I010ToNV12(src_y_p, kWidth, src_u_p, kHalfWidth, src_v_p, kHalfWidth, dst_y_c,
+             kWidth, dst_uv_c, kHalfWidth * 2, kWidth, kHeight);
+  MaskCpuFlags(benchmark_cpu_info_);
+  for (int i = 0; i < benchmark_iterations_; ++i) {
+    I010ToNV12(src_y_p, kWidth, src_u_p, kHalfWidth, src_v_p, kHalfWidth,
+               dst_y_opt, kWidth, dst_uv_opt, kHalfWidth * 2, kWidth, kHeight);
+  }
+  for (int i = 0; i < kWidth * kHeight; ++i) {
+    ASSERT_EQ(dst_y_c[i], dst_y_opt[i]);
+  }
+  for (int i = 0; i < kHalfWidth * kHalfHeight * 2; ++i) {
+    ASSERT_EQ(dst_uv_c[i], dst_uv_opt[i]);
+  }
+
+  munmap(src_u_mem, kPage * 2);
+  munmap(src_v_mem, kPage * 2);
+  free_aligned_buffer_page_end(src_y);
+  free_aligned_buffer_page_end(dst_y_c);
+  free_aligned_buffer_page_end(dst_uv_c);
+  free_aligned_buffer_page_end(dst_y_opt);
+  free_aligned_buffer_page_end(dst_uv_opt);
+}
+#endif  // defined(__linux__)
 
 #define TESTBPTOBPI(SRC_FMT_PLANAR, SRC_T, SRC_BPC, SRC_SUBSAMP_X,            \
                     SRC_SUBSAMP_Y, FMT_PLANAR, DST_T, DST_BPC, DST_SUBSAMP_X, \
