@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bc6f6c8_716e3f39",
+        "filename": "util/cpuid.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-06T22:13:44Z",
+      "side": 1,
+      "message": "Frank: This line doesn\u0027t compile under some compilers. Here are two examples from libavif\u0027s CI workflows:\nhttps://github.com/AOMediaCodec/libavif/actions/runs/28824530981/job/85484267755?pr\u003d3293\nhttps://github.com/AOMediaCodec/libavif/actions/runs/28824531064/job/85484268262?pr\u003d3293",
+      "revId": "d23308a2a7442be8e559b1b471862fd7588d6a57",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
