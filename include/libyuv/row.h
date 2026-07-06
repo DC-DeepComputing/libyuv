@@ -349,6 +349,7 @@ extern "C" {
     ((defined(_MSC_VER) && !defined(__clang__)) ||                  \
      defined(LIBYUV_ENABLE_ROWWIN))
 #define HAS_RAWTOARGBROW_AVX2
+#define HAS_I422TORGB24ROW_AVX2
 #define HAS_RGB24TOARGBROW_AVX2
 #define HAS_RGB565TOARGBROW_AVX2
 #define HAS_ARGB1555TOARGBROW_AVX2
