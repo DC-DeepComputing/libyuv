@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "999b1fa9_c7d55e54",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-07T00:11:28Z",
+      "side": 1,
+      "message": "Fixed by using .byte for vdpphps instruction\nhttps://b.corp.google.com/issues/531835144",
+      "revId": "d23308a2a7442be8e559b1b471862fd7588d6a57",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7bc6f6c8_716e3f39",
