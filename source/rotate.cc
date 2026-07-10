@@ -437,8 +437,7 @@ int SplitRotateUV(const uint8_t* src_uv,
                   int width,
                   int height,
                   enum RotationMode mode) {
-  if (!src_uv || width <= 0 || height == 0 || height == INT_MIN || !dst_u ||
-      !dst_v) {
+  if (!src_uv || !ValidDimensions(width, height) || !dst_u || !dst_v) {
     return -1;
   }
 
@@ -480,7 +479,7 @@ int RotatePlane(const uint8_t* src,
                 int width,
                 int height,
                 enum RotationMode mode) {
-  if (!src || width <= 0 || height == 0 || height == INT_MIN || !dst) {
+  if (!src || !ValidDimensions(width, height) || !dst) {
     return -1;
   }
 
@@ -598,7 +597,7 @@ int RotatePlane_16(const uint16_t* src,
                    int width,
                    int height,
                    enum RotationMode mode) {
-  if (!src || width <= 0 || height == 0 || height == INT_MIN || !dst) {
+  if (!src || !ValidDimensions(width, height) || !dst) {
     return -1;
   }
 
@@ -647,8 +646,8 @@ int I420Rotate(const uint8_t* src_y,
                enum RotationMode mode) {
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
-  if ((!src_y && dst_y) || !src_u || !src_v || width <= 0 || height == 0 ||
-      height == INT_MIN || !dst_y || !dst_u || !dst_v) {
+  if ((!src_y && dst_y) || !src_u || !src_v ||
+      !ValidDimensions(width, height) || !dst_y || !dst_u || !dst_v) {
     return -1;
   }
 
@@ -718,8 +717,8 @@ int I422Rotate(const uint8_t* src_y,
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
   int r;
-  if (!src_y || !src_u || !src_v || width <= 0 || height == 0 ||
-      height == INT_MIN || !dst_y || !dst_u || !dst_v) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(width, height) || !dst_y ||
+      !dst_u || !dst_v) {
     return -1;
   }
   // Negative height means invert the image.
@@ -813,8 +812,8 @@ int I444Rotate(const uint8_t* src_y,
                int width,
                int height,
                enum RotationMode mode) {
-  if (!src_y || !src_u || !src_v || width <= 0 || height == 0 ||
-      height == INT_MIN || !dst_y || !dst_u || !dst_v) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(width, height) || !dst_y ||
+      !dst_u || !dst_v) {
     return -1;
   }
 
@@ -873,8 +872,8 @@ int NV12ToI420Rotate(const uint8_t* src_y,
                      enum RotationMode mode) {
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
-  if (!src_y || !src_uv || width <= 0 || height == 0 || height == INT_MIN ||
-      !dst_y || !dst_u || !dst_v) {
+  if (!src_y || !src_uv || !ValidDimensions(width, height) || !dst_y ||
+      !dst_u || !dst_v) {
     return -1;
   }
 
@@ -949,8 +948,8 @@ int Android420ToI420Rotate(const uint8_t* src_y,
   const ptrdiff_t vu_off = src_v - src_u;
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -1025,8 +1024,8 @@ int I010Rotate(const uint16_t* src_y,
                enum RotationMode mode) {
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
-  if (!src_y || !src_u || !src_v || width <= 0 || height == 0 ||
-      height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_stride_y < 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(width, height) || !dst_y ||
+      !dst_u || !dst_v || dst_stride_y < 0) {
     return -1;
   }
   // Negative height means invert the image.
@@ -1096,8 +1095,8 @@ int I210Rotate(const uint16_t* src_y,
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
   int r;
-  if (!src_y || !src_u || !src_v || width <= 0 || height == 0 ||
-      height == INT_MIN || !dst_y || !dst_u || !dst_v) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(width, height) || !dst_y ||
+      !dst_u || !dst_v) {
     return -1;
   }
   // Negative height means invert the image.
@@ -1193,8 +1192,8 @@ int I410Rotate(const uint16_t* src_y,
                int width,
                int height,
                enum RotationMode mode) {
-  if (!src_y || !src_u || !src_v || width <= 0 || height == 0 ||
-      height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_stride_y < 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(width, height) || !dst_y ||
+      !dst_u || !dst_v || dst_stride_y < 0) {
     return -1;
   }
   // Negative height means invert the image.

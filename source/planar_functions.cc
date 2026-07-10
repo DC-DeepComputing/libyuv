@@ -34,7 +34,7 @@ void CopyPlane(const uint8_t* src_y,
                int height) {
   int y;
   void (*CopyRow)(const uint8_t* src, uint8_t* dst, int width) = CopyRow_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -123,7 +123,7 @@ void Convert16To8Plane(const uint16_t* src_y,
   void (*Convert16To8Row)(const uint16_t* src_y, uint8_t* dst_y, int scale,
                           int width) = Convert16To8Row_C;
 
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -198,7 +198,7 @@ void Convert8To16Plane(const uint8_t* src_y,
   void (*Convert8To16Row)(const uint8_t* src_y, uint16_t* dst_y, int scale,
                           int width) = Convert8To16Row_C;
 
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -266,7 +266,7 @@ void Convert8To8Plane(const uint8_t* src_y,
   void (*Convert8To8Row)(const uint8_t* src_y, uint8_t* dst_y, int scale,
                          int bias, int width) = Convert8To8Row_C;
 
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -335,8 +335,8 @@ int I422Copy(const uint8_t* src_y,
              int height) {
   int halfwidth = (width + 1) >> 1;
 
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -375,8 +375,8 @@ int I444Copy(const uint8_t* src_y,
              int dst_stride_v,
              int width,
              int height) {
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -416,8 +416,8 @@ int I210Copy(const uint16_t* src_y,
              int height) {
   int halfwidth = (width + 1) >> 1;
 
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -457,8 +457,8 @@ int I410Copy(const uint16_t* src_y,
              int dst_stride_v,
              int width,
              int height) {
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -488,7 +488,7 @@ int I400ToI400(const uint8_t* src_y,
                int dst_stride_y,
                int width,
                int height) {
-  if (!src_y || !dst_y || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_y || !dst_y || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -517,7 +517,7 @@ int I420ToI400(const uint8_t* src_y,
   (void)src_stride_u;
   (void)src_v;
   (void)src_stride_v;
-  if (!src_y || !dst_y || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_y || !dst_y || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -546,8 +546,8 @@ int NV12Copy(const uint8_t* src_y,
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
 
-  if (!src_y || !dst_y || !src_uv || !dst_uv || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_y || !dst_y || !src_uv || !dst_uv ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -596,7 +596,7 @@ void SplitUVPlane(const uint8_t* src_uv,
   int y;
   void (*SplitUVRow)(const uint8_t* src_uv, uint8_t* dst_u, uint8_t* dst_v,
                      int width) = SplitUVRow_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -681,7 +681,7 @@ void MergeUVPlane(const uint8_t* src_u,
   int y;
   void (*MergeUVRow)(const uint8_t* src_u, const uint8_t* src_v,
                      uint8_t* dst_uv, int width) = MergeUVRow_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -773,7 +773,7 @@ void SplitUVPlane_16(const uint16_t* src_uv,
   void (*SplitUVRow_16)(const uint16_t* src_uv, uint16_t* dst_u,
                         uint16_t* dst_v, int depth, int width) =
       SplitUVRow_16_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -833,7 +833,7 @@ void MergeUVPlane_16(const uint16_t* src_u,
       MergeUVRow_16_C;
   assert(depth >= 8);
   assert(depth <= 16);
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -893,7 +893,7 @@ void ConvertToMSBPlane_16(const uint16_t* src_y,
   int scale = 1 << (16 - depth);
   void (*MultiplyRow_16)(const uint16_t* src_y, uint16_t* dst_y, int scale,
                          int width) = MultiplyRow_16_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -952,7 +952,7 @@ void ConvertToLSBPlane_16(const uint16_t* src_y,
   int scale = 1 << depth;
   void (*DivideRow)(const uint16_t* src_y, uint16_t* dst_y, int scale,
                     int width) = DivideRow_16_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -1009,7 +1009,7 @@ void SwapUVPlane(const uint8_t* src_uv,
   int y;
   void (*SwapUVRow)(const uint8_t* src_uv, uint8_t* dst_vu, int width) =
       SwapUVRow_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -1073,7 +1073,7 @@ int NV21ToNV12(const uint8_t* src_y,
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
 
-  if (!src_vu || !dst_uv || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_vu || !dst_uv || !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -1114,7 +1114,7 @@ int DetilePlane(const uint8_t* src_y,
   int y;
   void (*DetileRow)(const uint8_t* src, ptrdiff_t src_tile_stride, uint8_t* dst,
                     int width) = DetileRow_C;
-  if (!src_y || !dst_y || width <= 0 || height == 0 || height == INT_MIN ||
+  if (!src_y || !dst_y || !ValidDimensions(width, height) ||
       !IS_POWEROFTWO(tile_height)) {
     return -1;
   }
@@ -1171,7 +1171,7 @@ int DetilePlane_16(const uint16_t* src_y,
   int y;
   void (*DetileRow_16)(const uint16_t* src, ptrdiff_t src_tile_stride,
                        uint16_t* dst, int width) = DetileRow_16_C;
-  if (!src_y || !dst_y || width <= 0 || height == 0 || height == INT_MIN ||
+  if (!src_y || !dst_y || !ValidDimensions(width, height) ||
       !IS_POWEROFTWO(tile_height)) {
     return -1;
   }
@@ -1240,7 +1240,7 @@ void DetileSplitUVPlane(const uint8_t* src_uv,
   assert(tile_height > 0);
   assert(src_stride_uv > 0);
 
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -1304,7 +1304,7 @@ void DetileToYUY2(const uint8_t* src_y,
   assert(src_stride_uv > 0);
   assert(tile_height > 0);
 
-  if (width <= 0 || height == 0 || height == INT_MIN || tile_height <= 0) {
+  if (!ValidDimensions(width, height) || tile_height <= 0) {
     return;
   }
   // Negative height means invert the image.
@@ -1366,7 +1366,7 @@ void SplitRGBPlane(const uint8_t* src_rgb,
   int y;
   void (*SplitRGBRow)(const uint8_t* src_rgb, uint8_t* dst_r, uint8_t* dst_g,
                       uint8_t* dst_b, int width) = SplitRGBRow_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -1450,7 +1450,7 @@ void MergeRGBPlane(const uint8_t* src_r,
   void (*MergeRGBRow)(const uint8_t* src_r, const uint8_t* src_g,
                       const uint8_t* src_b, uint8_t* dst_rgb, int width) =
       MergeRGBRow_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Coalesce rows.
@@ -1666,7 +1666,7 @@ void SplitARGBPlane(const uint8_t* src_argb,
                     int dst_stride_a,
                     int width,
                     int height) {
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -1842,7 +1842,7 @@ void MergeARGBPlane(const uint8_t* src_r,
                     int dst_stride_argb,
                     int width,
                     int height) {
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -1881,7 +1881,7 @@ void MergeXR30Plane(const uint16_t* src_r,
                        const uint16_t* src_b, uint8_t* dst_ar30, int depth,
                        int width) = MergeXR30Row_C;
 
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -2059,7 +2059,7 @@ void MergeAR64Plane(const uint16_t* src_r,
                     int width,
                     int height,
                     int depth) {
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -2209,7 +2209,7 @@ void MergeARGB16To8Plane(const uint16_t* src_r,
                          int width,
                          int height,
                          int depth) {
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -2247,8 +2247,8 @@ int YUY2ToI422(const uint8_t* src_yuy2,
                          uint8_t* dst_v, int width) = YUY2ToUV422Row_C;
   void (*YUY2ToYRow)(const uint8_t* src_yuy2, uint8_t* dst_y, int width) =
       YUY2ToYRow_C;
-  if (!src_yuy2 || !dst_y || !dst_u || !dst_v || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_yuy2 || !dst_y || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2344,8 +2344,8 @@ int UYVYToI422(const uint8_t* src_uyvy,
                          uint8_t* dst_v, int width) = UYVYToUV422Row_C;
   void (*UYVYToYRow)(const uint8_t* src_uyvy, uint8_t* dst_y, int width) =
       UYVYToYRow_C;
-  if (!src_uyvy || !dst_y || !dst_u || !dst_v || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_uyvy || !dst_y || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2435,7 +2435,7 @@ int YUY2ToY(const uint8_t* src_yuy2,
   int y;
   void (*YUY2ToYRow)(const uint8_t* src_yuy2, uint8_t* dst_y, int width) =
       YUY2ToYRow_C;
-  if (!src_yuy2 || !dst_y || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_yuy2 || !dst_y || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2495,7 +2495,7 @@ int UYVYToY(const uint8_t* src_uyvy,
   int y;
   void (*UYVYToYRow)(const uint8_t* src_uyvy, uint8_t* dst_y, int width) =
       UYVYToYRow_C;
-  if (!src_uyvy || !dst_y || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_uyvy || !dst_y || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2563,7 +2563,7 @@ void MirrorPlane(const uint8_t* src_y,
                  int height) {
   int y;
   void (*MirrorRow)(const uint8_t* src, uint8_t* dst, int width) = MirrorRow_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -2640,7 +2640,7 @@ void MirrorUVPlane(const uint8_t* src_uv,
   int y;
   void (*MirrorUVRow)(const uint8_t* src, uint8_t* dst, int width) =
       MirrorUVRow_C;
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.
@@ -2705,7 +2705,7 @@ int I400Mirror(const uint8_t* src_y,
                int dst_stride_y,
                int width,
                int height) {
-  if (!src_y || !dst_y || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_y || !dst_y || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2738,8 +2738,8 @@ int I420Mirror(const uint8_t* src_y,
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
 
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -2778,8 +2778,8 @@ int NV12Mirror(const uint8_t* src_y,
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
 
-  if ((!src_y && dst_y) || !src_uv || !dst_uv || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_uv || !dst_uv ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -2812,8 +2812,7 @@ int ARGBMirror(const uint8_t* src_argb,
   int y;
   void (*ARGBMirrorRow)(const uint8_t* src, uint8_t* dst, int width) =
       ARGBMirrorRow_C;
-  if (!src_argb || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2883,8 +2882,7 @@ int RGB24Mirror(const uint8_t* src_rgb24,
   int y;
   void (*RGB24MirrorRow)(const uint8_t* src, uint8_t* dst, int width) =
       RGB24MirrorRow_C;
-  if (!src_rgb24 || !dst_rgb24 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_rgb24 || !dst_rgb24 || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2932,8 +2930,8 @@ int ARGBBlend(const uint8_t* src_argb0,
   int y;
   void (*ARGBBlendRow)(const uint8_t* src_argb, const uint8_t* src_argb1,
                        uint8_t* dst_argb, int width) = ARGBBlendRow_C;
-  if (!src_argb0 || !src_argb1 || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb0 || !src_argb1 || !dst_argb ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2994,8 +2992,8 @@ int BlendPlane(const uint8_t* src_y0,
   void (*BlendPlaneRow)(const uint8_t* src0, const uint8_t* src1,
                         const uint8_t* alpha, uint8_t* dst, int width) =
       BlendPlaneRow_C;
-  if (!src_y0 || !src_y1 || !alpha || !dst_y || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_y0 || !src_y1 || !alpha || !dst_y ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -3081,8 +3079,7 @@ int I420Blend(const uint8_t* src_y0,
                         uint8_t* dst_ptr, int dst_width) = ScaleRowDown2Box_C;
 
   if (!src_y0 || !src_u0 || !src_v0 || !src_y1 || !src_u1 || !src_v1 ||
-      !alpha || !dst_y || !dst_u || !dst_v || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+      !alpha || !dst_y || !dst_u || !dst_v || !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -3198,8 +3195,8 @@ int ARGBMultiply(const uint8_t* src_argb0,
   int y;
   void (*ARGBMultiplyRow)(const uint8_t* src0, const uint8_t* src1,
                           uint8_t* dst, int width) = ARGBMultiplyRow_C;
-  if (!src_argb0 || !src_argb1 || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb0 || !src_argb1 || !dst_argb ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -3284,8 +3281,8 @@ int ARGBAdd(const uint8_t* src_argb0,
   int y;
   void (*ARGBAddRow)(const uint8_t* src0, const uint8_t* src1, uint8_t* dst,
                      int width) = ARGBAddRow_C;
-  if (!src_argb0 || !src_argb1 || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb0 || !src_argb1 || !dst_argb ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -3370,8 +3367,8 @@ int ARGBSubtract(const uint8_t* src_argb0,
   int y;
   void (*ARGBSubtractRow)(const uint8_t* src0, const uint8_t* src1,
                           uint8_t* dst, int width) = ARGBSubtractRow_C;
-  if (!src_argb0 || !src_argb1 || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb0 || !src_argb1 || !dst_argb ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -3449,8 +3446,7 @@ int RAWToRGB24(const uint8_t* src_raw,
   int y;
   void (*RAWToRGB24Row)(const uint8_t* src_rgb, uint8_t* dst_rgb24, int width) =
       RAWToRGB24Row_C;
-  if (!src_raw || !dst_rgb24 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_raw || !dst_rgb24 || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -3519,7 +3515,7 @@ void SetPlane(uint8_t* dst_y,
   int y;
   void (*SetRow)(uint8_t* dst, uint8_t value, int width) = SetRow_C;
 
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   if (height < 0) {
@@ -3591,9 +3587,9 @@ int I420Rect(uint8_t* dst_y,
   uint8_t* start_u = dst_u + (y / 2) * dst_stride_u + (x / 2);
   uint8_t* start_v = dst_v + (y / 2) * dst_stride_v + (x / 2);
 
-  if (!dst_y || !dst_u || !dst_v || width <= 0 || height == 0 ||
-      height == INT_MIN || x < 0 || y < 0 || value_y < 0 || value_y > 255 ||
-      value_u < 0 || value_u > 255 || value_v < 0 || value_v > 255) {
+  if (!dst_y || !dst_u || !dst_v || !ValidDimensions(width, height) || x < 0 ||
+      y < 0 || value_y < 0 || value_y > 255 || value_u < 0 || value_u > 255 ||
+      value_v < 0 || value_v > 255) {
     return -1;
   }
 
@@ -3615,8 +3611,7 @@ int ARGBRect(uint8_t* dst_argb,
   int y;
   void (*ARGBSetRow)(uint8_t* dst_argb, uint32_t value, int width) =
       ARGBSetRow_C;
-  if (!dst_argb || width <= 0 || height == 0 || height == INT_MIN ||
-      dst_x < 0 || dst_y < 0) {
+  if (!dst_argb || !ValidDimensions(width, height) || dst_x < 0 || dst_y < 0) {
     return -1;
   }
   if (height < 0) {
@@ -3685,8 +3680,7 @@ int ARGBAttenuate(const uint8_t* src_argb,
   int y;
   void (*ARGBAttenuateRow)(const uint8_t* src_argb, uint8_t* dst_argb,
                            int width) = ARGBAttenuateRow_C;
-  if (!src_argb || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -3766,8 +3760,7 @@ int ARGBUnattenuate(const uint8_t* src_argb,
   int y;
   void (*ARGBUnattenuateRow)(const uint8_t* src_argb, uint8_t* dst_argb,
                              int width) = ARGBUnattenuateRow_C;
-  if (!src_argb || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -3819,8 +3812,7 @@ int ARGBGrayTo(const uint8_t* src_argb,
   int y;
   void (*ARGBGrayRow)(const uint8_t* src_argb, uint8_t* dst_argb, int width) =
       ARGBGrayRow_C;
-  if (!src_argb || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -3990,8 +3982,8 @@ int ARGBColorMatrix(const uint8_t* src_argb,
   void (*ARGBColorMatrixRow)(const uint8_t* src_argb, uint8_t* dst_argb,
                              const int8_t* matrix_argb, int width) =
       ARGBColorMatrixRow_C;
-  if (!src_argb || !dst_argb || !matrix_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !matrix_argb ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -4256,8 +4248,7 @@ int ARGBBlur(const uint8_t* src_argb,
   int32_t* max_cumsum_bot_row;
   int32_t* cumsum_top_row;
 
-  if (!src_argb || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -4357,8 +4348,8 @@ int ARGBShade(const uint8_t* src_argb,
   int y;
   void (*ARGBShadeRow)(const uint8_t* src_argb, uint8_t* dst_argb, int width,
                        uint32_t value) = ARGBShadeRow_C;
-  if (!src_argb || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN || value == 0u) {
+  if (!src_argb || !dst_argb || !ValidDimensions(width, height) ||
+      value == 0u) {
     return -1;
   }
   if (height < 0) {
@@ -4417,8 +4408,7 @@ int InterpolatePlane(const uint8_t* src0,
   void (*InterpolateRow)(uint8_t* dst_ptr, const uint8_t* src_ptr,
                          ptrdiff_t src_stride, int dst_width,
                          int source_y_fraction) = InterpolateRow_C;
-  if (!src0 || !src1 || !dst || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src0 || !src1 || !dst || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -4493,8 +4483,7 @@ int InterpolatePlane_16(const uint16_t* src0,
   void (*InterpolateRow_16)(uint16_t* dst_ptr, const uint16_t* src_ptr,
                             ptrdiff_t src_stride, int dst_width,
                             int source_y_fraction) = InterpolateRow_16_C;
-  if (!src0 || !src1 || !dst || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src0 || !src1 || !dst || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -4600,8 +4589,7 @@ int I420Interpolate(const uint8_t* src0_y,
   int halfheight = (height + 1) >> 1;
 
   if (!src0_y || !src0_u || !src0_v || !src1_y || !src1_u || !src1_v ||
-      !dst_y || !dst_u || !dst_v || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+      !dst_y || !dst_u || !dst_v || !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -4626,8 +4614,7 @@ int ARGBShuffle(const uint8_t* src_argb,
   int y;
   void (*ARGBShuffleRow)(const uint8_t* src_argb, uint8_t* dst_argb,
                          const uint8_t* shuffler, int width) = ARGBShuffleRow_C;
-  if (!src_argb || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -4712,8 +4699,7 @@ int AR64Shuffle(const uint16_t* src_ar64,
   int y;
   void (*AR64ShuffleRow)(const uint8_t* src_ar64, uint8_t* dst_ar64,
                          const uint8_t* shuffler, int width) = AR64ShuffleRow_C;
-  if (!src_ar64 || !dst_ar64 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_ar64 || !dst_ar64 || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -4791,7 +4777,7 @@ int GaussPlane_F32(const float* src,
                        int width) = GaussCol_F32_C;
   void (*GaussRow_F32)(const float* src, float* dst, int width) =
       GaussRow_F32_C;
-  if (!src || !dst || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src || !dst || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -4868,8 +4854,7 @@ static int ARGBSobelize(const uint8_t* src_argb,
                     const uint8_t* src_y2, uint8_t* dst_sobely, int width) =
       SobelXRow_C;
   const int kEdge = 16;  // Extra pixels at start of row for extrude/align.
-  if (!src_argb || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -5130,8 +5115,7 @@ int ARGBPolynomial(const uint8_t* src_argb,
   int y;
   void (*ARGBPolynomialRow)(const uint8_t* src_argb, uint8_t* dst_argb,
                             const float* poly, int width) = ARGBPolynomialRow_C;
-  if (!src_argb || !dst_argb || !poly || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !poly || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -5180,7 +5164,7 @@ int HalfFloatPlane(const uint16_t* src_y,
   int y;
   void (*HalfFloatRow)(const uint16_t* src, uint16_t* dst, float scale,
                        int width) = HalfFloatRow_C;
-  if (!src_y || !dst_y || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_y || !dst_y || !ValidDimensions(width, height)) {
     return -1;
   }
   src_stride_y >>= 1;
@@ -5287,8 +5271,7 @@ int ARGBLumaColorTable(const uint8_t* src_argb,
   void (*ARGBLumaColorTableRow)(
       const uint8_t* src_argb, uint8_t* dst_argb, int width,
       const uint8_t* luma, const uint32_t lumacoeff) = ARGBLumaColorTableRow_C;
-  if (!src_argb || !dst_argb || !luma || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !luma || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -5329,8 +5312,7 @@ int ARGBCopyAlpha(const uint8_t* src_argb,
   int y;
   void (*ARGBCopyAlphaRow)(const uint8_t* src_argb, uint8_t* dst_argb,
                            int width) = ARGBCopyAlphaRow_C;
-  if (!src_argb || !dst_argb || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -5379,7 +5361,7 @@ int ARGBExtractAlpha(const uint8_t* src_argb,
                      int dst_stride_a,
                      int width,
                      int height) {
-  if (!src_argb || !dst_a || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_argb || !dst_a || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -5446,7 +5428,7 @@ int ARGBCopyYToAlpha(const uint8_t* src_y,
   int y;
   void (*ARGBCopyYToAlphaRow)(const uint8_t* src_y, uint8_t* dst_argb,
                               int width) = ARGBCopyYToAlphaRow_C;
-  if (!src_y || !dst_argb || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_y || !dst_argb || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -5506,8 +5488,7 @@ int YUY2ToNV12(const uint8_t* src_yuy2,
       YUY2ToYRow_C;
   void (*YUY2ToNVUVRow)(const uint8_t* src_yuy2, int stride_yuy2,
                         uint8_t* dst_uv, int width) = YUY2ToNVUVRow_C;
-  if (!src_yuy2 || !dst_y || !dst_uv || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_yuy2 || !dst_y || !dst_uv || !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -5615,8 +5596,7 @@ int UYVYToNV12(const uint8_t* src_uyvy,
                          ptrdiff_t src_stride, int dst_width,
                          int source_y_fraction) = InterpolateRow_C;
 
-  if (!src_uyvy || !dst_y || !dst_uv || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_uyvy || !dst_y || !dst_uv || !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -5742,7 +5722,7 @@ void HalfMergeUVPlane(const uint8_t* src_u,
                          const uint8_t* src_v, int src_stride_v,
                          uint8_t* dst_uv, int width) = HalfMergeUVRow_C;
 
-  if (width <= 0 || height == 0 || height == INT_MIN) {
+  if (!ValidDimensions(width, height)) {
     return;
   }
   // Negative height means invert the image.

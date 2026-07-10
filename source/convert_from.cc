@@ -88,8 +88,8 @@ int I420ToI010(const uint8_t* src_y,
                int height) {
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -133,8 +133,8 @@ int I420ToI012(const uint8_t* src_y,
                int height) {
   int halfwidth = (width + 1) >> 1;
   int halfheight = (height + 1) >> 1;
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -227,8 +227,8 @@ int I010ToI410(const uint16_t* src_y,
                int width,
                int height) {
   int r;
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -264,8 +264,8 @@ int I210ToI410(const uint16_t* src_y,
                int width,
                int height) {
   int r;
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -300,8 +300,8 @@ int I422ToI444(const uint8_t* src_y,
                int width,
                int height) {
   int r;
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_u || !dst_v ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
 
@@ -326,7 +326,7 @@ int I400Copy(const uint8_t* src_y,
              int dst_stride_y,
              int width,
              int height) {
-  if (!src_y || !dst_y || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_y || !dst_y || !ValidDimensions(width, height)) {
     return -1;
   }
   CopyPlane(src_y, src_stride_y, dst_y, dst_stride_y, width, height);
@@ -348,8 +348,8 @@ int I422ToYUY2(const uint8_t* src_y,
   void (*I422ToYUY2Row)(const uint8_t* src_y, const uint8_t* src_u,
                         const uint8_t* src_v, uint8_t* dst_yuy2, int width) =
       I422ToYUY2Row_C;
-  if (!src_y || !src_u || !src_v || !dst_yuy2 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_y || !src_u || !src_v || !dst_yuy2 ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -416,8 +416,8 @@ int I420ToYUY2(const uint8_t* src_y,
   void (*I422ToYUY2Row)(const uint8_t* src_y, const uint8_t* src_u,
                         const uint8_t* src_v, uint8_t* dst_yuy2, int width) =
       I422ToYUY2Row_C;
-  if (!src_y || !src_u || !src_v || !dst_yuy2 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_y || !src_u || !src_v || !dst_yuy2 ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -497,8 +497,8 @@ int I422ToUYVY(const uint8_t* src_y,
   void (*I422ToUYVYRow)(const uint8_t* src_y, const uint8_t* src_u,
                         const uint8_t* src_v, uint8_t* dst_uyvy, int width) =
       I422ToUYVYRow_C;
-  if (!src_y || !src_u || !src_v || !dst_uyvy || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_y || !src_u || !src_v || !dst_uyvy ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -581,8 +581,8 @@ int I420ToUYVY(const uint8_t* src_y,
   void (*I422ToUYVYRow)(const uint8_t* src_y, const uint8_t* src_u,
                         const uint8_t* src_v, uint8_t* dst_uyvy, int width) =
       I422ToUYVYRow_C;
-  if (!src_y || !src_u || !src_v || !dst_uyvy || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_y || !src_u || !src_v || !dst_uyvy ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -662,8 +662,8 @@ int I420ToNV12(const uint8_t* src_y,
                int height) {
   int halfwidth = (width + 1) / 2;
   int halfheight = (height + 1) / 2;
-  if ((!src_y && dst_y) || !src_u || !src_v || !dst_uv || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if ((!src_y && dst_y) || !src_u || !src_v || !dst_uv ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -718,8 +718,7 @@ int ConvertFromI420(const uint8_t* y,
                     uint32_t fourcc) {
   uint32_t format = CanonicalFourCC(fourcc);
   int r = 0;
-  if (!y || !u || !v || !dst_sample || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!y || !u || !v || !dst_sample || !ValidDimensions(width, height)) {
     return -1;
   }
   switch (format) {

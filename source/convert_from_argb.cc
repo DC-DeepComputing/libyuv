@@ -152,8 +152,8 @@ int ARGBToI444Matrix(const uint8_t* src_argb,
     }
   }
 #endif
-  if (!src_argb || !dst_y || !dst_u || !dst_v || !argbconstants || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if (!src_argb || !dst_y || !dst_u || !dst_v || !argbconstants ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -327,8 +327,8 @@ int ARGBToI422Matrix(const uint8_t* src_argb,
     }
   }
 #endif
-  if (!src_argb || !dst_y || !dst_u || !dst_v || !argbconstants || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if (!src_argb || !dst_y || !dst_u || !dst_v || !argbconstants ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -492,8 +492,8 @@ int ARGBToNV12Matrix(const uint8_t* src_argb,
 #endif
   void (*MergeUVRow)(const uint8_t* src_u, const uint8_t* src_v,
                      uint8_t* dst_uv, int width) = MergeUVRow_C;
-  if (!src_argb || !dst_y || !dst_uv || !argbconstants || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if (!src_argb || !dst_y || !dst_uv || !argbconstants ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -707,8 +707,8 @@ int ARGBToNV21Matrix(const uint8_t* src_argb,
 #endif
   void (*MergeUVRow)(const uint8_t* src_u, const uint8_t* src_v,
                      uint8_t* dst_vu, int width) = MergeUVRow_C;
-  if (!src_argb || !dst_y || !dst_vu || !argbconstants || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if (!src_argb || !dst_y || !dst_vu || !argbconstants ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -804,8 +804,7 @@ int ARGBToI400Matrix(const uint8_t* src_argb,
   int y;
   void (*ARGBToYMatrixRow)(const uint8_t* src_argb, uint8_t* dst_y, int width,
                            const struct ArgbConstants* c) = ARGBToYMatrixRow_C;
-  if (!src_argb || !dst_y || !constants || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_y || !constants || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -872,8 +871,7 @@ int ARGBToYUY2Matrix(const uint8_t* src_argb,
                         const uint8_t* src_v, uint8_t* dst_yuy2, int width) =
       I422ToYUY2Row_C;
 
-  if (!src_argb || !dst_yuy2 || !constants || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_yuy2 || !constants || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -985,8 +983,7 @@ int ARGBToUYVYMatrix(const uint8_t* src_argb,
                         const uint8_t* src_v, uint8_t* dst_uyvy, int width) =
       I422ToUYVYRow_C;
 
-  if (!src_argb || !dst_uyvy || !constants || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_uyvy || !constants || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1187,8 +1184,7 @@ int ARGBToRGBA(const uint8_t* src_argb,
   int y;
   void (*ARGBToRGBARow)(const uint8_t* src_argb, uint8_t* dst_rgba, int width) =
       ARGBToRGBARow_C;
-  if (!src_argb || !dst_rgba || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_rgba || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1230,8 +1226,7 @@ int ARGBToRGB24(const uint8_t* src_argb,
   int y;
   void (*ARGBToRGB24Row)(const uint8_t* src_argb, uint8_t* dst_rgb, int width) =
       ARGBToRGB24Row_C;
-  if (!src_argb || !dst_rgb24 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_rgb24 || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1324,7 +1319,7 @@ int ARGBToRAW(const uint8_t* src_argb,
   int y;
   void (*ARGBToRAWRow)(const uint8_t* src_argb, uint8_t* dst_rgb, int width) =
       ARGBToRAWRow_C;
-  if (!src_argb || !dst_raw || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_argb || !dst_raw || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1416,8 +1411,7 @@ int ARGBToRGB565Dither(const uint8_t* src_argb,
   void (*ARGBToRGB565DitherRow)(const uint8_t* src_argb, uint8_t* dst_rgb,
                                 uint32_t dither4, int width) =
       ARGBToRGB565DitherRow_C;
-  if (!src_argb || !dst_rgb565 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_rgb565 || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1489,8 +1483,7 @@ int ARGBToRGB565(const uint8_t* src_argb,
   int y;
   void (*ARGBToRGB565Row)(const uint8_t* src_argb, uint8_t* dst_rgb,
                           int width) = ARGBToRGB565Row_C;
-  if (!src_argb || !dst_rgb565 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_rgb565 || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1564,8 +1557,7 @@ int ARGBToARGB1555(const uint8_t* src_argb,
   int y;
   void (*ARGBToARGB1555Row)(const uint8_t* src_argb, uint8_t* dst_rgb,
                             int width) = ARGBToARGB1555Row_C;
-  if (!src_argb || !dst_argb1555 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb1555 || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1633,8 +1625,7 @@ int ARGBToARGB4444(const uint8_t* src_argb,
   int y;
   void (*ARGBToARGB4444Row)(const uint8_t* src_argb, uint8_t* dst_rgb,
                             int width) = ARGBToARGB4444Row_C;
-  if (!src_argb || !dst_argb4444 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_argb4444 || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1702,8 +1693,7 @@ int ABGRToAR30(const uint8_t* src_abgr,
   int y;
   void (*ABGRToAR30Row)(const uint8_t* src_abgr, uint8_t* dst_rgb, int width) =
       ABGRToAR30Row_C;
-  if (!src_abgr || !dst_ar30 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_abgr || !dst_ar30 || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1761,8 +1751,7 @@ int ARGBToAR30(const uint8_t* src_argb,
   int y;
   void (*ARGBToAR30Row)(const uint8_t* src_argb, uint8_t* dst_rgb, int width) =
       ARGBToAR30Row_C;
-  if (!src_argb || !dst_ar30 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_ar30 || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -1883,7 +1872,7 @@ int RGBAToJ400(const uint8_t* src_rgba,
   int y;
   void (*RGBAToYJRow)(const uint8_t* src_rgba, uint8_t* dst_yj, int width) =
       RGBAToYJRow_C;
-  if (!src_rgba || !dst_yj || width <= 0 || height == 0 || height == INT_MIN) {
+  if (!src_rgba || !dst_yj || !ValidDimensions(width, height)) {
     return -1;
   }
   if (height < 0) {
@@ -2025,8 +2014,7 @@ int ARGBToAR64(const uint8_t* src_argb,
   int y;
   void (*ARGBToAR64Row)(const uint8_t* src_argb, uint16_t* dst_ar64,
                         int width) = ARGBToAR64Row_C;
-  if (!src_argb || !dst_ar64 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_ar64 || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2091,8 +2079,7 @@ int ARGBToAB64(const uint8_t* src_argb,
   int y;
   void (*ARGBToAB64Row)(const uint8_t* src_argb, uint16_t* dst_ar64,
                         int width) = ARGBToAB64Row_C;
-  if (!src_argb || !dst_ab64 || width <= 0 || height == 0 ||
-      height == INT_MIN) {
+  if (!src_argb || !dst_ab64 || !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.
@@ -2231,8 +2218,8 @@ int RAWToNV21Matrix(const uint8_t* src_raw,
   }
 #endif
 
-  if (!src_raw || !dst_y || !dst_vu || !argbconstants || width <= 0 ||
-      height == 0 || height == INT_MIN) {
+  if (!src_raw || !dst_y || !dst_vu || !argbconstants ||
+      !ValidDimensions(width, height)) {
     return -1;
   }
   // Negative height means invert the image.

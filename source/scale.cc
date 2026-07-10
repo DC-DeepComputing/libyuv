@@ -2226,9 +2226,8 @@ int I420Scale(const uint8_t* src_y,
               enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(src_width, src_height) ||
+      !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2271,9 +2270,8 @@ int I420Scale_16(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(src_width, src_height) ||
+      !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2316,9 +2314,8 @@ int I420Scale_12(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(src_width, src_height) ||
+      !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2364,9 +2361,8 @@ int I444Scale(const uint8_t* src_y,
               enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(src_width, src_height) ||
+      !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
 
@@ -2405,9 +2401,8 @@ int I444Scale_16(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(src_width, src_height) ||
+      !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
 
@@ -2446,9 +2441,8 @@ int I444Scale_12(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(src_width, src_height) ||
+      !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
 
@@ -2490,9 +2484,8 @@ int I422Scale(const uint8_t* src_y,
               enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(src_width, src_height) ||
+      !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2533,9 +2526,8 @@ int I422Scale_16(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(src_width, src_height) ||
+      !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2576,9 +2568,8 @@ int I422Scale_12(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_u || !src_v || !ValidDimensions(src_width, src_height) ||
+      !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2618,9 +2609,8 @@ int NV12Scale(const uint8_t* src_y,
               enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_uv || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_uv || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_uv || !ValidDimensions(src_width, src_height) || !dst_y ||
+      !dst_uv || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2654,9 +2644,8 @@ int NV24Scale(const uint8_t* src_y,
               enum FilterMode filtering) {
   int r;
 
-  if (!src_y || !src_uv || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_uv || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_y || !src_uv || !ValidDimensions(src_width, src_height) || !dst_y ||
+      !dst_uv || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
 
