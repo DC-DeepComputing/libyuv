@@ -1051,11 +1051,74 @@ struct ArgbConstants {
 
 #define IS_ALIGNED(p, a) (!((uintptr_t)(p) & ((a) - 1)))
 
+// Detect the overflow-checked arithmetic builtins.  GCC (>= 5) and Clang
+// provide __builtin_mul_overflow / __builtin_add_overflow; MSVC does not, and
+// older GCC does not define __has_builtin.  Fall back to a portable check.
+#if defined(__has_builtin)
+#if __has_builtin(__builtin_mul_overflow) && \
+    __has_builtin(__builtin_add_overflow)
+#define LIBYUV_HAS_BUILTIN_OVERFLOW 1
+#endif
+#endif
+
+// Overflow-checked size_t multiply.  Returns 1 on success and writes the
+// product to *out.  Returns 0 if the multiply overflowed, and sets *out to 0.
+static __inline int SafeSizeMul(size_t a, size_t b, size_t* out) {
+#if defined(LIBYUV_HAS_BUILTIN_OVERFLOW)
+  if (__builtin_mul_overflow(a, b, out)) {
+    *out = 0;
+    return 0;
+  }
+  return 1;
+#else
+  if (a != 0 && b > SIZE_MAX / a) {
+    *out = 0;
+    return 0;
+  }
+  *out = a * b;
+  return 1;
+#endif
+}
+
+// Overflow-checked size_t add.  Returns 1 on success and writes the sum to
+// *out.  Returns 0 if the add overflowed, and sets *out to 0.
+static __inline int SafeSizeAdd(size_t a, size_t b, size_t* out) {
+#if defined(LIBYUV_HAS_BUILTIN_OVERFLOW)
+  if (__builtin_add_overflow(a, b, out)) {
+    *out = 0;
+    return 0;
+  }
+  return 1;
+#else
+  if (b > SIZE_MAX - a) {
+    *out = 0;
+    return 0;
+  }
+  *out = a + b;
+  return 1;
+#endif
+}
+
+#undef LIBYUV_HAS_BUILTIN_OVERFLOW
+
 #define align_buffer_64(var, size)                                         \
   size_t var##_mem_size = (size); /* NOLINT */                             \
   void* var##_mem = (var##_mem_size > SIZE_MAX - 63)                       \
                         ? NULL                                             \
                         : malloc(var##_mem_size + 63);        /* NOLINT */ \
+  uint8_t* var = (uint8_t*)(((intptr_t)var##_mem + 63) & ~63) /* NOLINT */
+
+// Like align_buffer_64 but computes the allocation size as the overflow-checked
+// product a * b.  If the multiply overflows, the buffer is set to NULL, which
+// matches the failure path of align_buffer_64 (callers already check for NULL).
+// Pairs with free_aligned_buffer_64, which frees var##_mem.
+#define align_buffer_64_2d(var, a, b)                                      \
+  size_t var##_mem_size;                                                   \
+  void* var##_mem =                                                        \
+      (!SafeSizeMul((a), (b), &var##_mem_size) ||                          \
+       var##_mem_size > SIZE_MAX - 63)                                     \
+          ? NULL                                                           \
+          : malloc(var##_mem_size + 63);                    /* NOLINT */   \
   uint8_t* var = (uint8_t*)(((intptr_t)var##_mem + 63) & ~63) /* NOLINT */
 
 #define free_aligned_buffer_64(var) \

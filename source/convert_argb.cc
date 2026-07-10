@@ -5097,10 +5097,11 @@ int Android420ToARGBMatrix(const uint8_t* src_y,
   }
 
   // General case fallback creates NV12
-  const uint64_t uv_size = (uint64_t)halfwidth * 2 * halfheight;
-  if (uv_size > SIZE_MAX)
+  size_t uv_size;
+  if (!SafeSizeMul((size_t)halfwidth, 2, &uv_size) ||
+      !SafeSizeMul(uv_size, (size_t)halfheight, &uv_size))
     return 1;
-  align_buffer_64(plane_uv, (size_t)uv_size);
+  align_buffer_64(plane_uv, uv_size);
   if (!plane_uv)
     return 1;
   dst_uv = plane_uv;
@@ -6461,7 +6462,7 @@ int I420ToRGB565Dither(const uint8_t* src_y,
 #endif
   {
     // Allocate a row of argb.
-    align_buffer_64(row_argb, width * 4);
+    align_buffer_64_2d(row_argb, width, 4);
     if (!row_argb)
       return 1;
     for (y = 0; y < height; ++y) {
@@ -6743,7 +6744,7 @@ static int I420ToARGBMatrixBilinear(const uint8_t* src_y,
 
   // alloc 4 lines temp
   const int row_size = (width + 31) & ~31;
-  align_buffer_64(row, row_size * 4);
+  align_buffer_64_2d(row, row_size, 4);
   uint8_t* temp_u_1 = row;
   uint8_t* temp_u_2 = row + row_size;
   uint8_t* temp_v_1 = row + row_size * 2;
@@ -6884,7 +6885,7 @@ static int I422ToARGBMatrixLinear(const uint8_t* src_y,
 
   // alloc 2 lines temp
   const int row_size = (width + 31) & ~31;
-  align_buffer_64(row, row_size * 2);
+  align_buffer_64_2d(row, row_size, 2);
   uint8_t* temp_u = row;
   uint8_t* temp_v = row + row_size;
   if (!row)
@@ -7020,7 +7021,7 @@ static int I420ToRGB24MatrixBilinear(const uint8_t* src_y,
 
   // alloc 4 lines temp
   const int row_size = (width + 31) & ~31;
-  align_buffer_64(row, row_size * 4);
+  align_buffer_64_2d(row, row_size, 4);
   uint8_t* temp_u_1 = row;
   uint8_t* temp_u_2 = row + row_size;
   uint8_t* temp_v_1 = row + row_size * 2;
@@ -7683,7 +7684,7 @@ static int I420AlphaToARGBMatrixBilinear(
 
   // alloc 4 lines temp
   const int row_size = (width + 31) & ~31;
-  align_buffer_64(row, row_size * 4);
+  align_buffer_64_2d(row, row_size, 4);
   uint8_t* temp_u_1 = row;
   uint8_t* temp_u_2 = row + row_size;
   uint8_t* temp_v_1 = row + row_size * 2;
@@ -7895,7 +7896,7 @@ static int I422AlphaToARGBMatrixLinear(const uint8_t* src_y,
 
   // alloc 2 lines temp
   const int row_size = (width + 31) & ~31;
-  align_buffer_64(row, row_size * 2);
+  align_buffer_64_2d(row, row_size, 2);
   uint8_t* temp_u = row;
   uint8_t* temp_v = row + row_size;
   if (!row)
@@ -8791,7 +8792,7 @@ static int I422ToRGB24MatrixLinear(const uint8_t* src_y,
 
   // alloc 2 lines temp
   const int row_size = (width + 31) & ~31;
-  align_buffer_64(row, row_size * 2);
+  align_buffer_64_2d(row, row_size, 2);
   uint8_t* temp_u = row;
   uint8_t* temp_v = row + row_size;
   if (!row)
