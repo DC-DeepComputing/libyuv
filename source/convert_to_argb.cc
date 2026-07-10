@@ -90,14 +90,13 @@ int ConvertToARGB(const uint8_t* sample,
   }
 
   if (need_buf) {
-    const uint64_t rotate_buffer_size =
-        (uint64_t)crop_width * 4 * abs_crop_height;
-#if UINT64_MAX > SIZE_MAX
-    if (rotate_buffer_size > SIZE_MAX) {
+    size_t rotate_buffer_size;
+    if (!SafeSizeMul((size_t)crop_width, 4, &rotate_buffer_size) ||
+        !SafeSizeMul(rotate_buffer_size, (size_t)abs_crop_height,
+                     &rotate_buffer_size)) {
       return -1;  // Invalid size.
     }
-#endif
-    rotate_buffer = (uint8_t*)malloc((size_t)rotate_buffer_size);
+    rotate_buffer = (uint8_t*)malloc(rotate_buffer_size);
     if (!rotate_buffer) {
       return 1;  // Out of memory runtime error.
     }

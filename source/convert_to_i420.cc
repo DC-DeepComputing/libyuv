@@ -15,6 +15,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "libyuv/row.h"  // For SafeSizeMul and SafeSizeAdd.
 #include "libyuv/video_common.h"
 
 #ifdef __cplusplus
@@ -84,13 +85,17 @@ int ConvertToI420(const uint8_t* sample,
   // For in-place conversion, if destination dst_y is same as source sample,
   // also enable temporary buffer.
   if (need_buf) {
-    size_t y_size = (size_t)crop_width * abs_crop_height;
-    size_t uv_size =
-        (size_t)((crop_width + 1) / 2) * ((abs_crop_height + 1) / 2);
-    if (uv_size > SIZE_MAX / 2 || y_size > SIZE_MAX - uv_size * 2) {
+    size_t y_size;
+    size_t uv_size;
+    size_t uv_size2;
+    size_t rotate_buffer_size;
+    if (!SafeSizeMul((size_t)crop_width, (size_t)abs_crop_height, &y_size) ||
+        !SafeSizeMul((size_t)((crop_width + 1) / 2),
+                     (size_t)((abs_crop_height + 1) / 2), &uv_size) ||
+        !SafeSizeMul(uv_size, 2, &uv_size2) ||
+        !SafeSizeAdd(y_size, uv_size2, &rotate_buffer_size)) {
       return -1;  // Invalid size.
     }
-    const size_t rotate_buffer_size = y_size + uv_size * 2;
     rotate_buffer = (uint8_t*)malloc(rotate_buffer_size);
     if (!rotate_buffer) {
       return 1;  // Out of memory runtime error.

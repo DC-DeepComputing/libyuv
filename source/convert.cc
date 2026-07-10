@@ -946,13 +946,13 @@ int I422ToNV21(const uint8_t* src_y,
   }
 
   // Allocate u and v buffers
-  const uint64_t plane_size = (uint64_t)halfwidth * halfheight;
-  if (plane_size > SIZE_MAX / 2)
+  size_t plane_size;
+  if (!SafeSizeMul((size_t)halfwidth, (size_t)halfheight, &plane_size))
     return 1;
-  align_buffer_64(plane_u, (size_t)plane_size * 2);
+  align_buffer_64_2d(plane_u, plane_size, 2);
   if (!plane_u)
     return 1;
-  uint8_t* plane_v = plane_u + (size_t)plane_size;
+  uint8_t* plane_v = plane_u + plane_size;
 
   r = I422ToI420(src_y, src_stride_y, src_u, src_stride_u, src_v, src_stride_v,
                  dst_y, dst_stride_y, plane_u, halfwidth, plane_v, halfwidth,
@@ -1258,7 +1258,7 @@ int I422ToNV21(const uint8_t* src_y,
   {
     // Allocate 2 rows of vu.
     int awidth = halfwidth * 2;
-    align_buffer_64(row_vu_0, awidth * 2);
+    align_buffer_64_2d(row_vu_0, awidth, 2);
     uint8_t* row_vu_1 = row_vu_0 + awidth;
     if (!row_vu_0)
       return 1;
@@ -2814,7 +2814,7 @@ int RGB24ToJ420(const uint8_t* src_rgb24,
 #if !defined(HAS_RGB24TOYJROW)
     // Allocate 2 rows of ARGB.
     const int row_size = (width * 4 + 31) & ~31;
-    align_buffer_64(row, row_size * 2);
+    align_buffer_64_2d(row, row_size, 2);
     if (!row)
       return 1;
 #endif
@@ -3137,7 +3137,7 @@ int RAWToJ420(const uint8_t* src_raw,
 #if !defined(HAS_RAWTOYJROW)
     // Allocate 2 rows of ARGB.
     const int row_size = (width * 4 + 31) & ~31;
-    align_buffer_64(row, row_size * 2);
+    align_buffer_64_2d(row, row_size, 2);
     if (!row)
       return 1;
 #endif
