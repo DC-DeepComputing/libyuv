@@ -224,8 +224,7 @@ int ARGBRotate(const uint8_t* src_argb,
                int width,
                int height,
                enum RotationMode mode) {
-  if (!src_argb || width <= 0 || height == 0 || height == INT_MIN ||
-      !dst_argb) {
+  if (!src_argb || !ValidDimensions(width, height) || !dst_argb) {
     return -1;
   }
 

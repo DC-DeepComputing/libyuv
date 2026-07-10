@@ -11,6 +11,7 @@
 #ifndef INCLUDE_LIBYUV_BASIC_TYPES_H_
 #define INCLUDE_LIBYUV_BASIC_TYPES_H_
 
+#include <limits.h>  // For INT_MIN
 #include <stddef.h>  // For size_t and NULL
 
 #if !defined(INT_TYPES_DEFINED) && !defined(GG_LONGLONG)
@@ -64,5 +65,26 @@ typedef int8_t int8;
 #define LIBYUV_BOOL int
 #define LIBYUV_FALSE 0
 #define LIBYUV_TRUE 1
+
+#ifdef __cplusplus
+namespace libyuv {
+extern "C" {
+#endif
+
+// Validates the sign/zero of image dimensions. Returns nonzero when the
+// dimensions are acceptable: width must be positive and height must be
+// nonzero. A negative height is permitted (it requests a vertical flip), but
+// INT_MIN is rejected because the later negation `height = -height` used for
+// flipping is undefined behavior for INT_MIN.
+// This performs sign/zero validation only; it does NOT bound the magnitude of
+// the dimensions.
+static __inline int ValidDimensions(int width, int height) {
+  return width > 0 && height != 0 && height != INT_MIN;
+}
+
+#ifdef __cplusplus
+}  // extern "C"
+}  // namespace libyuv
+#endif
 
 #endif  // INCLUDE_LIBYUV_BASIC_TYPES_H_
