@@ -12,6 +12,7 @@
 
 #ifdef HAVE_JPEG
 #include <assert.h>
+#include <limits.h>
 
 #if !defined(__pnacl__) && !defined(__CLR_VER) && !defined(COVERAGE_ENABLED)
 // Must be included before jpeglib.
@@ -140,7 +141,13 @@ LIBYUV_BOOL MJpegDecoder::LoadFrame(const uint8_t* src, size_t src_len) {
     // the next scanline) and will be overwritten when jpeglib writes out that
     // next scanline.
     int databuf_stride = GetComponentStride(i);
-    int databuf_size = scanlines_size * databuf_stride;
+    // Dimensions come from the (untrusted) JPEG header, so compute the
+    // allocation size in 64-bit and reject values that would overflow int.
+    int64_t databuf_size = (int64_t)scanlines_size * databuf_stride;
+    if (databuf_size < 0 || databuf_size > INT_MAX) {
+      // ERROR: MJPEG frame too large
+      return LIBYUV_FALSE;
+    }
     if (databuf_strides_[i] != databuf_stride) {
       if (databuf_[i]) {
         delete[] databuf_[i];
