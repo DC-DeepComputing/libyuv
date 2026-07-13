@@ -5551,16 +5551,12 @@ int I420ToRGB24Matrix(const uint8_t* src_y,
 #if defined(HAS_I422TORGB24ROW_AVX2)
   if (TestCpuFlag(kCpuHasAVX2)) {
     I422ToRGB24Row = I422ToRGB24Row_Any_AVX2;
+#if defined(__x86_64__)
     if (IS_ALIGNED(width, 32)) {
-      I422ToRGB24Row = I422ToRGB24Row_AVX2;
-    }
-  }
+#else
+    if (IS_ALIGNED(width, 16)) {
 #endif
-#if defined(HAS_I422TORGB24ROW_AVX512BW)
-  if (TestCpuFlag(kCpuHasAVX512BW)) {
-    I422ToRGB24Row = I422ToRGB24Row_Any_AVX512BW;
-    if (IS_ALIGNED(width, 32)) {
-      I422ToRGB24Row = I422ToRGB24Row_AVX512BW;
+      I422ToRGB24Row = I422ToRGB24Row_AVX2;
     }
   }
 #endif
@@ -5772,16 +5768,8 @@ int I422ToRGB24Matrix(const uint8_t* src_y,
 #if defined(HAS_I422TORGB24ROW_AVX2)
   if (TestCpuFlag(kCpuHasAVX2)) {
     I422ToRGB24Row = I422ToRGB24Row_Any_AVX2;
-    if (IS_ALIGNED(width, 32)) {
+    if (IS_ALIGNED(width, 16)) {
       I422ToRGB24Row = I422ToRGB24Row_AVX2;
-    }
-  }
-#endif
-#if defined(HAS_I422TORGB24ROW_AVX512BW)
-  if (TestCpuFlag(kCpuHasAVX512BW)) {
-    I422ToRGB24Row = I422ToRGB24Row_Any_AVX512BW;
-    if (IS_ALIGNED(width, 32)) {
-      I422ToRGB24Row = I422ToRGB24Row_AVX512BW;
     }
   }
 #endif
