@@ -51,6 +51,24 @@
       "message": "Just wanted to confirm: Is `//build/toolchain/win:win_clang_x64` is the default toolchain for Windows x64?",
       "revId": "3376b4d4bd3344c3a9062543b97a912acc85a817",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "74edd91c_c3c9e0a4",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1002172
+      },
+      "writtenOn": "2026-07-14T17:26:30Z",
+      "side": 1,
+      "message": "Yes, I believe so.\nIn my project, we build the renderer into a separate binary, and if we want to enable the ThinLTO and PGO there, we need to build a shared code, such as //base, twice with different profiles for the main binary and the renderer binary.\nTo realize that, we need to set output directory paths as a part of the toolchain information. This deps modification matters to build the second copy of the libyuv.",
+      "parentUuid": "1a642345_4ea3fa57",
+      "revId": "3376b4d4bd3344c3a9062543b97a912acc85a817",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ],
   "submitRequirementResults": [
