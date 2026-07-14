@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "29feac5f_5e968f7c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-14T15:40:58Z",
+      "side": 1,
+      "message": "The auto roller will take care of rolling your commit into Chrome\u0027s third_party/libyuv directory.",
+      "parentUuid": "6974419b_8196e620",
+      "revId": "3376b4d4bd3344c3a9062543b97a912acc85a817",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "1a642345_4ea3fa57",
         "filename": "BUILD.gn",
         "patchSetId": 1
