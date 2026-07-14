@@ -16,6 +16,23 @@
       "message": "It seems 2 LGTMs are needed in this directory.\n\nwtc@, can you take a loook?",
       "revId": "3376b4d4bd3344c3a9062543b97a912acc85a817",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a642345_4ea3fa57",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-14T15:36:57Z",
+      "side": 1,
+      "message": "Just wanted to confirm: Is `//build/toolchain/win:win_clang_x64` is the default toolchain for Windows x64?",
+      "revId": "3376b4d4bd3344c3a9062543b97a912acc85a817",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
