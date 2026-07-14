@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6974419b_8196e620",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002172
+      },
+      "writtenOn": "2026-07-14T10:28:21Z",
+      "side": 1,
+      "message": "It seems 2 LGTMs are needed in this directory.\n\nwtc@, can you take a loook?",
+      "revId": "3376b4d4bd3344c3a9062543b97a912acc85a817",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
