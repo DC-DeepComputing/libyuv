@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "382fd486_5fc487ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4917106
+      },
+      "writtenOn": "2026-07-16T17:55:11Z",
+      "side": 1,
+      "message": "There was a merge conflict in the mean time. I rebased on top of the latest main. Please let me know if anything else is missing to have it merged.",
+      "revId": "0991508bc6c1f7ebe4cc222bc7736c875f59447e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
