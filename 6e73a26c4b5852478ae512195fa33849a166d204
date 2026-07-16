@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e7aa28bb_c9a39804",
+        "filename": "source/mjpeg_decoder.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-16T17:32:49Z",
+      "side": 1,
+      "message": "nit: I like to consider that int could be int128_t and casting it down to int64_t would loose information.  (We saw that sort of thing in the past transitions from 16 bit)\nlibyuv tries to use signed types, allowing for negative stride and negative width and height, meaning mirror, and to avoid math underflows causing infinite loops.\nso I would think size_t is the appropriate type for allocation sizes, or the less ssize_t.\nno change needed, as int64_t is a good enough short term solution.",
+      "revId": "6e73a26c4b5852478ae512195fa33849a166d204",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
