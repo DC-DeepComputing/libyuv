@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9aaf032f_550de05e",
+        "filename": "source/row_common.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 3318,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-17T17:28:38Z",
+      "side": 1,
+      "message": "In the original code, `src_stride_yuy2 + 1` and `src_stride_yuy2 + 3` could potentially overflow. Instead of adding `ptrdiff_t` casts, I added the `src_yuy2_next` variable to point to the next row.\n\nI use this pattern in many other functions below.",
+      "revId": "8e3bb9d16f1d9d3e35b905f47fd775371f7b55a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
