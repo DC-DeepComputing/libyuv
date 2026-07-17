@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "abf381c8_f89828f6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-17T17:20:42Z",
+      "side": 1,
+      "message": "LGTM. Thanks!",
+      "revId": "c4060af89f28f8f7f17a6a45113b7ae04f8c8cbf",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b531adc_c71cb268",
+        "filename": "source/mjpeg_decoder.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-17T17:20:42Z",
+      "side": 1,
+      "message": "Nit: add \"than UINT16_MAX\" after \"slightly larger\"?",
+      "revId": "c4060af89f28f8f7f17a6a45113b7ae04f8c8cbf",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31989aae_e5c7195a",
+        "filename": "source/mjpeg_decoder.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-17T17:20:42Z",
+      "side": 1,
+      "message": "Nit: add a space between \"\u003c\" and \"16\"",
+      "revId": "c4060af89f28f8f7f17a6a45113b7ae04f8c8cbf",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
