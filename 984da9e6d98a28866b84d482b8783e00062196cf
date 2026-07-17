@@ -35,6 +35,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6a5e78b_4788e826",
+        "filename": "source/rotate_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-17T15:31:03Z",
+      "side": 1,
+      "message": "Max: You can deal with this in a separate CL.",
+      "parentUuid": "f635d10a_7b7f04d0",
+      "revId": "984da9e6d98a28866b84d482b8783e00062196cf",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "4d14138e_e14f7f34",
