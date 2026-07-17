@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87b02f7e_df15ab33",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-17T15:30:29Z",
+      "side": 1,
+      "message": "Thanks for the fix. I made a pass through libyuv to fix all multiplications with stride. I don\u0027t know why I missed these.",
+      "revId": "984da9e6d98a28866b84d482b8783e00062196cf",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f635d10a_7b7f04d0",
+        "filename": "source/rotate_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-17T15:30:29Z",
+      "side": 1,
+      "message": "IMPORTANT: Is `width - 1` a typo? I think this should be `height - 1`.",
+      "revId": "984da9e6d98a28866b84d482b8783e00062196cf",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d14138e_e14f7f34",
+        "filename": "source/rotate_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-17T15:30:29Z",
+      "side": 1,
+      "message": "The function uses the expression `width * 4` several times. It should return an error if `width * 4` would overflow:\n\n```\n  if (width \u003e INT_MAX / 4) {\n    return -1;\n  }\n```\n\nI can take care of this.",
+      "revId": "984da9e6d98a28866b84d482b8783e00062196cf",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
