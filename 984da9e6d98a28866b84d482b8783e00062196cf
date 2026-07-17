@@ -55,6 +55,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "0a049931_08c57a8c",
+        "filename": "source/rotate_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 3576461
+      },
+      "writtenOn": "2026-07-17T15:57:05Z",
+      "side": 1,
+      "message": "This tripped me up as well, but I believe it\u0027s correct:\n\n- ARGBRotate90 advances the pointer for `src` (which is not transposed) to the last row by going `height-1` rows forward.\n- ARGBRotate270 advances the pointer for `dst` (which is transposed!) to the last row by going `width-1` rows forward.\n\nsrc height \u003d\u003d dst width",
+      "parentUuid": "b6a5e78b_4788e826",
+      "revId": "984da9e6d98a28866b84d482b8783e00062196cf",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "4d14138e_e14f7f34",
         "filename": "source/rotate_argb.cc",
         "patchSetId": 2
