@@ -57,8 +57,9 @@ and compiler compatibility.
 
 When generating descriptions, follow the Chromium/Google standard format. Wrap
 commit message text at 72 characters
+When adding new code, remove trailing spaces.
 
-### Format Example:
+### Format Description Example:
 
 \[libyuv] Optimized ARGBToRGB24 for AVX2
 
