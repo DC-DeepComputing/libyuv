@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3e19c67_a960651b",
+        "filename": "GEMINI.md",
+        "patchSetId": 17
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-20T23:14:59Z",
+      "side": 1,
+      "message": "Delete the quotation mark at the end of this line.",
+      "revId": "6934423ccf181dc8fa277e61f9766a0f239cb99b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
