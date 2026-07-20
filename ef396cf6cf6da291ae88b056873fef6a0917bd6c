@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e52619e5_2df495ac",
+        "filename": "GEMINI.md",
+        "patchSetId": 16
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-20T22:51:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "22e1a7e5_e5d97a6f",
+      "revId": "ef396cf6cf6da291ae88b056873fef6a0917bd6c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d2b65784_c8105d32",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-07-20T22:12:40Z",
       "side": 1,
       "message": "Is the `alignas` keyword used in libyuv?",
+      "revId": "ef396cf6cf6da291ae88b056873fef6a0917bd6c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8969e309_2bb9be93",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 16
+      },
+      "lineNbr": 3875,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-20T22:51:23Z",
+      "side": 1,
+      "message": "Done.  We used it once but no in general.  alignas requires C11.\nI think we should do that in a different change, and use vmovdqa or vmovaps at that time.\nwe have types for sse (vec8) and avx (lvec8).\nI would like to remove the sse types and use avx all the time, where sse can read the first 16 bytes of a 32 byte vector.\nIt generally does help to have constants on a cache line boundary.",
+      "parentUuid": "d2b65784_c8105d32",
       "revId": "ef396cf6cf6da291ae88b056873fef6a0917bd6c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
