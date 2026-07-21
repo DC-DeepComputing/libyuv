@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd723524_258365c3",
+        "filename": "source/row_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 3319,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-21T18:13:00Z",
+      "side": 0,
+      "message": "The addition `src_stride_yuy2 + 3` and similar additions are performed using the `int` type can potentially overflow. Since these functions return void, I cannot check for a big `src_stride_yuy2` and return -1.\n\nI can, however, add `ptrdiff_t` casts to these additions, for example,\n\n```\n    dst_v[0] \u003d (src_yuy2[3] + src_yuy2[(ptrdiff_t)src_stride_yuy2 + 3] + 1) \u003e\u003e 1;\n```\n\nWould you like me to do that instead?\n\nNote: I chose the current fix because the code looks nicer:\n\n```\n    dst_v[0] \u003d (src_yuy2[3] + src_yuy2_next[3] + 1) \u003e\u003e 1;\n```",
+      "revId": "c1e9e698264a904048561483ec5c1f1ca81d2164",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
