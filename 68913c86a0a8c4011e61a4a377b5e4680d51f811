@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "60ff3f9e_fd635a53",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1302660
+      },
+      "writtenOn": "2026-07-21T03:03:11Z",
+      "side": 1,
+      "message": "I\u0027m a chromium gardner and I need to revert this it\u0027s breaking the compilation of gardener bot. Appreceiate if anyone can +1 this. Thanks!",
+      "revId": "68913c86a0a8c4011e61a4a377b5e4680d51f811",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
