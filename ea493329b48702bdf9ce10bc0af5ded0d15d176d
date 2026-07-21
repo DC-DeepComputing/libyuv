@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "81a0ac5a_4c97f520",
+        "filename": "source/rotate_argb.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-21T22:44:04Z",
+      "side": 1,
+      "message": "in c89 the align_buffer_64 which was an array/pointers on the stack, had to come before any code, but i guess we can go ahead and add the checks out of order.\n\ni had to think if INT_MAX / 4 rounds to a value where (INT_MAX / 4) * 4 doesnt overflow.  i think we\u0027re good\n0x7FFFFFFF / 4 \u003d 0x1FFFFFFF.",
+      "revId": "ea493329b48702bdf9ce10bc0af5ded0d15d176d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
