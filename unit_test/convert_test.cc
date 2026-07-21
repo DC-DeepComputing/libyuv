@@ -2553,6 +2553,8 @@ TEST_F(LibYUVConvertTest, ABGRToI420_Check) {
                 benchmark_cpu_info_);
 }
 
+TEST_F(LibYUVConvertTest, Placeholder) {}
+
 #endif  // !defined(LEAN_TESTS)
 
 }  // namespace libyuv
