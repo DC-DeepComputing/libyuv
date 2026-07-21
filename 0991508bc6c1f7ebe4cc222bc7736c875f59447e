@@ -33,6 +33,23 @@
       "message": "@mbonadei@chromium.org @fbarchard@google.com",
       "revId": "0991508bc6c1f7ebe4cc222bc7736c875f59447e",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "275b16cd_80a123e8",
+        "filename": "include/libyuv/version.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-21T09:57:28Z",
+      "side": 1,
+      "message": "My first impression is I dont understand this comment.  It refers to a file ane version that arent part of code and ninja builds.\nIf I dont understand it, its likely most contributers wont.\n\nLIBYUV_VERSION is bumped with the API changes, and the calling code may need to check the version before using the API, or an important bug was fixed, and the version helps confirm the fixed version is in use.\n\nIt feels redundent to also have another version, which is not supported by ninja/bazel/code, that gets bumped when the API changes.\n\nThis change/comment refers to a file that isnt necessarily in the repo where a change is made.",
+      "revId": "0991508bc6c1f7ebe4cc222bc7736c875f59447e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }

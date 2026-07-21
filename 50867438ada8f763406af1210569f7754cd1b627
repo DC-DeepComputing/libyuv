@@ -69,6 +69,42 @@
       "parentUuid": "11e87823_26b31c60",
       "revId": "50867438ada8f763406af1210569f7754cd1b627",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "862c803b_c841481d",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-21T09:57:28Z",
+      "side": 1,
+      "message": "I think I was looking at an older version,",
+      "parentUuid": "50a76e2a_8996d6b1",
+      "revId": "50867438ada8f763406af1210569f7754cd1b627",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cb72716_c016de6f",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-21T09:57:28Z",
+      "side": 1,
+      "message": "Could we remove this comment and set the version and use",
+      "parentUuid": "50a76e2a_8996d6b1",
+      "revId": "50867438ada8f763406af1210569f7754cd1b627",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
