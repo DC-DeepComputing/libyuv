@@ -53,13 +53,12 @@ and compiler compatibility.
 2.  **Feature Macros**: Use the `HAS_` macros in `include/libyuv/row.h` to
     enable or disable specific AVX512 versions.
 
-## Changelist (CL) Format Guidelines
+## Changelist (CL) & Commit Guidelines
 
-When adding new code, remove trailing spaces.
-When generating descriptions, follow the Chromium standard format. Wrap
+When generating descriptions, follow the Chromium/Google standard format. Wrap
 commit message text at 72 characters
 
-### Changelist (CL) Description Example
+### Format Example:
 
 \[libyuv] Optimized ARGBToRGB24 for AVX2
 
