@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "e955db88_e18f2de9",
+        "filename": "source/row_common.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 3316,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-21T17:49:33Z",
+      "side": 1,
+      "message": "If this code is taken as verbatim, this adds an add or lea.\n\nThe original code would use \u0027indexed+offset\u0027 addressing which is best for Intel.\n\nAn alternative would be use 2 pointers.  Which can do the ptr +\u003d 4 \u0027for free\u0027 on arm.\nAlthough post increment doesnt take an instruction, it does take a microop, so on high end arm this isnt faster.\n\nIsn\u0027t the original index by an int (stride) a clean way to index pointers?",
+      "revId": "8e3bb9d16f1d9d3e35b905f47fd775371f7b55a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "9aaf032f_550de05e",
