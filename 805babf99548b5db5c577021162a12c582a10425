@@ -37,6 +37,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "5961652b_04c19091",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 780,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-22T19:55:39Z",
+      "side": 1,
+      "message": "right.  with nv12 vs nv21 using the notation stride_vu vs stride_uv helps clarify a difference.  same with stride_abgr when applicable.\nfor most yuv to rgb when doing \u0027matrix\u0027 for RAW vs RGB24 we dont need to know and the low level is called \u0027RGB\u0027 to be purposely vague.\nFor something like NV21ToRGB24 the code is specific to those 2 formats and the only trick is both can be end swapped - NV12ToRAW but you need to swap the kYvu.",
+      "parentUuid": "4808bd7a_e29c3440",
+      "revId": "805babf99548b5db5c577021162a12c582a10425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "6376be81_c7fcd9e9",
         "filename": "source/convert_from_argb.cc",
         "patchSetId": 2
