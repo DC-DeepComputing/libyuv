@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f8d5fad_9675190e",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 587,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-22T19:23:39Z",
+      "side": 1,
+      "message": "This parameter should be renamed dst_stride_uv. I can take care of this.",
+      "revId": "805babf99548b5db5c577021162a12c582a10425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4808bd7a_e29c3440",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 780,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-22T19:23:39Z",
+      "side": 1,
+      "message": "I think the \"dst_vu\" variable name suggests the row_v, row_u order, right?",
+      "revId": "805babf99548b5db5c577021162a12c582a10425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6376be81_c7fcd9e9",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2484,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-22T19:23:39Z",
+      "side": 1,
+      "message": "IMPORTANT: Is NV21 a typo? Or does the RGB24-\u003eRAW and NV12-\u003eNV21 change work out correctly?",
+      "revId": "805babf99548b5db5c577021162a12c582a10425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
