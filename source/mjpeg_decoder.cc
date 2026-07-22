@@ -125,7 +125,11 @@ LIBYUV_BOOL MJpegDecoder::LoadFrame(const uint8_t* src, size_t src_len) {
   AllocOutputBuffers(GetNumComponents());
   for (int i = 0; i < num_outbufs_; ++i) {
     int scanlines_size = GetComponentScanlinesPerImcuRow(i);
-    if (scanlines_sizes_[i] != scanlines_size) {
+    // The number of scanlines can change between frames (e.g. a different
+    // vertical sampling factor). The databuf below is sized from it, so track
+    // whether it changed to know when the databuf must be reallocated too.
+    int scanlines_size_changed = scanlines_sizes_[i] != scanlines_size;
+    if (scanlines_size_changed) {
       if (scanlines_[i]) {
         delete[] scanlines_[i];
       }
@@ -145,7 +149,7 @@ LIBYUV_BOOL MJpegDecoder::LoadFrame(const uint8_t* src, size_t src_len) {
     //    DCTSIZE) is at most slightly larger than UINT16_MAX.
     //  - Sampling factor is stored in 4 bits, so scanlines_size is < 16.
     int databuf_size = scanlines_size * databuf_stride;
-    if (databuf_strides_[i] != databuf_stride) {
+    if (databuf_strides_[i] != databuf_stride || scanlines_size_changed) {
       if (databuf_[i]) {
         delete[] databuf_[i];
       }
