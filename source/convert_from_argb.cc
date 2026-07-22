@@ -555,9 +555,9 @@ int ARGBToNV12Matrix(const uint8_t* src_argb,
 
   // Allocate a rows of uv.
   align_buffer_64(row_u, ((halfwidth + 31) & ~31) * 2);
-  uint8_t* row_v = row_u + ((halfwidth + 31) & ~31);
   if (!row_u)
     return 1;
+  uint8_t* row_v = row_u + ((halfwidth + 31) & ~31);
 
   for (y = 0; y < height - 1; y += 2) {
     ARGBToUVMatrixRow(src_argb, src_stride_argb, row_u, row_v, width,
@@ -770,9 +770,9 @@ int ARGBToNV21Matrix(const uint8_t* src_argb,
 
   // Allocate a rows of uv.
   align_buffer_64(row_u, ((halfwidth + 31) & ~31) * 2);
-  uint8_t* row_v = row_u + ((halfwidth + 31) & ~31);
   if (!row_u)
     return 1;
+  uint8_t* row_v = row_u + ((halfwidth + 31) & ~31);
 
   for (y = 0; y < height - 1; y += 2) {
     ARGBToUVMatrixRow(src_argb, src_stride_argb, row_u, row_v, width,
@@ -948,10 +948,10 @@ int ARGBToYUY2Matrix(const uint8_t* src_argb,
 
   {
     align_buffer_64(row_y, ((width + 63) & ~63) * 2);
-    uint8_t* row_u = row_y + ((width + 63) & ~63);
-    uint8_t* row_v = row_u + ((width + 63) & ~63) / 2;
     if (!row_y)
       return 1;
+    uint8_t* row_u = row_y + ((width + 63) & ~63);
+    uint8_t* row_v = row_u + ((width + 63) & ~63) / 2;
 
     for (y = 0; y < height; ++y) {
       ARGBToUVMatrixRow(src_argb, 0, row_u, row_v, width, constants);
@@ -1061,10 +1061,10 @@ int ARGBToUYVYMatrix(const uint8_t* src_argb,
 
   {
     align_buffer_64(row_y, ((width + 63) & ~63) * 2);
-    uint8_t* row_u = row_y + ((width + 63) & ~63);
-    uint8_t* row_v = row_u + ((width + 63) & ~63) / 2;
     if (!row_y)
       return 1;
+    uint8_t* row_u = row_y + ((width + 63) & ~63);
+    uint8_t* row_v = row_u + ((width + 63) & ~63) / 2;
 
     for (y = 0; y < height; ++y) {
       ARGBToUVMatrixRow(src_argb, 0, row_u, row_v, width, constants);

@@ -4957,6 +4957,8 @@ static int ARGBSobelize(const uint8_t* src_argb,
     // 3 rows with edges before/after.
     const int row_size = (width + kEdge + 31) & ~31;
     align_buffer_64(rows, row_size * 2 + (kEdge + row_size * 3 + kEdge));
+    if (!rows)
+      return 1;
     uint8_t* row_sobelx = rows;
     uint8_t* row_sobely = rows + row_size;
     uint8_t* row_y = rows + row_size * 2;
@@ -4965,8 +4967,6 @@ static int ARGBSobelize(const uint8_t* src_argb,
     uint8_t* row_y0 = row_y + kEdge;
     uint8_t* row_y1 = row_y0 + row_size;
     uint8_t* row_y2 = row_y1 + row_size;
-    if (!rows)
-      return 1;
     ARGBToYJRow(src_argb, row_y0, width);
     row_y0[-1] = row_y0[0];
     memset(row_y0 + width, row_y0[width - 1], 16);  // Extrude 16 for valgrind.

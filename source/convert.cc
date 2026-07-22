@@ -777,9 +777,9 @@ int I010ToNV12(const uint16_t* src_y,
   {
     // Allocate a row of uv.
     align_buffer_64(row_u, ((halfwidth + 31) & ~31) * 2);
-    uint8_t* row_v = row_u + ((halfwidth + 31) & ~31);
     if (!row_u)
       return 1;
+    uint8_t* row_v = row_u + ((halfwidth + 31) & ~31);
 
     for (y = 0; y < halfheight; ++y) {
       Convert16To8Row(src_u, row_u, scale, halfwidth);
@@ -1259,9 +1259,9 @@ int I422ToNV21(const uint8_t* src_y,
     // Allocate 2 rows of vu.
     int awidth = halfwidth * 2;
     align_buffer_64(row_vu_0, awidth * 2);
-    uint8_t* row_vu_1 = row_vu_0 + awidth;
     if (!row_vu_0)
       return 1;
+    uint8_t* row_vu_1 = row_vu_0 + awidth;
 
     for (y = 0; y < height - 1; y += 2) {
       MergeUVRow(src_v, src_u, row_vu_0, halfwidth);
