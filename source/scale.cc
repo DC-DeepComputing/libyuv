@@ -1133,11 +1133,11 @@ static int ScalePlaneBilinearDown(int src_width,
     }
   }
 #endif
-  if (y > max_y) {
-    y = max_y;
-  }
 
   for (j = 0; j < dst_height; ++j) {
+    if (y > max_y) {
+      y = max_y;
+    }
     int yi = y >> 16;
     const uint8_t* src = src_ptr + yi * src_stride;
     if (filtering == kFilterLinear) {
@@ -1149,9 +1149,6 @@ static int ScalePlaneBilinearDown(int src_width,
     }
     dst_ptr += dst_stride;
     y += dy;
-    if (y > max_y) {
-      y = max_y;
-    }
   }
   free_aligned_buffer_64(row);
   return 0;
@@ -1224,11 +1221,11 @@ static int ScalePlaneBilinearDown_16(int src_width,
     ScaleFilterCols = ScaleFilterCols_16_SSSE3;
   }
 #endif
-  if (y > max_y) {
-    y = max_y;
-  }
 
   for (j = 0; j < dst_height; ++j) {
+    if (y > max_y) {
+      y = max_y;
+    }
     int yi = y >> 16;
     const uint16_t* src = src_ptr + yi * src_stride;
     if (filtering == kFilterLinear) {
@@ -1240,9 +1237,6 @@ static int ScalePlaneBilinearDown_16(int src_width,
     }
     dst_ptr += dst_stride;
     y += dy;
-    if (y > max_y) {
-      y = max_y;
-    }
   }
   free_aligned_buffer_64(row);
   return 0;

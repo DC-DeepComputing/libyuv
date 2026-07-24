@@ -418,10 +418,10 @@ static int ScaleUVBilinearDown(int src_width,
     align_buffer_64(row, clip_src_width * 2);
     if (!row)
       return 1;
-    if (y > max_y) {
-      y = max_y;
-    }
     for (j = 0; j < dst_height; ++j) {
+      if (y > max_y) {
+        y = max_y;
+      }
       int yi = y >> 16;
       const uint8_t* src = src_uv + yi * src_stride;
       if (filtering == kFilterLinear) {
@@ -433,9 +433,6 @@ static int ScaleUVBilinearDown(int src_width,
       }
       dst_uv += dst_stride;
       y += dy;
-      if (y > max_y) {
-        y = max_y;
-      }
     }
     free_aligned_buffer_64(row);
   }

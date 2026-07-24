@@ -400,10 +400,10 @@ static int ScaleARGBBilinearDown(int src_width,
       return 1;
 
     const int max_y = (src_height - 1) << 16;
-    if (y > max_y) {
-      y = max_y;
-    }
     for (j = 0; j < dst_height; ++j) {
+      if (y > max_y) {
+        y = max_y;
+      }
       int yi = y >> 16;
       const uint8_t* src = src_argb + yi * src_stride;
       if (filtering == kFilterLinear) {
@@ -415,9 +415,6 @@ static int ScaleARGBBilinearDown(int src_width,
       }
       dst_argb += dst_stride;
       y += dy;
-      if (y > max_y) {
-        y = max_y;
-      }
     }
     free_aligned_buffer_64(row);
   }
