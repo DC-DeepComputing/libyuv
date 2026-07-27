@@ -746,6 +746,9 @@ static int ScaleARGB(const uint8_t* src,
   }
   if (dx == 0x10000 && (x & 0xffff) == 0) {
     // Arbitrary scale vertically, but unscaled horizontally.
+    if (clip_width > INT_MAX / 4) {
+      return -1;
+    }
     ScalePlaneVertical(src_height, clip_width, clip_height, src_stride,
                        dst_stride, src, dst, x, y, dy, /*bpp=*/4, filtering);
     return 0;
