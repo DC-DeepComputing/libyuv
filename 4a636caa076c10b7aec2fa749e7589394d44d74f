@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87917200_e9264452",
+        "filename": "source/scale.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2100,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-27T21:35:13Z",
+      "side": 1,
+      "message": "I corrected the parameter name in the comment. The parameter is named `wpp`, not `bpp`.",
+      "revId": "4a636caa076c10b7aec2fa749e7589394d44d74f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "458bb52f_b320e91e",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 751,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-27T21:35:13Z",
+      "side": 1,
+      "message": "The `ScalePlaneVertical()` call performs the multiplication `clip_width * 4` using the `int` type. This detects overflow in that multiplication.\n\nNote that the reason for the `clip_width \u003e INT_MAX / 4` check is not obvious when it is performed by the caller.",
+      "revId": "4a636caa076c10b7aec2fa749e7589394d44d74f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}

@@ -35,6 +35,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "49622805_8d3cd182",
+        "filename": "include/libyuv/scale_row.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-27T21:35:13Z",
+      "side": 1,
+      "message": "Done. I moved the overflow checks to the callers. Note that the overflow checks are not obvious when they are performned by the callers because the operation that could overflow isn\u0027t there.",
+      "parentUuid": "67be1114_3bb92ffb",
+      "revId": "407f21fe2985bc4a7a0c746e4e411bfe3a16af46",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a2cd09a2_97a36e30",
@@ -70,6 +88,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "68892df7_6a53e8b6",
+        "filename": "source/convert.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-27T21:35:13Z",
+      "side": 1,
+      "message": "Thank you for the analysis. In `FixedDiv(height, uv_height)`, we have `num\u003dheight` and `div\u003duv_height`. So the quotient is \u003c\u003d 2 and won\u0027t overflow.",
+      "parentUuid": "493e92b1_e844beab",
+      "revId": "407f21fe2985bc4a7a0c746e4e411bfe3a16af46",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b87b7250_b3590de7",
@@ -83,6 +119,24 @@
       "writtenOn": "2026-07-27T20:40:04Z",
       "side": 1,
       "message": "this isnt ideal. best have this function, I21xToI420 or its caller, check the params before this.  ScalePlaneVertical_16To8 should never fail because the parameters have been checked.\n\npreferrably make a row function/planar function that does not use scaling.\niirc the intent of this function is blend 2 rows and convert 10 bits to 8 bits.\nThe x in the name I21xToI420 means it support 10, 12 or 16 bit.",
+      "revId": "407f21fe2985bc4a7a0c746e4e411bfe3a16af46",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5090ebc4_bafbc4d5",
+        "filename": "source/convert.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-27T21:35:13Z",
+      "side": 1,
+      "message": "Done. Changed the return type of `ScalePlaneVertical_16To8()` back to `void`.",
+      "parentUuid": "b87b7250_b3590de7",
       "revId": "407f21fe2985bc4a7a0c746e4e411bfe3a16af46",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
