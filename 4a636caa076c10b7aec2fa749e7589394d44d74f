@@ -33,6 +33,40 @@
       "message": "The `ScalePlaneVertical()` call performs the multiplication `clip_width * 4` using the `int` type. This detects overflow in that multiplication.\n\nNote that the reason for the `clip_width \u003e INT_MAX / 4` check is not obvious when it is performed by the caller.",
       "revId": "4a636caa076c10b7aec2fa749e7589394d44d74f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d638e918_eeac63d0",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1632,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-27T23:31:11Z",
+      "side": 1,
+      "message": "this doesnt seem right?  the intent was 16.16 maximum is 32767.  using int64 to represent int16 is overkill and implies 64 bit size support.\nvalues are kept signed for overflow safety and to allow mirroring",
+      "revId": "4a636caa076c10b7aec2fa749e7589394d44d74f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84dc2118_4c61a116",
+        "filename": "unit_test/convert_test.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2601,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-27T23:31:11Z",
+      "side": 1,
+      "message": "40000 is beyond what 16.16 can index.  can we gracefully fail (-1)",
+      "revId": "4a636caa076c10b7aec2fa749e7589394d44d74f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
