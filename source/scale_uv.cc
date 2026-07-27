@@ -1015,9 +1015,9 @@ static int ScaleUV(const uint8_t* src,
   // HAS_SCALEPLANEVERTICAL
   if (dx == 0x10000 && (x & 0xffff) == 0) {
     // Arbitrary scale vertically, but unscaled horizontally.
-    ScalePlaneVertical(src_height, clip_width, clip_height, src_stride,
-                       dst_stride, src, dst, x, y, dy, /*bpp=*/2, filtering);
-    return 0;
+    return ScalePlaneVertical(src_height, clip_width, clip_height, src_stride,
+                              dst_stride, src, dst, x, y, dy, /*bpp=*/2,
+                              filtering);
   }
   if ((filtering == kFilterLinear) && ((dst_width + 1) / 2 == src_width)) {
     ScaleUVLinearUp2(src_width, src_height, clip_width, clip_height, src_stride,

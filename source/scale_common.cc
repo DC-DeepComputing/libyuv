@@ -11,6 +11,7 @@
 #include "libyuv/scale.h"
 
 #include <assert.h>
+#include <limits.h>
 #include <string.h>
 
 #include "libyuv/cpu_id.h"
@@ -1612,24 +1613,29 @@ void ScaleUVFilterCols64_C(uint8_t* dst_uv,
 #undef BLENDER
 
 // Scale plane vertically with bilinear interpolation.
-void ScalePlaneVertical(int src_height,
-                        int dst_width,
-                        int dst_height,
-                        int src_stride,
-                        int dst_stride,
-                        const uint8_t* src_argb,
-                        uint8_t* dst_argb,
-                        int x,
-                        int y,
-                        int dy,
-                        int bpp,  // bytes per pixel. 4 for ARGB.
-                        enum FilterMode filtering) {
+int ScalePlaneVertical(int src_height,
+                       int dst_width,
+                       int dst_height,
+                       int src_stride,
+                       int dst_stride,
+                       const uint8_t* src_argb,
+                       uint8_t* dst_argb,
+                       int x,
+                       int y,
+                       int dy,
+                       int bpp,  // bytes per pixel. 4 for ARGB.
+                       enum FilterMode filtering) {
   // TODO(fbarchard): Allow higher bpp.
-  int dst_width_bytes = dst_width * bpp;
+  int64_t dst_width_bytes64 = (int64_t)dst_width * bpp;
+  if (dst_width_bytes64 > INT_MAX) {
+    return -1;
+  }
+  int dst_width_bytes = (int)dst_width_bytes64;
   void (*InterpolateRow)(uint8_t* dst_argb, const uint8_t* src_argb,
                          ptrdiff_t src_stride, int dst_width,
                          int source_y_fraction) = InterpolateRow_C;
-  const int max_y = (src_height > 1) ? ((src_height - 1) << 16) - 1 : 0;
+  const int64_t max_y =
+      (src_height > 1) ? (((int64_t)src_height - 1) << 16) - 1 : 0;
   int j;
   assert(bpp >= 1 && bpp <= 4);
   assert(src_height != 0);
@@ -1671,39 +1677,46 @@ void ScalePlaneVertical(int src_height,
   }
 #endif
 
+  int64_t y64 = y;
   for (j = 0; j < dst_height; ++j) {
     int yi;
     int yf;
-    if (y > max_y) {
-      y = max_y;
+    if (y64 > max_y) {
+      y64 = max_y;
     }
-    yi = y >> 16;
-    yf = filtering ? ((y >> 8) & 255) : 0;
+    yi = (int)(y64 >> 16);
+    yf = filtering ? (int)((y64 >> 8) & 255) : 0;
     InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride, src_stride,
                    dst_width_bytes, yf);
     dst_argb += dst_stride;
-    y += dy;
+    y64 += dy;
   }
+  return 0;
 }
 
-void ScalePlaneVertical_16(int src_height,
-                           int dst_width,
-                           int dst_height,
-                           int src_stride,
-                           int dst_stride,
-                           const uint16_t* src_argb,
-                           uint16_t* dst_argb,
-                           int x,
-                           int y,
-                           int dy,
-                           int wpp, /* words per pixel. normally 1 */
-                           enum FilterMode filtering) {
+int ScalePlaneVertical_16(int src_height,
+                          int dst_width,
+                          int dst_height,
+                          int src_stride,
+                          int dst_stride,
+                          const uint16_t* src_argb,
+                          uint16_t* dst_argb,
+                          int x,
+                          int y,
+                          int dy,
+                          int wpp, /* words per pixel. normally 1 */
+                          enum FilterMode filtering) {
   // TODO(fbarchard): Allow higher wpp.
-  int dst_width_words = dst_width * wpp;
+  int64_t dst_width_words64 = (int64_t)dst_width * wpp;
+  if (dst_width_words64 > INT_MAX) {
+    return -1;
+  }
+  int dst_width_words = (int)dst_width_words64;
   void (*InterpolateRow)(uint16_t* dst_argb, const uint16_t* src_argb,
                          ptrdiff_t src_stride, int dst_width,
                          int source_y_fraction) = InterpolateRow_16_C;
-  const int max_y = (src_height > 1) ? ((src_height - 1) << 16) - 1 : 0;
+  const int64_t max_y =
+      (src_height > 1) ? (((int64_t)src_height - 1) << 16) - 1 : 0;
   int j;
   assert(wpp >= 1 && wpp <= 2);
   assert(src_height != 0);
@@ -1739,19 +1752,21 @@ void ScalePlaneVertical_16(int src_height,
     InterpolateRow = InterpolateRow_16_SME;
   }
 #endif
+  int64_t y64 = y;
   for (j = 0; j < dst_height; ++j) {
     int yi;
     int yf;
-    if (y > max_y) {
-      y = max_y;
+    if (y64 > max_y) {
+      y64 = max_y;
     }
-    yi = y >> 16;
-    yf = filtering ? ((y >> 8) & 255) : 0;
+    yi = (int)(y64 >> 16);
+    yf = filtering ? (int)((y64 >> 8) & 255) : 0;
     InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride, src_stride,
                    dst_width_words, yf);
     dst_argb += dst_stride;
-    y += dy;
+    y64 += dy;
   }
+  return 0;
 }
 
 // Use scale to convert lsb formats to msb, depending how many bits there are:
@@ -1760,26 +1775,31 @@ void ScalePlaneVertical_16(int src_height,
 // 4096 = 12 bits
 // 256 = 16 bits
 // TODO(fbarchard): change scale to bits
-void ScalePlaneVertical_16To8(int src_height,
-                              int dst_width,
-                              int dst_height,
-                              int src_stride,
-                              int dst_stride,
-                              const uint16_t* src_argb,
-                              uint8_t* dst_argb,
-                              int x,
-                              int y,
-                              int dy,
-                              int wpp, /* words per pixel. normally 1 */
-                              int scale,
-                              enum FilterMode filtering) {
+int ScalePlaneVertical_16To8(int src_height,
+                             int dst_width,
+                             int dst_height,
+                             int src_stride,
+                             int dst_stride,
+                             const uint16_t* src_argb,
+                             uint8_t* dst_argb,
+                             int x,
+                             int y,
+                             int dy,
+                             int wpp, /* words per pixel. normally 1 */
+                             int scale,
+                             enum FilterMode filtering) {
   // TODO(fbarchard): Allow higher wpp.
-  int dst_width_words = dst_width * wpp;
+  int64_t dst_width_words64 = (int64_t)dst_width * wpp;
+  if (dst_width_words64 > INT_MAX) {
+    return -1;
+  }
+  int dst_width_words = (int)dst_width_words64;
   // TODO(https://crbug.com/libyuv/931): Add NEON 32 bit and AVX2 versions.
   void (*InterpolateRow_16To8)(uint8_t* dst_argb, const uint16_t* src_argb,
                                ptrdiff_t src_stride, int scale, int dst_width,
                                int source_y_fraction) = InterpolateRow_16To8_C;
-  const int max_y = (src_height > 1) ? ((src_height - 1) << 16) - 1 : 0;
+  const int64_t max_y =
+      (src_height > 1) ? (((int64_t)src_height - 1) << 16) - 1 : 0;
   int j;
   assert(wpp >= 1 && wpp <= 2);
   assert(src_height != 0);
@@ -1808,19 +1828,21 @@ void ScalePlaneVertical_16To8(int src_height,
     }
   }
 #endif
+  int64_t y64 = y;
   for (j = 0; j < dst_height; ++j) {
     int yi;
     int yf;
-    if (y > max_y) {
-      y = max_y;
+    if (y64 > max_y) {
+      y64 = max_y;
     }
-    yi = y >> 16;
-    yf = filtering ? ((y >> 8) & 255) : 0;
+    yi = (int)(y64 >> 16);
+    yf = filtering ? (int)((y64 >> 8) & 255) : 0;
     InterpolateRow_16To8(dst_argb, src_argb + yi * (ptrdiff_t)src_stride,
                          src_stride, scale, dst_width_words, yf);
     dst_argb += dst_stride;
-    y += dy;
+    y64 += dy;
   }
+  return 0;
 }
 
 // Simplify the filtering based on scale factors.
