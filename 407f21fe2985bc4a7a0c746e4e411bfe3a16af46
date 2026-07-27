@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f1ea1e2_55f60c4d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-27T19:53:31Z",
+      "side": 1,
+      "message": "Tim: This CL is based on your patch, so I marked you as a co-author.",
+      "revId": "407f21fe2985bc4a7a0c746e4e411bfe3a16af46",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a2cd09a2_97a36e30",
+        "filename": "source/convert.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-27T19:53:31Z",
+      "side": 1,
+      "message": "Frank, Tim: Can this `FixedDiv(height, uv_height)` call still overflow a signed int?\n\nI believe `FixDiv_C(height, uv_height)` is safe. What about `FixDiv_X86(height, uv_height)`?\n\n```\n// Divide num by div and return as 16.16 fixed point result.\nint FixedDiv_X86(int num, int div) {\n  asm volatile(\n      \"cdq         \\n\"\n      \"shld        $0x10,%%eax,%%edx             \\n\"\n      \"shl         $0x10,%%eax                   \\n\"\n      \"idiv        %1                            \\n\"\n      \"mov         %0, %%eax                     \\n\"\n      : \"+a\"(num)  // %0\n      : \"c\"(div)   // %1\n      : \"memory\", \"cc\", \"edx\");\n  return num;\n}\n```",
+      "revId": "407f21fe2985bc4a7a0c746e4e411bfe3a16af46",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
