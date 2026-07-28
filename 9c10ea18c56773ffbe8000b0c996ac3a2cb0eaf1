@@ -51,6 +51,57 @@
       "message": "Thanks for the CL, adding Frank for the review.",
       "revId": "9c10ea18c56773ffbe8000b0c996ac3a2cb0eaf1",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c28638d_5b00dca0",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1201,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-28T03:49:15Z",
+      "side": 1,
+      "message": "The `src_stride` parameter should not go between `src_width` and `src_height`. It is better to keep `src_width` and `src_height` together.",
+      "revId": "9c10ea18c56773ffbe8000b0c996ac3a2cb0eaf1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8f8f802_d759296b",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1201,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-28T03:49:15Z",
+      "side": 1,
+      "message": "If `src` consists of multiple planes (such as y, u, v), each plane of `src` should have its own stride, but the proposed function prototype has a single `src_stride` parameter. So this is not general enough.\n\nPerhaps `src_stride` should become an array, and the size of the `src_stride` array should also be passed as a parameter and needs to be consistent with the `fourcc` parameter.",
+      "revId": "9c10ea18c56773ffbe8000b0c996ac3a2cb0eaf1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "337e4d7c_07a43fc0",
+        "filename": "source/convert_to_i420.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-28T03:49:15Z",
+      "side": 1,
+      "message": "Here is an example of a `src` consisting of three planes (y, u, v). The `src_stride` parameter is only used with `src_y`, while `src_u` and `src_v` still use `halfwidth` as their stride.",
+      "revId": "9c10ea18c56773ffbe8000b0c996ac3a2cb0eaf1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
