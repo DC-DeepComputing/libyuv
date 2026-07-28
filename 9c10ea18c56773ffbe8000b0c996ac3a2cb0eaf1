@@ -107,6 +107,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e0db4d28_bc6c1121",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1201,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-28T15:49:24Z",
+      "side": 1,
+      "message": "Robert: On second thought, I realized that `ConvertToI420()` is a helper function that dispatches to the appropriate libyuv function based on the `fourcc` parameter. An application can easily create a similar helper function that meets their own requirements. So we don\u0027t need to add an extended version of `ConvertToI420()`.\n\nTo be general, even the assumption that the `src` plane buffers are contiguous in memory should be removed, so the extended version `ConvertToI420()` would need to take an array of `src` plane buffers and an array of `src` strides, plus the size of these two arrays. That seems quite complicated.\n\nIn summary, I am inclined to suggest that you copy and customize `ConvertToI420()` to your application or library to your requirements (you may be able to simplify it), rather than try to extend it to be more general.",
+      "parentUuid": "80d56f85_7af022fe",
+      "revId": "9c10ea18c56773ffbe8000b0c996ac3a2cb0eaf1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "337e4d7c_07a43fc0",
         "filename": "source/convert_to_i420.cc",
         "patchSetId": 1
