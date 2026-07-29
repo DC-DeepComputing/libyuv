@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "033fb5b1_7e65c4f7",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 701,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-29T23:18:27Z",
+      "side": 1,
+      "message": "`ptrdif_t` casts were added to these two lines.",
+      "revId": "984a8d0a74d76a486698fcf39afa24e3b995b9f2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "34dc66be_5f68f382",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 707,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-29T23:18:27Z",
+      "side": 1,
+      "message": "In these two lines I moved the `ptrdiff_t` casts to the first operands, so that they look more similar to lines 700-701 above.",
+      "revId": "984a8d0a74d76a486698fcf39afa24e3b995b9f2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3c5f18e_19b1f880",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 785,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-29T23:18:27Z",
+      "side": 1,
+      "message": "Frank: The `clip_width \u003e 32768 || clip_height \u003e 32768` checks were added in https://chromium.googlesource.com/libyuv/libyuv/+/1e4a14f4 on 2015-03-10. But I cannot justify these checks after analyzing the relevant code.\n\nI think the `clip_width \u003e 32768 || clip_height \u003e 32768` checks can be safely removed.",
+      "revId": "984a8d0a74d76a486698fcf39afa24e3b995b9f2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
