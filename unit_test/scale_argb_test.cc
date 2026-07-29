@@ -9,6 +9,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "../unit_test/unit_test.h"
@@ -595,6 +596,39 @@ TEST_F(LibYUVScaleTest, ARGBTest4x) {
 
   free_aligned_buffer_page_end(dest_pixels);
   free_aligned_buffer_page_end(orig_pixels);
+}
+
+// ARGBScale and ARGBScaleClip reach ScaleARGB, which accepts negative width
+// (horizontal mirror) and height (flip) and takes Abs()/flips to positive
+// before forming (src_height - 1) << 16 and the step
+// dx = FixedDiv(Abs(src_width), dst_width) -- both must fit in a signed 16.16
+// value. Verify oversize width and height are rejected in both directions.
+TEST_F(LibYUVScaleTest, ARGBScaleDimensionOverflow) {
+  int width = 16;
+  int height = 40000;
+  align_buffer_page_end(src, width * height);
+  align_buffer_page_end(dst, width * height);
+  memset(src, 0, width * height);
+
+  EXPECT_EQ(-1, ARGBScale(src, 16, 1, 32769, dst, 16, 1, 1, kFilterBilinear));
+  EXPECT_EQ(-1, ARGBScale(src, 16, 1, -40000, dst, 16, 1, 1, kFilterBilinear));
+  EXPECT_EQ(-1, ARGBScale(src, 16, 1, 40000, dst, 16, 1, 1, kFilterBilinear));
+  EXPECT_EQ(-1,
+            ARGBScale(src, 40000, 40000, 1, dst, 16, 1, 1, kFilterBilinear));
+  EXPECT_EQ(-1,
+            ARGBScale(src, 40000, -40000, 1, dst, 16, 1, 1, kFilterBilinear));
+
+  EXPECT_EQ(-1, ARGBScaleClip(src, 16, 1, 40000, dst, 16, 1, 1, 0, 0, 1, 1,
+                              kFilterBilinear));
+  EXPECT_EQ(-1, ARGBScaleClip(src, 16, 1, -40000, dst, 16, 1, 1, 0, 0, 1, 1,
+                              kFilterBilinear));
+  EXPECT_EQ(-1, ARGBScaleClip(src, 40000, 40000, 1, dst, 16, 1, 1, 0, 0, 1, 1,
+                              kFilterBilinear));
+  EXPECT_EQ(-1, ARGBScaleClip(src, 40000, -40000, 1, dst, 16, 1, 1, 0, 0, 1, 1,
+                              kFilterBilinear));
+
+  free_aligned_buffer_page_end(src);
+  free_aligned_buffer_page_end(dst);
 }
 
 }  // namespace libyuv
