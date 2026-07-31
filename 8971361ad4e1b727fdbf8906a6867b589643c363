@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "82f9aa51_ec4ee3db",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-31T03:06:02Z",
+      "side": 1,
+      "message": "I have a CL that moves this if statement into the beginning of the for loop and gets rid of the if statement at the end of the for loop:\nhttps://chromium-review.googlesource.com/c/libyuv/libyuv/+/8141021\n\nIt would be good to combine that refactoring change with the fix in this CL. A solution is to go to 64 bits for `y`:\n\n```\n    int64_t y64 \u003d y;\n    for (j \u003d 0; j \u003c dst_height; ++j) {\n      if (y64 \u003e max_y) {\n        y64 \u003d max_y;\n      }\n      int yi \u003d (int)(y64 \u003e\u003e 16);\n      const uint8_t* src \u003d src_argb + yi * src_stride;\n      if (filtering \u003d\u003d kFilterLinear) {\n        ScaleARGBFilterCols(dst_argb, src, dst_width, x, dx);\n      } else {\n        int yf \u003d (int)((y64 \u003e\u003e 8) \u0026 255);\n        InterpolateRow(row, src, src_stride, clip_src_width, yf);\n        ScaleARGBFilterCols(dst_argb, row, dst_width, x, dx);\n      }\n      dst_argb +\u003d dst_stride;\n      y64 +\u003d dy;\n    }\n```",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "913b65a8_e452ccc8",
         "filename": "source/scale_argb.cc",
         "patchSetId": 2
