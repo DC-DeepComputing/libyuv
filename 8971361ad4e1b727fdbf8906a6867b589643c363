@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "398a0af2_daa44d0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-31T01:39:07Z",
+      "side": 1,
+      "message": "src_height \u003d 32768 is not expressible as 16.16 fixedpoint.  32767 is the largest INT16.\n\nwalking thru the scaling from 32767 to 2\n0 to 16383 is the top half\n16384 to 32767 is the bottom half\nfor each we take the center\n8191 is the initial Y\n24570 is the second Y\n16379 is the dy step.\n\nafter the 2nd Y is scaled, y +\u003d dy overflows to 40949\n\nso if we set max_y \u003d INT16_MAX-dy the overflow is avoided.\n16388 max_y with dy of 16379 avoids overflow.  Nope... that doesnt work.  We would need to subtract 2 steps.\n\na ternary would work\ny \u003d (y \u003c max_y) ? (y + dy) : max_y;",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "913b65a8_e452ccc8",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-31T01:39:07Z",
+      "side": 1,
+      "message": "i feel like the original code could be adapted:\n\ny +\u003d dy\nif (y \u003e max_y) {\n  y \u003d max_y;\n}\n\nby adjusting max_y and dy outside the loop?  But it would hurt the quality of the last row.",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
