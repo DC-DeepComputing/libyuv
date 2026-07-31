@@ -2793,11 +2793,11 @@ void ARGBToUV444MatrixRow_NEON(const uint8_t* src_argb,
         "v27", "v28");
 }
 
-static void ARGBToUV444MatrixRow_NEON_I8MM(const uint8_t* src_argb,
-                                           uint8_t* dst_u,
-                                           uint8_t* dst_v,
-                                           int width,
-                                           const struct ArgbConstants* c) {
+void ARGBToUV444MatrixRow_NEON_I8MM(const uint8_t* src_argb,
+                                    uint8_t* dst_u,
+                                    uint8_t* dst_v,
+                                    int width,
+                                    const struct ArgbConstants* c) {
   asm volatile(
       "ldr         q16, [%[c], #16]              \n"  // kRGBToU
       "ldr         q17, [%[c], #32]              \n"  // kRGBToV
@@ -2838,37 +2838,6 @@ static void ARGBToUV444MatrixRow_NEON_I8MM(const uint8_t* src_argb,
 // VB -0.1406 coefficient = -18
 // VG -0.7344 coefficient = -94
 // VR   0.875 coefficient = 112
-
-void ARGBToUV444Row_NEON(const uint8_t* src_argb,
-                         uint8_t* dst_u,
-                         uint8_t* dst_v,
-                         int width) {
-  ARGBToUV444MatrixRow_NEON(src_argb, dst_u, dst_v, width, &kArgbI601Constants);
-}
-
-void ARGBToUV444Row_NEON_I8MM(const uint8_t* src_argb,
-                              uint8_t* dst_u,
-                              uint8_t* dst_v,
-                              int width) {
-  ARGBToUV444MatrixRow_NEON_I8MM(src_argb, dst_u, dst_v, width,
-                                 &kArgbI601Constants);
-}
-
-void ARGBToUVJ444Row_NEON(const uint8_t* src_argb,
-                          uint8_t* dst_u,
-                          uint8_t* dst_v,
-                          int width) {
-  ARGBToUV444MatrixRow_NEON(src_argb, dst_u, dst_v, width, &kArgbJPEGConstants);
-}
-
-void ARGBToUVJ444Row_NEON_I8MM(const uint8_t* src_argb,
-                               uint8_t* dst_u,
-                               uint8_t* dst_v,
-                               int width) {
-  ARGBToUV444MatrixRow_NEON_I8MM(src_argb, dst_u, dst_v, width,
-                                 &kArgbJPEGConstants);
-}
-
 #define RGBTOUV_SETUP_REG                                                  \
   "movi       v20.8h, #112          \n" /* UB/VR coefficient  (0.875)   */ \
   "movi       v21.8h, #74           \n" /* UG coefficient    (-0.5781)  */ \
@@ -2971,23 +2940,6 @@ void ARGBToUVMatrixRow_NEON(const uint8_t* src_argb,
         "v28");
 }
 
-void ARGBToUVRow_NEON(const uint8_t* src_argb,
-                      int src_stride_argb,
-                      uint8_t* dst_u,
-                      uint8_t* dst_v,
-                      int width) {
-  ARGBToUVMatrixRow_NEON(src_argb, src_stride_argb, dst_u, dst_v, width,
-                         &kArgbI601Constants);
-}
-
-void ARGBToUVJRow_NEON(const uint8_t* src_argb,
-                       int src_stride_argb,
-                       uint8_t* dst_u,
-                       uint8_t* dst_v,
-                       int width) {
-  ARGBToUVMatrixRow_NEON(src_argb, src_stride_argb, dst_u, dst_v, width,
-                         &kArgbJPEGConstants);
-}
 
 
 
@@ -3375,25 +3327,6 @@ void ARGBToUVMatrixRow_NEON_I8MM(const uint8_t* src_argb,
                                    width, c);
 }
 
-void ARGBToUVRow_NEON_I8MM(const uint8_t* src_argb,
-                           int src_stride_argb,
-                           uint8_t* dst_u,
-                           uint8_t* dst_v,
-                           int width) {
-  ARGBToUVMatrixRow_NEON_I8MM_Impl(src_argb, src_stride_argb, dst_u, dst_v,
-                                   width, &kArgbI601Constants);
-}
-
-
-
-void ARGBToUVJRow_NEON_I8MM(const uint8_t* src_argb,
-                            int src_stride_argb,
-                            uint8_t* dst_u,
-                            uint8_t* dst_v,
-                            int width) {
-  ARGBToUVMatrixRow_NEON_I8MM_Impl(src_argb, src_stride_argb, dst_u, dst_v,
-                                   width, &kArgbJPEGConstants);
-}
 
 
 
@@ -3564,29 +3497,7 @@ void ARGBToYMatrixRow_NEON_DotProd(const uint8_t* src_argb,
         "v17", "v18", "v19");
 }
 
-// RGB to JPeg coefficients
 
-void ARGBToYRow_NEON(const uint8_t* src_argb, uint8_t* dst_y, int width) {
-  ARGBToYMatrixRow_NEON(src_argb, dst_y, width, &kArgbI601Constants);
-}
-
-void ARGBToYJRow_NEON(const uint8_t* src_argb, uint8_t* dst_yj, int width) {
-  ARGBToYMatrixRow_NEON(src_argb, dst_yj, width, &kArgbJPEGConstants);
-}
-
-
-
-void ARGBToYRow_NEON_DotProd(const uint8_t* src_argb,
-                             uint8_t* dst_y,
-                             int width) {
-  ARGBToYMatrixRow_NEON_DotProd(src_argb, dst_y, width, &kArgbI601Constants);
-}
-
-void ARGBToYJRow_NEON_DotProd(const uint8_t* src_argb,
-                              uint8_t* dst_yj,
-                              int width) {
-  ARGBToYMatrixRow_NEON_DotProd(src_argb, dst_yj, width, &kArgbJPEGConstants);
-}
 
 
 
