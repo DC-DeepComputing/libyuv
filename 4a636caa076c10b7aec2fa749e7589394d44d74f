@@ -70,6 +70,23 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a402856_f575b3f7",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1675,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-31T03:35:24Z",
+      "side": 1,
+      "message": "Note that libyuv seems to use this approach for x in some FilterCols functions. Search for x32 in source/scale_common.cc. Here is an example:\n\n```\nvoid ScaleFilterCols64_C(uint8_t* dst_ptr,\n                         const uint8_t* src_ptr,\n                         int dst_width,\n                         int x32,\n                         int dx) {\n  int64_t x \u003d (int64_t)(x32);\n  int j;\n  for (j \u003d 0; j \u003c dst_width - 1; j +\u003d 2) {\n    int64_t xi \u003d x \u003e\u003e 16;\n    int a \u003d src_ptr[xi];\n    int b \u003d src_ptr[xi + 1];\n    dst_ptr[0] \u003d BLENDER(a, b, x \u0026 0xffff);\n    x +\u003d dx;\n    xi \u003d x \u003e\u003e 16;\n    a \u003d src_ptr[xi];\n    b \u003d src_ptr[xi + 1];\n    dst_ptr[1] \u003d BLENDER(a, b, x \u0026 0xffff);\n    x +\u003d dx;\n    dst_ptr +\u003d 2;\n  }                          \n  if (dst_width \u0026 1) {       \n    int64_t xi \u003d x \u003e\u003e 16;\n    int a \u003d src_ptr[xi];\n    int b \u003d src_ptr[xi + 1];\n    dst_ptr[0] \u003d BLENDER(a, b, x \u0026 0xffff);\n  }\n}",
+      "revId": "4a636caa076c10b7aec2fa749e7589394d44d74f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "84dc2118_4c61a116",
