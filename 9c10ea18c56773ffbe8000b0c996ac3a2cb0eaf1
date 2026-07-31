@@ -125,6 +125,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1905a20f_d1d4a751",
+        "filename": "include/libyuv/convert.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1201,
+      "author": {
+        "id": 1537962
+      },
+      "writtenOn": "2026-07-31T13:50:48Z",
+      "side": 1,
+      "message": "Thanks for that feedback! I was about to suggest that if we keep the assumption regarding contiguous memory, we should be fine with sticking to one or multiple stride values.\n\nHowever then I figured that another part missing in ConvertToI420() is support for explicit constants (such as `kYuvH709Constants` or `kArgbH709Constants`). As these are increasingly desirable in libwebrtc as well, this gives me enough reason to follow your suggestion introduce a custom `ConvertToI420()` version in libwebrtc.\n\nThanks!",
+      "parentUuid": "e0db4d28_bc6c1121",
+      "revId": "9c10ea18c56773ffbe8000b0c996ac3a2cb0eaf1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "337e4d7c_07a43fc0",
         "filename": "source/convert_to_i420.cc",
         "patchSetId": 1
