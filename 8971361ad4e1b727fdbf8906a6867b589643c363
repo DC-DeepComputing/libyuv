@@ -33,6 +33,23 @@
       "message": "i feel like the original code could be adapted:\n\ny +\u003d dy\nif (y \u003e max_y) {\n  y \u003d max_y;\n}\n\nby adjusting max_y and dy outside the loop?  But it would hurt the quality of the last row.",
       "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c021b7cb_71ba1ffe",
+        "filename": "unit_test/scale_argb_test.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-07-31T01:40:22Z",
+      "side": 1,
+      "message": "32767?",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
