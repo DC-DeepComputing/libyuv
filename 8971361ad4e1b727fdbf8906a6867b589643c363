@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "331e343c_e670863b",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-31T03:29:27Z",
+      "side": 1,
+      "message": "Note that libyuv seems to use this approach for `x` in some FilterCols functions. Search for `x32` in source/scale_common.cc. Here is an example:\n\n```\nvoid ScaleFilterCols64_C(uint8_t* dst_ptr,\n                         const uint8_t* src_ptr,\n                         int dst_width,\n                         int x32,\n                         int dx) {\n  int64_t x \u003d (int64_t)(x32);\n  int j;\n  for (j \u003d 0; j \u003c dst_width - 1; j +\u003d 2) {\n    int64_t xi \u003d x \u003e\u003e 16;\n    int a \u003d src_ptr[xi];\n    int b \u003d src_ptr[xi + 1];\n    dst_ptr[0] \u003d BLENDER(a, b, x \u0026 0xffff);\n    x +\u003d dx;\n    xi \u003d x \u003e\u003e 16;\n    a \u003d src_ptr[xi];\n    b \u003d src_ptr[xi + 1];\n    dst_ptr[1] \u003d BLENDER(a, b, x \u0026 0xffff);\n    x +\u003d dx;\n    dst_ptr +\u003d 2;\n  }                          \n  if (dst_width \u0026 1) {       \n    int64_t xi \u003d x \u003e\u003e 16;\n    int a \u003d src_ptr[xi];\n    int b \u003d src_ptr[xi + 1];\n    dst_ptr[0] \u003d BLENDER(a, b, x \u0026 0xffff);\n  }\n}\n```",
+      "parentUuid": "82f9aa51_ec4ee3db",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "913b65a8_e452ccc8",
         "filename": "source/scale_argb.cc",
         "patchSetId": 2
