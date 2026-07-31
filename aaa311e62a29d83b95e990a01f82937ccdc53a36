@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fda6fee7_1123f4b6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-31T21:33:04Z",
+      "side": 1,
+      "message": "This CL is huge, so I won\u0027t review it. If you scroll the CL, you will spot some extra blank lines where code was deleted. I marked some (but not all) of those extra blank lines.",
+      "revId": "aaa311e62a29d83b95e990a01f82937ccdc53a36",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02ccdd0a_30c89977",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 1661,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-31T21:33:04Z",
+      "side": 1,
+      "message": "Nit: extra blank line.",
+      "revId": "aaa311e62a29d83b95e990a01f82937ccdc53a36",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c67a1745_eeb82419",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 1680,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-31T21:33:04Z",
+      "side": 1,
+      "message": "Nit: extra blank line.",
+      "revId": "aaa311e62a29d83b95e990a01f82937ccdc53a36",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ac283a3_3b74b65d",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 1740,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-31T21:33:04Z",
+      "side": 1,
+      "message": "Nit: extra blank line.",
+      "revId": "aaa311e62a29d83b95e990a01f82937ccdc53a36",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fa5ce93_6a0dbd22",
+        "filename": "source/row_lasx.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1887,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-31T21:33:04Z",
+      "side": 1,
+      "message": "Nit: Extra blank line.",
+      "revId": "aaa311e62a29d83b95e990a01f82937ccdc53a36",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8eb7baee_b84f9cd8",
+        "filename": "source/row_lasx.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1938,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-07-31T21:33:04Z",
+      "side": 1,
+      "message": "Nit: Extra blank lines.",
+      "revId": "aaa311e62a29d83b95e990a01f82937ccdc53a36",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
