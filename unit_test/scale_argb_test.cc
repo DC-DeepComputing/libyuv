@@ -597,4 +597,21 @@ TEST_F(LibYUVScaleTest, ARGBTest4x) {
   free_aligned_buffer_page_end(orig_pixels);
 }
 
+TEST_F(LibYUVScaleTest, ARGBScale_LargeHeightOverflow) {
+  const int src_w = 4;
+  const int src_h = 32768;
+  const int dst_w = 4;
+  const int dst_h = 2;
+  align_buffer_page_end(orig_pixels, src_w * src_h * 4);
+  align_buffer_page_end(dest_pixels, dst_w * dst_h * 4);
+  memset(orig_pixels, 128, src_w * src_h * 4);
+
+  int res = ARGBScale(orig_pixels, src_w * 4, src_w, src_h, dest_pixels,
+                      dst_w * 4, dst_w, dst_h, kFilterBilinear);
+  EXPECT_EQ(0, res);
+
+  free_aligned_buffer_page_end(dest_pixels);
+  free_aligned_buffer_page_end(orig_pixels);
+}
+
 }  // namespace libyuv
