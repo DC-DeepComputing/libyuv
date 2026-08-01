@@ -2216,6 +2216,158 @@ TEST_F(LibYUVConvertTest, TestRAWToI420) {
   free_aligned_buffer_page_end(ref_v);
 }
 
+TEST_F(LibYUVConvertTest, TestRAWToI444) {
+  const int kWidth = 16;
+  const int kHeight = 16;
+  align_buffer_page_end(src_raw, kWidth * kHeight * 3);
+  align_buffer_page_end(dst_y, kWidth * kHeight);
+  align_buffer_page_end(dst_u, kWidth * kHeight);
+  align_buffer_page_end(dst_v, kWidth * kHeight);
+  align_buffer_page_end(src_argb, kWidth * kHeight * 4);
+  align_buffer_page_end(ref_y, kWidth * kHeight);
+  align_buffer_page_end(ref_u, kWidth * kHeight);
+  align_buffer_page_end(ref_v, kWidth * kHeight);
+
+  MemRandomize(src_raw, kWidth * kHeight * 3);
+
+  RAWToI444(src_raw, kWidth * 3, dst_y, kWidth, dst_u, kWidth, dst_v, kWidth,
+            kWidth, kHeight);
+
+  // Verify against RAWToARGB + ARGBToI444
+  RAWToARGB(src_raw, kWidth * 3, src_argb, kWidth * 4, kWidth, kHeight);
+  ARGBToI444(src_argb, kWidth * 4, ref_y, kWidth, ref_u, kWidth, ref_v, kWidth,
+             kWidth, kHeight);
+
+  for (int i = 0; i < kWidth * kHeight; ++i) {
+    ASSERT_EQ(dst_y[i], ref_y[i]);
+    ASSERT_EQ(dst_u[i], ref_u[i]);
+    ASSERT_EQ(dst_v[i], ref_v[i]);
+  }
+
+  free_aligned_buffer_page_end(src_raw);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_u);
+  free_aligned_buffer_page_end(dst_v);
+  free_aligned_buffer_page_end(src_argb);
+  free_aligned_buffer_page_end(ref_y);
+  free_aligned_buffer_page_end(ref_u);
+  free_aligned_buffer_page_end(ref_v);
+}
+
+TEST_F(LibYUVConvertTest, TestRAWToJ444) {
+  const int kWidth = 16;
+  const int kHeight = 16;
+  align_buffer_page_end(src_raw, kWidth * kHeight * 3);
+  align_buffer_page_end(dst_y, kWidth * kHeight);
+  align_buffer_page_end(dst_u, kWidth * kHeight);
+  align_buffer_page_end(dst_v, kWidth * kHeight);
+  align_buffer_page_end(src_argb, kWidth * kHeight * 4);
+  align_buffer_page_end(ref_y, kWidth * kHeight);
+  align_buffer_page_end(ref_u, kWidth * kHeight);
+  align_buffer_page_end(ref_v, kWidth * kHeight);
+
+  MemRandomize(src_raw, kWidth * kHeight * 3);
+
+  RAWToJ444(src_raw, kWidth * 3, dst_y, kWidth, dst_u, kWidth, dst_v, kWidth,
+            kWidth, kHeight);
+
+  // Verify against RAWToARGB + ARGBToJ444
+  RAWToARGB(src_raw, kWidth * 3, src_argb, kWidth * 4, kWidth, kHeight);
+  ARGBToJ444(src_argb, kWidth * 4, ref_y, kWidth, ref_u, kWidth, ref_v, kWidth,
+             kWidth, kHeight);
+
+  for (int i = 0; i < kWidth * kHeight; ++i) {
+    ASSERT_EQ(dst_y[i], ref_y[i]);
+    ASSERT_EQ(dst_u[i], ref_u[i]);
+    ASSERT_EQ(dst_v[i], ref_v[i]);
+  }
+
+  free_aligned_buffer_page_end(src_raw);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_u);
+  free_aligned_buffer_page_end(dst_v);
+  free_aligned_buffer_page_end(src_argb);
+  free_aligned_buffer_page_end(ref_y);
+  free_aligned_buffer_page_end(ref_u);
+  free_aligned_buffer_page_end(ref_v);
+}
+
+TEST_F(LibYUVConvertTest, TestRGB24ToI444) {
+  const int kWidth = 16;
+  const int kHeight = 16;
+  align_buffer_page_end(src_rgb24, kWidth * kHeight * 3);
+  align_buffer_page_end(dst_y, kWidth * kHeight);
+  align_buffer_page_end(dst_u, kWidth * kHeight);
+  align_buffer_page_end(dst_v, kWidth * kHeight);
+  align_buffer_page_end(src_argb, kWidth * kHeight * 4);
+  align_buffer_page_end(ref_y, kWidth * kHeight);
+  align_buffer_page_end(ref_u, kWidth * kHeight);
+  align_buffer_page_end(ref_v, kWidth * kHeight);
+
+  MemRandomize(src_rgb24, kWidth * kHeight * 3);
+
+  RGB24ToI444(src_rgb24, kWidth * 3, dst_y, kWidth, dst_u, kWidth, dst_v,
+              kWidth, kWidth, kHeight);
+
+  // Verify against RGB24ToARGB + ARGBToI444
+  RGB24ToARGB(src_rgb24, kWidth * 3, src_argb, kWidth * 4, kWidth, kHeight);
+  ARGBToI444(src_argb, kWidth * 4, ref_y, kWidth, ref_u, kWidth, ref_v, kWidth,
+             kWidth, kHeight);
+
+  for (int i = 0; i < kWidth * kHeight; ++i) {
+    ASSERT_EQ(dst_y[i], ref_y[i]);
+    ASSERT_EQ(dst_u[i], ref_u[i]);
+    ASSERT_EQ(dst_v[i], ref_v[i]);
+  }
+
+  free_aligned_buffer_page_end(src_rgb24);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_u);
+  free_aligned_buffer_page_end(dst_v);
+  free_aligned_buffer_page_end(src_argb);
+  free_aligned_buffer_page_end(ref_y);
+  free_aligned_buffer_page_end(ref_u);
+  free_aligned_buffer_page_end(ref_v);
+}
+
+TEST_F(LibYUVConvertTest, TestRGB24ToJ444) {
+  const int kWidth = 16;
+  const int kHeight = 16;
+  align_buffer_page_end(src_rgb24, kWidth * kHeight * 3);
+  align_buffer_page_end(dst_y, kWidth * kHeight);
+  align_buffer_page_end(dst_u, kWidth * kHeight);
+  align_buffer_page_end(dst_v, kWidth * kHeight);
+  align_buffer_page_end(src_argb, kWidth * kHeight * 4);
+  align_buffer_page_end(ref_y, kWidth * kHeight);
+  align_buffer_page_end(ref_u, kWidth * kHeight);
+  align_buffer_page_end(ref_v, kWidth * kHeight);
+
+  MemRandomize(src_rgb24, kWidth * kHeight * 3);
+
+  RGB24ToJ444(src_rgb24, kWidth * 3, dst_y, kWidth, dst_u, kWidth, dst_v,
+              kWidth, kWidth, kHeight);
+
+  // Verify against RGB24ToARGB + ARGBToJ444
+  RGB24ToARGB(src_rgb24, kWidth * 3, src_argb, kWidth * 4, kWidth, kHeight);
+  ARGBToJ444(src_argb, kWidth * 4, ref_y, kWidth, ref_u, kWidth, ref_v, kWidth,
+             kWidth, kHeight);
+
+  for (int i = 0; i < kWidth * kHeight; ++i) {
+    ASSERT_EQ(dst_y[i], ref_y[i]);
+    ASSERT_EQ(dst_u[i], ref_u[i]);
+    ASSERT_EQ(dst_v[i], ref_v[i]);
+  }
+
+  free_aligned_buffer_page_end(src_rgb24);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_u);
+  free_aligned_buffer_page_end(dst_v);
+  free_aligned_buffer_page_end(src_argb);
+  free_aligned_buffer_page_end(ref_y);
+  free_aligned_buffer_page_end(ref_u);
+  free_aligned_buffer_page_end(ref_v);
+}
+
 TEST_F(LibYUVConvertTest, TestARGBToNV12Matrix) {
   const int kWidth = 16;
   const int kHeight = 16;

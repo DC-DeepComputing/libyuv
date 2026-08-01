@@ -1320,6 +1320,106 @@ void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
 }
 #endif
 
+#ifdef HAS_ARGBTOUV444MATRIXROW_RVV
+void ARGBToUV444MatrixRow_RVV(const uint8_t* src_argb,
+                              uint8_t* dst_u,
+                              uint8_t* dst_v,
+                              int width,
+                              const struct ArgbConstants* c) {
+  assert(width != 0);
+  size_t w = (size_t)width;
+  vint8m2_t v_bu, v_gu, v_ru;
+  vint8m2_t v_bv, v_gv, v_rv;
+  vint16m4_t v_adduv;
+  size_t vl = __riscv_vsetvl_e8m2(w);
+  v_bu = __riscv_vmv_v_x_i8m2(c->kRGBToU[0], vl);
+  v_gu = __riscv_vmv_v_x_i8m2(c->kRGBToU[1], vl);
+  v_ru = __riscv_vmv_v_x_i8m2(c->kRGBToU[2], vl);
+  v_bv = __riscv_vmv_v_x_i8m2(c->kRGBToV[0], vl);
+  v_gv = __riscv_vmv_v_x_i8m2(c->kRGBToV[1], vl);
+  v_rv = __riscv_vmv_v_x_i8m2(c->kRGBToV[2], vl);
+  v_adduv = __riscv_vmv_v_x_i16m4((int16_t)c->kAddUV[0], vl);
+  do {
+    size_t vl = __riscv_vsetvl_e8m2(w);
+    vuint8m2x4_t v_src_argb = __riscv_vlseg4e8_v_u8m2x4(src_argb, vl);
+    vuint8m2_t v_b = __riscv_vget_v_u8m2x4_u8m2(v_src_argb, 0);
+    vuint8m2_t v_g = __riscv_vget_v_u8m2x4_u8m2(v_src_argb, 1);
+    vuint8m2_t v_r = __riscv_vget_v_u8m2x4_u8m2(v_src_argb, 2);
+
+    vint16m4_t v_u_i16 = __riscv_vwmulsu_vv_i16m4(v_ru, v_r, vl);
+    v_u_i16 = __riscv_vwmaccsu_vv_i16m4(v_u_i16, v_gu, v_g, vl);
+    v_u_i16 = __riscv_vwmaccsu_vv_i16m4(v_u_i16, v_bu, v_b, vl);
+    v_u_i16 = __riscv_vsub_vv_i16m4(v_adduv, v_u_i16, vl);
+    vuint8m2_t v_u = __riscv_vnsrl_wx_u8m2(
+        __riscv_vreinterpret_v_i16m4_u16m4(v_u_i16), 8, vl);
+    __riscv_vse8_v_u8m2(dst_u, v_u, vl);
+
+    vint16m4_t v_v_i16 = __riscv_vwmulsu_vv_i16m4(v_rv, v_r, vl);
+    v_v_i16 = __riscv_vwmaccsu_vv_i16m4(v_v_i16, v_gv, v_g, vl);
+    v_v_i16 = __riscv_vwmaccsu_vv_i16m4(v_v_i16, v_bv, v_b, vl);
+    v_v_i16 = __riscv_vsub_vv_i16m4(v_adduv, v_v_i16, vl);
+    vuint8m2_t v_v = __riscv_vnsrl_wx_u8m2(
+        __riscv_vreinterpret_v_i16m4_u16m4(v_v_i16), 8, vl);
+    __riscv_vse8_v_u8m2(dst_v, v_v, vl);
+
+    w -= vl;
+    src_argb += 4 * vl;
+    dst_u += vl;
+    dst_v += vl;
+  } while (w > 0);
+}
+#endif
+
+#ifdef HAS_RGBTOUV444MATRIXROW_RVV
+void RGBToUV444MatrixRow_RVV(const uint8_t* src_rgb,
+                             uint8_t* dst_u,
+                             uint8_t* dst_v,
+                             int width,
+                             const struct ArgbConstants* c) {
+  assert(width != 0);
+  size_t w = (size_t)width;
+  vint8m2_t v_bu, v_gu, v_ru;
+  vint8m2_t v_bv, v_gv, v_rv;
+  vint16m4_t v_adduv;
+  size_t vl = __riscv_vsetvl_e8m2(w);
+  v_bu = __riscv_vmv_v_x_i8m2(c->kRGBToU[0], vl);
+  v_gu = __riscv_vmv_v_x_i8m2(c->kRGBToU[1], vl);
+  v_ru = __riscv_vmv_v_x_i8m2(c->kRGBToU[2], vl);
+  v_bv = __riscv_vmv_v_x_i8m2(c->kRGBToV[0], vl);
+  v_gv = __riscv_vmv_v_x_i8m2(c->kRGBToV[1], vl);
+  v_rv = __riscv_vmv_v_x_i8m2(c->kRGBToV[2], vl);
+  v_adduv = __riscv_vmv_v_x_i16m4((int16_t)c->kAddUV[0], vl);
+  do {
+    size_t vl = __riscv_vsetvl_e8m2(w);
+    vuint8m2x3_t v_src_rgb = __riscv_vlseg3e8_v_u8m2x3(src_rgb, vl);
+    vuint8m2_t v_b = __riscv_vget_v_u8m2x3_u8m2(v_src_rgb, 0);
+    vuint8m2_t v_g = __riscv_vget_v_u8m2x3_u8m2(v_src_rgb, 1);
+    vuint8m2_t v_r = __riscv_vget_v_u8m2x3_u8m2(v_src_rgb, 2);
+
+    vint16m4_t v_u_i16 = __riscv_vwmulsu_vv_i16m4(v_ru, v_r, vl);
+    v_u_i16 = __riscv_vwmaccsu_vv_i16m4(v_u_i16, v_gu, v_g, vl);
+    v_u_i16 = __riscv_vwmaccsu_vv_i16m4(v_u_i16, v_bu, v_b, vl);
+    v_u_i16 = __riscv_vsub_vv_i16m4(v_adduv, v_u_i16, vl);
+    vuint8m2_t v_u = __riscv_vnsrl_wx_u8m2(
+        __riscv_vreinterpret_v_i16m4_u16m4(v_u_i16), 8, vl);
+    __riscv_vse8_v_u8m2(dst_u, v_u, vl);
+
+    vint16m4_t v_v_i16 = __riscv_vwmulsu_vv_i16m4(v_rv, v_r, vl);
+    v_v_i16 = __riscv_vwmaccsu_vv_i16m4(v_v_i16, v_gv, v_g, vl);
+    v_v_i16 = __riscv_vwmaccsu_vv_i16m4(v_v_i16, v_bv, v_b, vl);
+    v_v_i16 = __riscv_vsub_vv_i16m4(v_adduv, v_v_i16, vl);
+    vuint8m2_t v_v = __riscv_vnsrl_wx_u8m2(
+        __riscv_vreinterpret_v_i16m4_u16m4(v_v_i16), 8, vl);
+    __riscv_vse8_v_u8m2(dst_v, v_v, vl);
+
+    w -= vl;
+    src_rgb += 3 * vl;
+    dst_u += vl;
+    dst_v += vl;
+  } while (w > 0);
+}
+#endif
+
 // Blend src_argb over src_argb1 and store to dst_argb.
 // dst_argb may be src_argb or src_argb1.
 // src_argb: RGB values have already been pre-multiplied by the a.

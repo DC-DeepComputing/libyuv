@@ -236,7 +236,9 @@ extern "C" {
 #define HAS_YUY2TONVUVROW_SSE2
 // TODO: port row_win to use 8 bit coefficients.
 #define HAS_ARGBTOYMATRIXROW_SSSE3
+#define HAS_RGBTOYMATRIXROW_SSSE3
 #define HAS_ARGBTOUVMATRIXROW_SSSE3
+#define HAS_RGBTOUVMATRIXROW_SSSE3
 #define HAS_ARGBTOUV444MATRIXROW_SSSE3
 
 #if defined(__x86_64__) || !defined(__pic__)
@@ -380,6 +382,7 @@ extern "C" {
 #define HAS_MIRRORSPLITUVROW_AVX512BW
 #define HAS_SPLITUVROW_AVX512BW
 #define HAS_RGBTOUVMATRIXROW_AVX512BW
+#define HAS_RGBTOYMATRIXROW_AVX512VBMI2
 #endif
 
 // The following are available on Neon platforms:
@@ -404,6 +407,7 @@ extern "C" {
 #define HAS_ARGBTORGB565DITHERROW_NEON
 #define HAS_ARGBTORGB565ROW_NEON
 #define HAS_ARGBTOUV444MATRIXROW_NEON
+#define HAS_RGBTOUV444MATRIXROW_NEON
 #if !defined(__GNUC__) || defined(__clang__)
 #define HAS_ARGBTOUVMATRIXROW_NEON
 #define HAS_RGBTOUVMATRIXROW_NEON
@@ -538,6 +542,7 @@ extern "C" {
 #define HAS_BGRATOYROW_NEON_DOTPROD
 #define HAS_RGBATOYJROW_NEON_DOTPROD
 #define HAS_RGBATOYROW_NEON_DOTPROD
+#define HAS_RGBTOYMATRIXROW_NEON_DOTPROD
 
 #define HAS_ARGBCOLORMATRIXROW_NEON_I8MM
 #define HAS_ARGBTOUVMATRIXROW_NEON_I8MM
@@ -790,9 +795,11 @@ extern "C" {
 #define HAS_ARGBCOPYYTOALPHAROW_RVV
 #define HAS_ARGBEXTRACTALPHAROW_RVV
 #define HAS_ARGBTOAR64ROW_RVV
+#define HAS_ARGBTOUV444MATRIXROW_RVV
 #define HAS_ARGBTOYMATRIXROW_RVV
 #define HAS_COPYROW_RVV
 #define HAS_INTERPOLATEROW_RVV
+#define HAS_RGBTOUV444MATRIXROW_RVV
 #define HAS_RGBTOYMATRIXROW_RVV
 #define HAS_SPLITARGBROW_RVV
 #define HAS_SPLITRGBROW_RVV
@@ -1828,6 +1835,11 @@ void RGBToUVMatrixRow_C(const uint8_t* src_rgb,
                         uint8_t* dst_v,
                         int width,
                         const struct ArgbConstants* c);
+void RGBToUV444MatrixRow_C(const uint8_t* src_rgb,
+                           uint8_t* dst_u,
+                           uint8_t* dst_v,
+                           int width,
+                           const struct ArgbConstants* c);
 void RGB565ToYMatrixRow_C(const uint8_t* src_rgb565,
                           uint8_t* dst_y,
                           int width,
@@ -2080,6 +2092,24 @@ void RGBToUVMatrixRow_Any_NEON(const uint8_t* src_rgb,
                                uint8_t* dst_v,
                                int width,
                                const struct ArgbConstants* c);
+void RGBToUV444MatrixRow_NEON(const uint8_t* src_rgb,
+                              uint8_t* dst_u,
+                              uint8_t* dst_v,
+                              int width,
+                              const struct ArgbConstants* c);
+void RGBToUV444MatrixRow_Any_NEON(const uint8_t* src_rgb,
+                                  uint8_t* dst_u,
+                                  uint8_t* dst_v,
+                                  int width,
+                                  const struct ArgbConstants* c);
+void RGBToYMatrixRow_NEON_DotProd(const uint8_t* src_rgb,
+                                  uint8_t* dst_y,
+                                  int width,
+                                  const struct ArgbConstants* c);
+void RGBToYMatrixRow_Any_NEON_DotProd(const uint8_t* src_rgb,
+                                      uint8_t* dst_y,
+                                      int width,
+                                      const struct ArgbConstants* c);
 
 void ARGBToYMatrixRow_NEON_DotProd(const uint8_t* src_argb,
                                    uint8_t* dst_y,
@@ -2109,6 +2139,32 @@ void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
                          uint8_t* dst_y,
                          int width,
                          const struct ArgbConstants* c);
+void ARGBToUV444MatrixRow_RVV(const uint8_t* src_argb,
+                              uint8_t* dst_u,
+                              uint8_t* dst_v,
+                              int width,
+                              const struct ArgbConstants* c);
+void RGBToUV444MatrixRow_RVV(const uint8_t* src_rgb,
+                             uint8_t* dst_u,
+                             uint8_t* dst_v,
+                             int width,
+                             const struct ArgbConstants* c);
+void RGBToYMatrixRow_SSSE3(const uint8_t* src_rgb,
+                           uint8_t* dst_y,
+                           int width,
+                           const struct ArgbConstants* c);
+void RGBToYMatrixRow_Any_SSSE3(const uint8_t* src_rgb,
+                               uint8_t* dst_y,
+                               int width,
+                               const struct ArgbConstants* c);
+void RGBToYMatrixRow_AVX512VBMI2(const uint8_t* src_rgb,
+                                 uint8_t* dst_y,
+                                 int width,
+                                 const struct ArgbConstants* c);
+void RGBToYMatrixRow_Any_AVX512VBMI2(const uint8_t* src_rgb,
+                                     uint8_t* dst_y,
+                                     int width,
+                                     const struct ArgbConstants* c);
 
 void ARGBToYMatrixRow_Any_NEON_DotProd(const uint8_t* src_argb,
                                        uint8_t* dst_y,
@@ -2146,6 +2202,18 @@ void ARGBToUV444MatrixRow_AVX512BW(const uint8_t* src_argb,
                                    uint8_t* dst_v,
                                    int width,
                                    const struct ArgbConstants* c);
+void RGBToUVMatrixRow_SSSE3(const uint8_t* src_rgb,
+                            int src_stride_rgb,
+                            uint8_t* dst_u,
+                            uint8_t* dst_v,
+                            int width,
+                            const struct ArgbConstants* c);
+void RGBToUVMatrixRow_Any_SSSE3(const uint8_t* src_rgb,
+                                int src_stride_rgb,
+                                uint8_t* dst_u,
+                                uint8_t* dst_v,
+                                int width,
+                                const struct ArgbConstants* c);
 void ARGBToUVMatrixRow_Any_SSSE3(const uint8_t* src_argb,
                                  int src_stride_argb,
                                  uint8_t* dst_u,

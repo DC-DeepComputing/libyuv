@@ -1489,6 +1489,68 @@ void ARGBToYMatrixRow_AVX512BW(const uint8_t* src_argb,
 }
 #endif
 
+#ifdef HAS_RGBTOYMATRIXROW_AVX512VBMI2
+static const uint64_t kMaskRGBToARGB_AVX512VBMI2 = 0x7777777777777777ULL;
+
+void RGBToYMatrixRow_AVX512VBMI2(const uint8_t* src_rgb,
+                                 uint8_t* dst_y,
+                                 int width,
+                                 const struct ArgbConstants* c) {
+  asm volatile(
+      "kmovq       %5,%%k1                       \n"
+      "vpternlogd  $0xff,%%zmm16,%%zmm16,%%zmm16 \n"
+      "vpsllw      $15,%%zmm16,%%zmm5            \n"
+      "vpacksswb   %%zmm5,%%zmm5,%%zmm5          \n"
+      "vpsrlw      $15,%%zmm16,%%zmm16           \n"  // zmm16 = 1
+      "vbroadcasti64x4 0(%3),%%zmm4              \n"
+      "vbroadcasti64x4 0x60(%3),%%zmm7           \n"
+      "vpmaddubsw  %%zmm5,%%zmm4,%%zmm6          \n"
+      "vpmaddwd    %%zmm16,%%zmm6,%%zmm6         \n"
+      "vpackssdw   %%zmm6,%%zmm6,%%zmm6          \n"
+      "vpsubw      %%zmm6,%%zmm7,%%zmm7          \n"
+      "vmovups     %4,%%zmm6                     \n" LABELALIGN
+      "1:          \n"
+      "vpexpandb   (%0),%%zmm0%{%%k1%}%{z%}      \n"
+      "vpexpandb   0x30(%0),%%zmm1%{%%k1%}%{z%}  \n"
+      "vpexpandb   0x60(%0),%%zmm2%{%%k1%}%{z%}  \n"
+      "vpexpandb   0x90(%0),%%zmm3%{%%k1%}%{z%}  \n"
+      "lea         0xc0(%0),%0                   \n"
+      "vpsubb      %%zmm5,%%zmm0,%%zmm0          \n"
+      "vpsubb      %%zmm5,%%zmm1,%%zmm1          \n"
+      "vpsubb      %%zmm5,%%zmm2,%%zmm2          \n"
+      "vpsubb      %%zmm5,%%zmm3,%%zmm3          \n"
+      "vpmaddubsw  %%zmm0,%%zmm4,%%zmm0          \n"
+      "vpmaddubsw  %%zmm1,%%zmm4,%%zmm1          \n"
+      "vpmaddubsw  %%zmm2,%%zmm4,%%zmm2          \n"
+      "vpmaddubsw  %%zmm3,%%zmm4,%%zmm3          \n"
+      "vpmaddwd    %%zmm16,%%zmm0,%%zmm0         \n"
+      "vpmaddwd    %%zmm16,%%zmm1,%%zmm1         \n"
+      "vpackssdw   %%zmm1,%%zmm0,%%zmm0          \n"
+      "vpmaddwd    %%zmm16,%%zmm2,%%zmm2         \n"
+      "vpmaddwd    %%zmm16,%%zmm3,%%zmm3         \n"
+      "vpackssdw   %%zmm3,%%zmm2,%%zmm2          \n"
+      "vpaddw      %%zmm7,%%zmm0,%%zmm0          \n"
+      "vpaddw      %%zmm7,%%zmm2,%%zmm2          \n"
+      "vpsrlw      $0x8,%%zmm0,%%zmm0            \n"
+      "vpsrlw      $0x8,%%zmm2,%%zmm2            \n"
+      "vpackuswb   %%zmm2,%%zmm0,%%zmm0          \n"
+      "vpermd      %%zmm0,%%zmm6,%%zmm0          \n"
+      "vmovups     %%zmm0,(%1)                   \n"
+      "lea         0x40(%1),%1                   \n"
+      "sub         $0x40,%2                      \n"
+      "jg          1b                            \n"
+      "vzeroupper  \n"
+      : "+r"(src_rgb),                // %0
+        "+r"(dst_y),                  // %1
+        "+r"(width)                   // %2
+      : "r"(c),                       // %3
+        "m"(kPermdARGBToY_AVX512BW),  // %4
+        "r"(kMaskRGBToARGB_AVX512VBMI2)  // %5
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
+        "xmm7", "xmm16", "k1");
+}
+#endif
+
 #ifdef HAS_ARGBTOUV444MATRIXROW_SSSE3
 void ARGBToUV444MatrixRow_SSSE3(const uint8_t* src_argb,
                                 uint8_t* dst_u,
