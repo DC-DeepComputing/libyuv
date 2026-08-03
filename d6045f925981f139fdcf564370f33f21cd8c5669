@@ -24,6 +24,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f10c0bf_127990b6",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 2380,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-03T23:39:57Z",
+      "side": 1,
+      "message": "Yes, this was intentional. In 2-pass mode, RAWToARGB shuffled [R, G, B] into [B, G, R, A] before applying kArgbConstants ([BY, GY, RY]). In 1-pass mode, RGBToYMatrixRow operates directly on RAW in memory ([R, G, B]). Since Byte 0 is Red and Byte 2 is Blue, the coefficients at offsets 0, 1, 2 must be [RY, GY, BY], which is kAbgrConstants.\nTestRAWToJNV21 in convert_test.cc verifies that 1-pass matches 2-pass output.",
+      "parentUuid": "66bb68ec_d756d0db",
+      "range": {
+        "startLine": 2380,
+        "startChar": 0,
+        "endLine": 2380,
+        "endChar": 0
+      },
+      "revId": "d6045f925981f139fdcf564370f33f21cd8c5669",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "917071aa_20868dea",
@@ -131,6 +155,30 @@
       "writtenOn": "2026-08-03T23:19:41Z",
       "side": 1,
       "message": "The clobber list includes \u0027xmm16\u0027 but should also include \u0027xmm17\u0027 through \u0027xmm23\u0027 to match the registers used in the assembly.",
+      "range": {
+        "startLine": 430,
+        "startChar": 0,
+        "endLine": 430,
+        "endChar": 0
+      },
+      "revId": "d6045f925981f139fdcf564370f33f21cd8c5669",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7efb22c_d8228af5",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-03T23:39:57Z",
+      "side": 1,
+      "message": "Done.  not zmm17 is not used.",
+      "parentUuid": "43ab1971_9bd50a66",
       "range": {
         "startLine": 430,
         "startChar": 0,
