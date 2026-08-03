@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "70fe36e9_df8911b9",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T21:17:53Z",
+      "side": 1,
+      "message": "Hmm, will wait until your CL lands before making more changes here then.",
+      "parentUuid": "331e343c_e670863b",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "913b65a8_e452ccc8",
         "filename": "source/scale_argb.cc",
         "patchSetId": 2
