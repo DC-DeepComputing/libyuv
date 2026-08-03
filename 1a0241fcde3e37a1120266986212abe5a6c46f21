@@ -35,6 +35,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c50e4735_96dd6373",
+        "filename": "include/libyuv/cpu_support.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-03T22:54:19Z",
+      "side": 1,
+      "message": "SME defaults to off for now, but in the future, like any isa, it will default to on and you can disable it if wanted.\n\nBecause it is temporarily off, the enable macro allows you to force it on for testing.  I plan to re-implemente SME very differently and after that default it to on if it proves faster than SVE.",
+      "parentUuid": "b4bfbf57_80f1285c",
+      "revId": "1a0241fcde3e37a1120266986212abe5a6c46f21",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "41abeea6_91a498b7",
