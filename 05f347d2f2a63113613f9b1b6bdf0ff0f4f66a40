@@ -70,6 +70,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fdca04b_e9e49043",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-03T22:03:12Z",
+      "side": 1,
+      "message": "yes this was intentional for 2 reasons:\n\n1. when building for windows, zmm6-15 are reserved so this CL avoids those registers for avx512, but that requires more than 8 registers for a few functions.  rather than attempt to make linux efficient and windows do pushes, i opted to make windows also efficient for x86_64 and just disable 32 bit\n\n2. realistically people with avx512 hardware will not be running 32 bit os/apps.  there are also complexities with 32 bit avx512 on windows emulator where float rounding is different than 64 bit and linux.\nalthough some row functions use 6 or less zmm vectors, its simplier to fall back on ssse3/avx2 for 32 bit x86.",
+      "parentUuid": "12a6f6f2_c0acd93e",
+      "range": {
+        "startLine": 361,
+        "startChar": 0,
+        "endLine": 361,
+        "endChar": 0
+      },
+      "revId": "05f347d2f2a63113613f9b1b6bdf0ff0f4f66a40",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "024327e4_db8a74fb",
