@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66bb68ec_d756d0db",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 2380,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T23:19:41Z",
+      "side": 1,
+      "message": "You changed the constant from kArgbJPEGConstants to kAbgrJPEGConstants. Was this intentional? Usually RAW (RGB24 big endian) mapping to YUV uses the same coefficients as ARGB (which is BGRA in memory).",
+      "range": {
+        "startLine": 2380,
+        "startChar": 0,
+        "endLine": 2380,
+        "endChar": 0
+      },
+      "revId": "d6045f925981f139fdcf564370f33f21cd8c5669",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "917071aa_20868dea",
+        "filename": "source/row_any.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 2123,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T23:19:41Z",
+      "side": 1,
+      "message": "Typo here: the name of the \u0027Any\u0027 function should start with RGB, not ARGB, to match the implementation being wrapped.",
+      "range": {
+        "startLine": 2123,
+        "startChar": 0,
+        "endLine": 2123,
+        "endChar": 0
+      },
+      "revId": "d6045f925981f139fdcf564370f33f21cd8c5669",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9287a022_11e77ed4",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T23:19:41Z",
+      "side": 1,
+      "message": "The clobber list should probably be updated to include \u0027xmm16\u0027 since you switched from using \u0027zmm7\u0027 to \u0027zmm16\u0027 in the assembly above.",
+      "range": {
+        "startLine": 193,
+        "startChar": 0,
+        "endLine": 193,
+        "endChar": 0
+      },
+      "revId": "d6045f925981f139fdcf564370f33f21cd8c5669",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43ab1971_9bd50a66",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T23:19:41Z",
+      "side": 1,
+      "message": "The clobber list includes \u0027xmm16\u0027 but should also include \u0027xmm17\u0027 through \u0027xmm23\u0027 to match the registers used in the assembly.",
+      "range": {
+        "startLine": 430,
+        "startChar": 0,
+        "endLine": 430,
+        "endChar": 0
+      },
+      "revId": "d6045f925981f139fdcf564370f33f21cd8c5669",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
