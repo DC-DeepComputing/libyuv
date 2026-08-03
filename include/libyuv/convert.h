@@ -966,6 +966,32 @@ int RGB24ToJ420(const uint8_t* src_rgb24,
                 int width,
                 int height);
 
+// RGB little endian (bgr in memory) to I444.
+LIBYUV_API
+int RGB24ToI444(const uint8_t* src_rgb24,
+                int src_stride_rgb24,
+                uint8_t* dst_y,
+                int dst_stride_y,
+                uint8_t* dst_u,
+                int dst_stride_u,
+                uint8_t* dst_v,
+                int dst_stride_v,
+                int width,
+                int height);
+
+// RGB little endian (bgr in memory) to J444.
+LIBYUV_API
+int RGB24ToJ444(const uint8_t* src_rgb24,
+                int src_stride_rgb24,
+                uint8_t* dst_y,
+                int dst_stride_y,
+                uint8_t* dst_u,
+                int dst_stride_u,
+                uint8_t* dst_v,
+                int dst_stride_v,
+                int width,
+                int height);
+
 // RGB big endian (rgb in memory) to I420.
 LIBYUV_API
 int RAWToI420(const uint8_t* src_raw,
@@ -991,6 +1017,22 @@ int RAWToI444(const uint8_t* src_raw,
               int dst_stride_v,
               int width,
               int height);
+
+// RGB big endian (rgb in memory) to I444 with matrix.
+LIBYUV_API
+int RAWToI444Matrix(const uint8_t* src_raw,
+                    int src_stride_raw,
+                    uint8_t* dst_y,
+                    int dst_stride_y,
+                    uint8_t* dst_u,
+                    int dst_stride_u,
+                    uint8_t* dst_v,
+                    int dst_stride_v,
+                    const struct ArgbConstants* argbconstants,
+                    int width,
+                    int height);
+
+#define RGB24ToI444Matrix RAWToI444Matrix
 
 // RGB big endian (rgb in memory) to J420.
 LIBYUV_API
