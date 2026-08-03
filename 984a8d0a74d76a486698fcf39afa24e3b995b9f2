@@ -38,6 +38,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "6d4a579c_ffa2462e",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 701,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-03T21:13:37Z",
+      "side": 1,
+      "message": "I just checked the callers. The callers ensure the following is true:\n* dst_width \u003e 0\n* clip_width \u003c\u003d 32768\n* (clip_x + clip_width) \u003c\u003d dst_width\n\nFrom these inequalities, we cannot conclude that clip_x \u003c\u003d 32768. A counter example is clip_x \u003d 0x20000000, clip_width \u003d 0x1000, dst_width \u003d 0x20001000. Then clip_x \u003e 32768 and clip_x * 4 overflows an `int`.",
+      "parentUuid": "cfa7bcd4_c079023d",
+      "revId": "984a8d0a74d76a486698fcf39afa24e3b995b9f2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "34dc66be_5f68f382",
         "filename": "source/scale_argb.cc",
         "patchSetId": 1
