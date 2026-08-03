@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41abeea6_91a498b7",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T22:22:21Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: Same as line 1519, vbroadcasti64x4 will read 32 bytes. If kShuffleMaskRAWToARGB is 16 bytes, this is an out-of-bounds read.",
+      "range": {
+        "startLine": 383,
+        "startChar": 0,
+        "endLine": 383,
+        "endChar": 0
+      },
+      "revId": "1a0241fcde3e37a1120266986212abe5a6c46f21",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "001455b0_28999e3b",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 1519,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T22:22:21Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: kShuffleMaskRGB24ToARGB is likely a 16-byte constant. vbroadcasti64x4 reads 32 bytes from memory. This will read 16 bytes of out-of-bounds data. You should define a 32-byte version of this mask (like you did in row_win.cc) or use vbroadcasti32x4 which only reads 16 bytes.",
+      "range": {
+        "startLine": 1519,
+        "startChar": 0,
+        "endLine": 1519,
+        "endChar": 0
+      },
+      "revId": "1a0241fcde3e37a1120266986212abe5a6c46f21",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
