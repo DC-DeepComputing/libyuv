@@ -100,6 +100,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa7fcf38_537efe3f",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-03T23:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb563ff6_9efdb8aa",
+      "range": {
+        "startLine": 383,
+        "startChar": 0,
+        "endLine": 383,
+        "endChar": 0
+      },
+      "revId": "1a0241fcde3e37a1120266986212abe5a6c46f21",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "001455b0_28999e3b",
@@ -113,6 +137,30 @@
       "writtenOn": "2026-08-03T22:22:21Z",
       "side": 1,
       "message": "Please fix this WARNING reported by autoreview issue finding: kShuffleMaskRGB24ToARGB is likely a 16-byte constant. vbroadcasti64x4 reads 32 bytes from memory. This will read 16 bytes of out-of-bounds data. You should define a 32-byte version of this mask (like you did in row_win.cc) or use vbroadcasti32x4 which only reads 16 bytes.",
+      "range": {
+        "startLine": 1519,
+        "startChar": 0,
+        "endLine": 1519,
+        "endChar": 0
+      },
+      "revId": "1a0241fcde3e37a1120266986212abe5a6c46f21",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1a04984e_2fd4f932",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 1519,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-03T23:12:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "001455b0_28999e3b",
       "range": {
         "startLine": 1519,
         "startChar": 0,
