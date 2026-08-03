@@ -47,6 +47,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bda2a022_932909c5",
+        "filename": "source/row_any.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 2123,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-03T23:35:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "917071aa_20868dea",
+      "range": {
+        "startLine": 2123,
+        "startChar": 0,
+        "endLine": 2123,
+        "endChar": 0
+      },
+      "revId": "d6045f925981f139fdcf564370f33f21cd8c5669",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9287a022_11e77ed4",
@@ -60,6 +84,30 @@
       "writtenOn": "2026-08-03T23:19:41Z",
       "side": 1,
       "message": "The clobber list should probably be updated to include \u0027xmm16\u0027 since you switched from using \u0027zmm7\u0027 to \u0027zmm16\u0027 in the assembly above.",
+      "range": {
+        "startLine": 193,
+        "startChar": 0,
+        "endLine": 193,
+        "endChar": 0
+      },
+      "revId": "d6045f925981f139fdcf564370f33f21cd8c5669",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64901348_432f1fc9",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-03T23:35:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9287a022_11e77ed4",
       "range": {
         "startLine": 193,
         "startChar": 0,
