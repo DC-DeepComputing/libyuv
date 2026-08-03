@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "215a7843_61f2f8ef",
+        "filename": "include/libyuv/cpu_support.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T20:19:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: Is it confirmed that Clang 18 is sufficient for SME support in libyuv? The comment above still mentions Clang 19 was required (though you updated it to 18 in the next line).",
+      "range": {
+        "startLine": 91,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 0
+      },
+      "revId": "05f347d2f2a63113613f9b1b6bdf0ff0f4f66a40",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e0a5767_2b32e6db",
+        "filename": "include/libyuv/cpu_support.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T20:19:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: Confirming that Clang 18 is sufficient for SME. If there were issues with compiler-rt symbols in v18, please double-check if this change is safe.",
+      "range": {
+        "startLine": 94,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 0
+      },
+      "revId": "05f347d2f2a63113613f9b1b6bdf0ff0f4f66a40",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12a6f6f2_c0acd93e",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T20:19:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: The comment says x64, but the original code included __i386__. This change effectively drops AVX512 support for 32-bit x86. Is this intentional?",
+      "range": {
+        "startLine": 361,
+        "startChar": 0,
+        "endLine": 361,
+        "endChar": 0
+      },
+      "revId": "05f347d2f2a63113613f9b1b6bdf0ff0f4f66a40",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "024327e4_db8a74fb",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1466,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T20:19:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: Missing space in LABELALIGN comment? Previous lines have a space.",
+      "range": {
+        "startLine": 1466,
+        "startChar": 0,
+        "endLine": 1466,
+        "endChar": 0
+      },
+      "revId": "05f347d2f2a63113613f9b1b6bdf0ff0f4f66a40",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4dcbc17a_5a3da781",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1583,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T20:19:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: The clobber list is missing xmm18 through xmm25, which are used by zmm18-zmm25 in this function.",
+      "range": {
+        "startLine": 1583,
+        "startChar": 0,
+        "endLine": 1583,
+        "endChar": 0
+      },
+      "revId": "05f347d2f2a63113613f9b1b6bdf0ff0f4f66a40",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5995eae0_81443b22",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1610,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T20:19:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: The use of vpexpandb with the 0x7777... mask for RGB24 to ARGB expansion is very clever.",
+      "range": {
+        "startLine": 1610,
+        "startChar": 0,
+        "endLine": 1610,
+        "endChar": 0
+      },
+      "revId": "05f347d2f2a63113613f9b1b6bdf0ff0f4f66a40",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b50f70ae_4ad4f009",
+        "filename": "source/row_win.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1067,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-03T20:19:19Z",
+      "side": 1,
+      "message": "Please fix this WARNING reported by autoreview issue finding: These new AVX2 row functions are implemented and defined in row.h, but they don\u0027t seem to be hooked up to any dispatcher (like in source/planar_functions.cc). Are they intended for a follow-up patch, or should the dispatch logic be included here?",
+      "range": {
+        "startLine": 1067,
+        "startChar": 0,
+        "endLine": 1067,
+        "endChar": 0
+      },
+      "revId": "05f347d2f2a63113613f9b1b6bdf0ff0f4f66a40",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
