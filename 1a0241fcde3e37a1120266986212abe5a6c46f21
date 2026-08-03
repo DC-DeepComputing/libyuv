@@ -1,6 +1,40 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8736dd8d_5b1b31e0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-03T22:25:41Z",
+      "side": 1,
+      "message": "The CL is huge, so I only skimmed through it quickly.",
+      "revId": "1a0241fcde3e37a1120266986212abe5a6c46f21",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4bfbf57_80f1285c",
+        "filename": "include/libyuv/cpu_support.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-03T22:25:41Z",
+      "side": 1,
+      "message": "Why do we have both `LIBYUV_ENABLE_SME` and `LIBYUV_DISABLE_SME`?\n\nIs `LIBYUV_ENABLE_SME` deprecated and `LIBYUV_DISABLE_SME` preferred?",
+      "revId": "1a0241fcde3e37a1120266986212abe5a6c46f21",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "41abeea6_91a498b7",
