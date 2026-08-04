@@ -16,6 +16,23 @@
       "message": "Bug:?",
       "revId": "4aad309b8a2f9934f541eae786f294069ff71be4",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7fbc7df_9e3df9b9",
+        "filename": "source/scale.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1151,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-04T00:52:35Z",
+      "side": 1,
+      "message": "doesnt this line still overflow?  e.g.   2 rows and dy \u003d 30000.0  the y value used are okay, but the last unused y overflow?",
+      "revId": "4aad309b8a2f9934f541eae786f294069ff71be4",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
