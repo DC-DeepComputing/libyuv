@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a5a15e42_080995fb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-04T02:01:27Z",
+      "side": 1,
+      "message": "I didn\u0027t file a bug. This CL is purely code transformation.\n\nWould you like me to file a bug anyway?",
+      "parentUuid": "714307ab_ff1c68af",
+      "revId": "4aad309b8a2f9934f541eae786f294069ff71be4",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d7fbc7df_9e3df9b9",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-08-04T00:52:35Z",
       "side": 1,
       "message": "doesnt this line still overflow?  e.g.   2 rows and dy \u003d 30000.0  the y value used are okay, but the last unused y overflow?",
+      "revId": "4aad309b8a2f9934f541eae786f294069ff71be4",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09703d8a_302f23c3",
+        "filename": "source/scale.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1151,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-04T02:01:27Z",
+      "side": 1,
+      "message": "Frank: This CL is purely code transformation. The new code is equivalent to the original code but is simpler.",
+      "parentUuid": "d7fbc7df_9e3df9b9",
       "revId": "4aad309b8a2f9934f541eae786f294069ff71be4",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
