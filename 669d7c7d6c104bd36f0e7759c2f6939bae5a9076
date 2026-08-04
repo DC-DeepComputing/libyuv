@@ -16,6 +16,24 @@
       "message": "can we assert that dst_width and src_width are less than INT16_MAX?  it feels wrong to use int64 on int16 size values, and in theory a future int that is larger than int64 this causes the value to be cast down in size, contributing to an overflow.",
       "revId": "669d7c7d6c104bd36f0e7759c2f6939bae5a9076",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c50b09b1_92712d58",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1844,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-04T23:25:48Z",
+      "side": 1,
+      "message": "The callers of `ScaleFilterReduce()` do not require `dst_width` be \u003c\u003d INT16_MAX.\n\nWould `long long` be accetpable?",
+      "parentUuid": "a97697b7_ef492ad5",
+      "revId": "669d7c7d6c104bd36f0e7759c2f6939bae5a9076",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
