@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00302e14_cbd6a0cd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 19
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-04T01:09:03Z",
+      "side": 1,
+      "message": "Frank: Did you verify row_win.cc with MSVC?\n\nrow_win.cc has a compilation error when MSVC is used (bug 542271613). When clang-cl is used, the code in row_win.cc is skipped and not compiled. So the changes to row_win.cc in this CL are untested.",
+      "revId": "86a4d94d7a5ab7d05595a32fd8953361146cd28b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
