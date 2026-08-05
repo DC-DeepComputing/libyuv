@@ -16,6 +16,23 @@
       "message": "this is correct but i used to do this with clang-tidy by making sure the public prototypes use the right name and then clang-tidy can make the implementations match.\nare the nv21 functions in already using stride_vu etc?",
       "revId": "4faddf75a132de9dc0317b5bf88e921f75a0c13d",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebf64f7a_de1eb2f4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-05T20:45:07Z",
+      "side": 1,
+      "message": "also note that with most \u0027matrix\u0027 functions the channel ordering is often flexible.  this function can output uv or vu depending on the matrix/source format.",
+      "revId": "4faddf75a132de9dc0317b5bf88e921f75a0c13d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
