@@ -912,12 +912,15 @@ static int ScalePlaneBox(int src_width,
   int y = 0;
   int dx = 0;
   int dy = 0;
-  const int max_y = (src_height << 16);
+  const int64_t max_y = (int64_t)src_height << 16;
   ScaleSlope(src_width, src_height, dst_width, dst_height, kFilterBox, &x, &y,
              &dx, &dy);
   src_width = Abs(src_width);
   {
     // Allocate a row buffer of uint16_t.
+    if (src_width > INT_MAX / 2) {
+      return -1;
+    }
     align_buffer_64(row16, src_width * 2);
     if (!row16)
       return 1;
@@ -965,15 +968,16 @@ static int ScalePlaneBox(int src_width,
     }
 #endif
 
+    int64_t y64 = y;
     for (j = 0; j < dst_height; ++j) {
       int boxheight;
-      int iy = y >> 16;
+      int iy = (int)(y64 >> 16);
       const uint8_t* src = src_ptr + iy * src_stride;
-      y += dy;
-      if (y > max_y) {
-        y = max_y;
+      y64 += dy;
+      if (y64 > max_y) {
+        y64 = max_y;
       }
-      boxheight = MIN1((y >> 16) - iy);
+      boxheight = MIN1((int)(y64 >> 16) - iy);
       memset(row16, 0, src_width * 2);
       for (k = 0; k < boxheight; ++k) {
         ScaleAddRow(src, (uint16_t*)(row16), src_width);
@@ -1001,12 +1005,15 @@ static int ScalePlaneBox_16(int src_width,
   int y = 0;
   int dx = 0;
   int dy = 0;
-  const int max_y = (src_height << 16);
+  const int64_t max_y = (int64_t)src_height << 16;
   ScaleSlope(src_width, src_height, dst_width, dst_height, kFilterBox, &x, &y,
              &dx, &dy);
   src_width = Abs(src_width);
   {
     // Allocate a row buffer of uint32_t.
+    if (src_width > INT_MAX / 4) {
+      return -1;
+    }
     align_buffer_64(row32, src_width * 4);
     if (!row32)
       return 1;
@@ -1022,15 +1029,16 @@ static int ScalePlaneBox_16(int src_width,
     }
 #endif
 
+    int64_t y64 = y;
     for (j = 0; j < dst_height; ++j) {
       int boxheight;
-      int iy = y >> 16;
+      int iy = (int)(y64 >> 16);
       const uint16_t* src = src_ptr + iy * src_stride;
-      y += dy;
-      if (y > max_y) {
-        y = max_y;
+      y64 += dy;
+      if (y64 > max_y) {
+        y64 = max_y;
       }
-      boxheight = MIN1((y >> 16) - iy);
+      boxheight = MIN1((int)(y64 >> 16) - iy);
       memset(row32, 0, src_width * 4);
       for (k = 0; k < boxheight; ++k) {
         ScaleAddRow(src, (uint32_t*)(row32), src_width);
@@ -1065,7 +1073,7 @@ static int ScalePlaneBilinearDown(int src_width,
   if (!row)
     return 1;
 
-  const int max_y = (src_height - 1) << 16;
+  const int64_t max_y = ((int64_t)src_height - 1) << 16;
   int j;
   void (*ScaleFilterCols)(uint8_t* dst_ptr, const uint8_t* src_ptr,
                           int dst_width, int x, int dx) =
@@ -1133,25 +1141,23 @@ static int ScalePlaneBilinearDown(int src_width,
     }
   }
 #endif
-  if (y > max_y) {
-    y = max_y;
-  }
 
+  int64_t y64 = y;
   for (j = 0; j < dst_height; ++j) {
-    int yi = y >> 16;
+    if (y64 > max_y) {
+      y64 = max_y;
+    }
+    int yi = (int)(y64 >> 16);
     const uint8_t* src = src_ptr + yi * src_stride;
     if (filtering == kFilterLinear) {
       ScaleFilterCols(dst_ptr, src, dst_width, x, dx);
     } else {
-      int yf = (y >> 8) & 255;
+      int yf = (int)((y64 >> 8) & 255);
       InterpolateRow(row, src, src_stride, src_width, yf);
       ScaleFilterCols(dst_ptr, row, dst_width, x, dx);
     }
     dst_ptr += dst_stride;
-    y += dy;
-    if (y > max_y) {
-      y = max_y;
-    }
+    y64 += dy;
   }
   free_aligned_buffer_64(row);
   return 0;
@@ -1177,7 +1183,7 @@ static int ScalePlaneBilinearDown_16(int src_width,
   if (!row)
     return 1;
 
-  const int max_y = (src_height - 1) << 16;
+  const int64_t max_y = ((int64_t)src_height - 1) << 16;
   int j;
   void (*ScaleFilterCols)(uint16_t* dst_ptr, const uint16_t* src_ptr,
                           int dst_width, int x, int dx) =
@@ -1224,25 +1230,23 @@ static int ScalePlaneBilinearDown_16(int src_width,
     ScaleFilterCols = ScaleFilterCols_16_SSSE3;
   }
 #endif
-  if (y > max_y) {
-    y = max_y;
-  }
 
+  int64_t y64 = y;
   for (j = 0; j < dst_height; ++j) {
-    int yi = y >> 16;
+    if (y64 > max_y) {
+      y64 = max_y;
+    }
+    int yi = (int)(y64 >> 16);
     const uint16_t* src = src_ptr + yi * src_stride;
     if (filtering == kFilterLinear) {
       ScaleFilterCols(dst_ptr, src, dst_width, x, dx);
     } else {
-      int yf = (y >> 8) & 255;
+      int yf = (int)((y64 >> 8) & 255);
       InterpolateRow((uint16_t*)row, src, src_stride, src_width, yf);
       ScaleFilterCols(dst_ptr, (uint16_t*)row, dst_width, x, dx);
     }
     dst_ptr += dst_stride;
-    y += dy;
-    if (y > max_y) {
-      y = max_y;
-    }
+    y64 += dy;
   }
   free_aligned_buffer_64(row);
   return 0;
@@ -1985,9 +1989,9 @@ int ScalePlane(const uint8_t* src,
       dy = FixedDiv1(src_height, dst_height);
     }
     // Arbitrary scale vertically, but unscaled horizontally.
-    ScalePlaneVertical(src_height, dst_width, dst_height, src_stride,
-                       dst_stride, src, dst, 0, y, dy, /*bpp=*/1, filtering);
-    return 0;
+    return ScalePlaneVertical(src_height, dst_width, dst_height, src_stride,
+                              dst_stride, src, dst, 0, y, dy, /*bpp=*/1,
+                              filtering);
   }
   if (dst_width <= Abs(src_width) && dst_height <= src_height) {
     // Scale down.
@@ -2034,6 +2038,7 @@ int ScalePlane(const uint8_t* src,
     return 0;
   }
   if (filtering && dst_height > src_height) {
+    // TODO(wtc): Fix the potential int overflow.
     return ScalePlaneBilinearUp(src_width, src_height, dst_width, dst_height,
                                 src_stride, dst_stride, src, dst, filtering);
   }
@@ -2041,6 +2046,7 @@ int ScalePlane(const uint8_t* src,
     return ScalePlaneBilinearDown(src_width, src_height, dst_width, dst_height,
                                   src_stride, dst_stride, src, dst, filtering);
   }
+  // TODO(wtc): Fix the potential int overflow.
   ScalePlaneSimple(src_width, src_height, dst_width, dst_height, src_stride,
                    dst_stride, src, dst);
   return 0;
@@ -2096,9 +2102,9 @@ int ScalePlane_16(const uint16_t* src,
       dy = FixedDiv1(src_height, dst_height);
     }
     // Arbitrary scale vertically, but unscaled horizontally.
-    ScalePlaneVertical_16(src_height, dst_width, dst_height, src_stride,
-                          dst_stride, src, dst, 0, y, dy, /*bpp=*/1, filtering);
-    return 0;
+    return ScalePlaneVertical_16(src_height, dst_width, dst_height, src_stride,
+                                 dst_stride, src, dst, 0, y, dy, /*bpp=*/1,
+                                 filtering);
   }
   if (dst_width <= Abs(src_width) && dst_height <= src_height) {
     // Scale down.

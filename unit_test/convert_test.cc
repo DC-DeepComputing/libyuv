@@ -2789,6 +2789,60 @@ TEST_F(LibYUVConvertTest, ABGRToI420_Check) {
                 benchmark_cpu_info_);
 }
 
+// I210ToI420/I212ToI420 funnel through I21xToI420, which scales chroma
+// vertically with ScalePlaneVertical_16To8. Verify oversize heights do not
+// overflow a signed int.
+TEST_F(LibYUVConvertTest, I21xToI420NoHeightOverflow) {
+  int width = 4;
+  int height = 40000;
+  int half_width = (width + 1) / 2;
+  int half_height = (height + 1) / 2;
+  // I21x: 16-bit 4:2:2
+  align_buffer_page_end_16(src_y, width * height);
+  align_buffer_page_end_16(src_u, half_width * height);
+  align_buffer_page_end_16(src_v, half_width * height);
+  // I420: 8-bit 4:2:0
+  align_buffer_page_end(dst_y, width * height);
+  align_buffer_page_end(dst_u, half_width * half_height);
+  align_buffer_page_end(dst_v, half_width * half_height);
+
+  memset(src_y, 0, width * height * sizeof(uint16_t));
+  memset(src_u, 0, half_width * height * sizeof(uint16_t));
+  memset(src_v, 0, half_width * height * sizeof(uint16_t));
+
+  EXPECT_EQ(0, I210ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, 32767));
+  EXPECT_EQ(0, I210ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, 32768));
+  EXPECT_EQ(0, I210ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, 32769));
+  EXPECT_EQ(0, I210ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, -32767));
+  EXPECT_EQ(0, I210ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, -32768));
+  EXPECT_EQ(0, I210ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, -32769));
+  EXPECT_EQ(0, I212ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, 32767));
+  EXPECT_EQ(0, I212ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, 32768));
+  EXPECT_EQ(0, I212ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, 32769));
+  EXPECT_EQ(0, I212ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, -32767));
+  EXPECT_EQ(0, I212ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, -32768));
+  EXPECT_EQ(0, I212ToI420(src_y, 4, src_u, 2, src_v, 2, dst_y, 4, dst_u, 2,
+                          dst_v, 2, 4, -32769));
+
+  free_aligned_buffer_page_end_16(src_y);
+  free_aligned_buffer_page_end_16(src_u);
+  free_aligned_buffer_page_end_16(src_v);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_u);
+  free_aligned_buffer_page_end(dst_v);
+}
+
 #endif  // !defined(LEAN_TESTS)
 
 }  // namespace libyuv

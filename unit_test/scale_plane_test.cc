@@ -685,4 +685,65 @@ TEST_F(LibYUVScaleTest, ScalePlane_12_InvalidInputs) {
   EXPECT_EQ(-1, ScalePlane_12(src, 4, 4, -32769, dst, 4, 4, 4, kFilterNone));
 }
 
+// ScalePlane/_16/_12 reject an oversize (or oversize-negative) src_height at
+// the top of the function, before ScaleFilterReduce and any dispatch -- so the
+// bound covers every filter path, not just the box one. The threshold is 32767
+// (not 32768) because the box path, ScalePlaneBox, computes (src_height << 16),
+// which is INT_MIN at src_height == 32768; a negative src_height is flipped to
+// positive first, so -32768 maps onto the same overflow. (The bilinear/vertical
+// paths use (src_height - 1) << 16 and are safe at 32768.)
+TEST_F(LibYUVScaleTest, ScalePlaneOversizeHeight) {
+  int width = 4;
+  int height = 40000;
+  align_buffer_page_end(src8, width * height);
+  align_buffer_page_end(dst8, width * height);
+  align_buffer_page_end_16(src16, width * height);
+  align_buffer_page_end_16(dst16, width * height);
+  memset(src8, 0, width * height);
+  memset(src16, 0, width * height * sizeof(uint16_t));
+
+  EXPECT_EQ(-1, ScalePlane(src8, 4, 4, 32769, dst8, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane(src8, 4, 4, 32768, dst8, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane(src8, 4, 4, 32767, dst8, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane(src8, 4, 4, -32767, dst8, 2, 2, 2, kFilterBilinear));
+  EXPECT_EQ(0, ScalePlane(src8, 4, 4, -32768, dst8, 2, 2, 2, kFilterBilinear));
+  EXPECT_EQ(-1, ScalePlane(src8, 4, 4, -32769, dst8, 2, 2, 2, kFilterBilinear));
+  EXPECT_EQ(-1, ScalePlane_16(src16, 4, 4, 32769, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane_16(src16, 4, 4, 32768, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane_16(src16, 4, 4, 32767, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane_16(src16, 4, 4, -32767, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane_16(src16, 4, 4, -32768, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(-1, ScalePlane_16(src16, 4, 4, -32769, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(-1, ScalePlane_12(src16, 4, 4, 32769, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane_12(src16, 4, 4, 32768, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane_12(src16, 4, 4, 32767, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane_12(src16, 4, 4, -32767, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(0, ScalePlane_12(src16, 4, 4, -32768, dst16, 2, 2, 2, kFilterBox));
+  EXPECT_EQ(-1, ScalePlane_12(src16, 4, 4, -32769, dst16, 2, 2, 2, kFilterBox));
+
+  free_aligned_buffer_page_end(src8);
+  free_aligned_buffer_page_end(dst8);
+  free_aligned_buffer_page_end_16(src16);
+  free_aligned_buffer_page_end_16(dst16);
+}
+
+// 32768 is the largest src_height passed to ScalePlaneBox. Exercise the box
+// path end to end at that src_height. ScaleFilterReduce keeps kFilterBox only
+// when dst * 2 < src on both axes, so use 9x32768 -> 4x16383 (8 < 9 and
+// 32766 < 32768) to actually reach ScalePlaneBox. Confirm it is accepted and
+// reads in bounds (verifiable under ASAN and UBSAN).
+TEST_F(LibYUVScaleTest, ScalePlaneBoxMaxSrcHeight) {
+  const int kSrcWidth = 9;
+  const int kSrcHeight = 32768;
+  const int kDstWidth = 4;
+  const int kDstHeight = 16383;
+  uint8_t* src = new uint8_t[kSrcWidth * kSrcHeight];
+  uint8_t* dst = new uint8_t[kDstWidth * kDstHeight];
+  memset(src, 0, kSrcWidth * kSrcHeight);
+  EXPECT_EQ(0, ScalePlane(src, kSrcWidth, kSrcWidth, kSrcHeight, dst, kDstWidth,
+                          kDstWidth, kDstHeight, kFilterBox));
+  delete[] src;
+  delete[] dst;
+}
+
 }  // namespace libyuv

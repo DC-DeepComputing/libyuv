@@ -746,9 +746,9 @@ static int ScaleARGB(const uint8_t* src,
   }
   if (dx == 0x10000 && (x & 0xffff) == 0) {
     // Arbitrary scale vertically, but unscaled horizontally.
-    ScalePlaneVertical(src_height, clip_width, clip_height, src_stride,
-                       dst_stride, src, dst, x, y, dy, /*bpp=*/4, filtering);
-    return 0;
+    return ScalePlaneVertical(src_height, clip_width, clip_height, src_stride,
+                              dst_stride, src, dst, x, y, dy, /*bpp=*/4,
+                              filtering);
   }
   if (filtering && dy < 65536) {
     return ScaleARGBBilinearUp(src_width, src_height, clip_width, clip_height,
@@ -779,7 +779,8 @@ int ARGBScaleClip(const uint8_t* src_argb,
                   int clip_width,
                   int clip_height,
                   enum FilterMode filtering) {
-  if (!src_argb || src_width == 0 || src_height == 0 || src_height == INT_MIN ||
+  if (!src_argb || src_width == 0 || src_width > 32768 || src_width < -32768 ||
+      src_height == 0 || src_height > 32768 || src_height < -32768 ||
       !dst_argb || dst_width <= 0 || dst_height <= 0 || clip_x < 0 ||
       clip_y < 0 || clip_width > 32768 || clip_height > 32768 ||
       (clip_x + clip_width) > dst_width ||
@@ -802,9 +803,9 @@ int ARGBScale(const uint8_t* src_argb,
               int dst_width,
               int dst_height,
               enum FilterMode filtering) {
-  if (!src_argb || src_width == 0 || src_height == 0 || src_height == INT_MIN ||
-      src_width > 32768 || src_height > 32768 || !dst_argb || dst_width <= 0 ||
-      dst_height <= 0) {
+  if (!src_argb || src_width == 0 || src_width > 32768 || src_width < -32768 ||
+      src_height == 0 || src_height > 32768 || src_height < -32768 ||
+      !dst_argb || dst_width <= 0 || dst_height <= 0) {
     return -1;
   }
   return ScaleARGB(src_argb, src_stride_argb, src_width, src_height, dst_argb,

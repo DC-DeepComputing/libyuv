@@ -295,15 +295,22 @@ static int I21xToI420(const uint16_t* src_y,
     const int uv_width = SUBSAMPLE(width, 1, 1);
     const int uv_height = SUBSAMPLE(height, 1, 1);
     const int dy = FixedDiv(height, uv_height);
+    int r;
 
     Convert16To8Plane(src_y, src_stride_y, dst_y, dst_stride_y, scale, width,
                       height);
-    ScalePlaneVertical_16To8(height, uv_width, uv_height, src_stride_u,
-                             dst_stride_u, src_u, dst_u, 0, 32768, dy,
-                             /*bpp=*/1, scale, kFilterBilinear);
-    ScalePlaneVertical_16To8(height, uv_width, uv_height, src_stride_v,
-                             dst_stride_v, src_v, dst_v, 0, 32768, dy,
-                             /*bpp=*/1, scale, kFilterBilinear);
+    r = ScalePlaneVertical_16To8(height, uv_width, uv_height, src_stride_u,
+                                 dst_stride_u, src_u, dst_u, 0, 32768, dy,
+                                 /*bpp=*/1, scale, kFilterBilinear);
+    if (r != 0) {
+      return r;
+    }
+    r = ScalePlaneVertical_16To8(height, uv_width, uv_height, src_stride_v,
+                                 dst_stride_v, src_v, dst_v, 0, 32768, dy,
+                                 /*bpp=*/1, scale, kFilterBilinear);
+    if (r != 0) {
+      return r;
+    }
   }
   return 0;
 }

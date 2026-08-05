@@ -362,6 +362,9 @@ static int ScaleUVBilinearDown(int src_width,
     xr = src_width;
   }
   clip_src_width = (int)(xr - xl) * 2;  // Width aligned to 2.
+  if (clip_src_width > INT_MAX / 2) {
+    return -1;
+  }
   src_uv += xl * 2;
   x -= (int)(xl << 16);
 #if defined(HAS_INTERPOLATEROW_AVX2)
@@ -414,28 +417,26 @@ static int ScaleUVBilinearDown(int src_width,
   // TODO(fbarchard): Consider not allocating row buffer for kFilterLinear.
   // Allocate a row of UV.
   {
-    const int max_y = (src_height - 1) << 16;
+    const int64_t max_y = ((int64_t)src_height - 1) << 16;
+    int64_t y64 = y;
     align_buffer_64(row, clip_src_width * 2);
     if (!row)
       return 1;
-    if (y > max_y) {
-      y = max_y;
-    }
     for (j = 0; j < dst_height; ++j) {
-      int yi = y >> 16;
+      if (y64 > max_y) {
+        y64 = max_y;
+      }
+      int yi = (int)(y64 >> 16);
       const uint8_t* src = src_uv + yi * src_stride;
       if (filtering == kFilterLinear) {
         ScaleUVFilterCols(dst_uv, src, dst_width, x, dx);
       } else {
-        int yf = (y >> 8) & 255;
+        int yf = (int)((y64 >> 8) & 255);
         InterpolateRow(row, src, src_stride, clip_src_width, yf);
         ScaleUVFilterCols(dst_uv, row, dst_width, x, dx);
       }
       dst_uv += dst_stride;
-      y += dy;
-      if (y > max_y) {
-        y = max_y;
-      }
+      y64 += dy;
     }
     free_aligned_buffer_64(row);
   }
@@ -1015,9 +1016,9 @@ static int ScaleUV(const uint8_t* src,
   // HAS_SCALEPLANEVERTICAL
   if (dx == 0x10000 && (x & 0xffff) == 0) {
     // Arbitrary scale vertically, but unscaled horizontally.
-    ScalePlaneVertical(src_height, clip_width, clip_height, src_stride,
-                       dst_stride, src, dst, x, y, dy, /*bpp=*/2, filtering);
-    return 0;
+    return ScalePlaneVertical(src_height, clip_width, clip_height, src_stride,
+                              dst_stride, src, dst, x, y, dy, /*bpp=*/2,
+                              filtering);
   }
   if ((filtering == kFilterLinear) && ((dst_width + 1) / 2 == src_width)) {
     ScaleUVLinearUp2(src_width, src_height, clip_width, clip_height, src_stride,
