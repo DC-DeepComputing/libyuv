@@ -11,6 +11,7 @@
 #include "libyuv/scale.h"
 
 #include <assert.h>
+#include <limits.h>
 #include <string.h>
 
 #include "libyuv/cpu_id.h"
@@ -1830,14 +1831,17 @@ enum FilterMode ScaleFilterReduce(int src_width,
                                   int dst_height,
                                   enum FilterMode filtering) {
   if (src_width < 0) {
+    assert(src_width != INT_MIN);
     src_width = -src_width;
   }
   if (src_height < 0) {
+    assert(src_height != INT_MIN);
     src_height = -src_height;
   }
   if (filtering == kFilterBox) {
     // If scaling either axis to 0.5 or larger, switch from Box to Bilinear.
-    if (dst_width * 2 >= src_width || dst_height * 2 >= src_height) {
+    if ((long long)dst_width * 2 >= src_width ||
+        (long long)dst_height * 2 >= src_height) {
       filtering = kFilterBilinear;
     }
   }
@@ -1846,7 +1850,7 @@ enum FilterMode ScaleFilterReduce(int src_width,
       filtering = kFilterLinear;
     }
     // TODO(fbarchard): Detect any odd scale factor and reduce to Linear.
-    if (dst_height == src_height || dst_height * 3 == src_height) {
+    if (dst_height == src_height || (long long)dst_height * 3 == src_height) {
       filtering = kFilterLinear;
     }
     // TODO(fbarchard): Remove 1 pixel wide filter restriction, which is to
@@ -1860,7 +1864,7 @@ enum FilterMode ScaleFilterReduce(int src_width,
       filtering = kFilterNone;
     }
     // TODO(fbarchard): Detect any odd scale factor and reduce to None.
-    if (dst_width == src_width || dst_width * 3 == src_width) {
+    if (dst_width == src_width || (long long)dst_width * 3 == src_width) {
       filtering = kFilterNone;
     }
   }
