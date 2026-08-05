@@ -3,6 +3,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "15f4b77d_fd5b59ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-05T20:31:01Z",
+      "side": 1,
+      "message": "I am going to abandon this CL so that Frank or someone else can start from a clean slate.",
+      "revId": "984a8d0a74d76a486698fcf39afa24e3b995b9f2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "033fb5b1_7e65c4f7",
         "filename": "source/scale_argb.cc",
         "patchSetId": 1
