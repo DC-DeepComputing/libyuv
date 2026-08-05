@@ -34,6 +34,24 @@
       "parentUuid": "a97697b7_ef492ad5",
       "revId": "669d7c7d6c104bd36f0e7759c2f6939bae5a9076",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e07611d8_8dfe3b78",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1844,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-05T18:31:52Z",
+      "side": 1,
+      "message": "In patchset 2 I am casting to `long long` instead of `int64_t`.\n\n`sizeof(long long)` is at least 8 bytes and is greater than or equal to `sizeof(int)`.",
+      "parentUuid": "c50b09b1_92712d58",
+      "revId": "669d7c7d6c104bd36f0e7759c2f6939bae5a9076",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }

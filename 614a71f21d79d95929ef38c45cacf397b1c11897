@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a2f82862_8d5338d1",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1881,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-05T18:31:52Z",
+      "side": 1,
+      "message": "Note the `int64_t` casts in `FixedDiv_C()` and `FixedDiv1_C()`, which apparently also assume `int` is smaller than `int64_t`. I think the assumption that `int` is 32 bits is so prevalent (not just in libyuv) that it is impossible to increase `int` to 64 bits in practice.\n\nIn any case, casting `int` to `long long` is a good solution to a future `int` that is larger than `int64_t`.",
+      "revId": "614a71f21d79d95929ef38c45cacf397b1c11897",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
