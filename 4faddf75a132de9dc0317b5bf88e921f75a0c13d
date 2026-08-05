@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba3c1835_05a02bd1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-05T20:42:47Z",
+      "side": 1,
+      "message": "this is correct but i used to do this with clang-tidy by making sure the public prototypes use the right name and then clang-tidy can make the implementations match.\nare the nv21 functions in already using stride_vu etc?",
+      "revId": "4faddf75a132de9dc0317b5bf88e921f75a0c13d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
