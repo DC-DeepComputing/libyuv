@@ -71,6 +71,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3f7db762_480ab9ff",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-05T19:41:43Z",
+      "side": 1,
+      "message": "Dale, Frank: I\u0027ve abandoned [my CL](https://chromium-review.googlesource.com/c/libyuv/libyuv/+/8141021). (It\u0027s optional and the code review was taking too long.)\n\nPlease resume reviewing this CL. Sorry about the delay!",
+      "parentUuid": "70fe36e9_df8911b9",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "913b65a8_e452ccc8",
