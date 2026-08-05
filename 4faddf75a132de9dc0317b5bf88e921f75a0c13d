@@ -33,6 +33,24 @@
       "message": "also note that with most \u0027matrix\u0027 functions the channel ordering is often flexible.  this function can output uv or vu depending on the matrix/source format.",
       "revId": "4faddf75a132de9dc0317b5bf88e921f75a0c13d",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d4e577e_294b7569",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-05T20:48:57Z",
+      "side": 1,
+      "message": "`ARGBToNV21Matrix()` is not declared in any header file. Is it supposed to be an API function?",
+      "parentUuid": "ba3c1835_05a02bd1",
+      "revId": "4faddf75a132de9dc0317b5bf88e921f75a0c13d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
