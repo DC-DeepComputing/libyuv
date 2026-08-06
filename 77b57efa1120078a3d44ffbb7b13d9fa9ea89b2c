@@ -36,6 +36,23 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "809b71b2_872747fa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-06T00:59:17Z",
+      "side": 1,
+      "message": "looking into Abgr constants, its not exactly the same thing.\n   Matrix / Constants                         │ Input Pixel Layout                      │ Output Plane Interleaving\n  ────────────────────────────────────────────┼─────────────────────────────────────────┼──────────────────────────────────────────\n   ARGBToNV12Matrix(..., \u0026kArgbI601Constants) │ ARGB                                    │ NV12 (U₀,V₀,U₁,V₁…)\n   ARGBToNV21Matrix(..., \u0026kArgbI601Constants) │ ARGB                                    │ NV21 (V₀,U₀,V₁,U₁…)\n   ARGBToNV12Matrix(..., \u0026kAbgrI601Constants) │ ABGR                                    │ NV12 (U₀,V₀,U₁,V₁…) (used by ABGRToNV12)\n   ARGBToNV21Matrix(..., \u0026kAbgrI601Constants) │ ABGR                                    │ NV21 (V₀,U₀,V₁,U₁…) (used by ABGRToNV21)\n  \nSo I guess we want the public functions.  But internally the only difference it MergeUV arguments, so it may make sense to have a single internal function.  One way to express that would be MergeVU row functions.\nI think Abgr constants might work if applied to the UV, but Argb constants for Y?\n\nAn alternative way to express MergeUV would be 1 pointer and a stride, and to swap arguments the stride would be negative and point to v.  That would allow 1 function and a parameter.",
+      "revId": "77b57efa1120078a3d44ffbb7b13d9fa9ea89b2c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "34754e7f_8a52752f",
