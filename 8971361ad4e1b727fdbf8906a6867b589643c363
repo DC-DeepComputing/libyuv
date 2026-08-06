@@ -139,6 +139,24 @@
       "message": "32767?",
       "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6d2bb864_69cf6e79",
+        "filename": "unit_test/scale_argb_test.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-06T21:16:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c021b7cb_71ba1ffe",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
