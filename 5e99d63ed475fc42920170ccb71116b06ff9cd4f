@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "451fac02_8f5721f0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-06T20:45:25Z",
+      "side": 1,
+      "message": "CPU / Benchmark                | Old NEON | New NEON | SVE2\n-------------------------------+----------+----------+--------\nSnapdragon 8 Elite (Oryon v3)  |          |          |\n  TestInterpolatePlane (8-bit) | 164 ms   | 138 ms   |  75 ms\n  TestInterpolatePlane_16      | 211 ms   | 147 ms   |  87 ms\n                               |          |          |\nDimensity 9400 (Cortex-X925)   |          |          |\n  TestInterpolatePlane (8-bit) |  76 ms   |  67 ms   |  58 ms\n  TestInterpolatePlane_16      | 195 ms   | 118 ms   | 163 ms\n                               |          |          |\nCortex-A53 Little Cores        |          |          |\n  TestInterpolatePlane (8-bit) | 529 ms   | 530 ms   | N/A\n  TestInterpolatePlane_16      | 1014 ms  | 769 ms   | N/A",
+      "revId": "5e99d63ed475fc42920170ccb71116b06ff9cd4f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
