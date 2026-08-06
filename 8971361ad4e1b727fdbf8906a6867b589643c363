@@ -108,6 +108,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fd3ff6c2_c21ef025",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-06T21:12:04Z",
+      "side": 1,
+      "message": "We can\u0027t y+\u003ddy blindly w/o overflow unless we make y/max_y int64_t or similar.",
+      "parentUuid": "913b65a8_e452ccc8",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c021b7cb_71ba1ffe",
         "filename": "unit_test/scale_argb_test.cc",
         "patchSetId": 2
