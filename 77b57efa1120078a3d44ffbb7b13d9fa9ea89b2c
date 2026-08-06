@@ -53,6 +53,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "89f458c8_bedd14c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-06T01:02:24Z",
+      "side": 1,
+      "message": "My checks say its needed, so we are good to go.\nYUY2 and YUVY is similar... they require different code",
+      "parentUuid": "a76a3c72_6e0be6cd",
+      "revId": "77b57efa1120078a3d44ffbb7b13d9fa9ea89b2c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "34754e7f_8a52752f",
@@ -84,6 +102,24 @@
       "side": 1,
       "message": "I checked git history. `ARGBToNV21Matrix()` was added in https://chromium-review.googlesource.com/c/libyuv/libyuv/+/7830291.",
       "parentUuid": "34754e7f_8a52752f",
+      "revId": "77b57efa1120078a3d44ffbb7b13d9fa9ea89b2c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0dcfb610_3127c916",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 644,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-06T01:02:24Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "b32b3d74_cc7eff0c",
       "revId": "77b57efa1120078a3d44ffbb7b13d9fa9ea89b2c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
