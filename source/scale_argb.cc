@@ -419,9 +419,10 @@ static int ScaleARGBBilinearDown(int src_width,
         ScaleARGBFilterCols(dst_argb, row, dst_width, x, dx);
       }
       dst_argb += dst_stride;
-      y += dy;
-      if (y > max_y) {
+      if (max_y - dy < y) {
         y = max_y;
+      } else {
+        y += dy;
       }
     }
     free_aligned_buffer_64(row);
@@ -602,7 +603,11 @@ static int ScaleARGBBilinearUp(int src_width,
         InterpolateRow(dst_argb, rowptr, rowstride, dst_width * 4, yf);
       }
       dst_argb += dst_stride;
-      y += dy;
+      if (max_y - dy < y) {
+        y = max_y;
+      } else {
+        y += dy;
+      }
     }
     free_aligned_buffer_64(row);
   }
