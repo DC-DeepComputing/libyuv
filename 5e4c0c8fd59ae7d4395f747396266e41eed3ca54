@@ -22,6 +22,30 @@
       },
       "revId": "5e4c0c8fd59ae7d4395f747396266e41eed3ca54",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1699f659_37d14358",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-06T01:49:57Z",
+      "side": 1,
+      "message": "yes, but i\u0027ll share in a PM.  the goal isnt directly performance in this CL;  \n\nToday\u0027s arm hardware implements sve and neon with the same vector units, on the arm cores.  There are only minor instruction differences, where sve has a few instructions that are not exposed in neon, but most code would be 100% 1:1 the same.\n\nThe predicates and threat of VL changing means the sve row functions handle the remainder themselves, which is easy most cases - convert the \u0027width\u0027 to a predicate and use that with a duplicate copy of the main loop.\nThe function to create the predicate is slow on Cortex A510, so we only do it if there is a remainder.\n\nThe purpose of this CL is ground work for SSVE.  The exact same SVE code can be called in \u0027streaming mode\u0027, but the smstart/smstop are slow (50 cycles), so that overhead kills performance if done on every row.  Especially on multi-step conversions.  So hoisting the smstart/stop to once per image found eliminates that drawback:\n\nARGBToNV12\nImplementation │ Benchmark Time (ms) │ smstart/smstop Switches\n───────────────┼─────────────────────┼─────────────────────────\nSME Per-Frame  │      1,376 ms       │   1/image (1,000 total)\nSME Per-Row    │      1,689 ms       │ 360/image (360,000 total)",
+      "parentUuid": "eb590c10_f9c1e784",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 0
+      },
+      "revId": "5e4c0c8fd59ae7d4395f747396266e41eed3ca54",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
