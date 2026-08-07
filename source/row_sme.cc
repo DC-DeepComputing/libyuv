@@ -907,11 +907,11 @@ __arm_locally_streaming void InterpolateRow_16_SME(uint16_t* dst_ptr,
       : "cc", "memory", "z0", "z1", "z2", "z3", "z4", "p0");
 }
 
-__arm_locally_streaming static void HalfRow_16To8_SME(uint8_t* dst_ptr,
-                                                      const uint16_t* src_ptr,
-                                                      ptrdiff_t src_stride,
-                                                      int scale,
-                                                      int width) {
+__arm_locally_streaming void HalfRow_16To8_SME(const uint16_t* src_ptr,
+                                               ptrdiff_t src_stride,
+                                               uint8_t* dst_ptr,
+                                               int scale,
+                                               int width) {
   const uint16_t* src_ptr1 = src_ptr + src_stride;
 
   // 15 - clz(scale), + 8 to shift result into the high half of the lane to
@@ -983,7 +983,7 @@ __arm_locally_streaming void InterpolateRow_16To8_SME(uint8_t* dst_ptr,
 
   // y0_fraction == 0 is never called here.
   if (y0_fraction == 128) {
-    HalfRow_16To8_SME(dst_ptr, src_ptr, src_stride, scale, width);
+    HalfRow_16To8_SME(src_ptr, src_stride, dst_ptr, scale, width);
     return;
   }
   if (y0_fraction == 256) {

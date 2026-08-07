@@ -1718,7 +1718,7 @@ ANY11IS(InterpolateRow_16To8_Any_NEON,
         uint16_t,
         1,
         1,
-        7)
+        15)
 #endif
 #ifdef HAS_INTERPOLATEROW_16TO8_AVX2
 ANY11IS(InterpolateRow_16To8_Any_AVX2,
@@ -1731,6 +1731,52 @@ ANY11IS(InterpolateRow_16To8_Any_AVX2,
 #endif
 
 #undef ANY11IS
+
+// Any 1 to 1 half row with scale param
+#define ANY11HS(NAMEANY, ANY_SIMD, TS, TD, SBPP, BPP, MASK)                    \
+  void NAMEANY(const TS* src_ptr, ptrdiff_t src_stride, TD* dst_ptr,           \
+               int scale, int width) {                                         \
+    SIMD_ALIGNED(TS vin[64 * 2]);                                              \
+    SIMD_ALIGNED(TD vout[64]);                                                 \
+    memset(vin, 0, sizeof(vin)); /* for msan */                                \
+    int r = width & MASK;                                                      \
+    int n = width & ~MASK;                                                     \
+    if (n > 0) {                                                               \
+      ANY_SIMD(src_ptr, src_stride, dst_ptr, scale, n);                        \
+    }                                                                          \
+    ptrdiff_t np = n;                                                          \
+    memcpy(vin, src_ptr + np * SBPP, r * SBPP * sizeof(TS));                   \
+    memcpy(vin + 64, src_ptr + src_stride + np * SBPP, r * SBPP * sizeof(TS)); \
+    ANY_SIMD(vin, 64, vout, scale, MASK + 1);                                  \
+    memcpy(dst_ptr + np * BPP, vout, r * BPP * sizeof(TD));                    \
+  }
+
+#ifdef HAS_HALFROW_16TO8_SSSE3
+ANY11HS(HalfRow_16To8_Any_SSSE3,
+        HalfRow_16To8_SSSE3,
+        uint16_t,
+        uint8_t,
+        1,
+        1,
+        15)
+#endif
+#ifdef HAS_HALFROW_16TO8_AVX2
+ANY11HS(HalfRow_16To8_Any_AVX2, HalfRow_16To8_AVX2, uint16_t, uint8_t, 1, 1, 31)
+#endif
+#ifdef HAS_HALFROW_16TO8_AVX512BW
+ANY11HS(HalfRow_16To8_Any_AVX512BW,
+        HalfRow_16To8_AVX512BW,
+        uint16_t,
+        uint8_t,
+        1,
+        1,
+        63)
+#endif
+#ifdef HAS_HALFROW_16TO8_NEON
+ANY11HS(HalfRow_16To8_Any_NEON, HalfRow_16To8_NEON, uint16_t, uint8_t, 1, 1, 15)
+#endif
+
+#undef ANY11HS
 
 // Any 1 to 1 mirror.
 #define ANY11M(NAMEANY, ANY_SIMD, BPP, MASK)                          \
