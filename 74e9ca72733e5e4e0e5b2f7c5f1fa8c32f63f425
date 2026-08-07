@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a84512d7_68827b61",
+        "filename": "source/convert.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-07T18:14:32Z",
+      "side": 1,
+      "message": "Just wanted to confirm that you want to allow `src_y \u0026\u0026 !dst_y`",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82d5c5aa_ffa84ba5",
+        "filename": "source/convert.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-07T18:14:32Z",
+      "side": 1,
+      "message": "Nit: It looks nicer to convert Y before converting U and V. Make the same change to code converting the last row if height is odd.",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f663dd71_22205c1a",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1721,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-07T18:14:32Z",
+      "side": 1,
+      "message": "Is this a bug fix? Just wanted to confirm that you intend to make this change.\n\nThis change should be mentioned in the commit message because it is unrelated to `I21xToI420`.",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b9d02bd_ab5c2ce0",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1740,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-07T18:14:32Z",
+      "side": 1,
+      "message": "Optional but highly recommended: To prevent bugs in the future, I suggest adding the following `static_assert`\u0027s to ensure `vin` and `vout` are large enough:\n\n```\n    SIMD_ALIGNED(TS vin[64 * 2]);                                              \\\n    static_assert((MASK + 1) * SBPP \u003c\u003d 64, \"\");                                \\\n    SIMD_ALIGNED(TD vout[64]);                                                 \\\n    static_assert((MASK + 1) * BPP \u003c\u003d 64, \"\");                                 \\\n```\n\nNote: `static_assert` is available in C11 (need to include \u003cassert.h\u003e). I recommend starting using `static_assert` to prevent this kind of buffer overflow in the future.",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "98f55643_54bd8925",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1748,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-07T18:14:32Z",
+      "side": 1,
+      "message": "I assume `BPP` stands for \"bytes per pixel\". Then we should not multiply `SBPP` by `sizeof(TS)` because `sizeof(TS)` is also a byte count.\n\nIf `SBPP` and `BPP` will always be 1 for `ANY11HS`, I suggest omitting the `SBPP` and `BPP` parameters.",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ba5d882_258513c2",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 3585,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-07T18:14:32Z",
+      "side": 1,
+      "message": "The changes above in this file seem unrelated to `I21xToI420`. These changes should be moved to a separate CL or at least described in the commit message.",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
