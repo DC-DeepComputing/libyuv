@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e448f399_6b87bb77",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 11
+      },
+      "lineNbr": 3719,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-08-07T06:09:56Z",
+      "side": 1,
+      "message": "i think this tail can only execute at most one iteration, so no need for `subs` and `b.gt` here?",
+      "range": {
+        "startLine": 3719,
+        "startChar": 0,
+        "endLine": 3719,
+        "endChar": 52
+      },
+      "revId": "a9f1760c0d3deb6e02fff3d36603b866ddfa6eab",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
