@@ -3664,11 +3664,11 @@ static void HalfRow_16_C(const uint16_t* src_uv,
   }
 }
 
-static void HalfRow_16To8_C(const uint16_t* src_uv,
-                            ptrdiff_t src_uv_stride,
-                            uint8_t* dst_uv,
-                            int scale,
-                            int width) {
+void HalfRow_16To8_C(const uint16_t* src_uv,
+                     ptrdiff_t src_uv_stride,
+                     uint8_t* dst_uv,
+                     int scale,
+                     int width) {
   int x;
   for (x = 0; x < width; ++x) {
     dst_uv[x] = STATIC_CAST(
@@ -4310,6 +4310,26 @@ void InterpolateRow_16To8_AVX2(uint8_t* dst_ptr,
   }
 }
 #endif  // HAS_INTERPOLATEROW_16TO8_AVX2
+
+#ifdef HAS_INTERPOLATEROW_16TO8_NEON
+void InterpolateRow_16To8_NEON(uint8_t* dst_ptr,
+                               const uint16_t* src_ptr,
+                               ptrdiff_t src_stride,
+                               int scale,
+                               int width,
+                               int source_y_fraction) {
+  // Row buffer for intermediate 16 bit pixels.
+  SIMD_ALIGNED(uint16_t row[MAXTWIDTH]);
+  while (width > 0) {
+    int twidth = width > MAXTWIDTH ? MAXTWIDTH : width;
+    InterpolateRow_16_NEON(row, src_ptr, src_stride, twidth, source_y_fraction);
+    Convert16To8Row_NEON(row, dst_ptr, scale, twidth);
+    src_ptr += twidth;
+    dst_ptr += twidth;
+    width -= twidth;
+  }
+}
+#endif  // HAS_INTERPOLATEROW_16TO8_NEON
 
 float ScaleSumSamples_C(const float* src, float* dst, float scale, int width) {
   float fsum = 0.f;
