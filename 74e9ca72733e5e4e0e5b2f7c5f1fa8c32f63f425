@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d2d4843e_d68b5ac6",
+        "filename": "source/convert.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T00:53:43Z",
+      "side": 1,
+      "message": "Acknowledged.  yes, the intent is a mechanism to allow users to access the UV functions.  Its more clear for something like I420ToNV12 where the Y plane can be used without conversion, so a clever user can allocate/convert just the UV plane.  But I thought I would copy the same mechanism for I210ToI420, so we can at least benchmark I210ToI420_NullY on its own.",
+      "parentUuid": "a84512d7_68827b61",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "82d5c5aa_ffa84ba5",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-08-07T18:14:32Z",
       "side": 1,
       "message": "Nit: It looks nicer to convert Y before converting U and V. Make the same change to code converting the last row if height is odd.",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2cf18296_aa0c7e54",
+        "filename": "source/convert.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T00:53:43Z",
+      "side": 1,
+      "message": "In related CL like ARGBToI420 I had found doing the UV first was faster.  My guess is because the destination is smaller, so it consumes less cache, maintaining more the the ARGB for the 2nd step of ARGBToY.  So I think that applies here.\nPing me again if you want this retested.",
+      "parentUuid": "82d5c5aa_ffa84ba5",
       "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -54,6 +90,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "49dcc230_5c627485",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1721,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T00:53:43Z",
+      "side": 1,
+      "message": "likely yes.  its implemented as 2 step conversion.  But at this point I think we can remove the function entirely, so I\u0027ll leave this as not resolved",
+      "parentUuid": "f663dd71_22205c1a",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7b9d02bd_ab5c2ce0",
         "filename": "source/row_any.cc",
         "patchSetId": 4
@@ -65,6 +119,24 @@
       "writtenOn": "2026-08-07T18:14:32Z",
       "side": 1,
       "message": "Optional but highly recommended: To prevent bugs in the future, I suggest adding the following `static_assert`\u0027s to ensure `vin` and `vout` are large enough:\n\n```\n    SIMD_ALIGNED(TS vin[64 * 2]);                                              \\\n    static_assert((MASK + 1) * SBPP \u003c\u003d 64, \"\");                                \\\n    SIMD_ALIGNED(TD vout[64]);                                                 \\\n    static_assert((MASK + 1) * BPP \u003c\u003d 64, \"\");                                 \\\n```\n\nNote: `static_assert` is available in C11 (need to include \u003cassert.h\u003e). I recommend starting using `static_assert` to prevent this kind of buffer overflow in the future.",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "abed0aa1_67a919ca",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1740,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T00:53:43Z",
+      "side": 1,
+      "message": "Acknowledged. But the better fix is use the SBPP and BPP to make the size dynamically match the caller \u0027MASK\u0027?",
+      "parentUuid": "7b9d02bd_ab5c2ce0",
       "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
