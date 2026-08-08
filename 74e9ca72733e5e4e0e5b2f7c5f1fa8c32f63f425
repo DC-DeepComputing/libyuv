@@ -195,6 +195,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "00b7a5f0_b83384e1",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1740,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:09:14Z",
+      "side": 1,
+      "message": "Yes, the better fix is to make the `vin` and `vout` size match the caller `MASK`.",
+      "parentUuid": "f6d4a38c_22b797d7",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "98f55643_54bd8925",
