@@ -22,6 +22,30 @@
       },
       "revId": "a9f1760c0d3deb6e02fff3d36603b866ddfa6eab",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5aaaa038_2b863a15",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 11
+      },
+      "lineNbr": 3719,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T03:11:44Z",
+      "side": 1,
+      "message": "Done.  The main intent is to avoid urshrn2 which is a partial register stall.  The sve2 version doesnt have the stall with rshrnb + rshrnt.",
+      "parentUuid": "e448f399_6b87bb77",
+      "range": {
+        "startLine": 3719,
+        "startChar": 0,
+        "endLine": 3719,
+        "endChar": 52
+      },
+      "revId": "a9f1760c0d3deb6e02fff3d36603b866ddfa6eab",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
