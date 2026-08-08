@@ -1,0 +1,197 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "657d814c_12635a3a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "LGTM. Thanks!",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "30552d37_35842645",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 6457,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Nit: extra blank line",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b30f8b8c_ae70e854",
+        "filename": "source/convert_from.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Since `src_y` may be null, we need to guard `src_y` and `src_stride_y`:\n\n```\n    if (src_y) {\n      src_y \u003d src_y + (ptrdiff_t)(height - 1) * src_stride_y;\n      src_stride_y \u003d -src_stride_y;\n    }\n```",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ccfe2e79_32e6f5b8",
+        "filename": "source/convert_from.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Guard `src_y` and `src_stride_y`.",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1721b77c_00c562d5",
+        "filename": "source/row_any.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1692,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Nit: extra blank line",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0c5d7e8_75b9e71b",
+        "filename": "source/row_common.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 3748,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Delete the comment block (for the deleted function `InterpolateRow_16To8_C`).",
+      "range": {
+        "startLine": 3742,
+        "startChar": 0,
+        "endLine": 3748,
+        "endChar": 40
+      },
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe931434_167cdad0",
+        "filename": "source/row_common.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 3750,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Nit: extra blank line.",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a38fd23c_ad9eed12",
+        "filename": "source/row_common.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 4263,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Nit: extra blank line.",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8893698d_e28c6a7b",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 3564,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Nit: Revert the renaming of `kShuffleMaskARGBToRGB24`.",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65edbca3_3ac70fb9",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 5532,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Nit: Two extra blank lines.",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2b170b3_812b1b17",
+        "filename": "source/row_sme.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 974,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-08T18:06:42Z",
+      "side": 1,
+      "message": "Delete the comment block and the extra blank line.",
+      "revId": "9eff9fdd631e859f86c87c4dae08cc8b09a39279",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
