@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e6b03f0_d2bed6f6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T19:55:31Z",
+      "side": 1,
+      "message": "Re horizontal subsampling is often more complicated and needs to use C or a special \u0027odd\u0027 row function.  or make the function pad the source with duplicate right edge.\n\nMASK should probably be changed to TILEWIDTH so we dont add 1.  That way it matches the caller that checks alignment.",
+      "revId": "3dd37bd878ceb8c2bacfd13147cffdc464a2252a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
