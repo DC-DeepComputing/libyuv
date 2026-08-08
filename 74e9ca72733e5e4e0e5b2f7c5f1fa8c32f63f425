@@ -71,6 +71,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "df863875_ab8cbb6c",
+        "filename": "source/convert.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T02:09:40Z",
+      "side": 1,
+      "message": "Retested.  1% faster with UV first\n  ### 2. Benchmark Results for #2 (UV-First vs. Y-First Order on Ice Lake Xeon)    \n                                                                                   \n  Benchmarked on the current Ice Lake machine with LIBYUV_REPEAT\u003d5000              \n  LIBYUV_WIDTH\u003d1920 LIBYUV_HEIGHT\u003d1080 (5,000 frames of 1080p I210ToI420_Opt):     \n                                                                                   \n   Row Processing Order │ Run 1     │ Run 2    │ Run 3    │ Average\n  ──────────────────────┼───────────┼──────────┼──────────┼────────────────────────\n   UV-First (Current)   │ 1782 ms   │ 1803 ms  │ 1744 ms  │ 1776 ms (~1.0% faster)\n   Y-First              │ 1826 ms   │ 1779 ms  │ 1778 ms  │ 1794 ms\n                                                                                   \n  • Finding: UV-first is consistently slightly faster due to lower cache footprint \n  of the chroma destinations while source rows are initially read into L1/L2.      \n  • The code in third_party/libyuv/files/source/convert.cc was left in the original\n  UV-first order.",
+      "parentUuid": "2cf18296_aa0c7e54",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f663dd71_22205c1a",
@@ -102,6 +120,24 @@
       "side": 1,
       "message": "likely yes.  its implemented as 2 step conversion.  But at this point I think we can remove the function entirely, so I\u0027ll leave this as not resolved",
       "parentUuid": "f663dd71_22205c1a",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "800d09e3_21a765db",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1721,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T02:09:40Z",
+      "side": 1,
+      "message": "Removed.  This function is no longer needed, since HalfRow_16To8 replaces it.",
+      "parentUuid": "49dcc230_5c627485",
       "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -141,6 +177,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6d4a38c_22b797d7",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1740,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T02:09:40Z",
+      "side": 1,
+      "message": "AI agrees with your suggestion, so I\u0027ll give it a try.  Its likely to cause breakage somewhere out there, and need an ifdef, but lets try.  \nEven if we use (MASK+1) instead of hardcoded constant, there will be other places here static_assert could catch errors quicker.",
+      "parentUuid": "abed0aa1_67a919ca",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "98f55643_54bd8925",
@@ -158,6 +212,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e62addd_24e7292c",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1748,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T02:09:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "98f55643_54bd8925",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3ba5d882_258513c2",
@@ -171,6 +243,24 @@
       "writtenOn": "2026-08-07T18:14:32Z",
       "side": 1,
       "message": "The changes above in this file seem unrelated to `I21xToI420`. These changes should be moved to a separate CL or at least described in the commit message.",
+      "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d8a2138_0f4e90ae",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 3585,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-08T02:09:40Z",
+      "side": 1,
+      "message": "The reason is I tested with asan and the build is broken.  asan changes the addressing and doesnt work with offsets in the current form.\n\nThe reason i used single \"m\" with offset is x86 32 bit generates an instruction sequence to find the address (call/pop) that uses another register, and multiple \"m\" often cause out of registers error.  Or a performance issue.\nAnother solution is pass a single \"r\" address, which commits to using a register, even for 64 bit.\nA more elegant way is create a helper function that takes the constants as a parameter, which is a pointer, and optionally put it in a struction.\n\nI\u0027ll remove the asan fix from this change.",
+      "parentUuid": "3ba5d882_258513c2",
       "revId": "74e9ca72733e5e4e0e5b2f7c5f1fa8c32f63f425",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
