@@ -831,22 +831,25 @@ ANY21C(NV12ToRGB565Row_Any_LASX, NV12ToRGB565Row_LASX, 1, 1, 2, 2, 15)
 #undef ANY21C
 
 // Any 2 planes of 16 bit to 1 with yuvconstants
-#define ANY21CT(NAMEANY, ANY_SIMD, UVSHIFT, DUVSHIFT, T, SBPP, BPP, MASK)      \
-  void NAMEANY(const T* y_buf, const T* uv_buf, uint8_t* dst_ptr,              \
-               const struct YuvConstants* yuvconstants, int width) {           \
-    SIMD_ALIGNED(T vin[16 * 2]);                                               \
-    SIMD_ALIGNED(uint8_t vout[64]);                                            \
-    memset(vin, 0, sizeof(vin)); /* for msan */                                \
-    int r = width & MASK;                                                      \
-    int n = width & ~MASK;                                                     \
-    if (n > 0) {                                                               \
-      ANY_SIMD(y_buf, uv_buf, dst_ptr, yuvconstants, n);                       \
-    }                                                                          \
-    ptrdiff_t np = n;                                                          \
-    memcpy(vin, y_buf + np, r * SBPP);                                         \
-    memcpy(vin + 16, uv_buf + 2 * (np >> UVSHIFT), SS(r, UVSHIFT) * SBPP * 2); \
-    ANY_SIMD(vin, vin + 16, vout, yuvconstants, MASK + 1);                     \
-    memcpy(dst_ptr + (np >> DUVSHIFT) * BPP, vout, SS(r, DUVSHIFT) * BPP);     \
+// TODO(wtc): Remove SBPP. Replace it with sizeof(T).
+#define ANY21CT(NAMEANY, ANY_SIMD, UVSHIFT, DUVSHIFT, T, SBPP, BPP, MASK)  \
+  void NAMEANY(const T* y_buf, const T* uv_buf, uint8_t* dst_ptr,          \
+               const struct YuvConstants* yuvconstants, int width) {       \
+    static_assert(sizeof(T) == SBPP, "");                                  \
+    SIMD_ALIGNED(T vin[MASK + 1 + SS(MASK + 1, UVSHIFT) * 2]);             \
+    SIMD_ALIGNED(uint8_t vout[SS(MASK + 1, DUVSHIFT) * BPP]);              \
+    memset(vin, 0, sizeof(vin)); /* for msan */                            \
+    int r = width & MASK;                                                  \
+    int n = width & ~MASK;                                                 \
+    if (n > 0) {                                                           \
+      ANY_SIMD(y_buf, uv_buf, dst_ptr, yuvconstants, n);                   \
+    }                                                                      \
+    ptrdiff_t np = n;                                                      \
+    memcpy(vin, y_buf + np, r * SBPP);                                     \
+    memcpy(vin + MASK + 1, uv_buf + 2 * (np >> UVSHIFT),                   \
+           SS(r, UVSHIFT) * SBPP * 2);                                     \
+    ANY_SIMD(vin, vin + MASK + 1, vout, yuvconstants, MASK + 1);           \
+    memcpy(dst_ptr + (np >> DUVSHIFT) * BPP, vout, SS(r, DUVSHIFT) * BPP); \
   }
 
 #ifdef HAS_P210TOAR30ROW_SSSE3
