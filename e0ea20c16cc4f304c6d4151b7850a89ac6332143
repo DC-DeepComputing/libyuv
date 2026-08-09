@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f57ab279_2e64f486",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-09T21:02:25Z",
+      "side": 1,
+      "message": "This matches how `n` is cast to `ptrdiff_t` in the other `ANY*` macros.",
+      "revId": "e0ea20c16cc4f304c6d4151b7850a89ac6332143",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
