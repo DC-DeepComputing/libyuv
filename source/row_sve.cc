@@ -1622,6 +1622,71 @@ void HalfRow_16To8_SVE2(const uint16_t* src_uv,
       : "cc", "memory", "z2", "z3", "z31", "p0");
 }
 
+void HalfWidthRow_16To8_SVE2(const uint16_t* src_uv,
+                             ptrdiff_t src_uv_stride,
+                             uint8_t* dst_uv,
+                             int scale,
+                             int width) {
+  const uint16_t* src_uv1 = src_uv + src_uv_stride;
+  const int shift = 23 - __builtin_clz((int32_t)scale);
+  int vl;
+  asm volatile(
+      "cnth     %x[vl]                                  \n"
+      "dup      z31.h, %w[shift]                        \n"
+      "subs     %w[width], %w[width], %w[vl]            \n"
+      "b.lt     2f                                      \n"
+
+      "ptrue    p0.h                                    \n"
+      "1:                                               \n"
+      "ld2h     {z0.h, z1.h}, p0/z, [%[src_ptr]]        \n"
+      "ld2h     {z2.h, z3.h}, p0/z, [%[src_ptr1]]       \n"
+      "incb     %[src_ptr], all, mul #2                 \n"
+      "incb     %[src_ptr1], all, mul #2                \n"
+      "uaddlb   z4.s, z0.h, z1.h                        \n"
+      "uaddlt   z5.s, z0.h, z1.h                        \n"
+      "uaddlb   z6.s, z2.h, z3.h                        \n"
+      "uaddlt   z7.s, z2.h, z3.h                        \n"
+      "add      z4.s, z4.s, z6.s                        \n"
+      "add      z5.s, z5.s, z7.s                        \n"
+      "rshrnb   z0.h, z4.s, #2                          \n"
+      "rshrnt   z0.h, z5.s, #2                          \n"
+      "subs     %w[width], %w[width], %w[vl]            \n"
+      "uqshl    z0.h, p0/m, z0.h, z31.h                 \n"
+      "shrnb    z0.b, z0.h, #8                          \n"
+      "st1b     {z0.h}, p0, [%[dst_ptr]]                \n"
+      "inch     %[dst_ptr]                              \n"
+      "b.ge     1b                                      \n"
+
+      "2:                                               \n"
+      "adds     %w[width], %w[width], %w[vl]            \n"
+      "b.eq     99f                                     \n"
+
+      "whilelt  p0.h, wzr, %w[width]                    \n"
+      "ld2h     {z0.h, z1.h}, p0/z, [%[src_ptr]]        \n"
+      "ld2h     {z2.h, z3.h}, p0/z, [%[src_ptr1]]       \n"
+      "uaddlb   z4.s, z0.h, z1.h                        \n"
+      "uaddlt   z5.s, z0.h, z1.h                        \n"
+      "uaddlb   z6.s, z2.h, z3.h                        \n"
+      "uaddlt   z7.s, z2.h, z3.h                        \n"
+      "add      z4.s, z4.s, z6.s                        \n"
+      "add      z5.s, z5.s, z7.s                        \n"
+      "rshrnb   z0.h, z4.s, #2                          \n"
+      "rshrnt   z0.h, z5.s, #2                          \n"
+      "uqshl    z0.h, p0/m, z0.h, z31.h                 \n"
+      "shrnb    z0.b, z0.h, #8                          \n"
+      "st1b     {z0.h}, p0, [%[dst_ptr]]                \n"
+
+      "99:                                              \n"
+      : [src_ptr] "+r"(src_uv),    // %[src_ptr]
+        [src_ptr1] "+r"(src_uv1),  // %[src_ptr1]
+        [dst_ptr] "+r"(dst_uv),    // %[dst_ptr]
+        [width] "+r"(width),       // %[width]
+        [vl] "=&r"(vl)             // %[vl]
+      : [shift] "r"(shift)         // %[shift]
+      : "cc", "memory", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "z31",
+        "p0");
+}
+
 #endif  // !defined(LIBYUV_DISABLE_SVE) && defined(__aarch64__)
 
 #ifdef __cplusplus
