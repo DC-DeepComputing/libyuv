@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "c32fcd8d_39831491",
+        "filename": "source/row_any.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 834,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-10T18:01:36Z",
+      "side": 1,
+      "message": "In the `ANY21CR` macro, the relation between `SBPP` and `sizeof(T)` is not clear.\n\nLet me avoid this issue and fix this bug in a different way.\n\nIn patchset 4 I reverted the bug fix and added the `static_assert`s. The CQ dry run should have compilation error because the `static_assert` fails.\n\nI will add the alternative bug fix in the next patchset.",
+      "parentUuid": "b2234622_f5f7eb67",
+      "revId": "f4b87068e5e93dab9b3a0c93b031033ed2680b91",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "f00b88ba_5dcd8483",
         "filename": "source/row_any.cc",
         "patchSetId": 2
