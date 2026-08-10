@@ -16,6 +16,24 @@
       "message": "i think this assert is redundent and caught by the next one",
       "revId": "561aa856f6b6722d9aa481b68798478457822125",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33961974_f9207ee0",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 838,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-10T18:14:44Z",
+      "side": 1,
+      "message": "Is it because the following inequality is always true?\n\n```\n    MASK + 1 \u003c\u003d SS(MASK + 1, UVSHIFT) * 2\n```\n\nFor this to be true, I think `UVSHIFT` can only be 0 or 1, right?",
+      "parentUuid": "7c1630ac_22f1a9a6",
+      "revId": "561aa856f6b6722d9aa481b68798478457822125",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
