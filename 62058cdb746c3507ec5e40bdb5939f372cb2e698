@@ -16,6 +16,23 @@
       "message": "Frank: Please review the alternative fix in patchset 6. Thanks!\n\nhttps://chromium-review.googlesource.com/c/libyuv/libyuv/+/8229574/5..6",
       "revId": "62058cdb746c3507ec5e40bdb5939f372cb2e698",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "662c7c67_1c4e502b",
+        "filename": "source/row_any.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 837,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-10T19:31:55Z",
+      "side": 1,
+      "message": "oh wait... i think youre right.  Except it is 16 * 2 * 2\n16 pixels\n* 2 for 4 elements per 2 pixels (YUYV)\n* 2 for 2 rows of source\nof type T which is 2 bytes per element for P010 (or 1 byte for NV12)",
+      "revId": "62058cdb746c3507ec5e40bdb5939f372cb2e698",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
