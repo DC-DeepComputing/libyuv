@@ -33,6 +33,24 @@
       "message": "oh wait... i think youre right.  Except it is 16 * 2 * 2\n16 pixels\n* 2 for 4 elements per 2 pixels (YUYV)\n* 2 for 2 rows of source\nof type T which is 2 bytes per element for P010 (or 1 byte for NV12)",
       "revId": "62058cdb746c3507ec5e40bdb5939f372cb2e698",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f3512a3_c1812781",
+        "filename": "source/row_any.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 837,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-10T20:45:00Z",
+      "side": 1,
+      "message": "Did you want me to write the array size as `16 * 2 * 2` instead of `32 * 2`?\n\nThe `32 * 2` form matches the `vin + 32` in lines 851 and 852 below.",
+      "parentUuid": "662c7c67_1c4e502b",
+      "revId": "62058cdb746c3507ec5e40bdb5939f372cb2e698",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
