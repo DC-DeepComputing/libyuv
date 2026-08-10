@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7bad8b29_f63a472b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-10T22:54:54Z",
+      "side": 1,
+      "message": "Done.   yes, as it affects behavior of this function alot.  Now it can handle very large height.  INT_MAX?\nBut the version is the most common merge conflict so i held off.",
+      "parentUuid": "c7d2e7b7_33b64bfd",
+      "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7b21daf2_93e36dff",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-08-10T19:54:15Z",
       "side": 1,
       "message": "Nit: Some of the deletions in this CL leave two blank lines. This is probably not intended. See also source/row_sve.cc.",
+      "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e1e7503_c859a5d2",
+        "filename": "include/libyuv/scale_row.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-10T22:54:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b21daf2_93e36dff",
       "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -52,6 +88,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "70bd73aa_5399db56",
+        "filename": "source/convert.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-10T22:54:54Z",
+      "side": 1,
+      "message": "uv is done first here and in for loop above, for performance",
+      "parentUuid": "c26626b6_e2a8a623",
+      "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4c3c39db_ec7da165",
@@ -65,6 +119,24 @@
       "writtenOn": "2026-08-10T19:54:15Z",
       "side": 1,
       "message": "IMPORTANT: This change is incorrect. The `#ifdef LIBYUV_RVV_HAS_VXRM_ARG` test at line 1832 is clearly intended to indicate the presence of the `__riscv_vaaddu_vv_u16m4_vxrm` function.\n\nAlso, this `__riscv_vaaddu_vv_u16m4()` call has four arguments but the `__riscv_vaaddu_vv_u16m4()` call at line 1836 has only three arguments. So one of them is likely to be wrong.",
+      "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "046cf867_4d54c910",
+        "filename": "source/row_rvv.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1834,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-10T22:54:54Z",
+      "side": 1,
+      "message": "Done.\nthe intrinsics 1.1 API changed in 2 ways that affect libyuv\n1. instructions that narrow take the rounding mode as a parameter.  it used to be global state.\n2. tuples for vlseg/stseg instead of multiple registers.\neventually we use use the 1.1 api and drop the old intrinsic compatability.",
+      "parentUuid": "4c3c39db_ec7da165",
       "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
