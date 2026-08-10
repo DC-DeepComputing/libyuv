@@ -1135,7 +1135,9 @@ void HalfMergeUVRow_SVE2(const uint8_t* src_u,
                          int width) {
   const uint8_t* src_u1 = src_u + src_stride_u;
   const uint8_t* src_v1 = src_v + src_stride_v;
+  const int last = width & 1;
   int vl;
+  width &= ~1;
   asm volatile(
       "cntb     %x[vl]                                  \n"
       "subs     %w[width], %w[width], %w[vl]            \n"
@@ -1151,12 +1153,17 @@ void HalfMergeUVRow_SVE2(const uint8_t* src_u,
       "incb     %[src_u1]                               \n"
       "incb     %[src_v]                                \n"
       "incb     %[src_v1]                               \n"
-      "urhadd   z1.b, p0/m, z1.b, z2.b                  \n"
-      "urhadd   z3.b, p0/m, z3.b, z4.b                  \n"
-      "mov      z2.b, p0/m, z3.b                        \n"
+      "uaddlb   z5.h, z1.b, z2.b                        \n"
+      "uaddlb   z6.h, z3.b, z4.b                        \n"
+      "uaddlt   z1.h, z1.b, z2.b                        \n"
+      "uaddlt   z3.h, z3.b, z4.b                        \n"
+      "add      z1.h, z1.h, z5.h                        \n"
+      "add      z3.h, z3.h, z6.h                        \n"
+      "rshrnb   z1.b, z1.h, #2                          \n"
+      "rshrnt   z1.b, z3.h, #2                          \n"
       "subs     %w[width], %w[width], %w[vl]            \n"
-      "st2b     {z1.b, z2.b}, p0, [%[dst_uv]]           \n"
-      "incb     %[dst_uv], all, mul #2                  \n"
+      "st1b     {z1.b}, p0, [%[dst_uv]]                 \n"
+      "incb     %[dst_uv]                               \n"
       "b.ge     1b                                      \n"
 
       "2:                                               \n"
@@ -1168,10 +1175,15 @@ void HalfMergeUVRow_SVE2(const uint8_t* src_u,
       "ld1b     {z2.b}, p0/z, [%[src_u1]]               \n"
       "ld1b     {z3.b}, p0/z, [%[src_v]]                \n"
       "ld1b     {z4.b}, p0/z, [%[src_v1]]               \n"
-      "urhadd   z1.b, p0/m, z1.b, z2.b                  \n"
-      "urhadd   z3.b, p0/m, z3.b, z4.b                  \n"
-      "mov      z2.b, p0/m, z3.b                        \n"
-      "st2b     {z1.b, z2.b}, p0, [%[dst_uv]]           \n"
+      "uaddlb   z5.h, z1.b, z2.b                        \n"
+      "uaddlb   z6.h, z3.b, z4.b                        \n"
+      "uaddlt   z1.h, z1.b, z2.b                        \n"
+      "uaddlt   z3.h, z3.b, z4.b                        \n"
+      "add      z1.h, z1.h, z5.h                        \n"
+      "add      z3.h, z3.h, z6.h                        \n"
+      "rshrnb   z1.b, z1.h, #2                          \n"
+      "rshrnt   z1.b, z3.h, #2                          \n"
+      "st1b     {z1.b}, p0, [%[dst_uv]]                 \n"
 
       "99:                                              \n"
       : [src_u] "+r"(src_u),      // %[src_u]
@@ -1182,7 +1194,11 @@ void HalfMergeUVRow_SVE2(const uint8_t* src_u,
         [width] "+r"(width),      // %[width]
         [vl] "=&r"(vl)            // %[vl]
       :
-      : "cc", "memory", "z1", "z2", "z3", "z4", "p0");
+      : "cc", "memory", "z1", "z2", "z3", "z4", "z5", "z6", "p0");
+  if (last) {
+    dst_uv[width] = (src_u[width] + src_u1[width] + 1) >> 1;
+    dst_uv[width + 1] = (src_v[width] + src_v1[width] + 1) >> 1;
+  }
 }
 
 void CopyRow_SVE2(const uint8_t* src, uint8_t* dst, int width) {
