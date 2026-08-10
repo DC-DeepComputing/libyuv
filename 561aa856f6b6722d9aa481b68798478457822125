@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c1630ac_22f1a9a6",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 838,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-10T18:09:01Z",
+      "side": 1,
+      "message": "i think this assert is redundent and caught by the next one",
+      "revId": "561aa856f6b6722d9aa481b68798478457822125",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
