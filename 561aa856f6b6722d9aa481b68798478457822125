@@ -52,6 +52,24 @@
       "parentUuid": "33961974_f9207ee0",
       "revId": "561aa856f6b6722d9aa481b68798478457822125",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d8d72f4_7616e230",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 838,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-10T18:34:36Z",
+      "side": 1,
+      "message": "Done. Thanks for the confirmation. I removed the redundant static_assert in patchset 5.",
+      "parentUuid": "3b08ba6d_90cd4fa0",
+      "revId": "561aa856f6b6722d9aa481b68798478457822125",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
