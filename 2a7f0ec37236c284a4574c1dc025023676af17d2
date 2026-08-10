@@ -16,6 +16,57 @@
       "message": "[This is a question, not a suggestion.] Should we bump the libyuv version number for this change?",
       "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7b21daf2_93e36dff",
+        "filename": "include/libyuv/scale_row.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-10T19:54:15Z",
+      "side": 1,
+      "message": "Nit: Some of the deletions in this CL leave two blank lines. This is probably not intended. See also source/row_sve.cc.",
+      "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c26626b6_e2a8a623",
+        "filename": "source/convert.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-10T19:54:15Z",
+      "side": 1,
+      "message": "Nit: Move the y code before the u and v code, as in the for loop?",
+      "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c3c39db_ec7da165",
+        "filename": "source/row_rvv.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1834,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-10T19:54:15Z",
+      "side": 1,
+      "message": "IMPORTANT: This change is incorrect. The `#ifdef LIBYUV_RVV_HAS_VXRM_ARG` test at line 1832 is clearly intended to indicate the presence of the `__riscv_vaaddu_vv_u16m4_vxrm` function.\n\nAlso, this `__riscv_vaaddu_vv_u16m4()` call has four arguments but the `__riscv_vaaddu_vv_u16m4()` call at line 1836 has only three arguments. So one of them is likely to be wrong.",
+      "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
