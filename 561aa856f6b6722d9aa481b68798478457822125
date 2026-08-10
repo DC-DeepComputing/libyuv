@@ -34,6 +34,24 @@
       "parentUuid": "7c1630ac_22f1a9a6",
       "revId": "561aa856f6b6722d9aa481b68798478457822125",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3b08ba6d_90cd4fa0",
+        "filename": "source/row_any.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 838,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-10T18:24:47Z",
+      "side": 1,
+      "message": "atm yes, UVSHIFT is 0 for 444 formats and 1 for 420/422 formats.  In the past we supported 411 formats with UVSHIFT 2\nvin[16 * 2]\nthe 16 is number of pixels.  * 2 is 2 rows.  the type T is uint16_t.\nwith \u0027pixels\u0027 we need 4 uint16 per 2 pixels due to subsampling on UV so \u0027SS\u0027 reduces the 2 pixels to 1 and SBPP is 4 elements per pixel YUYV * 2 for 2 rows.",
+      "parentUuid": "33961974_f9207ee0",
+      "revId": "561aa856f6b6722d9aa481b68798478457822125",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
