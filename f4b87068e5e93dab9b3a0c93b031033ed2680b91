@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f00b88ba_5dcd8483",
+        "filename": "source/row_any.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 880,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-10T16:48:41Z",
+      "side": 1,
+      "message": "This has overflows.",
+      "revId": "f4b87068e5e93dab9b3a0c93b031033ed2680b91",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "040d3480_c6385713",
+        "filename": "source/row_any.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 883,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-10T16:48:41Z",
+      "side": 1,
+      "message": "This has overflows.",
+      "revId": "f4b87068e5e93dab9b3a0c93b031033ed2680b91",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
