@@ -5921,7 +5921,10 @@ void HalfMergeUVPlane(const uint8_t* src_u,
   }
 #endif
 #if defined(HAS_HALFMERGEUVROW_SVE2)
-  if (TestCpuFlag(kCpuHasSVE2)) {
+  // The average of two values must be retained for the final odd element if
+  // present. Existing code just handles this by falling back to the C
+  // implementation, so mirror that for SVE2 as well.
+  if (TestCpuFlag(kCpuHasSVE2) && IS_ALIGNED(width, 2)) {
     HalfMergeUVRow = HalfMergeUVRow_SVE2;
   }
 #endif

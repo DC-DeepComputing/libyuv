@@ -634,7 +634,7 @@ extern "C" {
 #define HAS_COPYROW_SVE2
 #define HAS_DIVIDEROW_16_SVE2
 #define HAS_HALFFLOATROW_SVE2
-// #define HAS_HALFMERGEUVROW_SVE2  // Disabled: Bug 546962730
+#define HAS_HALFMERGEUVROW_SVE2
 // #define HAS_HALFROW_16TO8_SVE2  // Disabled: NEON version is faster for 128 bit vectors.
 // #define HAS_HALFWIDTHROW_16TO8_SVE2  // Disabled: NEON version is faster for 128 bit vectors.
 #define HAS_I210ALPHATOARGBROW_SVE2
