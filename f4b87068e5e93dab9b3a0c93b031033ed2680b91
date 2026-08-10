@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "b2234622_f5f7eb67",
+        "filename": "source/row_any.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 834,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-10T17:20:26Z",
+      "side": 1,
+      "message": "note that T may be char for packed formats like RGB",
+      "revId": "f4b87068e5e93dab9b3a0c93b031033ed2680b91",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "f00b88ba_5dcd8483",
