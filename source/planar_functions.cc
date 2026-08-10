@@ -5827,7 +5827,7 @@ void HalfMergeUVPlane(const uint8_t* src_u,
   }
 #endif
 #if defined(HAS_HALFMERGEUVROW_SVE2)
-  if (TestCpuFlag(kCpuHasSVE2)) {
+  if (TestCpuFlag(kCpuHasSVE2) && IS_ALIGNED(width, 2)) {
     HalfMergeUVRow = HalfMergeUVRow_SVE2;
   }
 #endif
