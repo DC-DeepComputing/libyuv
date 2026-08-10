@@ -139,6 +139,24 @@
       "parentUuid": "4c3c39db_ec7da165",
       "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "82c1f945_4e4ef06a",
+        "filename": "source/row_rvv.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1834,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-10T23:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4c3c39db_ec7da165",
+      "revId": "2a7f0ec37236c284a4574c1dc025023676af17d2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
