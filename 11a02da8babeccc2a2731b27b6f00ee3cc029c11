@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "158e6dff_827fe69f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-11T23:28:31Z",
+      "side": 1,
+      "message": "we should probably be deliberate that 16.16 scaling has a size limit of 32767.",
+      "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af9cd395_b2b352c6",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-11T23:28:31Z",
+      "side": 1,
+      "message": "nit: feels wrong, since src_height is INT16 and cant be more than INT32_MAX\nnit: also feels wrong to downcast int from 128 bits to int64 in the future.  ideally we use a type guaranteed to be 2x larger than int so the result of an add or multiply doesnt overflow.",
+      "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "629c4496_323faa75",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-11T23:28:31Z",
+      "side": 1,
+      "message": "nit: prefer this be at end, but its minor.  this is a static function so the caller should check the y being passed is value.  we could assert y \u003c\u003d max_y on entry to this function.",
+      "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
