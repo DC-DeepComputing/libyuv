@@ -87,6 +87,24 @@
       "parentUuid": "3cde8c9e_cbd06683",
       "revId": "dcf8f1eb09d85c3d3f0089a93e0de98c9e9a065f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae7b5857_9a468f3b",
+        "filename": "source/row_any.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2492,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T00:26:58Z",
+      "side": 1,
+      "message": "I read your reply again and found that you already answered my question. My apologies.\n\nIn all the other ANY macros we pass `MASK + 1` to the `ANY_SIMD()` call that handles the remainder. These two macros are the only exceptions.",
+      "parentUuid": "0600d3a5_185cfaa1",
+      "revId": "dcf8f1eb09d85c3d3f0089a93e0de98c9e9a065f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
