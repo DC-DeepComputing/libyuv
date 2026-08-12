@@ -548,6 +548,11 @@ static int ScaleUVBilinearUp(int src_width,
 #endif
   }
 
+  assert(src_height > 0);
+  assert(dst_height > 0);
+  assert(dy < 65536);
+  assert(y <= max_y);
+
   if (y > max_y) {
     y = max_y;
   }
@@ -575,22 +580,21 @@ static int ScaleUVBilinearUp(int src_width,
       src += src_stride;
     }
 
+    // In BilinearUp, dy < 65536, so yi advances by at most 1 each row.
+    // src is advanced incrementally up to (src_height - 1) * src_stride,
+    // so src is always pointing to row yi + 1 before the swap.
     for (j = 0; j < dst_height; ++j) {
+      if (y > max_y) {
+        y = max_y;
+      }
       yi = y >> 16;
       if (yi != lasty) {
-        if (y > max_y) {
-          y = max_y;
-          yi = y >> 16;
-          src = src_uv + yi * src_stride;
-        }
-        if (yi != lasty) {
-          ScaleUVFilterCols(rowptr, src, dst_width, x, dx);
-          rowptr += rowstride;
-          rowstride = -rowstride;
-          lasty = yi;
-          if ((y + 65536) < max_y) {
-            src += src_stride;
-          }
+        ScaleUVFilterCols(rowptr, src, dst_width, x, dx);
+        rowptr += rowstride;
+        rowstride = -rowstride;
+        lasty = yi;
+        if ((y + 65536) < max_y) {
+          src += src_stride;
         }
       }
       if (filtering == kFilterLinear) {
