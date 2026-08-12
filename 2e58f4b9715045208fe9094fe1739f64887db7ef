@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55bb4a68_8679a92c",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T23:06:20Z",
+      "side": 1,
+      "message": "IMPORTANT: The statement `src \u003d src_argb + yi * src_stride;` was deleted. This seems wrong.",
+      "revId": "2e58f4b9715045208fe9094fe1739f64887db7ef",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
