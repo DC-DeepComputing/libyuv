@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e7707b3_7f73894f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T00:23:11Z",
+      "side": 1,
+      "message": "Thanks for the review!",
+      "revId": "db814aa52cb183a420991dda4d151c424ca0df4f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de31cd1a_32ed11d8",
+        "filename": "source/row_any.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T00:23:11Z",
+      "side": 1,
+      "message": "The ANY41 macro is modified.",
+      "revId": "db814aa52cb183a420991dda4d151c424ca0df4f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e58b376_b74becab",
+        "filename": "source/row_any.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T00:23:11Z",
+      "side": 1,
+      "message": "The ANY41C macro is modified.",
+      "revId": "db814aa52cb183a420991dda4d151c424ca0df4f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}

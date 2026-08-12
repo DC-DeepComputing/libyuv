@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "29583dcf_6e481f77",
+        "filename": "source/row_any.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2461,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T00:23:11Z",
+      "side": 1,
+      "message": "TODO comment removed.",
+      "parentUuid": "64ea0a40_55272069",
+      "revId": "dcf8f1eb09d85c3d3f0089a93e0de98c9e9a065f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fe058296_cc032543",
@@ -49,6 +67,24 @@
       "side": 1,
       "message": "a quick check says this is conventional.  we compute n and r.\nn does the simd aligned part.\nr does the remainder.\ne.g.   17 pixels\nn \u003d 16\nr \u003d 1\ninfact the remainder will do simd on 16 but the memcpy just before and after memcpy r\nthe row functions are written to accept remainder amounts like 1, where it will loop and do 16 until the count underflows, using signed math.  1 - 16 \u003d -15\n\nyes, unless r is more complicated than a simple width \u0026 MASK, the ANY_SIMD in all any functions could take MASK+1.  It feels safer to use r consistently for memcpy+simd+memcpy.\n\nTLDR\nin the future i\u0027m wondering if any functions can help out with odd width subsampling remaiders on rvv,sve,sme.\ne.g.  width \u003d 21\nn \u003d 16\nr \u003d 4\nodd \u003d 1\nwhere the simd calls for both n and r do multiple of 2 subsampling.  the final 1 pixel might be done with memset to replicate the last pixel to 2 pixels\n\nfor now they have up to 3 loops in the simd row function, or fallback on C for odd width",
       "parentUuid": "fe058296_cc032543",
+      "revId": "dcf8f1eb09d85c3d3f0089a93e0de98c9e9a065f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0600d3a5_185cfaa1",
+        "filename": "source/row_any.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2492,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T00:23:11Z",
+      "side": 1,
+      "message": "Isn\u0027t `ANY_SIMD` a function that requires the width to be a multiple of `MASK + 1`?\n\nIn any case, I will remove these two TODO comments from the CL.",
+      "parentUuid": "3cde8c9e_cbd06683",
       "revId": "dcf8f1eb09d85c3d3f0089a93e0de98c9e9a065f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
