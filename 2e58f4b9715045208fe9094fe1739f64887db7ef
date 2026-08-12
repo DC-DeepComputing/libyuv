@@ -16,6 +16,24 @@
       "message": "IMPORTANT: The statement `src \u003d src_argb + yi * src_stride;` was deleted. This seems wrong.",
       "revId": "2e58f4b9715045208fe9094fe1739f64887db7ef",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1e5ec80b_042fe85f",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 10
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-12T23:29:42Z",
+      "side": 1,
+      "message": "IIUC, it doesn\u0027t end up being a bug since dy is strictly \u003c 65536 with current calling conventions; meaning the src +\u003d src_stride is sufficient below. https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/8252878 cleans this up.",
+      "parentUuid": "55bb4a68_8679a92c",
+      "revId": "2e58f4b9715045208fe9094fe1739f64887db7ef",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
