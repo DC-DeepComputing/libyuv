@@ -577,17 +577,21 @@ static int ScaleARGBBilinearUp(int src_width,
     }
 
     for (j = 0; j < dst_height; ++j) {
-      if (y64 > max_y) {
-        y64 = max_y;
-      }
       yi = (int)(y64 >> 16);
       if (yi != lasty) {
-        ScaleARGBFilterCols(rowptr, src, dst_width, x, dx);
-        rowptr += rowstride;
-        rowstride = -rowstride;
-        lasty = yi;
-        if ((y64 + 65536) < max_y) {
-          src += src_stride;
+        if (y64 > max_y) {
+          y64 = max_y;
+          yi = (int)(y64 >> 16);
+          src = src_argb + yi * src_stride;
+        }
+        if (yi != lasty) {
+          ScaleARGBFilterCols(rowptr, src, dst_width, x, dx);
+          rowptr += rowstride;
+          rowstride = -rowstride;
+          lasty = yi;
+          if ((y64 + 65536) < max_y) {
+            src += src_stride;
+          }
         }
       }
       if (filtering == kFilterLinear) {
