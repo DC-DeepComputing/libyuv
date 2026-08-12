@@ -20,6 +20,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "d9f554b1_ad40119f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T18:31:19Z",
+      "side": 1,
+      "message": "LGTM.",
+      "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "af9cd395_b2b352c6",
         "filename": "source/scale_argb.cc",
         "patchSetId": 8
@@ -37,6 +54,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "92fd130a_3abde5b9",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T18:31:19Z",
+      "side": 1,
+      "message": "This topic of a future 128-bit `int` type has come up several times in code reviews. We should make a decision and document it in a file.\n\nThere are three options:\n- My preference: Accept the prevalent assumption that `int` is 32 bits and cast `int` to `int64_t`.\n- Cast `int` to `long long`.\n- Use `int32_t` instead of `int`. Then it\u0027s safe to cast `int32_t` to `int64_t`.",
+      "parentUuid": "af9cd395_b2b352c6",
+      "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "629c4496_323faa75",
         "filename": "source/scale_argb.cc",
         "patchSetId": 8
@@ -48,6 +83,40 @@
       "writtenOn": "2026-08-11T23:28:31Z",
       "side": 1,
       "message": "nit: prefer this be at end, but its minor.  this is a static function so the caller should check the y being passed is value.  we could assert y \u003c\u003d max_y on entry to this function.",
+      "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "38f0f684_4324f18d",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T18:31:19Z",
+      "side": 1,
+      "message": "Frank: This function clamps `y64` at an unusual location (inside the `if (yi !\u003d lasty)` block). I cannot show `y64 \u003c\u003d max_y` is true at this point. I am worried that the `int` cast may truncate the value.\n\nAlso note that we check `if (yi !\u003d lasty)` twice.\n\nIs it possible to simplify the logic of this function so that it is easier to analyze?",
+      "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9620ae01_ca64c78b",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-12T18:31:19Z",
+      "side": 1,
+      "message": "This function doesn\u0027t clamp `y64`. Should it?",
       "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
