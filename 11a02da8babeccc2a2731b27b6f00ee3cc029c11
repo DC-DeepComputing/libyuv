@@ -106,6 +106,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "90515a76_76b71ff2",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-12T20:08:46Z",
+      "side": 1,
+      "message": "Reworked this a bit. Gemini also says: Analysis / Recommendation: For point sampling (kFilterNone), ScaleSlope guarantees that across j in [0, dst_height - 1], (y64 \u003e\u003e 16) never exceeds src_height - 1. The only issue was the final y64 +\u003d dy overflowing 32-bit signed int, which int64_t y64 solves. We can reply explaining this to wtc, or optionally add if (y64 \u003e max_y) y64 \u003d max_y; for defensive consistency if desired.",
+      "parentUuid": "38f0f684_4324f18d",
+      "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "9620ae01_ca64c78b",
         "filename": "source/scale_argb.cc",
         "patchSetId": 8
@@ -117,6 +135,24 @@
       "writtenOn": "2026-08-12T18:31:19Z",
       "side": 1,
       "message": "This function doesn\u0027t clamp `y64`. Should it?",
+      "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0c99acf_ff69b3b8",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 8
+      },
+      "lineNbr": 663,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-12T20:08:46Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "9620ae01_ca64c78b",
       "revId": "11a02da8babeccc2a2731b27b6f00ee3cc029c11",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }

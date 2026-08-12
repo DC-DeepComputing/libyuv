@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "45aee84a_f477526f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-12T20:08:46Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "398a0af2_daa44d0d",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "82f9aa51_ec4ee3db",
@@ -120,6 +138,24 @@
       "side": 1,
       "message": "We can\u0027t y+\u003ddy blindly w/o overflow unless we make y/max_y int64_t or similar.",
       "parentUuid": "913b65a8_e452ccc8",
+      "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46509b2c_88e7485a",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-12T20:08:46Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "fd3ff6c2_c21ef025",
       "revId": "8971361ad4e1b727fdbf8906a6867b589643c363",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
