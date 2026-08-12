@@ -548,6 +548,10 @@ static int ScaleARGBBilinearUp(int src_width,
 #endif
   }
 
+  assert(src_height > 0);
+  assert(dst_height > 0);
+  assert(dy < 65536);
+
   int64_t y64 = y;
   if (y64 > max_y) {
     y64 = max_y;
@@ -576,6 +580,9 @@ static int ScaleARGBBilinearUp(int src_width,
       src += src_stride;
     }
 
+    // In BilinearUp, dy < 65536, so yi advances by at most 1 each row.
+    // src is advanced incrementally up to (src_height - 1) * src_stride,
+    // so src is always pointing to row yi + 1 before the swap.
     for (j = 0; j < dst_height; ++j) {
       if (y64 > max_y) {
         y64 = max_y;
