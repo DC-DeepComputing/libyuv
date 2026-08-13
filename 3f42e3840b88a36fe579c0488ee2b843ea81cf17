@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7e690177_d8b1d7e0",
+        "filename": "source/scale.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1225,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-13T22:17:59Z",
+      "side": 1,
+      "message": "Yes, I saw that, but I assumed that Frank meant he wanted these functions to work for equality cases, @fbarchard@google.com can you clarify?",
+      "parentUuid": "7f722aad_12598d34",
+      "revId": "3f42e3840b88a36fe579c0488ee2b843ea81cf17",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fd0087a7_8f230056",
         "filename": "source/scale.cc",
         "patchSetId": 7
