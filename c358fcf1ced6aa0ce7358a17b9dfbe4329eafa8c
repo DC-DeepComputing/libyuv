@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63628c55_8e31b12d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-13T19:07:12Z",
+      "side": 1,
+      "message": "the code should function correctly for dy \u003d 65536 and there may be reason to choose scale up or down when stepping by 1 vertically, breaking tie selection based on horizontal scale and/or performance.\nprefer asserts and/or if be first code in the function\n\nclose enough i\u0027ll lg but suggest cleanup",
+      "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fc7914b_9687cf9c",
+        "filename": "source/scale.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1306,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-13T19:07:12Z",
+      "side": 1,
+      "message": "usually we do asserts near the top and a function that allows failure (int return) can have a non-assert version that does an if (src_height \u003c\u003d 0) return -1.\nreturns are an error code so 0 \u003d success, 1 or more is a runtime error like malloc, -1 or less is parameter errors... programming errors like the assert, but fail quickly before something bad happens.",
+      "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
