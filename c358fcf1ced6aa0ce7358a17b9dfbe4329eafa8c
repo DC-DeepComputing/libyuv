@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2065866d_b1df4005",
+        "filename": "source/scale.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1305,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-13T19:43:40Z",
+      "side": 1,
+      "message": "Nit: We can replace this assertion with a stronger assertion:\n\n```\n  assert(dst_height \u003e src_height);\n```\n\nThat condition implies dy \u003c 65536 (1.0).",
+      "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2fc7914b_9687cf9c",
         "filename": "source/scale.cc",
         "patchSetId": 5
@@ -31,6 +48,40 @@
       "writtenOn": "2026-08-13T19:07:12Z",
       "side": 1,
       "message": "usually we do asserts near the top and a function that allows failure (int return) can have a non-assert version that does an if (src_height \u003c\u003d 0) return -1.\nreturns are an error code so 0 \u003d success, 1 or more is a runtime error like malloc, -1 or less is parameter errors... programming errors like the assert, but fail quickly before something bad happens.",
+      "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "00c94505_6e585b07",
+        "filename": "source/scale.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1336,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-13T19:43:40Z",
+      "side": 1,
+      "message": "What does \"the swap\" mean here?\n\nAlso, \"src is always pointing to row yi + 1 before the swap\" may not be true when we first enter the for loop, because we may increment `src` twice (at line 1327 and line 1331).",
+      "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b0e03b6_925b45a3",
+        "filename": "source/scale.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1347,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-13T19:43:40Z",
+      "side": 1,
+      "message": "Do you know why we update `src` under this condition?\n\nIf I understand it correctly, this condition is equivalent to:\n\n```\n        if ((yi + 1) \u003c (src_height - 1)) {\n```\n\nWhat does this condition mean?",
       "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
