@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f722aad_12598d34",
+        "filename": "source/scale.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1225,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-13T21:53:09Z",
+      "side": 1,
+      "message": "Note: My two comments on `ScalePlaneBilinearUp()` also apply to `ScalePlaneBilinearUp_16()`.\n\n---\n\n`ScalePlaneBilinearUp()` has only one caller. It calls `ScalePlaneBilinearUp()` as follows;\n\n```\n  if (filtering \u0026\u0026 dst_height \u003e src_height) {\n    return ScalePlaneBilinearUp(src_width, src_height, dst_width, dst_height,\n                                src_stride, dst_stride, src, dst, filtering);\n  }\n```\n\nThis is why I suggested `assert(dst_height \u003e src_height)` instead of `assert(dst_height \u003e 0)`. \n\nFrom `src_height \u003e 0` and `dst_height \u003e src_height`, it follows that `dst_height \u003e 0`.",
+      "revId": "3f42e3840b88a36fe579c0488ee2b843ea81cf17",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd0087a7_8f230056",
+        "filename": "source/scale.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1242,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-13T21:53:09Z",
+      "side": 1,
+      "message": "`ScaleSlope()` sets `dy` by either\n\n```\n    *dy \u003d FixedDiv(src_height, dst_height);\n```\n\nor\n\n```\n      *dy \u003d FixedDiv1(src_height, dst_height);\n```\n\nSince `src_height` is strictly smaller than `dst_height`, `dy` cannot possibly be equal to `65536` (1.0). Therefore this assertion should be `assert(dy \u003c 65536)`.",
+      "revId": "3f42e3840b88a36fe579c0488ee2b843ea81cf17",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd8f1dff_e1a312c6",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-13T21:53:09Z",
+      "side": 1,
+      "message": "`ScaleARGBBilinearUp()` has only one caller and it calls `ScaleARGBBilinearUp()` as follows:\n\n```\n  if (filtering \u0026\u0026 dy \u003c 65536) {\n    return ScaleARGBBilinearUp(src_width, src_height, clip_width, clip_height,\n                               src_stride, dst_stride, src, dst, x, dx, y, dy,\n                               filtering);\n  }\n```\n\nClearly we can assert `dy \u003c 65536` here.",
+      "revId": "3f42e3840b88a36fe579c0488ee2b843ea81cf17",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0f69a3c_c1ff8d5c",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 470,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-13T21:53:09Z",
+      "side": 1,
+      "message": "`ScaleUVBilinearUp()` has only one caller, and it calls `ScaleUVBilinearUp()` as follows:\n\n```\n  if (filtering \u0026\u0026 dy \u003c 65536) {\n    return ScaleUVBilinearUp(src_width, src_height, clip_width, clip_height,\n                             src_stride, dst_stride, src, dst, x, dx, y, dy,\n                             filtering);\n  }\n```\n\nClearly we can assert `dy \u003c 65536` here.",
+      "revId": "3f42e3840b88a36fe579c0488ee2b843ea81cf17",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
