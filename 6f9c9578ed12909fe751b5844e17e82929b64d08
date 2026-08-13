@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70fd6efb_ba181663",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-13T21:24:47Z",
+      "side": 1,
+      "message": "my local workstation is zen4 and actually performs better than jetski said.\nWas AVX2\n I420ToAR30_Opt (195 ms)\n\nNow AVX512BW\n I420ToAR30_Opt (176 ms)",
+      "revId": "6f9c9578ed12909fe751b5844e17e82929b64d08",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
