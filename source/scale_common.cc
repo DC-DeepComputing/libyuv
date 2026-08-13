@@ -1474,9 +1474,7 @@ void ScalePlaneVertical(int src_height,
   void (*InterpolateRow)(uint8_t* dst_argb, const uint8_t* src_argb,
                          ptrdiff_t src_stride, int dst_width,
                          int source_y_fraction) = InterpolateRow_C;
-  const int64_t max_y =
-      (src_height > 1) ? (((int64_t)src_height - 1) << 16) - 1 : 0;
-  int64_t y64 = y;
+  const int max_y = (src_height > 1) ? ((src_height - 1) << 16) - 1 : 0;
   int j;
   assert(bpp >= 1 && bpp <= 4);
   assert(src_height != 0);
@@ -1526,15 +1524,15 @@ void ScalePlaneVertical(int src_height,
   for (j = 0; j < dst_height; ++j) {
     int yi;
     int yf;
-    if (y64 > max_y) {
-      y64 = max_y;
+    if (y > max_y) {
+      y = max_y;
     }
-    yi = (int)(y64 >> 16);
-    yf = filtering ? (int)((y64 >> 8) & 255) : 0;
+    yi = y >> 16;
+    yf = filtering ? ((y >> 8) & 255) : 0;
     InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride, src_stride,
                    dst_width_bytes, yf);
     dst_argb += dst_stride;
-    y64 += dy;
+    y += dy;
   }
 }
 
@@ -1555,9 +1553,7 @@ void ScalePlaneVertical_16(int src_height,
   void (*InterpolateRow)(uint16_t* dst_argb, const uint16_t* src_argb,
                          ptrdiff_t src_stride, int dst_width,
                          int source_y_fraction) = InterpolateRow_16_C;
-  const int64_t max_y =
-      (src_height > 1) ? (((int64_t)src_height - 1) << 16) - 1 : 0;
-  int64_t y64 = y;
+  const int max_y = (src_height > 1) ? ((src_height - 1) << 16) - 1 : 0;
   int j;
   assert(wpp >= 1 && wpp <= 2);
   assert(src_height != 0);
@@ -1596,15 +1592,15 @@ void ScalePlaneVertical_16(int src_height,
   for (j = 0; j < dst_height; ++j) {
     int yi;
     int yf;
-    if (y64 > max_y) {
-      y64 = max_y;
+    if (y > max_y) {
+      y = max_y;
     }
-    yi = (int)(y64 >> 16);
-    yf = filtering ? (int)((y64 >> 8) & 255) : 0;
+    yi = y >> 16;
+    yf = filtering ? ((y >> 8) & 255) : 0;
     InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride, src_stride,
                    dst_width_words, yf);
     dst_argb += dst_stride;
-    y64 += dy;
+    y += dy;
   }
 }
 
