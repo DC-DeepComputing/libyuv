@@ -3448,18 +3448,19 @@ void OMITFP I422ToRGBARow_SSSE3(const uint8_t* y_buf,
   "vpmaxsw    %%zmm6,%%zmm1,%%zmm1                                \n" \
   "vpmaxsw    %%zmm6,%%zmm2,%%zmm2                                \n" \
   "vpsllw     $0x4,%%zmm2,%%zmm2                                  \n" \
-  "vpermq     %%zmm0,%%zmm18,%%zmm0                               \n" \
-  "vpermq     %%zmm1,%%zmm18,%%zmm1                               \n" \
-  "vpermq     %%zmm2,%%zmm18,%%zmm2                               \n" \
-  "vpunpckhwd %%zmm2,%%zmm0,%%zmm3                                \n" \
-  "vpunpcklwd %%zmm2,%%zmm0,%%zmm0                                \n" \
-  "vpunpckhwd %%zmm5,%%zmm1,%%zmm2                                \n" \
-  "vpunpcklwd %%zmm5,%%zmm1,%%zmm1                                \n" \
-  "vpslld     $0xa,%%zmm1,%%zmm1                                  \n" \
-  "vpslld     $0xa,%%zmm2,%%zmm2                                  \n" \
-  "vpord      %%zmm1,%%zmm0,%%zmm0                                \n" \
-  "vpord      %%zmm2,%%zmm3,%%zmm3                                \n" \
-  "vmovdqu32  %%zmm0,(%[dst_ar30])                                \n" \
+  "vmovdqa64  %%zmm18,%%zmm3                                      \n" \
+  "vpermi2w   %%zmm2,%%zmm0,%%zmm3                                \n" \
+  "vmovdqa64  %%zmm20,%%zmm4                                      \n" \
+  "vpermi2w   %%zmm5,%%zmm1,%%zmm4                                \n" \
+  "vpslld     $0xa,%%zmm4,%%zmm4                                  \n" \
+  "vpord      %%zmm4,%%zmm3,%%zmm3                                \n" \
+  "vmovdqu32  %%zmm3,(%[dst_ar30])                                \n" \
+  "vmovdqa64  %%zmm19,%%zmm3                                      \n" \
+  "vpermi2w   %%zmm2,%%zmm0,%%zmm3                                \n" \
+  "vmovdqa64  %%zmm21,%%zmm0                                      \n" \
+  "vpermi2w   %%zmm5,%%zmm1,%%zmm0                                \n" \
+  "vpslld     $0xa,%%zmm0,%%zmm0                                  \n" \
+  "vpord      %%zmm0,%%zmm3,%%zmm3                                \n" \
   "vmovdqu32  %%zmm3,0x40(%[dst_ar30])                            \n" \
   "lea        0x80(%[dst_ar30]), %[dst_ar30]                      \n"
 
@@ -3475,9 +3476,6 @@ void OMITFP I422ToRGBARow_SSSE3(const uint8_t* y_buf,
   "vpmaxsw    %%ymm6,%%ymm1,%%ymm1                                \n" \
   "vpmaxsw    %%ymm6,%%ymm2,%%ymm2                                \n" \
   "vpsllw     $0x4,%%ymm2,%%ymm2                                  \n" \
-  "vpermq     $0xd8,%%ymm0,%%ymm0                                 \n" \
-  "vpermq     $0xd8,%%ymm1,%%ymm1                                 \n" \
-  "vpermq     $0xd8,%%ymm2,%%ymm2                                 \n" \
   "vpunpckhwd %%ymm2,%%ymm0,%%ymm3                                \n" \
   "vpunpcklwd %%ymm2,%%ymm0,%%ymm0                                \n" \
   "vpunpckhwd %%ymm5,%%ymm1,%%ymm2                                \n" \
@@ -3486,7 +3484,9 @@ void OMITFP I422ToRGBARow_SSSE3(const uint8_t* y_buf,
   "vpslld     $0xa,%%ymm2,%%ymm2                                  \n" \
   "vpor       %%ymm1,%%ymm0,%%ymm0                                \n" \
   "vpor       %%ymm2,%%ymm3,%%ymm3                                \n" \
-  "vmovdqu    %%ymm0,(%[dst_ar30])                                \n" \
+  "vperm2i128 $0x20,%%ymm3,%%ymm0,%%ymm1                          \n" \
+  "vperm2i128 $0x31,%%ymm3,%%ymm0,%%ymm3                          \n" \
+  "vmovdqu    %%ymm1,(%[dst_ar30])                                \n" \
   "vmovdqu    %%ymm3,0x20(%[dst_ar30])                            \n" \
   "lea        0x40(%[dst_ar30]), %[dst_ar30]                      \n"
 
@@ -3733,6 +3733,19 @@ void OMITFP I422ToRGB24Row_AVX512VBMI(const uint8_t* y_buf,
 #endif  // HAS_I422TORGB24ROW_AVX512VBMI
 
 #if defined(HAS_I422TOAR30ROW_AVX512BW)
+static const uint16_t kPermRB_Low[32] = {
+    0,  32, 1,  33, 2,  34, 3,  35, 4,  36, 5,  37, 6,  38, 7,  39,
+    8,  40, 9,  41, 10, 42, 11, 43, 12, 44, 13, 45, 14, 46, 15, 47};
+static const uint16_t kPermRB_High[32] = {
+    16, 48, 17, 49, 18, 50, 19, 51, 20, 52, 21, 53, 22, 54, 23, 55,
+    24, 56, 25, 57, 26, 58, 27, 59, 28, 60, 29, 61, 30, 62, 31, 63};
+static const uint16_t kPermGA_Low[32] = {
+    0,  32, 1,  32, 2,  32, 3,  32, 4,  32, 5,  32, 6,  32, 7,  32,
+    8,  32, 9,  32, 10, 32, 11, 32, 12, 32, 13, 32, 14, 32, 15, 32};
+static const uint16_t kPermGA_High[32] = {
+    16, 32, 17, 32, 18, 32, 19, 32, 20, 32, 21, 32, 22, 32, 23, 32,
+    24, 32, 25, 32, 26, 32, 27, 32, 28, 32, 29, 32, 30, 32, 31, 32};
+
 // 32 pixels
 // 16 UV values upsampled to 32 UV, mixed with 32 Y producing 32 AR30 (128
 // bytes).
@@ -3744,6 +3757,10 @@ void OMITFP I422ToAR30Row_AVX512BW(const uint8_t* y_buf,
                                    int width) {
   asm volatile (
     YUVTORGB_SETUP_AVX512BW(yuvconstants)
+      "vmovups     (%[perm_rb_low]),%%zmm18      \n"
+      "vmovups     (%[perm_rb_high]),%%zmm19     \n"
+      "vmovups     (%[perm_ga_low]),%%zmm20      \n"
+      "vmovups     (%[perm_ga_high]),%%zmm21     \n"
       "sub         %[u_buf],%[v_buf]             \n"
       "vpcmpeqb    %%ymm5,%%ymm5,%%ymm5          \n"  // AR30 constants
       "vpsrlw      $14,%%ymm5,%%ymm5             \n"
@@ -3770,9 +3787,14 @@ void OMITFP I422ToAR30Row_AVX512BW(const uint8_t* y_buf,
   : [yuvconstants]"r"(yuvconstants),            // %[yuvconstants]
     [quadsplitperm]"r"(kSplitQuadWords),        // %[quadsplitperm]
     [dquadsplitperm]"r"(kSplitDoubleQuadWords), // %[dquadsplitperm]
-    [unperm]"r"(kUnpermuteAVX512)               // %[unperm]
+    [unperm]"r"(kUnpermuteAVX512),              // %[unperm]
+    [perm_rb_low]"r"(kPermRB_Low),              // %[perm_rb_low]
+    [perm_rb_high]"r"(kPermRB_High),            // %[perm_rb_high]
+    [perm_ga_low]"r"(kPermGA_Low),              // %[perm_ga_low]
+    [perm_ga_high]"r"(kPermGA_High)             // %[perm_ga_high]
   : "memory", "cc", YUVTORGB_REGS_AVX512BW
-    "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7"
+    "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7",
+    "xmm19", "xmm20", "xmm21"
   );
 }
 #endif  // HAS_I422TOAR30ROW_AVX512BW
