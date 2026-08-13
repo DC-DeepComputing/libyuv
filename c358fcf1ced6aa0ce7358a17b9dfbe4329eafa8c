@@ -35,6 +35,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a61c2a39_21db5c96",
+        "filename": "source/scale.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1305,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-13T20:52:43Z",
+      "side": 1,
+      "message": "Frank notes that we can have up dy \u003c\u003d 65536 in some cases, so kept the existing one.",
+      "parentUuid": "2065866d_b1df4005",
+      "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2fc7914b_9687cf9c",
@@ -48,6 +66,24 @@
       "writtenOn": "2026-08-13T19:07:12Z",
       "side": 1,
       "message": "usually we do asserts near the top and a function that allows failure (int return) can have a non-assert version that does an if (src_height \u003c\u003d 0) return -1.\nreturns are an error code so 0 \u003d success, 1 or more is a runtime error like malloc, -1 or less is parameter errors... programming errors like the assert, but fail quickly before something bad happens.",
+      "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00c1b446_be8e9a2d",
+        "filename": "source/scale.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1306,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-13T20:52:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2fc7914b_9687cf9c",
       "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -69,6 +105,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3747a7cd_236d941c",
+        "filename": "source/scale.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1336,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-13T20:52:43Z",
+      "side": 1,
+      "message": "Correct. Expanded the comment some more.",
+      "parentUuid": "00c94505_6e585b07",
+      "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5b0e03b6_925b45a3",
@@ -82,6 +136,24 @@
       "writtenOn": "2026-08-13T19:43:40Z",
       "side": 1,
       "message": "Do you know why we update `src` under this condition?\n\nIf I understand it correctly, this condition is equivalent to:\n\n```\n        if ((yi + 1) \u003c (src_height - 1)) {\n```\n\nWhat does this condition mean?",
+      "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6bf47fd2_cc7cc81b",
+        "filename": "source/scale.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1347,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-13T20:52:43Z",
+      "side": 1,
+      "message": "Updated the comment above to clarify more.",
+      "parentUuid": "5b0e03b6_925b45a3",
       "revId": "c358fcf1ced6aa0ce7358a17b9dfbe4329eafa8c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
