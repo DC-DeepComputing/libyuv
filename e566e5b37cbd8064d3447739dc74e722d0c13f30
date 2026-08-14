@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9767c8d_13a19c0c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-14T18:12:27Z",
+      "side": 1,
+      "message": "Why didn\u0027t the test failure block the CQ?",
+      "revId": "e566e5b37cbd8064d3447739dc74e722d0c13f30",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1995de36_50f55634",
