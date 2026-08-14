@@ -41,9 +41,8 @@ uint32_t HammingDistance_SSE42(const uint8_t* src_a,
   return diff;
 }
 
-__declspec(naked) uint32_t SumSquareError_SSE2(const uint8_t* src_a,
-                                               const uint8_t* src_b,
-                                               int count) {
+__declspec(naked) uint32_t
+    SumSquareError_SSE2(const uint8_t* src_a, const uint8_t* src_b, int count) {
   __asm {
     mov        eax, [esp + 4]  // src_a
     mov        edx, [esp + 8]  // src_b
@@ -82,9 +81,8 @@ __declspec(naked) uint32_t SumSquareError_SSE2(const uint8_t* src_a,
 #ifdef HAS_SUMSQUAREERROR_AVX2
 // C4752: found Intel(R) Advanced Vector Extensions; consider using /arch:AVX.
 #pragma warning(disable : 4752)
-__declspec(naked) uint32_t SumSquareError_AVX2(const uint8_t* src_a,
-                                               const uint8_t* src_b,
-                                               int count) {
+__declspec(naked) uint32_t
+    SumSquareError_AVX2(const uint8_t* src_a, const uint8_t* src_b, int count) {
   __asm {
     mov        eax, [esp + 4]  // src_a
     mov        edx, [esp + 8]  // src_b
@@ -148,9 +146,8 @@ uvec32 kHashMul3 = {
     0x00000001,  // 33 ^ 0
 };
 
-__declspec(naked) uint32_t HashDjb2_SSE41(const uint8_t* src,
-                                          int count,
-                                          uint32_t seed) {
+__declspec(naked) uint32_t
+    HashDjb2_SSE41(const uint8_t* src, int count, uint32_t seed) {
   __asm {
     mov        eax, [esp + 4]  // src
     mov        ecx, [esp + 8]  // count
@@ -200,9 +197,8 @@ __declspec(naked) uint32_t HashDjb2_SSE41(const uint8_t* src,
 
 // Visual C 2012 required for AVX2.
 #ifdef HAS_HASHDJB2_AVX2
-__declspec(naked) uint32_t HashDjb2_AVX2(const uint8_t* src,
-                                         int count,
-                                         uint32_t seed) {
+__declspec(naked) uint32_t
+    HashDjb2_AVX2(const uint8_t* src, int count, uint32_t seed) {
   __asm {
     mov        eax, [esp + 4]  // src
     mov        ecx, [esp + 8]  // count
