@@ -3977,20 +3977,20 @@ TEST_F(LibYUVPlanarTest, Convert16To8Row_Opt) {
     defined(HAS_HALFWIDTHROW_16TO8_AVX512BW) || defined(HAS_HALFWIDTHROW_16TO8_NEON)
 TEST_F(LibYUVPlanarTest, HalfWidthRow_16To8_Opt) {
   const int kPixels = (benchmark_width_ * benchmark_height_ + 63) & ~63;
-  align_buffer_page_end(src_pixels_y, kPixels * 4);
+  align_buffer_page_end_16(src_pixels_y, kPixels * 4);
   align_buffer_page_end(dst_pixels_y_opt, kPixels);
   align_buffer_page_end(dst_pixels_y_c, kPixels);
 
-  MemRandomize(src_pixels_y, kPixels * 4);
-  for (int i = 0; i < kPixels * 2; ++i) {
-    reinterpret_cast<uint16_t*>(src_pixels_y)[i] &= 1023;
+  MemRandomize(src_pixels_y, kPixels * 8);
+  for (int i = 0; i < kPixels * 4; ++i) {
+    src_pixels_y[i] &= 1023;
   }
 
   memset(dst_pixels_y_opt, 0, kPixels);
   memset(dst_pixels_y_c, 1, kPixels);
 
-  HalfWidthRow_16To8_C(reinterpret_cast<const uint16_t*>(src_pixels_y), kPixels,
-                       dst_pixels_y_c, 16384, kPixels);
+  HalfWidthRow_16To8_C(src_pixels_y, kPixels * 2, dst_pixels_y_c, 16384,
+                       kPixels);
 
 #if defined(HAS_HALFWIDTHROW_16TO8_AVX512BW)
   int has_avx512 = TestCpuFlag(kCpuHasAVX512BW);
@@ -4008,32 +4008,31 @@ TEST_F(LibYUVPlanarTest, HalfWidthRow_16To8_Opt) {
   for (int i = 0; i < benchmark_iterations_; ++i) {
 #if defined(HAS_HALFWIDTHROW_16TO8_AVX512BW)
     if (has_avx512) {
-      HalfWidthRow_16To8_AVX512BW(
-          reinterpret_cast<const uint16_t*>(src_pixels_y), kPixels,
-          dst_pixels_y_opt, 16384, kPixels);
+      HalfWidthRow_16To8_AVX512BW(src_pixels_y, kPixels * 2, dst_pixels_y_opt,
+                                  16384, kPixels);
     } else
 #endif
 #if defined(HAS_HALFWIDTHROW_16TO8_AVX2)
     if (has_avx2) {
-      HalfWidthRow_16To8_AVX2(reinterpret_cast<const uint16_t*>(src_pixels_y),
-                              kPixels, dst_pixels_y_opt, 16384, kPixels);
+      HalfWidthRow_16To8_AVX2(src_pixels_y, kPixels * 2, dst_pixels_y_opt,
+                              16384, kPixels);
     } else
 #endif
 #if defined(HAS_HALFWIDTHROW_16TO8_SSSE3)
     if (has_ssse3) {
-      HalfWidthRow_16To8_SSSE3(reinterpret_cast<const uint16_t*>(src_pixels_y),
-                               kPixels, dst_pixels_y_opt, 16384, kPixels);
+      HalfWidthRow_16To8_SSSE3(src_pixels_y, kPixels * 2, dst_pixels_y_opt,
+                               16384, kPixels);
     } else
 #endif
 #if defined(HAS_HALFWIDTHROW_16TO8_NEON)
     if (has_neon) {
-      HalfWidthRow_16To8_NEON(reinterpret_cast<const uint16_t*>(src_pixels_y),
-                              kPixels, dst_pixels_y_opt, 16384, kPixels);
+      HalfWidthRow_16To8_NEON(src_pixels_y, kPixels * 2, dst_pixels_y_opt,
+                              16384, kPixels);
     } else
 #endif
     {
-      HalfWidthRow_16To8_C(reinterpret_cast<const uint16_t*>(src_pixels_y),
-                           kPixels, dst_pixels_y_opt, 16384, kPixels);
+      HalfWidthRow_16To8_C(src_pixels_y, kPixels * 2, dst_pixels_y_opt, 16384,
+                           kPixels);
     }
   }
 
@@ -4041,20 +4040,20 @@ TEST_F(LibYUVPlanarTest, HalfWidthRow_16To8_Opt) {
     ASSERT_EQ(dst_pixels_y_opt[i], dst_pixels_y_c[i]);
   }
 
-  free_aligned_buffer_page_end(src_pixels_y);
+  free_aligned_buffer_page_end_16(src_pixels_y);
   free_aligned_buffer_page_end(dst_pixels_y_opt);
   free_aligned_buffer_page_end(dst_pixels_y_c);
 }
 
 TEST_F(LibYUVPlanarTest, HalfWidthRow_16To8_Any) {
   const int kMaxPixels = 256;
-  align_buffer_page_end(src_pixels_y, kMaxPixels * 4);
+  align_buffer_page_end_16(src_pixels_y, kMaxPixels * 4);
   align_buffer_page_end(dst_pixels_y_opt, kMaxPixels);
   align_buffer_page_end(dst_pixels_y_c, kMaxPixels);
 
-  MemRandomize(src_pixels_y, kMaxPixels * 4);
-  for (int i = 0; i < kMaxPixels * 2; ++i) {
-    reinterpret_cast<uint16_t*>(src_pixels_y)[i] &= 1023;
+  MemRandomize(src_pixels_y, kMaxPixels * 8);
+  for (int i = 0; i < kMaxPixels * 4; ++i) {
+    src_pixels_y[i] &= 1023;
   }
 
 #if defined(HAS_HALFWIDTHROW_16TO8_AVX512BW)
@@ -4074,40 +4073,36 @@ TEST_F(LibYUVPlanarTest, HalfWidthRow_16To8_Any) {
     memset(dst_pixels_y_opt, 0, kMaxPixels);
     memset(dst_pixels_y_c, 1, kMaxPixels);
 
-    HalfWidthRow_16To8_C(reinterpret_cast<const uint16_t*>(src_pixels_y),
-                         kMaxPixels, dst_pixels_y_c, 16384, width);
+    HalfWidthRow_16To8_C(src_pixels_y, kMaxPixels * 2, dst_pixels_y_c, 16384,
+                         width);
 
 #if defined(HAS_HALFWIDTHROW_16TO8_AVX512BW)
     if (has_avx512) {
-      HalfWidthRow_16To8_Any_AVX512BW(
-          reinterpret_cast<const uint16_t*>(src_pixels_y), kMaxPixels,
-          dst_pixels_y_opt, 16384, width);
+      HalfWidthRow_16To8_Any_AVX512BW(src_pixels_y, kMaxPixels * 2,
+                                      dst_pixels_y_opt, 16384, width);
     } else
 #endif
 #if defined(HAS_HALFWIDTHROW_16TO8_AVX2)
     if (has_avx2) {
-      HalfWidthRow_16To8_Any_AVX2(
-          reinterpret_cast<const uint16_t*>(src_pixels_y), kMaxPixels,
-          dst_pixels_y_opt, 16384, width);
+      HalfWidthRow_16To8_Any_AVX2(src_pixels_y, kMaxPixels * 2,
+                                  dst_pixels_y_opt, 16384, width);
     } else
 #endif
 #if defined(HAS_HALFWIDTHROW_16TO8_SSSE3)
     if (has_ssse3) {
-      HalfWidthRow_16To8_Any_SSSE3(
-          reinterpret_cast<const uint16_t*>(src_pixels_y), kMaxPixels,
-          dst_pixels_y_opt, 16384, width);
+      HalfWidthRow_16To8_Any_SSSE3(src_pixels_y, kMaxPixels * 2,
+                                   dst_pixels_y_opt, 16384, width);
     } else
 #endif
 #if defined(HAS_HALFWIDTHROW_16TO8_NEON)
     if (has_neon) {
-      HalfWidthRow_16To8_Any_NEON(
-          reinterpret_cast<const uint16_t*>(src_pixels_y), kMaxPixels,
-          dst_pixels_y_opt, 16384, width);
+      HalfWidthRow_16To8_Any_NEON(src_pixels_y, kMaxPixels * 2,
+                                  dst_pixels_y_opt, 16384, width);
     } else
 #endif
     {
-      HalfWidthRow_16To8_C(reinterpret_cast<const uint16_t*>(src_pixels_y),
-                           kMaxPixels, dst_pixels_y_opt, 16384, width);
+      HalfWidthRow_16To8_C(src_pixels_y, kMaxPixels * 2, dst_pixels_y_opt,
+                           16384, width);
     }
 
     for (int i = 0; i < width; ++i) {
@@ -4115,7 +4110,7 @@ TEST_F(LibYUVPlanarTest, HalfWidthRow_16To8_Any) {
     }
   }
 
-  free_aligned_buffer_page_end(src_pixels_y);
+  free_aligned_buffer_page_end_16(src_pixels_y);
   free_aligned_buffer_page_end(dst_pixels_y_opt);
   free_aligned_buffer_page_end(dst_pixels_y_c);
 }
