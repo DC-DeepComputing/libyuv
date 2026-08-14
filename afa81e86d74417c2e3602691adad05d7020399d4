@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8a6c517_40b26626",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-14T18:07:41Z",
+      "side": 1,
+      "message": "LGTM. I checked the strides and widths carefully.",
+      "revId": "afa81e86d74417c2e3602691adad05d7020399d4",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83cab2cb_e8ea68d8",
+        "filename": "unit_test/planar_test.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 3984,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-14T18:07:41Z",
+      "side": 1,
+      "message": "Optional: We write the second argument as `kPixels * 4 * sizeof(uint16_t)`.",
+      "range": {
+        "startLine": 3984,
+        "startChar": 29,
+        "endLine": 3984,
+        "endChar": 40
+      },
+      "revId": "afa81e86d74417c2e3602691adad05d7020399d4",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ae07348_a2b90792",
+        "filename": "unit_test/planar_test.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 4054,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-14T18:07:41Z",
+      "side": 1,
+      "message": "Optional: We write the second argument as `kPixels * 4 * sizeof(uint16_t)`.",
+      "revId": "afa81e86d74417c2e3602691adad05d7020399d4",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
