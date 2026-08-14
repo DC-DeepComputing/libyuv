@@ -11,7 +11,8 @@
 #ifndef INCLUDE_LIBYUV_BASIC_TYPES_H_
 #define INCLUDE_LIBYUV_BASIC_TYPES_H_
 
-#include <stddef.h>  // For size_t and NULL
+// For size_t and NULL
+#include <stddef.h>  // IWYU pragma: export
 
 #if !defined(INT_TYPES_DEFINED) && !defined(GG_LONGLONG)
 #define INT_TYPES_DEFINED
@@ -27,7 +28,8 @@ typedef short int16_t;
 typedef unsigned char uint8_t;
 typedef signed char int8_t;
 #else
-#include <stdint.h>  // for uintptr_t and C99 types
+// for uintptr_t and C99 types
+#include <stdint.h>  // IWYU pragma: export
 #endif               // defined(_MSC_VER) && (_MSC_VER < 1600)
 // Types are deprecated.  Enable this macro for legacy types.
 #ifdef LIBYUV_LEGACY_TYPES
