@@ -4782,9 +4782,9 @@ void I422ToRGB24Row_AVX2(const uint8_t* src_y,
                          uint8_t* dst_rgb24,
                          const struct YuvConstants* yuvconstants,
                          int width);
-void I422ToRGB24Row_AVX512VBMI(const uint8_t* src_y,
-                               const uint8_t* src_u,
-                               const uint8_t* src_v,
+void I422ToRGB24Row_AVX512VBMI(const uint8_t* y_buf,
+                               const uint8_t* u_buf,
+                               const uint8_t* v_buf,
                                uint8_t* dst_rgb24,
                                const struct YuvConstants* yuvconstants,
                                int width);

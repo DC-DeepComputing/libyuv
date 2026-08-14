@@ -1393,9 +1393,9 @@ void I422ToRGB24Row_AVX2(const uint8_t* src_y,
 
 #ifdef HAS_I422TORGB24ROW_AVX512VBMI
 LIBYUV_TARGET_AVX512VBMI
-void I422ToRGB24Row_AVX512VBMI(const uint8_t* src_y,
-                               const uint8_t* src_u,
-                               const uint8_t* src_v,
+void I422ToRGB24Row_AVX512VBMI(const uint8_t* y_buf,
+                               const uint8_t* u_buf,
+                               const uint8_t* v_buf,
                                uint8_t* dst_rgb24,
                                const struct YuvConstants* yuvconstants,
                                int width) {
@@ -1439,13 +1439,13 @@ void I422ToRGB24Row_AVX512VBMI(const uint8_t* src_y,
   __m512i zmm_split = _mm512_loadu_si512((const __m512i*)kSplitQuadWords);
   __m512i zmm_split_y = _mm512_loadu_si512((const __m512i*)kSplitDoubleQuadWords);
 
-  ptrdiff_t offset = src_v - src_u;
+  ptrdiff_t offset = v_buf - u_buf;
 
   while (width >= 32) {
     // READYUV422_AVX512BW
-    __m128i xmm_u = _mm_loadu_si128((const __m128i*)src_u);
-    __m128i xmm_v = _mm_loadu_si128((const __m128i*)(src_u + offset));
-    src_u += 16;
+    __m128i xmm_u = _mm_loadu_si128((const __m128i*)u_buf);
+    __m128i xmm_v = _mm_loadu_si128((const __m128i*)(u_buf + offset));
+    u_buf += 16;
 
     __m512i zmm_u_val = _mm512_castsi128_si512(xmm_u);
     __m512i zmm_v_val = _mm512_castsi128_si512(xmm_v);
@@ -1457,8 +1457,8 @@ void I422ToRGB24Row_AVX512VBMI(const uint8_t* src_y,
     zmm3 = _mm512_permutex_epi64(zmm3, 0xd8);
     zmm3 = _mm512_unpacklo_epi16(zmm3, zmm3);
 
-    __m256i ymm_y = _mm256_loadu_si256((const __m256i*)src_y);
-    src_y += 32;
+    __m256i ymm_y = _mm256_loadu_si256((const __m256i*)y_buf);
+    y_buf += 32;
     __m512i zmm4 = _mm512_castsi256_si512(ymm_y);
     zmm4 = _mm512_permutexvar_epi64(zmm_split_y, zmm4);
     zmm4 = _mm512_permutex_epi64(zmm4, 0xd8);
