@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f82b4ef4_7e2d1ce9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-14T17:53:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a603bb0e_e939bc8f",
+      "revId": "279af8a21607215f0fce0e5e051c90379eed7e4a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "76b971f7_0f7b0709",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-08-14T17:28:52Z",
       "side": 1,
       "message": "Just use `align_buffer_page_end_16` and `free_aligned_buffer_page_end_16` with `src_pixels_y`, and get rid of all the `reinterpret_cast\u003cuint16_t*\u003e` and `reinterpret_cast\u003cconst uint16_t*\u003e` on ``src_pixels_y`.",
+      "revId": "279af8a21607215f0fce0e5e051c90379eed7e4a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "29a035f8_3e72442d",
+        "filename": "unit_test/planar_test.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 3980,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-14T17:53:16Z",
+      "side": 1,
+      "message": "Done.  Makes sense.  AI added this and HalfRow tests when I removed the scaling, and I was happy to have a new unittest.  These are really redundent and the make convert functions that use these row functions should catch row function bugs, but row tests are occasionally useful for very specific bug or performance testing.\nTheyre a bit problematic that they test specific internal functions, which the user should not be accessing, and I\u0027m inclined to remove them at some point.",
+      "parentUuid": "76b971f7_0f7b0709",
       "revId": "279af8a21607215f0fce0e5e051c90379eed7e4a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
