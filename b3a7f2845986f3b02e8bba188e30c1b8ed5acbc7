@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b638e67d_989857cc",
+        "filename": "source/row_win.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1442,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-14T21:09:21Z",
+      "side": 1,
+      "message": "Strictly speaking, taking the difference between `v_buf` and `u_buf` is safe only when they are from the same array. Otherwise this is undefined behavior. I would just use `v_buf` directly.",
+      "revId": "b3a7f2845986f3b02e8bba188e30c1b8ed5acbc7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
