@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76b971f7_0f7b0709",
+        "filename": "unit_test/planar_test.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 3980,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-14T17:28:52Z",
+      "side": 1,
+      "message": "Just use `align_buffer_page_end_16` and `free_aligned_buffer_page_end_16` with `src_pixels_y`, and get rid of all the `reinterpret_cast\u003cuint16_t*\u003e` and `reinterpret_cast\u003cconst uint16_t*\u003e` on ``src_pixels_y`.",
+      "revId": "279af8a21607215f0fce0e5e051c90379eed7e4a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "136845bb_c8cad660",
+        "filename": "unit_test/planar_test.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 4051,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-14T17:28:52Z",
+      "side": 1,
+      "message": "Same here: Use `align_buffer_page_end_16` and `free_aligned_buffer_page_end_16` with `src_pixels_y`, and get rid of all the `reinterpret_cast\u003cuint16_t*\u003e` and `reinterpret_cast\u003cconst uint16_t*\u003e` on ``src_pixels_y`.",
+      "revId": "279af8a21607215f0fce0e5e051c90379eed7e4a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
