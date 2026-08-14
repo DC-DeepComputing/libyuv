@@ -16,6 +16,24 @@
       "message": "note this header historically was owned by meet and a verbatim copy but i think they moved away from it?\nwe should have a TODO to adopt c99 or c11 and remove this header completely",
       "revId": "c20b35a7bcc23aaa5956ae7989da8fac8f3a40b0",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b1e74ac_73b4135c",
+        "filename": "include/libyuv/basic_types.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-14T21:06:38Z",
+      "side": 0,
+      "message": "I see. Then I will undo these changes. I agree it\u0027s clearer to include \u003cstddef.h\u003e and \u003cstdint.h\u003e directly.",
+      "parentUuid": "8d9683c4_29883166",
+      "revId": "c20b35a7bcc23aaa5956ae7989da8fac8f3a40b0",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
