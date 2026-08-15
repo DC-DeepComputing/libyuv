@@ -1175,7 +1175,7 @@ TEST_F(LibYUVConvertTest, TestYToARGB) {
   }
 }
 
-static const uint8_t kNoDither4x4[16] = {
+SIMD_ALIGNED(static const uint8_t kNoDither4x4[16]) = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
@@ -1202,7 +1202,7 @@ TEST_F(LibYUVConvertTest, TestNoDither) {
 }
 
 // Ordered 4x4 dither for 888 to 565.  Values from 0 to 7.
-static const uint8_t kDither565_4x4[16] = {
+SIMD_ALIGNED(static const uint8_t kDither565_4x4[16]) = {
     0, 4, 1, 5, 6, 2, 7, 3, 1, 5, 0, 4, 7, 3, 6, 2,
 };
 
