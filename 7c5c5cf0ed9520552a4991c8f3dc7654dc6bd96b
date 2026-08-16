@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d7a76d0_b886991e",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 5518,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-16T23:59:14Z",
+      "side": 1,
+      "message": "Only this function has a compilation error on Android. Could you please confirm that you also wanted to change the other functions?",
+      "revId": "7c5c5cf0ed9520552a4991c8f3dc7654dc6bd96b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
