@@ -1135,54 +1135,83 @@ void HalfMergeUVRow_SVE2(const uint8_t* src_u,
                          int width) {
   const uint8_t* src_u1 = src_u + src_stride_u;
   const uint8_t* src_v1 = src_v + src_stride_v;
+  int odd = width & 1;
   int vl;
-  asm volatile(
-      "cntb     %x[vl]                                  \n"
-      "subs     %w[width], %w[width], %w[vl]            \n"
-      "b.lt     2f                                      \n"
+  width &= ~1;
+  if (width > 0) {
+    asm volatile(
+        "cntb     %x[vl]                                  \n"
+        "subs     %w[width], %w[width], %w[vl]            \n"
+        "b.lt     2f                                      \n"
 
-      "ptrue    p0.b                                    \n"
-      "1:                                               \n"
-      "ld1b     {z1.b}, p0/z, [%[src_u]]                \n"
-      "ld1b     {z2.b}, p0/z, [%[src_u1]]               \n"
-      "ld1b     {z3.b}, p0/z, [%[src_v]]                \n"
-      "ld1b     {z4.b}, p0/z, [%[src_v1]]               \n"
-      "incb     %[src_u]                                \n"
-      "incb     %[src_u1]                               \n"
-      "incb     %[src_v]                                \n"
-      "incb     %[src_v1]                               \n"
-      "urhadd   z1.b, p0/m, z1.b, z2.b                  \n"
-      "urhadd   z3.b, p0/m, z3.b, z4.b                  \n"
-      "mov      z2.b, p0/m, z3.b                        \n"
-      "subs     %w[width], %w[width], %w[vl]            \n"
-      "st2b     {z1.b, z2.b}, p0, [%[dst_uv]]           \n"
-      "incb     %[dst_uv], all, mul #2                  \n"
-      "b.ge     1b                                      \n"
+        "ptrue    p0.b                                    \n"
+        "1:                                               \n"
+        "ld1b     {z0.b}, p0/z, [%[src_u]]                \n"
+        "ld1b     {z1.b}, p0/z, [%[src_u1]]               \n"
+        "ld1b     {z2.b}, p0/z, [%[src_v]]                \n"
+        "ld1b     {z3.b}, p0/z, [%[src_v1]]               \n"
+        "incb     %[src_u]                                \n"
+        "incb     %[src_u1]                               \n"
+        "incb     %[src_v]                                \n"
+        "incb     %[src_v1]                               \n"
+        "uaddlb   z4.h, z0.b, z1.b                        \n"
+        "uaddlt   z5.h, z0.b, z1.b                        \n"
+        "add      z4.h, z4.h, z5.h                        \n"
+        "uaddlb   z6.h, z2.b, z3.b                        \n"
+        "uaddlt   z7.h, z2.b, z3.b                        \n"
+        "add      z6.h, z6.h, z7.h                        \n"
+        "zip1     z0.h, z4.h, z6.h                        \n"
+        "zip2     z1.h, z4.h, z6.h                        \n"
+        "rshrnb   z0.b, z0.h, #2                          \n"
+        "rshrnb   z1.b, z1.h, #2                          \n"
+        "uzp1     z0.b, z0.b, z1.b                        \n"
+        "subs     %w[width], %w[width], %w[vl]            \n"
+        "st1b     {z0.b}, p0, [%[dst_uv]]                 \n"
+        "incb     %[dst_uv]                               \n"
+        "b.ge     1b                                      \n"
 
-      "2:                                               \n"
-      "adds     %w[width], %w[width], %w[vl]            \n"
-      "b.eq     99f                                     \n"
+        "2:                                               \n"
+        "adds     %w[width], %w[width], %w[vl]            \n"
+        "b.eq     99f                                     \n"
 
-      "whilelt  p0.b, wzr, %w[width]                    \n"
-      "ld1b     {z1.b}, p0/z, [%[src_u]]                \n"
-      "ld1b     {z2.b}, p0/z, [%[src_u1]]               \n"
-      "ld1b     {z3.b}, p0/z, [%[src_v]]                \n"
-      "ld1b     {z4.b}, p0/z, [%[src_v1]]               \n"
-      "urhadd   z1.b, p0/m, z1.b, z2.b                  \n"
-      "urhadd   z3.b, p0/m, z3.b, z4.b                  \n"
-      "mov      z2.b, p0/m, z3.b                        \n"
-      "st2b     {z1.b, z2.b}, p0, [%[dst_uv]]           \n"
+        "whilelt  p0.b, wzr, %w[width]                    \n"
+        "ld1b     {z0.b}, p0/z, [%[src_u]]                \n"
+        "ld1b     {z1.b}, p0/z, [%[src_u1]]               \n"
+        "ld1b     {z2.b}, p0/z, [%[src_v]]                \n"
+        "ld1b     {z3.b}, p0/z, [%[src_v1]]               \n"
+        "uaddlb   z4.h, z0.b, z1.b                        \n"
+        "uaddlt   z5.h, z0.b, z1.b                        \n"
+        "add      z4.h, z4.h, z5.h                        \n"
+        "uaddlb   z6.h, z2.b, z3.b                        \n"
+        "uaddlt   z7.h, z2.b, z3.b                        \n"
+        "add      z6.h, z6.h, z7.h                        \n"
+        "zip1     z0.h, z4.h, z6.h                        \n"
+        "zip2     z1.h, z4.h, z6.h                        \n"
+        "rshrnb   z0.b, z0.h, #2                          \n"
+        "rshrnb   z1.b, z1.h, #2                          \n"
+        "uzp1     z0.b, z0.b, z1.b                        \n"
+        "st1b     {z0.b}, p0, [%[dst_uv]]                 \n"
+        "incp     %[src_u], p0.b                          \n"
+        "incp     %[src_u1], p0.b                         \n"
+        "incp     %[src_v], p0.b                          \n"
+        "incp     %[src_v1], p0.b                         \n"
+        "incp     %[dst_uv], p0.b                         \n"
 
-      "99:                                              \n"
-      : [src_u] "+r"(src_u),      // %[src_u]
-        [src_u1] "+r"(src_u1),    // %[src_u1]
-        [src_v] "+r"(src_v),      // %[src_v]
-        [src_v1] "+r"(src_v1),    // %[src_v1]
-        [dst_uv] "+r"(dst_uv),    // %[dst_uv]
-        [width] "+r"(width),      // %[width]
-        [vl] "=&r"(vl)            // %[vl]
-      :
-      : "cc", "memory", "z1", "z2", "z3", "z4", "p0");
+        "99:                                              \n"
+        : [src_u] "+r"(src_u),            // %[src_u]
+          [src_u1] "+r"(src_u1),          // %[src_u1]
+          [src_v] "+r"(src_v),            // %[src_v]
+          [src_v1] "+r"(src_v1),          // %[src_v1]
+          [dst_uv] "+r"(dst_uv),          // %[dst_uv]
+          [width] "+r"(width),            // %[width]
+          [vl] "=&r"(vl)                  // %[vl]
+        :
+        : "cc", "memory", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0");
+  }
+  if (odd) {
+    dst_uv[0] = (src_u[0] + src_u1[0] + 1) >> 1;
+    dst_uv[1] = (src_v[0] + src_v1[0] + 1) >> 1;
+  }
 }
 
 void CopyRow_SVE2(const uint8_t* src, uint8_t* dst, int width) {
@@ -1441,10 +1470,11 @@ void YUY2ToUVRow_SVE2(const uint8_t* src_yuy2,
       "adds     %w[width], %w[width], %w[vl]            \n"
       "b.eq     99f                                     \n"
 
-      "whilelt  p0.b, wzr, %w[width]                    \n"
       "add      %w[width_half], %w[width], #1           \n"
       "lsr      %w[width_half], %w[width_half], #1      \n"
       "whilelt  p1.b, wzr, %w[width_half]               \n"
+      "lsl      %w[width], %w[width_half], #1           \n"
+      "whilelt  p0.b, wzr, %w[width]                    \n"
       "ld2b     {z0.b, z1.b}, p0/z, [%[src_yuy2]]       \n"
       "ld2b     {z4.b, z5.b}, p0/z, [%[src_yuy2_1]]     \n"
       "urhadd   z1.b, p0/m, z1.b, z5.b                  \n"
@@ -1505,10 +1535,11 @@ void UYVYToUVRow_SVE2(const uint8_t* src_uyvy,
       "adds     %w[width], %w[width], %w[vl]            \n"
       "b.eq     99f                                     \n"
 
-      "whilelt  p0.b, wzr, %w[width]                    \n"
       "add      %w[width_half], %w[width], #1           \n"
       "lsr      %w[width_half], %w[width_half], #1      \n"
       "whilelt  p1.b, wzr, %w[width_half]               \n"
+      "lsl      %w[width], %w[width_half], #1           \n"
+      "whilelt  p0.b, wzr, %w[width]                    \n"
       "ld2b     {z0.b, z1.b}, p0/z, [%[src_uyvy]]       \n"
       "ld2b     {z4.b, z5.b}, p0/z, [%[src_uyvy_1]]     \n"
       "urhadd   z0.b, p0/m, z0.b, z4.b                  \n"
