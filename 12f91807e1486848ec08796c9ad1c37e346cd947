@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4fabdff5_dd26441b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-17T21:45:59Z",
+      "side": 1,
+      "message": "This is the better fix for 32 bit x86 running out of registers - do not use eax",
+      "revId": "12f91807e1486848ec08796c9ad1c37e346cd947",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
