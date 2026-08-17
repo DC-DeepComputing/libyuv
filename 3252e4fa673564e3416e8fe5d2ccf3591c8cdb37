@@ -33,6 +33,23 @@
       "message": "this is really a broader issue of builds regression that does not allow unaligned pointers, affecting many int16 and int32 C references.  a bug should be filed to find a solution.",
       "revId": "3252e4fa673564e3416e8fe5d2ccf3591c8cdb37",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a91dd08b_476e3c02",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1682,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-17T19:18:42Z",
+      "side": 1,
+      "message": "note that ARGBToARGB1555 and ARGBToARGB4444 should have the same issue but never had SSE2 direct conversion as an option, only the C version that does unaligned int16_t",
+      "revId": "3252e4fa673564e3416e8fe5d2ccf3591c8cdb37",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
