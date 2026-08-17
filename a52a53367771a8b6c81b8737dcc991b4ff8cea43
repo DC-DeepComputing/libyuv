@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbdb7ffa_6c935328",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1152,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-17T19:07:24Z",
+      "side": 1,
+      "message": "should these be add instead of incb?",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a0fff59_31e40485",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1199,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-17T19:07:24Z",
+      "side": 1,
+      "message": "nit: prefer no C, so last pixel would either be another remainder loop of 1 pixel horizontally, or caller could use SVE2 when with is even.\nIf it comes up alot, for all simd, but mainly rvv, sve, sme, the subsample for the last pixel could be handled by C in an \u0027any\u0027 function that uses sve for all but the last pixel.  or sve... basically replicate the last pixel in a buffer of 2 bytes.  But I havent thought of any clever tricks. For now the C at the end may be the best of the bad solutions.",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
