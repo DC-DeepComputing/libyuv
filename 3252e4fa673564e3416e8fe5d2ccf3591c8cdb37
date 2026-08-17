@@ -37,6 +37,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "0b599a2b_05605484",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-17T19:49:16Z",
+      "side": 1,
+      "message": "Done. I added the test command to both the CL description and the bug.",
+      "parentUuid": "2d298eed_2e65e91f",
+      "revId": "3252e4fa673564e3416e8fe5d2ccf3591c8cdb37",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "a91dd08b_476e3c02",
         "filename": "source/convert_from_argb.cc",
         "patchSetId": 2
