@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2d298eed_2e65e91f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-17T18:44:42Z",
+      "side": 1,
+      "message": "as a quick fix, okay, but i was trying to switch to 2 step conversions for x86 16 bit formats using row_common.cc to mimic the 1 step.\nso can you show what the specific test that failed is in the description or bug, so I can roll this back as followup and test again.",
+      "revId": "3252e4fa673564e3416e8fe5d2ccf3591c8cdb37",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
