@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12797f27_36d37603",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-17T21:40:53Z",
+      "side": 1,
+      "message": "I found out why. The unaligned access in `ARGBToRGB565Row_C()` was fixed by the change to the `WRITEWORD` macro in source/row_common.cc in https://chromium-review.googlesource.com/c/libyuv/libyuv/+/7908323.",
+      "revId": "64aba6131aad5e11e9da6cf71379af36405642b0",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
