@@ -22,6 +22,30 @@
       },
       "revId": "0da8e419df48794452bd9394abc564bb4c9946c5",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5fd6f2d2_d8d1af9d",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 645,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-17T12:33:49Z",
+      "side": 1,
+      "message": "Yes. I missed this in my code review. Thanks for the catch.",
+      "parentUuid": "38ba8bb7_39136120",
+      "range": {
+        "startLine": 645,
+        "startChar": 34,
+        "endLine": 645,
+        "endChar": 60
+      },
+      "revId": "0da8e419df48794452bd9394abc564bb4c9946c5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
