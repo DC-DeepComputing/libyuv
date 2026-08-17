@@ -46,6 +46,30 @@
       },
       "revId": "0da8e419df48794452bd9394abc564bb4c9946c5",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d589315d_6efce0a4",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 7
+      },
+      "lineNbr": 645,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-17T20:20:48Z",
+      "side": 1,
+      "message": "Done. Removed the `Disabled:` comment in https://chromium-review.googlesource.com/c/libyuv/libyuv/+/8263125.",
+      "parentUuid": "5fd6f2d2_d8d1af9d",
+      "range": {
+        "startLine": 645,
+        "startChar": 34,
+        "endLine": 645,
+        "endChar": 60
+      },
+      "revId": "0da8e419df48794452bd9394abc564bb4c9946c5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
