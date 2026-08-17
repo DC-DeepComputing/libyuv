@@ -16,6 +16,23 @@
       "message": "Frank: Did you verify row_win.cc with MSVC?\n\nrow_win.cc has a compilation error when MSVC is used (bug 542271613). When clang-cl is used, the code in row_win.cc is skipped and not compiled. So the changes to row_win.cc in this CL are untested.",
       "revId": "86a4d94d7a5ab7d05595a32fd8953361146cd28b",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c2f7158_ad0b2550",
+        "filename": "source/row_common.cc",
+        "patchSetId": 19
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-17T21:38:02Z",
+      "side": 1,
+      "message": "Frank: Did you make this change? This change fixed the unaligned access in `ARGBToRGB565Row_C()` reported in b/547803993.\n\nNote that there are many other unaligned accesses in this file. You can find them by searching for `*(uint32_t*)` and `*(uint16_t*)`.",
+      "revId": "86a4d94d7a5ab7d05595a32fd8953361146cd28b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
