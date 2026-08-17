@@ -16,6 +16,24 @@
       "message": "Only this function has a compilation error on Android. Could you please confirm that you also wanted to change the other functions?",
       "revId": "7c5c5cf0ed9520552a4991c8f3dc7654dc6bd96b",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bb090ea7_edd02e53",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 5518,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-17T16:03:14Z",
+      "side": 1,
+      "message": "yes, they are all using EAX to make the constant 1 or 2.  There are a couple that make different constants for 0x80 that i would like to revisit but that should be a different change.\nBut let me know if you want just the one ARGBToY fixed, and I can do another change for ARGBToUV etc.",
+      "parentUuid": "0d7a76d0_b886991e",
+      "revId": "7c5c5cf0ed9520552a4991c8f3dc7654dc6bd96b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
