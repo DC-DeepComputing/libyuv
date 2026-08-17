@@ -34,6 +34,24 @@
       "parentUuid": "0d7a76d0_b886991e",
       "revId": "7c5c5cf0ed9520552a4991c8f3dc7654dc6bd96b",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf3fdce5_ee06a8de",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 5518,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-17T16:36:40Z",
+      "side": 1,
+      "message": "Done.  rewrote change to use stack for width to solve 32 bit running out of registers",
+      "parentUuid": "bb090ea7_edd02e53",
+      "revId": "7c5c5cf0ed9520552a4991c8f3dc7654dc6bd96b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
