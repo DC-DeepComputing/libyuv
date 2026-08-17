@@ -16,6 +16,24 @@
       "message": "LGTM.  Just note that this function is unusual for scaling that it uses SIMD.  Most use C for the remainder.  The nice thing about C remainder is they dont need temporary buffers, so they are low maintainence.  eg\nSIMD(width \u0026 ~MASK)\nC(width \u0026 MASK)\n\nTLDR\nSome scale functions use 2 step (horizontal scale + vertical scale) where they have a buffer and can deal with remainders themselves.  eg box filter\nI might try simplifying bilinear using 2 pass, making is very similar to box filter, which proved to be a performance win:\nThe vertical scale can be shared by y, uv, rgb, and argb for 8 and 16 bit channels, and handles \u0027any\u0027 variants like conversion does.\nThe horizontal scale only takes 1 pointer, no stride and is similar to 444 to 422 aka linear filter.\nThe simplification makes it easier to support 10 bit efficiently, as well as complex types like RGB24",
       "revId": "b2c7b4b9481980f6e301fadabae80f802ceb3d07",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c54457ee_856a0af0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-17T19:36:25Z",
+      "side": 1,
+      "message": "Thank you for the extra info!",
+      "parentUuid": "f23cb01f_d87099bb",
+      "revId": "b2c7b4b9481980f6e301fadabae80f802ceb3d07",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
