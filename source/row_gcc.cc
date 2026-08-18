@@ -3121,17 +3121,17 @@ void OMITFP I422ToRGBARow_SSSE3(const uint8_t* y_buf,
 #define READYUV422_AVX512BW                                           \
   "vmovdqu    (%[u_buf]),%%xmm3                                   \n" \
   "vmovdqu    0x00(%[u_buf],%[v_buf],1),%%xmm1                    \n" \
-  "vpermq     %%zmm3,%%zmm16,%%zmm3                               \n" \
-  "vpermq     %%zmm1,%%zmm16,%%zmm1                               \n" \
   "lea        0x10(%[u_buf]),%[u_buf]                             \n" \
-  "vpunpcklbw %%zmm1,%%zmm3,%%zmm3                                \n" \
-  "vpermq     $0xd8,%%zmm3,%%zmm3                                 \n" \
-  "vpunpcklwd %%zmm3,%%zmm3,%%zmm3                                \n" \
-  "vmovdqu    (%[y_buf]),%%ymm4                                   \n" \
-  "vpermq     %%zmm4,%%zmm17,%%zmm4                               \n" \
-  "vpermq     $0xd8,%%zmm4,%%zmm4                                 \n" \
-  "vpunpcklbw %%zmm4,%%zmm4,%%zmm4                                \n" \
-  "lea        0x20(%[y_buf]),%[y_buf]                             \n"
+  "vpunpcklbw %%xmm1,%%xmm3,%%xmm2                                \n" \
+  "vpunpckhbw %%xmm1,%%xmm3,%%xmm3                                \n" \
+  "vinserti64x2 $1,%%xmm3,%%ymm2,%%ymm3                           \n" \
+  "vmovdqa64  %%zmm16,%%zmm1                                      \n" \
+  "vpermi2w   %%zmm3,%%zmm3,%%zmm1                                \n" \
+  "vpmovzxbw  (%[y_buf]),%%zmm4                                   \n" \
+  "lea        0x20(%[y_buf]),%[y_buf]                             \n" \
+  "vpsllw     $8,%%zmm4,%%zmm3                                    \n" \
+  "vpord      %%zmm3,%%zmm4,%%zmm4                                \n" \
+  "vmovdqa64  %%zmm1,%%zmm3                                       \n"
 
 // Read 8 UV from 210, upsample to 16 UV
 // TODO(fbarchard): Consider vpshufb to replace pack/unpack
@@ -3436,25 +3436,6 @@ void OMITFP I422ToRGBARow_SSSE3(const uint8_t* y_buf,
   "vmovups    %%zmm0,0x40(%[dst_argb])                            \n" \
   "lea        0x80(%[dst_argb]), %[dst_argb]                      \n"
 
-// Store 16 RGB24 values.
-#define STORERGB24_AVX2                                               \
-  "vpunpcklbw   %%ymm1,%%ymm0,%%ymm0                                \n" \
-  "vpunpcklbw   %%ymm2,%%ymm2,%%ymm2                                \n" \
-  "vmovdqa      %%ymm0,%%ymm1                                       \n" \
-  "vpunpcklwd   %%ymm2,%%ymm0,%%ymm0                                \n" \
-  "vpunpckhwd   %%ymm2,%%ymm1,%%ymm1                                \n" \
-  "vpshufb      %%ymm5,%%ymm0,%%ymm0                                \n" \
-  "vpshufb      %%ymm6,%%ymm1,%%ymm1                                \n" \
-  "vpalignr     $0xc,%%ymm0,%%ymm1,%%ymm1                           \n" \
-  "vextracti128 $1,%%ymm0,%%xmm2                                    \n" \
-  "vextracti128 $1,%%ymm1,%%xmm3                                    \n" \
-  "vpunpcklqdq  %%xmm1,%%xmm0,%%xmm0                                \n" \
-  "vpalignr     $8,%%xmm1,%%xmm2,%%xmm2                             \n" \
-  "vmovdqu      %%xmm0,(%[dst_rgb24])                               \n" \
-  "vmovdqu      %%xmm2,0x10(%[dst_rgb24])                           \n" \
-  "vmovdqu      %%xmm3,0x20(%[dst_rgb24])                           \n" \
-  "lea          0x30(%[dst_rgb24]),%[dst_rgb24]                     \n"
-
 // Store 32 RGB24 values with VBMI.
 #define STORERGB24_AVX512VBMI                                         \
   "vpermt2b    %%zmm1,%%zmm20,%%zmm0                              \n" \
@@ -3625,7 +3606,22 @@ void OMITFP I422ToRGB24Row_AVX2(const uint8_t* y_buf,
       "1:          \n"
     READYUV422_AVX2
     YUVTORGB_AVX2(yuvconstants)
-    STORERGB24_AVX2
+      "vpunpcklbw   %%ymm1,%%ymm0,%%ymm0                                \n"
+      "vpunpcklbw   %%ymm2,%%ymm2,%%ymm2                                \n"
+      "vmovdqa      %%ymm0,%%ymm1                                       \n"
+      "vpunpcklwd   %%ymm2,%%ymm0,%%ymm0                                \n"
+      "vpunpckhwd   %%ymm2,%%ymm1,%%ymm1                                \n"
+      "vpshufb      %%ymm5,%%ymm0,%%ymm0                                \n"
+      "vpshufb      %%ymm6,%%ymm1,%%ymm1                                \n"
+      "vpalignr     $0xc,%%ymm0,%%ymm1,%%ymm1                           \n"
+      "vextracti128 $1,%%ymm0,%%xmm2                                    \n"
+      "vextracti128 $1,%%ymm1,%%xmm3                                    \n"
+      "vpunpcklqdq  %%xmm1,%%xmm0,%%xmm0                                \n"
+      "vpalignr     $8,%%xmm1,%%xmm2,%%xmm2                             \n"
+      "vmovdqu      %%xmm0,(%[dst_rgb24])                               \n"
+      "vmovdqu      %%xmm2,0x10(%[dst_rgb24])                           \n"
+      "vmovdqu      %%xmm3,0x20(%[dst_rgb24])                           \n"
+      "lea          0x30(%[dst_rgb24]),%[dst_rgb24]                     \n"
       "subl        $0x10,%[width]                \n"
       "jg          1b                            \n"
       "vzeroupper  \n"
@@ -3648,7 +3644,9 @@ void OMITFP I422ToRGB24Row_AVX2(const uint8_t* y_buf,
 #endif  // HAS_I422TORGB24ROW_AVX2
 
 #if defined(HAS_I422TOARGBROW_AVX512BW)
-static const uint64_t kSplitQuadWords[8] = {0, 2, 2, 2, 1, 2, 2, 2};
+static const uint16_t kSplitQuadWords[32] = {
+    0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7,
+    8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15};
 static const uint64_t kSplitDoubleQuadWords[8] = {0, 1, 4, 4, 2, 3, 4, 4};
 static const uint64_t kUnpermuteAVX512[8] = {0, 4, 1, 5, 2, 6, 3, 7};
 
@@ -5599,9 +5597,10 @@ void HalfWidthRow_16To8_SSSE3(const uint16_t* src_uv,
       "punpcklwd   %%xmm2,%%xmm2                 \n"
       "pshufd      $0x0,%%xmm2,%%xmm2            \n"
       "pcmpeqw     %%xmm5,%%xmm5                 \n"
-      "pcmpeqw     %%xmm6,%%xmm6                 \n"
       "psrlw       $15,%%xmm5                    \n"
-      "pmaddwd     %%xmm6,%%xmm6                 \n"
+      "mov         $2,%%eax                      \n"
+      "movd        %%eax,%%xmm6                  \n"
+      "pshufd      $0x0,%%xmm6,%%xmm6            \n"
       "movdqa      %5,%%xmm7                     \n"
 
       // 8 pixels per loop.
@@ -5635,9 +5634,9 @@ void HalfWidthRow_16To8_SSSE3(const uint16_t* src_uv,
         "+r"(dst_uv),        // %1
         "+r"(width)          // %2
       : "r"(src_uv_stride),  // %3
-        "rm"(scale),         // %4
+        "r"(scale),          // %4
         "m"(kShuffleMaskHalfWidth16To8)  // %5
-      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
+      : "eax", "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
         "xmm6", "xmm7");
 }
 #endif  // HAS_HALFWIDTHROW_16TO8_SSSE3
@@ -5673,7 +5672,7 @@ void HalfRow_16To8_AVX2(const uint16_t* src_uv,
         "+r"(dst_uv),        // %1
         "+r"(width)          // %2
       : "r"(src_uv_stride),  // %3
-        "rm"(scale)          // %4
+        "r"(scale)           // %4
       : "memory", "cc", "xmm0", "xmm1", "xmm2");
 }
 #endif  // HAS_HALFROW_16TO8_AVX2
@@ -5688,8 +5687,10 @@ void HalfWidthRow_16To8_AVX2(const uint16_t* src_uv,
       "vmovd       %4,%%xmm2                     \n"
       "vpbroadcastw %%xmm2,%%ymm2                \n"
       "vpcmpeqw    %%ymm5,%%ymm5,%%ymm5          \n"
-      "vpmaddwd    %%ymm5,%%ymm5,%%ymm6          \n"
       "vpsrlw      $15,%%ymm5,%%ymm5             \n"
+      "mov         $2,%%eax                      \n"
+      "vmovd       %%eax,%%xmm6                  \n"
+      "vpbroadcastd %%xmm6,%%ymm6                \n"
 
       // 16 pixels per loop.
       LABELALIGN
@@ -5723,8 +5724,8 @@ void HalfWidthRow_16To8_AVX2(const uint16_t* src_uv,
         "+r"(dst_uv),        // %1
         "+r"(width)          // %2
       : "r"(src_uv_stride),  // %3
-        "rm"(scale)          // %4
-      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
+        "r"(scale)           // %4
+      : "eax", "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
         "xmm6");
 }
 #endif  // HAS_HALFWIDTHROW_16TO8_AVX2
@@ -5761,7 +5762,7 @@ void HalfRow_16To8_AVX512BW(const uint16_t* src_uv,
         "+r"(src_uv1),  // %1
         "+r"(dst_uv),   // %2
         "+r"(width)     // %3
-      : "rm"(shift)     // %4
+      : "r"(shift)      // %4
       : "memory", "cc", "xmm0", "xmm1", "xmm2");
 }
 #endif  // HAS_HALFROW_16TO8_AVX512BW
@@ -5775,9 +5776,12 @@ void HalfWidthRow_16To8_AVX512BW(const uint16_t* src_uv,
   const uint16_t* src_uv1 = src_uv + src_uv_stride;
   asm volatile(
       "vpbroadcastw %4,%%zmm2                    \n"
-      "vpternlogd  $0xff,%%zmm5,%%zmm5,%%zmm5    \n"
-      "vpmaddwd    %%zmm5,%%zmm5,%%zmm6          \n"
-      "vpabsw      %%zmm5,%%zmm5                 \n"
+      "mov         $1,%%eax                      \n"
+      "vmovd       %%eax,%%xmm5                  \n"
+      "vpbroadcastw %%xmm5,%%zmm5                \n"
+      "mov         $2,%%eax                      \n"
+      "vmovd       %%eax,%%xmm6                  \n"
+      "vpbroadcastd %%xmm6,%%zmm6                \n"
 
       // 32 pixels per loop.
       LABELALIGN
@@ -5811,8 +5815,8 @@ void HalfWidthRow_16To8_AVX512BW(const uint16_t* src_uv,
         "+r"(src_uv1),  // %1
         "+r"(dst_uv),   // %2
         "+r"(width)     // %3
-      : "rm"(scale)     // %4
-      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
+      : "r"(scale)      // %4
+      : "eax", "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
         "xmm6");
 }
 #endif  // HAS_HALFWIDTHROW_16TO8_AVX512BW
