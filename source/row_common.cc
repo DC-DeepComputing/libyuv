@@ -1589,11 +1589,7 @@ MAKEARGBCONSTANTS(V2020, 67, 174, 15, -36, -92, 128, 128, -118, -10, 128, 32768)
 // KR = 0.299; KB = 0.114
 
 // U and V contributions to R,G,B.
-#if defined(LIBYUV_UNLIMITED_DATA) || defined(LIBYUV_UNLIMITED_BT601)
 #define UB 129 /* round(2.018 * 64) */
-#else
-#define UB 128 /* max(128, round(2.018 * 64)) */
-#endif
 #define UG 25  /* round(0.391 * 64) */
 #define VG 52  /* round(0.813 * 64) */
 #define VR 102 /* round(1.596 * 64) */
@@ -1603,6 +1599,7 @@ MAKEARGBCONSTANTS(V2020, 67, 174, 15, -36, -92, 128, 128, -118, -10, 128, 32768)
 #define YB -1160 /* 1.164 * 64 * -16 + 64 / 2 */
 
 MAKEYUVCONSTANTS(I601, YG, YB, UB, UG, VG, VR)
+MAKEYUVCONSTANTS(I601Legacy, YG, YB, 128, UG, VG, VR)
 
 #undef YG
 #undef YB
@@ -1643,11 +1640,7 @@ MAKEYUVCONSTANTS(JPEG, YG, YB, UB, UG, VG, VR)
 //  KR = 0.2126, KB = 0.0722
 
 // U and V contributions to R,G,B.
-#if defined(LIBYUV_UNLIMITED_DATA) || defined(LIBYUV_UNLIMITED_BT709)
 #define UB 135 /* round(2.112 * 64) */
-#else
-#define UB 128 /* max(128, round(2.112 * 64)) */
-#endif
 #define UG 14  /* round(0.213 * 64) */
 #define VG 34  /* round(0.533 * 64) */
 #define VR 115 /* round(1.793 * 64) */
@@ -1657,6 +1650,7 @@ MAKEYUVCONSTANTS(JPEG, YG, YB, UB, UG, VG, VR)
 #define YB -1160 /* 1.164 * 64 * -16 + 64 / 2 */
 
 MAKEYUVCONSTANTS(H709, YG, YB, UB, UG, VG, VR)
+MAKEYUVCONSTANTS(H709Legacy, YG, YB, 128, UG, VG, VR)
 
 #undef YG
 #undef YB
@@ -1697,11 +1691,7 @@ MAKEYUVCONSTANTS(F709, YG, YB, UB, UG, VG, VR)
 // KR = 0.2627; KB = 0.0593
 
 // U and V contributions to R,G,B.
-#if defined(LIBYUV_UNLIMITED_DATA) || defined(LIBYUV_UNLIMITED_BT2020)
 #define UB 137 /* round(2.142 * 64) */
-#else
-#define UB 128 /* max(128, round(2.142 * 64)) */
-#endif
 #define UG 12  /* round(0.187326 * 64) */
 #define VG 42  /* round(0.65042 * 64) */
 #define VR 107 /* round(1.67867 * 64) */
@@ -1711,6 +1701,7 @@ MAKEYUVCONSTANTS(F709, YG, YB, UB, UG, VG, VR)
 #define YB -1160 /* 1.164384 * 64 * -16 + 64 / 2 */
 
 MAKEYUVCONSTANTS(2020, YG, YB, UB, UG, VG, VR)
+MAKEYUVCONSTANTS(2020Legacy, YG, YB, 128, UG, VG, VR)
 
 #undef YG
 #undef YB
