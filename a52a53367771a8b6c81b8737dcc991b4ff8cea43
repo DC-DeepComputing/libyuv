@@ -36,6 +36,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e2ad0146_b3eade71",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1152,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-18T18:12:49Z",
+      "side": 1,
+      "message": "on intel to avoid many pointer increments, i use indexed mode.  convert all but 1 pointer to differences from a base pointer, which does incb.  but use the differences as indexes?  neon supports that.\n\nantigravity suggests pseudo code would be like this:\n// Setup before loop:                                                          \nmov     %x[idx], #0                                                            \ncntb    %x[vl]                                                                 \n                                                                               \n// Loop body:                                                                  \n1:                                                                             \nld1b    {z0.b}, p0/z, [%[src_y], %x[idx]]                                      \nld1b    {z1.b}, p0/z, [%[src_u], %x[idx]]                                      \nld1b    {z2.b}, p0/z, [%[src_v], %x[idx]]                                      \n// ... process z0, z1, z2 ...                                                  \nst1b    {z0.b}, p0, [%[dst], %x[idx]]                                          \n                                                                               \nadd     %x[idx], %x[idx], %x[vl]     // ONLY 1 increment for all 4 streams!    \nsubs    %w[width], %w[width], %w[vl]                                           \nb.gt    1b                                                                     \n\nthats basically C style array indexing, but takes an extra idx register and the top of loop is indexed\nOn x86 I use pointer differences, so it would be like this:\n// Setup before loop:                                                              \nsub     %x[diff_u], %[src_u], %[src_y]                                             \nsub     %x[diff_v], %[src_v], %[src_y]                                             \nsub     %x[diff_dst], %[dst], %[src_y]                                             \ncntb    %x[vl]                                                                     \n                                                                                   \n// Loop body:                                                                      \n1:                                                                                 \nld1b    {z0.b}, p0/z, [%[src_y]]                                                   \nld1b    {z1.b}, p0/z, [%[src_y], %x[diff_u]]                                       \nld1b    {z2.b}, p0/z, [%[src_y], %x[diff_v]]                                       \n// ... process ...                                                                 \nst1b    {z0.b}, p0, [%[src_y], %x[diff_dst]]\n\nadd     %[src_y], %[src_y], %x[vl]   // Only 1 pointer update in the entire loop!\nsubs    %w[width], %w[width], %w[vl]\nb.gt    1b\n\nThe loop target is a simple pointer, which makes it easier to decode.\na single add adjusts the base, avoiding multiple incb/add\nno extra registers needed.\n\nThis is just a nit... no need to change it.  It continues to work ok on intel, as long as the sizes are all the same, so you\u0027ll find examples in row_gcc.cc if you want to try it (on a510)",
+      "parentUuid": "b0bcf25d_72c30782",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a0fff59_31e40485",
@@ -67,6 +85,24 @@
       "side": 1,
       "message": "Indeed I figured the low cost of a conditional branch probably outweighed the overhead/complexity of using an \"Any\" function, the Any case would be noticeably slower.\n\nLet me know what you prefer",
       "parentUuid": "9a0fff59_31e40485",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "032d920a_6f33b992",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1199,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-18T18:12:49Z",
+      "side": 1,
+      "message": "I have an eye toward sve2 being used from streaming mode, and it requires all functions be sve, not neon and even C is dangerous if it autovectorizes.  So I do prefer self contained with no \u0027any\u0027 function where feasible.",
+      "parentUuid": "2db0d7bd_42298e07",
       "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
