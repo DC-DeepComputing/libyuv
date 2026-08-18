@@ -16,6 +16,24 @@
       "message": "George: Would you like us to submit this CL first? Or would you prefer to submit the whole chain of CLs at once?",
       "revId": "71897c57d403e528688071703861938319374459",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "868e6833_c4dd0323",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-08-18T17:23:20Z",
+      "side": 1,
+      "message": "Thanks for the reviews! No preference, but note that I am on annual leave from Thursday, returning Monday Sept 7th, so you may wish to submit the approved ones or amend yourself if you don\u0027t want to wait for me to address comments beyond tomorrow!",
+      "parentUuid": "83b755e4_32cfa044",
+      "revId": "71897c57d403e528688071703861938319374459",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
