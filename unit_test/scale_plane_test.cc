@@ -570,6 +570,47 @@ TEST_F(LibYUVScaleTest, PlaneTest1_16_Box) {
   free_aligned_buffer_page_end(orig_pixels_alloc);
 }
 
+TEST_F(LibYUVScaleTest, ScalePlaneVerticalPointUp) {
+  const uint8_t src_even[] = {1, 2};
+  const uint8_t src_uneven[] = {1, 2, 3};
+  uint8_t dst_even[4] = {};
+  uint8_t dst_uneven[5] = {};
+
+  ASSERT_EQ(0, ScalePlane(src_even, 1, 1, 2, dst_even, 1, 1, 4, kFilterNone));
+  ASSERT_EQ(0,
+            ScalePlane(src_uneven, 1, 1, 3, dst_uneven, 1, 1, 5, kFilterNone));
+
+  const uint8_t expected_even[] = {1, 1, 2, 2};
+  for (size_t i = 0; i < sizeof(dst_even); ++i) {
+    EXPECT_EQ(expected_even[i], dst_even[i]);
+  }
+  const uint8_t expected_uneven[] = {1, 1, 2, 3, 3};
+  for (size_t i = 0; i < sizeof(dst_uneven); ++i) {
+    EXPECT_EQ(expected_uneven[i], dst_uneven[i]);
+  }
+}
+
+TEST_F(LibYUVScaleTest, ScalePlaneVerticalPointUp_16) {
+  const uint16_t src_even[] = {1, 2};
+  const uint16_t src_uneven[] = {1, 2, 3};
+  uint16_t dst_even[4] = {};
+  uint16_t dst_uneven[5] = {};
+
+  ASSERT_EQ(0,
+            ScalePlane_16(src_even, 1, 1, 2, dst_even, 1, 1, 4, kFilterNone));
+  ASSERT_EQ(
+      0, ScalePlane_16(src_uneven, 1, 1, 3, dst_uneven, 1, 1, 5, kFilterNone));
+
+  const uint16_t expected_even[] = {1, 1, 2, 2};
+  for (size_t i = 0; i < sizeof(dst_even) / sizeof(dst_even[0]); ++i) {
+    EXPECT_EQ(expected_even[i], dst_even[i]);
+  }
+  const uint16_t expected_uneven[] = {1, 1, 2, 3, 3};
+  for (size_t i = 0; i < sizeof(dst_uneven) / sizeof(dst_uneven[0]); ++i) {
+    EXPECT_EQ(expected_uneven[i], dst_uneven[i]);
+  }
+}
+
 // POC: int * int overflow in ScalePlaneVertical (scale_common.cc).
 //
 // `yi * src_stride` is evaluated as int * int. When the product exceeds
