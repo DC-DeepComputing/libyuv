@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "198d739b_41bfc3d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-18T00:18:15Z",
+      "side": 1,
+      "message": "george is still up? :-)     i dont know how george tests, but internally i needed to change our BUILD file to enable sme, and we\u0027d need to make that change to test it.  But it still causes issues, so I have it off by default and force it on with a macro at build time.\nI\u0027m hoping in the future the sve2 can be called asis from streaming mode, and sme would only be for functions that dont work in sve2, such as fmopa\nSo I can test this path easily right now",
+      "revId": "801d1f9a098a42d2a74220aed654528949af9100",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
