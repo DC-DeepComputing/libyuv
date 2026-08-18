@@ -16,6 +16,24 @@
       "message": "This sentence needs editing. The \"specific AVX512 versions\" is incorrect.\n\nNote: This CL did not introduce this problem. You merely moved this sentence.",
       "revId": "9e6ff4261e9cc4a5be172e682076caa5ee01bf31",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "412639ac_688aeaf4",
+        "filename": "GEMINI.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-18T16:49:25Z",
+      "side": 1,
+      "message": "This sentence used to follow\n\n```\n1.  **AVX512 Logic**: AVX512 row functions are strictly enabled for **64-bit x86\n    only**.\n```\n\nSo the \"specific AVX512 versions\" part could be understood better at the original location. But I think we should make this sentence apply to all instruction set. Maybe change \"AVX512 versions\" to \"instruction set extensions\"?",
+      "parentUuid": "ac0299da_dd84d7e3",
+      "revId": "9e6ff4261e9cc4a5be172e682076caa5ee01bf31",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
