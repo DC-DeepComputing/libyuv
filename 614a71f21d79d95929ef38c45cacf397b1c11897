@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c106311c_131d0566",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1834,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-18T16:25:26Z",
+      "side": 1,
+      "message": "I deleted the asserts.\n\nNote: I inspected this function myself. I am not AI :-)",
+      "parentUuid": "0148300b_e14e87b0",
+      "revId": "614a71f21d79d95929ef38c45cacf397b1c11897",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "59df7591_c9f6ef42",
@@ -35,6 +53,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6cf4662c_c4dc8023",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1843,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-18T16:25:26Z",
+      "side": 1,
+      "message": "Done. I changed long long back to int64_t.",
+      "parentUuid": "59df7591_c9f6ef42",
+      "revId": "614a71f21d79d95929ef38c45cacf397b1c11897",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "52094dde_3a51b2a7",
@@ -48,6 +84,24 @@
       "writtenOn": "2026-08-14T21:25:36Z",
       "side": 1,
       "message": "ideally this would compute the scale factor is exactly an odd integer (3).  and use linear for them all. eg 5, 7, 9.\n\nfor example you can do this:\nbool is_ratio_odd(int a, int b) {\n    // 1. Division by zero check\n    if (b \u003d\u003d 0) return false; \n    \n    // 2. Performance check: if \u0027a\u0027 cannot be divided evenly by \u0027b\u0027\n    if (a % b !\u003d 0) return false; \n    \n    // 3. Ultra-fast bitwise check for odd ratio\n    // (a \u0026 -a) extracts the lowest set bit (trailing zeros / power of 2)\n    return (a \u0026 -a) \u003d\u003d (b \u0026 -b);\n}",
+      "revId": "614a71f21d79d95929ef38c45cacf397b1c11897",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0346b8e7_6b306711",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1853,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-18T16:25:26Z",
+      "side": 1,
+      "message": "I won\u0027t address the TODO comments in this CL.",
+      "parentUuid": "52094dde_3a51b2a7",
       "revId": "614a71f21d79d95929ef38c45cacf397b1c11897",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
