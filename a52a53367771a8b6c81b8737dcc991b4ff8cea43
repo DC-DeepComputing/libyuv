@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0bcf25d_72c30782",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1152,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-08-18T10:44:42Z",
+      "side": 1,
+      "message": "It\u0027s an unclear choice - some older SVE micro-architectures prefer `add` but more modern micro-architectures (both big and little) seem to slightly prefer the `incb`, in practice it doesn\u0027t really make a meaningful difference though.\n\nLeaving this as-is because it most closely matches what we do elsewhere in the file?",
+      "parentUuid": "dbdb7ffa_6c935328",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a0fff59_31e40485",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-08-17T19:07:24Z",
       "side": 1,
       "message": "nit: prefer no C, so last pixel would either be another remainder loop of 1 pixel horizontally, or caller could use SVE2 when with is even.\nIf it comes up alot, for all simd, but mainly rvv, sve, sme, the subsample for the last pixel could be handled by C in an \u0027any\u0027 function that uses sve for all but the last pixel.  or sve... basically replicate the last pixel in a buffer of 2 bytes.  But I havent thought of any clever tricks. For now the C at the end may be the best of the bad solutions.",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2db0d7bd_42298e07",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1199,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-08-18T10:44:42Z",
+      "side": 1,
+      "message": "Indeed I figured the low cost of a conditional branch probably outweighed the overhead/complexity of using an \"Any\" function, the Any case would be noticeably slower.\n\nLet me know what you prefer",
+      "parentUuid": "9a0fff59_31e40485",
       "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
