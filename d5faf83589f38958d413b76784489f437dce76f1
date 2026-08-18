@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6ed9fe2_77caa6a3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-18T18:20:42Z",
+      "side": 1,
+      "message": "note that we dont want GEMINI.md to be huge, because it is tokens unconditionally used, that may not be relevant in the future.  But this is good.\nanother option is put comments in the code, intended to guide AI (and humans) not to make mistakes (e.g. incp) when creating new functions.  AI has a tendency to opportunistically refactor old functions, even if unrelated (e.g. x86).",
+      "revId": "d5faf83589f38958d413b76784489f437dce76f1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "24b9e1bb_118651b6",
+        "filename": "GEMINI.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-18T18:20:42Z",
+      "side": 1,
+      "message": "ah so incp is slow, counting all the bits in the predicate, but incb is fast, just incrementing by the full vl",
+      "revId": "d5faf83589f38958d413b76784489f437dce76f1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
