@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83b755e4_32cfa044",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-18T16:41:03Z",
+      "side": 1,
+      "message": "George: Would you like us to submit this CL first? Or would you prefer to submit the whole chain of CLs at once?",
+      "revId": "71897c57d403e528688071703861938319374459",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
