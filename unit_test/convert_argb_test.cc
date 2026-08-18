@@ -2986,4 +2986,50 @@ TESTATOBP(RAW, uint8_t, 3, 3, 1, NV21, 2, 2)
 TESTATOBP(RGB24, uint8_t, 3, 3, 1, NV12, 2, 2)
 TESTATOBP(RAW, uint8_t, 3, 3, 1, JNV21, 2, 2)
 
+TEST_F(LibYUVConvertTest, NV12ToARGB_LegacyFlag) {
+  const int kWidth = 64;
+  const int kHeight = 64;
+  align_buffer_page_end(src_y, kWidth * kHeight);
+  align_buffer_page_end(src_uv, kWidth * kHeight);
+  align_buffer_page_end(dst_argb_legacy, kWidth * 4 * kHeight);
+  align_buffer_page_end(dst_argb_accurate, kWidth * 4 * kHeight);
+  align_buffer_page_end(dst_argb_matrix, kWidth * 4 * kHeight);
+
+  // Y=64, U=200, V=128 produces B=200 for UB=128 and B=201 for UB=129 without saturation
+  memset(src_y, 64, kWidth * kHeight);
+  for (int i = 0; i < kWidth * kHeight; i += 2) {
+    src_uv[i] = 200;      // U
+    src_uv[i + 1] = 128;  // V
+  }
+
+  int original_flag = GetLegacyYuvConstants();
+
+  // 1. Verify Legacy Flag (1) matches &kYuvI601LegacyConstants
+  SetLegacyYuvConstants(1);
+  NV12ToARGB(src_y, kWidth, src_uv, kWidth, dst_argb_legacy, kWidth * 4,
+             kWidth, kHeight);
+  NV12ToARGBMatrix(src_y, kWidth, src_uv, kWidth, dst_argb_matrix, kWidth * 4,
+                   &kYuvI601LegacyConstants, kWidth, kHeight);
+  EXPECT_EQ(0, memcmp(dst_argb_legacy, dst_argb_matrix, kWidth * 4 * kHeight));
+
+  // 2. Verify Accurate Flag (0) matches &kYuvI601Constants
+  SetLegacyYuvConstants(0);
+  NV12ToARGB(src_y, kWidth, src_uv, kWidth, dst_argb_accurate, kWidth * 4,
+             kWidth, kHeight);
+  NV12ToARGBMatrix(src_y, kWidth, src_uv, kWidth, dst_argb_matrix, kWidth * 4,
+                   &kYuvI601Constants, kWidth, kHeight);
+  EXPECT_EQ(0, memcmp(dst_argb_accurate, dst_argb_matrix, kWidth * 4 * kHeight));
+
+  // 3. Confirm that Legacy (UB=128) and Accurate (UB=129) produce different outputs
+  EXPECT_NE(0, memcmp(dst_argb_legacy, dst_argb_accurate, kWidth * 4 * kHeight));
+
+  // Restore original state
+  SetLegacyYuvConstants(original_flag);
+  free_aligned_buffer_page_end(src_y);
+  free_aligned_buffer_page_end(src_uv);
+  free_aligned_buffer_page_end(dst_argb_legacy);
+  free_aligned_buffer_page_end(dst_argb_accurate);
+  free_aligned_buffer_page_end(dst_argb_matrix);
+}
+
 }  // namespace libyuv

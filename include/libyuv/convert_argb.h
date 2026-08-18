@@ -37,6 +37,14 @@ LIBYUV_API extern const struct YuvConstants kYvuF709Constants;   // BT.709 full
 LIBYUV_API extern const struct YuvConstants kYvu2020Constants;   // BT.2020
 LIBYUV_API extern const struct YuvConstants kYvuV2020Constants;  // BT.2020 full
 
+// Legacy clamped conversion matrices (UB=128)
+LIBYUV_API extern const struct YuvConstants kYuvI601LegacyConstants;   // BT.601
+LIBYUV_API extern const struct YuvConstants kYuvH709LegacyConstants;   // BT.709
+LIBYUV_API extern const struct YuvConstants kYuv2020LegacyConstants;   // BT.2020
+LIBYUV_API extern const struct YuvConstants kYvuI601LegacyConstants;   // BT.601
+LIBYUV_API extern const struct YuvConstants kYvuH709LegacyConstants;   // BT.709
+LIBYUV_API extern const struct YuvConstants kYvu2020LegacyConstants;   // BT.2020
+
 // Macros for end swapped destination Matrix conversions.
 // Swap UV and pass mirrored kYvuJPEGConstants matrix.
 // TODO(fbarchard): Add macro for each Matrix function.
@@ -46,6 +54,34 @@ LIBYUV_API extern const struct YuvConstants kYvuV2020Constants;  // BT.2020 full
 #define kYuvF709ConstantsVU kYvuF709Constants
 #define kYuv2020ConstantsVU kYvu2020Constants
 #define kYuvV2020ConstantsVU kYvuV2020Constants
+
+#define kYuvI601LegacyConstantsVU kYvuI601LegacyConstants
+#define kYuvH709LegacyConstantsVU kYvuH709LegacyConstants
+#define kYuv2020LegacyConstantsVU kYvu2020LegacyConstants
+
+// Global flag controlling default matrix selection in high-level conversion APIs:
+// 0 = accurate (UB=129/135/137), 1 = legacy clamped (UB=128).
+LIBYUV_API extern int legacy_yuv_constants_;
+
+static __inline int GetLegacyYuvConstants(void) {
+  LIBYUV_API extern int legacy_yuv_constants_;
+#ifdef __ATOMIC_RELAXED
+  return __atomic_load_n(&legacy_yuv_constants_, __ATOMIC_RELAXED);
+#else
+  return legacy_yuv_constants_;
+#endif
+}
+
+static __inline int SetLegacyYuvConstants(int legacy) {
+  LIBYUV_API extern int legacy_yuv_constants_;
+#ifdef __ATOMIC_RELAXED
+  return __atomic_exchange_n(&legacy_yuv_constants_, legacy, __ATOMIC_RELAXED);
+#else
+  int old = legacy_yuv_constants_;
+  legacy_yuv_constants_ = legacy;
+  return old;
+#endif
+}
 
 #define NV12ToABGRMatrix(a, b, c, d, e, f, g, h, i) \
   NV21ToARGBMatrix(a, b, c, d, e, f, g##VU, h, i)
