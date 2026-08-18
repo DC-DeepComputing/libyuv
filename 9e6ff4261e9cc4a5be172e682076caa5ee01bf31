@@ -34,6 +34,24 @@
       "parentUuid": "ac0299da_dd84d7e3",
       "revId": "9e6ff4261e9cc4a5be172e682076caa5ee01bf31",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a8f5ff12_df8008f2",
+        "filename": "GEMINI.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-08-18T17:21:42Z",
+      "side": 1,
+      "message": "oops yes, done!",
+      "parentUuid": "412639ac_688aeaf4",
+      "revId": "9e6ff4261e9cc4a5be172e682076caa5ee01bf31",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
