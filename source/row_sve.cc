@@ -338,7 +338,7 @@ void ARGBToRGB565DitherRow_SVE2(const uint8_t* src_argb,
         [vl] "=&r"(vl)             // %[vl]
       : [bsl_mask] "r"(bsl_mask),  // %[bsl_mask]
         [dither4] "r"(dither4)     // %[dither4]
-      : "cc", "memory", "z0", "z1", "z2", "z3", "z4", "p0");
+      : "cc", "memory", "z0", "z1", "z3", "z4", "p0");
 }
 
 #define ARGB1555TOARGB                                        \
@@ -1441,10 +1441,10 @@ void YUY2ToUVRow_SVE2(const uint8_t* src_yuy2,
       "adds     %w[width], %w[width], %w[vl]            \n"
       "b.eq     99f                                     \n"
 
+      "whilelt  p0.b, wzr, %w[width]                    \n"
       "add      %w[width_half], %w[width], #1           \n"
       "lsr      %w[width_half], %w[width_half], #1      \n"
       "whilelt  p1.b, wzr, %w[width_half]               \n"
-      "zip1     p0.b, p1.b, p1.b                        \n"
       "ld2b     {z0.b, z1.b}, p0/z, [%[src_yuy2]]       \n"
       "ld2b     {z4.b, z5.b}, p0/z, [%[src_yuy2_1]]     \n"
       "urhadd   z1.b, p0/m, z1.b, z5.b                  \n"
@@ -1505,10 +1505,10 @@ void UYVYToUVRow_SVE2(const uint8_t* src_uyvy,
       "adds     %w[width], %w[width], %w[vl]            \n"
       "b.eq     99f                                     \n"
 
+      "whilelt  p0.b, wzr, %w[width]                    \n"
       "add      %w[width_half], %w[width], #1           \n"
       "lsr      %w[width_half], %w[width_half], #1      \n"
       "whilelt  p1.b, wzr, %w[width_half]               \n"
-      "zip1     p0.b, p1.b, p1.b                        \n"
       "ld2b     {z0.b, z1.b}, p0/z, [%[src_uyvy]]       \n"
       "ld2b     {z4.b, z5.b}, p0/z, [%[src_uyvy_1]]     \n"
       "urhadd   z0.b, p0/m, z0.b, z4.b                  \n"
