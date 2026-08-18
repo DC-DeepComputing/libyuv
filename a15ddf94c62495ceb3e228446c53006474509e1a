@@ -33,6 +33,23 @@
       "message": "Adding Frank for the review.",
       "revId": "a15ddf94c62495ceb3e228446c53006474509e1a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e600b3a8_0c89d351",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-18T15:43:43Z",
+      "side": 1,
+      "message": "Dale: Could you also take a look since you just worked on libyuv\u0027s scaling functions? Thanks.",
+      "revId": "a15ddf94c62495ceb3e228446c53006474509e1a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
