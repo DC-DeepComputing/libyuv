@@ -50,6 +50,57 @@
       "message": "Dale: Could you also take a look since you just worked on libyuv\u0027s scaling functions? Thanks.",
       "revId": "a15ddf94c62495ceb3e228446c53006474509e1a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f859872d_b6618e75",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-18T16:33:43Z",
+      "side": 1,
+      "message": "lgtm % some additional comments, but defer to Frank for any subtle details.",
+      "revId": "a15ddf94c62495ceb3e228446c53006474509e1a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6696b44_ae62101a",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1484,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-18T16:33:43Z",
+      "side": 1,
+      "message": "Adding a comment explaining what\u0027s happening here would be useful.",
+      "revId": "a15ddf94c62495ceb3e228446c53006474509e1a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b53eeb7b_ff459ec8",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1572,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-08-18T16:33:43Z",
+      "side": 1,
+      "message": "Ditto",
+      "revId": "a15ddf94c62495ceb3e228446c53006474509e1a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
