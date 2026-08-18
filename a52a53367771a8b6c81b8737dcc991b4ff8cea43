@@ -16,6 +16,24 @@
       "message": "to avoid AI creating/switch to incp can you add a comment to this file, or to the GEMINI.md to avoid incp for sve performance on A510.",
       "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fefa6b24_be0d6b25",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1452,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-08-18T16:24:48Z",
+      "side": 0,
+      "message": "done in the next commit",
+      "parentUuid": "212372e3_4026f40b",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
