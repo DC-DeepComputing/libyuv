@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f90a42ab_ed586b3d",
+        "filename": "OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-19T18:45:14Z",
+      "side": 1,
+      "message": "Hopefully automatic bug triage is more likely to assign libyuv bugs to Frank or me.",
+      "revId": "f6b354b4322a147f4626120fa92c761204295ef9",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
