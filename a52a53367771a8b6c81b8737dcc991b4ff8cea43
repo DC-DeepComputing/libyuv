@@ -141,6 +141,24 @@
       "parentUuid": "032d920a_6f33b992",
       "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ba70655_01513cfc",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1199,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-08-19T16:09:54Z",
+      "side": 1,
+      "message": "turns out there isn\u0027t a suitable ANY variant for this kernel, so swapped to a width check in the function pointer assignment to match the existing x86 usage.",
+      "parentUuid": "38660139_d9ae6b24",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
