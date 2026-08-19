@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "816ca0b2_332838f8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-19T19:06:29Z",
+      "side": 1,
+      "message": "Please add `b:549112862`. This bug was just reported.",
+      "revId": "bc73c6177bbdaf8e2af29112c2a4aec9f6dd071d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f7659927_59189e9f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-19T19:06:29Z",
+      "side": 1,
+      "message": "LGTM. Thanks!",
+      "revId": "bc73c6177bbdaf8e2af29112c2a4aec9f6dd071d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5aa46bb_a033d37c",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 2890,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-19T19:06:29Z",
+      "side": 1,
+      "message": "Should we check for memory sanitizer first? Memory sanitizer also supports aarch64:\n\n```\n#if defined(__SANITIZE_MEMORY__)\n  int has_large_malloc \u003d 0;\n#elif defined(__has_feature)\n#if __has_feature(memory_sanitizer)\n  int has_large_malloc \u003d 0;\n#else\n  int has_large_malloc \u003d 1;\n#endif\n#elif defined(__aarch64__)\n  // Infer malloc can accept a large size for cpu with dot product (a76/a55)\n  int has_large_malloc \u003d TestCpuFlag(kCpuHasNeonDotProd);\n#else\n  int has_large_malloc \u003d 1;\n#endif \n```",
+      "revId": "bc73c6177bbdaf8e2af29112c2a4aec9f6dd071d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
