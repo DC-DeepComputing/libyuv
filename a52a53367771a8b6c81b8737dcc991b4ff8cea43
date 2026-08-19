@@ -54,6 +54,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe0c7f35_f2ae831c",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1152,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-08-19T14:49:06Z",
+      "side": 1,
+      "message": "hm yeah it\u0027s a good point. i\u0027ve noticed this on a few other sve functions. will follow-up on this with a follow-up patch when i\u0027m back from holidays.",
+      "parentUuid": "e2ad0146_b3eade71",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a0fff59_31e40485",
@@ -103,6 +121,24 @@
       "side": 1,
       "message": "I have an eye toward sve2 being used from streaming mode, and it requires all functions be sve, not neon and even C is dangerous if it autovectorizes.  So I do prefer self contained with no \u0027any\u0027 function where feasible.",
       "parentUuid": "2db0d7bd_42298e07",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "38660139_d9ae6b24",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1199,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-08-19T14:49:06Z",
+      "side": 1,
+      "message": "autovec is fine in streaming functions, the compiler will not generate neon autovec in a streaming-mode or streaming-compatible function",
+      "parentUuid": "032d920a_6f33b992",
       "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
