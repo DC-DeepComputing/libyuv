@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9144f44e_3f231814",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-21T15:35:48Z",
+      "side": 1,
+      "message": "By existing code, you mean the existing Neon code, right?",
+      "range": {
+        "startLine": 13,
+        "startChar": 9,
+        "endLine": 13,
+        "endChar": 22
+      },
+      "revId": "7ce43563f1eba8a76eb986986eb1bff891486f3e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec2f5ef3_6e189283",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-21T15:35:48Z",
+      "side": 1,
+      "message": "Thanks for the fix!",
+      "revId": "7ce43563f1eba8a76eb986986eb1bff891486f3e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7165ce53_da7bb12f",
+        "filename": "source/planar_functions.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 5830,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-21T15:35:48Z",
+      "side": 1,
+      "message": "It is uncommon to see a small number like 2 here, so the reason is not obvious. I suggest adding a short comment based on your description in the commit message:\n\n```\nThe average of two values must be retained for the final odd element if\npresent. Existing code just handles this by falling back to the C\nimplementation, so mirror that for SVE2 as well.\n```",
+      "revId": "7ce43563f1eba8a76eb986986eb1bff891486f3e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
