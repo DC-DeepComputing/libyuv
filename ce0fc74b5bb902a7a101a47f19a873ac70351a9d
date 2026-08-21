@@ -16,6 +16,24 @@
       "message": "Was this a bug before extra instruction?",
       "revId": "ce0fc74b5bb902a7a101a47f19a873ac70351a9d",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "708c9baf_0967af4b",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2560,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-21T03:30:29Z",
+      "side": 1,
+      "message": "no, this is the main change.  instead of doing a shift, I leave the 10 bits in 2.14 format.\ninstead of max(v, 1023) it needs to be max(v, 1023 * 16)\nso this generates that constant 1023 * 16.",
+      "parentUuid": "db77689a_9ec60e20",
+      "revId": "ce0fc74b5bb902a7a101a47f19a873ac70351a9d",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
