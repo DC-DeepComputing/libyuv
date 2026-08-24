@@ -37,6 +37,41 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "da7a2f71_a1311dc0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:58:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5de432df_6450ed6d",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9246f96e_f0dfa7e8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:58:13Z",
+      "side": 1,
+      "message": "Note your bug refers to 10 bit.  Most scaling low levels are not optimized for 10 bit yet.  I\u0027ve recently improved 10 bit conversions, but not rotate and scale.\n\nTLDR last 2 rows\nIdeally fix the calculation for bilinear as well.\nThe change to use the last 2 rows for bilinear is mine, and it solved an asan issue but is not technically correct, so I\u0027m not happy with it.\nPrior to that the right edge was clamped by replicating the last pixel.  But we were oversampling on the right/bottom and not the top.  It should really start the filtering with a half pixel on top/left and clamp to the first pixel.  \neg scaling 2 pixels up by 10x should be 5 pixels of the first, 10 pixels of 50/50 blend and 5 pixels of the right \u003d 20 pixels.\nvertically its not hard to clamp.  Even the first row goes into a buffer that can be initialized.  The last row of source needs clamping to avoid going 1 beyond the end.\n\nHorizonally if() statements to clamp would substantially hurt performance, so the edge extrusion is most practical, especially if horizontally sampling into a row buffer.",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "6447c657_8520ac33",
         "filename": "source/scale.cc",
         "patchSetId": 3
