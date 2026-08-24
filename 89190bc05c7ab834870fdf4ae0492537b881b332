@@ -50,6 +50,24 @@
       "message": "Just curious: Why do these three `HAS_xxx` macros need to be restricted to x86-64?",
       "revId": "89190bc05c7ab834870fdf4ae0492537b881b332",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ffc8cd99_9e496fc9",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T20:18:42Z",
+      "side": 1,
+      "message": "The change is done by keeping the +32 in the constants and subtracting 24 after they are loaded.  But in 32 bit x86 the constants are used directly fromn memory, so we cant change them.  SSE for AR30 on x86 32 bit will fallback on C.  ARGB is still fine.\nIf this approach is too slow, the alternative is a second field in the yuvconstants, for the 10 bit bias (+8 instead of +32).\nor using PMULHRSW which can be used to implement rounding shift right for 16 bit",
+      "parentUuid": "05927cc4_6941ea24",
+      "revId": "89190bc05c7ab834870fdf4ae0492537b881b332",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
