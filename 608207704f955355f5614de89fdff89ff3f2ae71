@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "07f7d023_d884eb0f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-24T18:25:21Z",
+      "side": 1,
+      "message": "Thanks for the review!",
+      "revId": "608207704f955355f5614de89fdff89ff3f2ae71",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dd1786e6_74374f3c",
@@ -14,6 +31,24 @@
       "writtenOn": "2026-08-24T18:12:36Z",
       "side": 1,
       "message": "static_assert is a built-in C++ keyword so \u003cassert.h\u003e is technically redundant, but it matches third_party/libyuv/files/source/row_any.cc:13 and does no harm.",
+      "revId": "608207704f955355f5614de89fdff89ff3f2ae71",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4dcaf874_7960059e",
+        "filename": "source/scale_any.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-24T18:25:21Z",
+      "side": 1,
+      "message": "In C11, `static_assert` is a macro defined in \u003cassert.h\u003e. I understand the code in libyuv\u0027s source/*.cc files is written as if it were C code. This is why I added `#include \u003cassert.h\u003e` here.",
+      "parentUuid": "dd1786e6_74374f3c",
       "revId": "608207704f955355f5614de89fdff89ff3f2ae71",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
