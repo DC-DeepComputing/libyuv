@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6f58d13_5ec81bf4",
+        "filename": "include/libyuv/cpu_support.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-24T21:04:27Z",
+      "side": 1,
+      "message": "Previously, cpu_support.h was essentially a private header even though it is exported. So we should not define `LIBYUV_API` in cpu_support.h because this will force the truly public headers to include cpu_support.h.\n\nYou can add a new header such as basic.h or common.h, and define `LIBYUV_API` in that header. I would avoid the export.h name so that we can define other basic common macros in that header.",
+      "revId": "e269d679f66505a45bd9529014aab09cd9c343f2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
