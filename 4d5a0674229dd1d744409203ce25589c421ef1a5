@@ -34,6 +34,23 @@
       "parentUuid": "72a6c326_89849cbc",
       "revId": "4d5a0674229dd1d744409203ce25589c421ef1a5",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0964e664_6adb4217",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 4785,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T18:13:30Z",
+      "side": 1,
+      "message": "nit prefer src_ and dst_ prefix and src_stride_\neg\nvoid ARGB4444ToUVRow_C(const uint8_t* src_argb4444,\n                       int src_stride_argb4444,\n                       uint8_t* dst_u,\n                       uint8_t* dst_v,\n                       int width);\nbuf name is usually for row buffers and doesnt tell the user if it is source or destination, aside from const.  but it looks like we have a mix of both naming conventions.\nit is \u0027easy\u0027 to ask ai to change all of them, but with current ai we hit a token limit for simple changes that affect a LOT of code.  I for now, i guess just be \u0027tidy\u0027 consistent.",
+      "revId": "4d5a0674229dd1d744409203ce25589c421ef1a5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
