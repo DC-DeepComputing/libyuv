@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1eeadd3_64573a8d",
+        "filename": "source/mjpeg_decoder.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-24T20:37:36Z",
+      "side": 1,
+      "message": "Nit: I suggest adding a `databuf_size_changed` boolean variable here and test `scanlines_size_changed` before testing `databuf_strides_[i] !\u003d databuf_stride` to match the order in the `int databuf_size \u003d scanlines_size * databuf_stride` statement:\n\n```\n    int databuf_size \u003d scanlines_size * databuf_stride;\n    // The definition of databuf_size_changed has false positives, but that\u0027s safe.\n    int databuf_size_changed \u003d scanlines_size_changed || databuf_strides_[i] !\u003d databuf_stride;\n    if (databuf_size_changed) {\n```\n\nNote: It\u0027s possible that `scanlines_size` and `databuf_stride` both change in such way that their product remains the same. The current definition of `databuf_size_changed` does not detect that.",
+      "revId": "0b23f104cc6e2d4b58d7d9826308bf3027601adc",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
