@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba99a23a_ace11bdc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T18:25:09Z",
+      "side": 1,
+      "message": "The jist of this change is the yuvconstants produce 2.14 that will be output as 8 bit using v \u003e\u003e 6.  But with rounding that is achieved by adding +32 into the constants.  Which is the wrong rounding value for 10 bit.  So when outputting 10 bit RGB the conants are adjusted by -32 to remove the 8 bit rounding, and +8 to add rounding for 10 bit.  This is done outside the loop by adjusting the constants after loading them.",
+      "revId": "89190bc05c7ab834870fdf4ae0492537b881b332",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}

@@ -85,6 +85,24 @@
       "message": "Please document the difference between `LOAD_YUV_CONSTANTS_AR30` and `LOAD_YUV_CONSTANTS`, and when `LOAD_YUV_CONSTANTS_AR30` should be used instead of `LOAD_YUV_CONSTANTS`.\n\nThis also applies to the other new `xxx_AR30` macros added in this CL. It would be good to find a suitable central place to document this rather than repeat the comment in multiple places.",
       "revId": "3d15858b70d28911edc7255a2cd096235c444ed3",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1b5ef0b3_44c021cb",
+        "filename": "source/row_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1788,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T18:25:09Z",
+      "side": 1,
+      "message": "Acknowledged.  I\u0027ve documented the macro in this file and getting started.\nIt is hopefully not needed and we can try defaulting it to true and do a tap train to see if golden tests will fail.  if not we can immediately remove the macro.",
+      "parentUuid": "3cfab4f5_a9062122",
+      "revId": "3d15858b70d28911edc7255a2cd096235c444ed3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
