@@ -209,6 +209,24 @@
       "parentUuid": "505d05cc_561abd8e",
       "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7fad35de_1a369458",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1625,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T22:23:13Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "3ddeab03_55a71b80",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
