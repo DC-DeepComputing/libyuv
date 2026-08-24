@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "61dc4797_6375daa0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T23:56:58Z",
+      "side": 1,
+      "message": "this is to avoid dangerous LTCG assumptions about clobbers.",
+      "revId": "ef2c9ee8685b017f8aa85ce0ca7db0674ccf6fea",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
