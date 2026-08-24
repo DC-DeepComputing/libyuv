@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c58fc43_59e3e762",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T18:33:53Z",
+      "side": 1,
+      "message": "Done.  It is not set allowing the code to be disabled by default, but we can define it for testing.",
+      "parentUuid": "80efe0f8_c0fc9401",
+      "revId": "3d15858b70d28911edc7255a2cd096235c444ed3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "038e2b9f_8f6f2679",
@@ -55,6 +73,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "93aa44eb_99670753",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T18:33:53Z",
+      "side": 1,
+      "message": "no, we had a googler adding 10 bit that discovered the high error but not the root cause.  Their suggestion was different constants for 10 bit, 12 bit etc.  I pushed back and suggested one set of constants where 8 and 10 bit match as much as possible.\nWhen implementing rvv, the issue was understood and we subtracted 32 and used a rounding shift.\nI filed a bug now that summarizes the root cause - the rounding values 32.\ncaveat - Subtracting 24 from the register only works when the value is in a register, so the current solution does not work on 32 bit x86, so those conversions are disabled.",
+      "parentUuid": "dde54acc_4d630f84",
+      "revId": "3d15858b70d28911edc7255a2cd096235c444ed3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "128d5c69_3d334882",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
@@ -66,6 +102,24 @@
       "writtenOn": "2026-08-24T17:31:25Z",
       "side": 1,
       "message": "I don\u0027t really understand the changes, but I trust they are correct. I suggest adding some comments to describe the new macros.",
+      "revId": "3d15858b70d28911edc7255a2cd096235c444ed3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c863684_2e3f4548",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T18:33:53Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "128d5c69_3d334882",
       "revId": "3d15858b70d28911edc7255a2cd096235c444ed3",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
