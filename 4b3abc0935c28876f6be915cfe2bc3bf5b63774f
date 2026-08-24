@@ -72,6 +72,42 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "f63b1210_d7c0541b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-08-24T22:19:26Z",
+      "side": 1,
+      "message": "Thanks. `ScaleARGB` and `ScaleUV` already use `ScalePlaneVertical` for same-width\nbilinear scaling with bpp 4 and 2. Their `kFilterNone` paths bypass it because\nthe centered ScaleSlope produces x \u003d 0x8000, and instead use the Simple paths,\nwhich already have the correct point-sampling mapping.",
+      "parentUuid": "3ec8a13e_13eb94ef",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a563e4c8_96fb5992",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-08-24T22:19:26Z",
+      "side": 1,
+      "message": "Thanks, that makes sense. I agree that centered bilinear sampling with\nclamping at both vertical edges is the correct model, and that FixedDiv1\nis only the existing bounds-safe compromise.\n\nSince this would also change bilinear output and broaden the current\npoint-sampling fix, I would prefer to handle vertical bilinear clamping\nin a follow-up CL. I can include the vertical part here instead if you\nprefer.",
+      "parentUuid": "9246f96e_f0dfa7e8",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "6447c657_8520ac33",
         "filename": "source/scale.cc",
         "patchSetId": 3
@@ -83,6 +119,24 @@
       "writtenOn": "2026-08-24T17:15:18Z",
       "side": 1,
       "message": "FYI kFilterLinear is horizontal only and can be included in this test but I think ScaleFilterReduce has reduced it to kFilterNone by this point",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "78c12114_3ccb2ba9",
+        "filename": "source/scale.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1975,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-08-24T22:19:26Z",
+      "side": 1,
+      "message": "Yes, exactly. Since this is the same-width path, ScaleFilterReduce\nreduces `kFilterLinear` to `kFilterNone` before reaching this branch.\n`kFilterBox` is reduced to `kFilterBilinear`, so only `kFilterNone` and\n`kFilterBilinear` reach this upsampling logic.",
+      "parentUuid": "6447c657_8520ac33",
       "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -104,6 +158,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7039786_02b0b724",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1571,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-08-24T22:19:26Z",
+      "side": 1,
+      "message": "Done. I introduced an `interpolate` predicate that is true only for\n`kFilterBilinear`, and use it consistently for max_y, source stride, and\nsource_y_fraction in both the 8-bit and 16-bit paths.",
+      "parentUuid": "069261a6_77957c90",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "505d05cc_561abd8e",
@@ -117,6 +189,24 @@
       "writtenOn": "2026-08-24T17:15:18Z",
       "side": 1,
       "message": "stride isnt used by FilterNone?",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ddeab03_55a71b80",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1625,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-08-24T22:19:26Z",
+      "side": 1,
+      "message": "Correct, `kFilterNone` does not read the second row. However, some\nInterpolateRow implementations form `src_ptr + src_stride` before the\nzero-fraction early return, including the C and AArch64 NEON versions.\nSince point sampling can now select the final logical row, passing zero\navoids forming an out-of-range pointer, especially with a negative source\nstride.",
+      "parentUuid": "505d05cc_561abd8e",
       "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
