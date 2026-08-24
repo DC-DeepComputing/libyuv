@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3bbb1a60_6311072e",
+        "filename": "source/convert.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 782,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T18:46:31Z",
+      "side": 1,
+      "message": "nit this breaks C89 compatability.  all declarations need to precede code.\nBut we can proceed and see if bugs are reported.\n\nIn the past the buffer was done on the stack and couldnt fail.\n\nIn the future I\u0027m trying to eliminate row buffers from image functions, using a 1 step conversion, but the 1 step can be implemented with a buffer on the stack, breaking up rows into a few pixels (row_common.cc wrappers).\n\nThis function would be a MergeUVRow_16To8_AVX2 etc if exposed as a new row function, improving several 10 bit conversions to NV12",
+      "revId": "3271bc9d5de94edc493c296ade8c50399f3b9e6b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
