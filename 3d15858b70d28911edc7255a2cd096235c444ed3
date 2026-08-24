@@ -35,6 +35,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "dde54acc_4d630f84",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-24T17:34:48Z",
+      "side": 1,
+      "message": "If there is no bug report, it would be good to file one so that we can describe the off-by-32 rounding issue there. That\u0027d be more convenient than describing the off-by-32 rounding issue in the commit message.\n\nIf you can describe the rounding issue in your comments for the `LIBYUV_UNBIASED_DATA` and `xxx_AR30` macros, then it is not necessary to file a bug report.",
+      "parentUuid": "038e2b9f_8f6f2679",
+      "revId": "3d15858b70d28911edc7255a2cd096235c444ed3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "128d5c69_3d334882",
