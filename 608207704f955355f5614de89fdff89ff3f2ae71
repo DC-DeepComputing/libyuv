@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd1786e6_74374f3c",
+        "filename": "source/scale_any.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T18:12:36Z",
+      "side": 1,
+      "message": "static_assert is a built-in C++ keyword so \u003cassert.h\u003e is technically redundant, but it matches third_party/libyuv/files/source/row_any.cc:13 and does no harm.",
+      "revId": "608207704f955355f5614de89fdff89ff3f2ae71",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
