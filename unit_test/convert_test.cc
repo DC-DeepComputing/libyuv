@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "libyuv/basic_types.h"
 #include "libyuv/compare.h"
 #include "libyuv/convert.h"
 #include "libyuv/convert_argb.h"
@@ -1739,7 +1738,7 @@ TEST_F(LibYUVConvertTest, TestMJPGToARGB) {
 
 static int ShowJPegInfo(const uint8_t* sample, size_t sample_size) {
   MJpegDecoder mjpeg_decoder;
-  LIBYUV_BOOL ret = mjpeg_decoder.LoadFrame(sample, sample_size);
+  int ret = mjpeg_decoder.LoadFrame(sample, sample_size);
 
   int width = mjpeg_decoder.GetWidth();
   int height = mjpeg_decoder.GetHeight();
