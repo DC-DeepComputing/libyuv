@@ -11,7 +11,6 @@
     'libyuv_sources': [
       # includes.
       'include/libyuv.h',
-      'include/libyuv/basic_types.h',
       'include/libyuv/compare.h',
       'include/libyuv/compare_row.h',
       'include/libyuv/convert.h',

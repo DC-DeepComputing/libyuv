@@ -21,7 +21,7 @@
 // pragma to disable warning for ASSERT_NE
 #include <gtest/gtest.h>  // IWYU pragma: export
 
-#include "libyuv/basic_types.h"
+#include <stdint.h>
 
 #ifndef SIMD_ALIGNED
 #if defined(_MSC_VER) && !defined(__CLR_VER)

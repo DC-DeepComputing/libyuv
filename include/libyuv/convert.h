@@ -11,7 +11,10 @@
 #ifndef INCLUDE_LIBYUV_CONVERT_H_
 #define INCLUDE_LIBYUV_CONVERT_H_
 
-#include "libyuv/basic_types.h"
+#include <stddef.h>
+#include <stdint.h>
+
+#include "libyuv/cpu_support.h"
 
 #include "libyuv/rotate.h"  // For enum RotationMode.
 

@@ -11,7 +11,9 @@
 #ifndef INCLUDE_LIBYUV_ROTATE_ARGB_H_
 #define INCLUDE_LIBYUV_ROTATE_ARGB_H_
 
-#include "libyuv/basic_types.h"
+#include <stdint.h>
+
+#include "libyuv/cpu_support.h"
 #include "libyuv/rotate.h"  // For RotationMode.
 
 #ifdef __cplusplus

@@ -11,7 +11,9 @@
 #ifndef INCLUDE_LIBYUV_CPU_ID_H_
 #define INCLUDE_LIBYUV_CPU_ID_H_
 
-#include "libyuv/basic_types.h"
+#include <stdint.h>
+
+#include "libyuv/cpu_support.h"
 
 #ifdef __cplusplus
 namespace libyuv {

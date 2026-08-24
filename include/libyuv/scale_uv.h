@@ -11,7 +11,9 @@
 #ifndef INCLUDE_LIBYUV_SCALE_UV_H_
 #define INCLUDE_LIBYUV_SCALE_UV_H_
 
-#include "libyuv/basic_types.h"
+#include <stdint.h>
+
+#include "libyuv/cpu_support.h"
 #include "libyuv/scale.h"  // For FilterMode
 
 #ifdef __cplusplus
