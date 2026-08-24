@@ -68,6 +68,24 @@
       "parentUuid": "275b16cd_80a123e8",
       "revId": "0991508bc6c1f7ebe4cc222bc7736c875f59447e",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9e4623c_67bf550b",
+        "filename": "include/libyuv/version.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T19:01:04Z",
+      "side": 1,
+      "message": "agreed.  we make a point of incrementing the LIBYUV_VERSION when the API changes and the user may need a way to detect it.  Or an quality change that can affect usage.\ndepends what you call \u0027breaking\u0027, but in general if the public headers change, the version increments.  It increments fairly often",
+      "parentUuid": "37bcf54a_b3f48e19",
+      "revId": "0991508bc6c1f7ebe4cc222bc7736c875f59447e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
