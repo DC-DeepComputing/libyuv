@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "88365df4_f1e7c058",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T19:23:31Z",
+      "side": 1,
+      "message": "grep \"height \u003d\u003d 0\" * | wc -l\n267\n\nThe original intent was height \u003d\u003d 0 is not a special case, just a value loop of 0\nThe negative height is a windows GDI capturer convention.\nheight \u003d -height is a silly check for INT_MIN\nin most cases the stride * height-1 multiplied by bpp can overflow and the negative height handling should restrict height to INT_MAX/BPP_MAX\nand the coallesce that does width \u003d width * height; should limit height, but allow a partial coallesce.\nIdeally negative width would also work, but its only easily implemented in rotate and scale.  If it were done after coallesce, a negative width could be done as width \u003d 1, stride \u003d -bpp.\n\nThis \u0027Valid\u0027 is only for most conversions, but a different valid would be needed for scale, rotate and compare.",
+      "revId": "4522a224a48f66b23543d9e4a5afa686695a96ad",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "040ca630_0877f876",
+        "filename": "include/libyuv/basic_types.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T19:23:31Z",
+      "side": 1,
+      "message": "This header isnt really \u0027owned\u0027 by libyuv... its from meet/webrtc.  But should be removed in the future when C99 or C11 types are fully adopted.\nThe purpose of this header is to provide types for older compilers that do not support C99 types.\n\nThe \u0027ValidDimensions\u0027 is a conversion function helper, so the appropriate place would be row.h",
+      "revId": "4522a224a48f66b23543d9e4a5afa686695a96ad",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
