@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70cd2a3c_e4036ea1",
+        "filename": "source/convert_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 5101,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T22:25:43Z",
+      "side": 1,
+      "message": "this is hard to read?  is there an issue with the math expression?   const uint64_t uv_size \u003d (uint64_t)halfwidth * 2 * halfheight;",
+      "revId": "342bef3e3272ee33941835726231ad978b4fe124",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
