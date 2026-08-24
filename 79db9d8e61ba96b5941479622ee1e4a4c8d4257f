@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d86f6c47_b20b029a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-08-24T22:35:12Z",
+      "side": 1,
+      "message": "@wtc@google.com, could you please help stamp this CL, as Dale is OOO this week.",
+      "revId": "79db9d8e61ba96b5941479622ee1e4a4c8d4257f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
