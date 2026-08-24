@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd38d4b6_3cf960c3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T22:32:03Z",
+      "side": 1,
+      "message": "prefer not put isa private headers in the public folder.  can these\ninclude/libyuv/loongson_set_lasx.h\ninclude/libyuv/loongson_set_lsx.h\ninclude/libyuv/loongson_unset_target.h\nbe done in include/libyuv/loongson_intrinsics.h",
+      "revId": "c746f3cede80eb6984451bbadb962b39c1989bfd",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}

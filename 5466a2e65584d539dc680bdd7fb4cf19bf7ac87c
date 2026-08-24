@@ -92,6 +92,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "c2dc1874_3aede97c",
+        "filename": "include/libyuv/cpu_support.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T22:32:03Z",
+      "side": 1,
+      "message": "Not resolved.  Remove  \u0026\u0026 defined(LIBYUV_BUILD_GYP) \nDisabling LSX/LASX for old versions of the compiler makes sense for all build systems, since the compiler can not compile LSX intrinsics.",
+      "parentUuid": "b57e1583_44e31b8a",
+      "revId": "5466a2e65584d539dc680bdd7fb4cf19bf7ac87c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a3da35e6_4be884a7",
         "filename": "include/libyuv/cpu_support.h",
         "patchSetId": 2
@@ -139,6 +157,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "f244f643_e6dd1b40",
+      "revId": "5466a2e65584d539dc680bdd7fb4cf19bf7ac87c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b0bfffa_7d85c1fb",
+        "filename": "include/libyuv/cpu_support.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T22:32:03Z",
+      "side": 1,
+      "message": "Thanks for the explanation of gcc 14 vs 15. \n#if !defined(LIBYUV_DISABLE_LSX)\nthe compiler version is checked at line 103.  This ifdef is just to check that the user has not already disabled LSX to avoid redefining the macro.\nOn an old compiler (e.g. gcc 13) that does not support lsx, the user can\u0027t set -mlsx\nPut aside gyp and the pragma for this section.  This disable is for old compilers that dont support lsx at all, under any build system.  On ARM they tend to come up on old android NDK v21 that uses gcc 9.\nIf a compiler version like gcc 14 doesnt support the pragma and you consider the pragma a requirement for lsx, set the version required to 15.\nI\u0027d prefer see the version required is gcc 14 and do not require a pragma for gyp.  Make the gyp build do -mlsx for a libyuv_lsx library including just row_lsx.cc",
+      "parentUuid": "46a51384_0db59778",
       "revId": "5466a2e65584d539dc680bdd7fb4cf19bf7ac87c",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
