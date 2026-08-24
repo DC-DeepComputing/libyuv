@@ -16,6 +16,40 @@
       "message": "The jist of this change is the yuvconstants produce 2.14 that will be output as 8 bit using v \u003e\u003e 6.  But with rounding that is achieved by adding +32 into the constants.  Which is the wrong rounding value for 10 bit.  So when outputting 10 bit RGB the conants are adjusted by -32 to remove the 8 bit rounding, and +8 to add rounding for 10 bit.  This is done outside the loop by adjusting the constants after loading them.",
       "revId": "89190bc05c7ab834870fdf4ae0492537b881b332",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "53a00aab_44f417c4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-24T20:05:20Z",
+      "side": 1,
+      "message": "LGTM.",
+      "revId": "89190bc05c7ab834870fdf4ae0492537b881b332",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "05927cc4_6941ea24",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-24T20:05:20Z",
+      "side": 1,
+      "message": "Just curious: Why do these three `HAS_xxx` macros need to be restricted to x86-64?",
+      "revId": "89190bc05c7ab834870fdf4ae0492537b881b332",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
