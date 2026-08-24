@@ -72,6 +72,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d44af7b_a3ee9ebe",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1152,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:53:17Z",
+      "side": 1,
+      "message": "Acknowledged.",
+      "parentUuid": "fe0c7f35_f2ae831c",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9a0fff59_31e40485",
@@ -157,6 +175,24 @@
       "side": 1,
       "message": "turns out there isn\u0027t a suitable ANY variant for this kernel, so swapped to a width check in the function pointer assignment to match the existing x86 usage.",
       "parentUuid": "38660139_d9ae6b24",
+      "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7657e129_606f22b5",
+        "filename": "source/row_sve.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1199,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:53:17Z",
+      "side": 1,
+      "message": "I think this example of literal odd pixel could in a horizontal subsampling format, doesnt come up enough to warrent new infrastructure.  In some cases I create \u0027Odd\u0027 varients, but it doesnt make the row function any easier to write.",
+      "parentUuid": "8ba70655_01513cfc",
       "revId": "a52a53367771a8b6c81b8737dcc991b4ff8cea43",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }

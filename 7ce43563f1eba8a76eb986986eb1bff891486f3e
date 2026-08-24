@@ -26,6 +26,30 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "62f174c4_75af3b10",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:53:17Z",
+      "side": 1,
+      "message": "Acknowledged.  Yes.  The C version handles odd width.",
+      "parentUuid": "9144f44e_3f231814",
+      "range": {
+        "startLine": 13,
+        "startChar": 9,
+        "endLine": 13,
+        "endChar": 22
+      },
+      "revId": "7ce43563f1eba8a76eb986986eb1bff891486f3e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "ec2f5ef3_6e189283",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 6
@@ -54,6 +78,24 @@
       "writtenOn": "2026-08-21T15:35:48Z",
       "side": 1,
       "message": "It is uncommon to see a small number like 2 here, so the reason is not obvious. I suggest adding a short comment based on your description in the commit message:\n\n```\nThe average of two values must be retained for the final odd element if\npresent. Existing code just handles this by falling back to the C\nimplementation, so mirror that for SVE2 as well.\n```",
+      "revId": "7ce43563f1eba8a76eb986986eb1bff891486f3e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e25c340b_e2ea24a9",
+        "filename": "source/planar_functions.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 5830,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:53:17Z",
+      "side": 1,
+      "message": "Note that several tests fail when width or height is 1.  For a row function the calling code could check width \u003e\u003d 2 and avoid calling it.   Some testing should be done for all cpus, to see if there are easy fixes.  A goal is to keep the assembly simple.",
+      "parentUuid": "7165ce53_da7bb12f",
       "revId": "7ce43563f1eba8a76eb986986eb1bff891486f3e",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
