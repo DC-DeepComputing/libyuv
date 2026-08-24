@@ -16,6 +16,74 @@
       "message": "Gentle ping @fbarchard@google.com :)\n\nThis CL is blocking [CL](https://chromium-review.googlesource.com/c/chromium/src/+/8255613) and follow‑up changes.\nCould you please take a look when you have time? Thanks!",
       "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ec8a13e_13eb94ef",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:15:18Z",
+      "side": 1,
+      "message": "Thanks for the change.  Makes sense, but this will likely be hard to check in due to \u0027golden tests\u0027, so the way we\u0027ve dealt with those is add an #ifdef around the change.  But we would prefer not to.  Some testing needed on our side.\n\nSeems like scale_uv and scale_argb should have the change, but I guess the vertical scale isnt hooked up.  The same low level could do vertical scale of any number of elements.",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6447c657_8520ac33",
+        "filename": "source/scale.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1975,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:15:18Z",
+      "side": 1,
+      "message": "FYI kFilterLinear is horizontal only and can be included in this test but I think ScaleFilterReduce has reduced it to kFilterNone by this point",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "069261a6_77957c90",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1571,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:15:18Z",
+      "side": 1,
+      "message": "really this is filtering \u003d\u003d kFilterBilinear since it doesnt apply to None, Linear or Box",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "505d05cc_561abd8e",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1625,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T17:15:18Z",
+      "side": 1,
+      "message": "stride isnt used by FilterNone?",
+      "revId": "4b3abc0935c28876f6be915cfe2bc3bf5b63774f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
