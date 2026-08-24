@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f6abb17_7ffad6a5",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1625,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-24T18:15:05Z",
+      "side": 1,
+      "message": "nit this introduces 2 warnings\nimplicite cast of 2\nand comparison between different types.",
+      "revId": "39227db4c78217cd4c95c07993867df3b51df638",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
