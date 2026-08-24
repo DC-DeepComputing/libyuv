@@ -14,6 +14,8 @@
 #include <stddef.h>  // For NULL
 #include <stdlib.h>  // For malloc
 
+#include <stdint.h>
+
 #include "libyuv/basic_types.h"
 #include "libyuv/cpu_support.h"
 
