@@ -1,6 +1,40 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "80bba3df_0cd4816f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-25T00:26:57Z",
+      "side": 1,
+      "message": "Nit: It\u0027s not clear what\u0027s the difference between `out/Release` and `out/Release_x86`. Is the former 64-bit and the latter 32-bit?",
+      "revId": "ef2c9ee8685b017f8aa85ce0ca7db0674ccf6fea",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0319a066_7d206fe6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-25T00:26:57Z",
+      "side": 1,
+      "message": "What does this `CONV\u003d` line mean?",
+      "revId": "ef2c9ee8685b017f8aa85ce0ca7db0674ccf6fea",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "61dc4797_6375daa0",
