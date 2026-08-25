@@ -1949,7 +1949,7 @@ void RGBToYMatrixRow_LASX(const uint8_t* src_rgba,
       "xvldrepl.b      $xr0,  %3,    0             \n\t"  // load rgbconstants
       "xvldrepl.b      $xr1,  %3,    1             \n\t"  // load rgbconstants
       "xvldrepl.b      $xr2,  %3,    2             \n\t"  // load rgbconstants
-      "xvldrepl.h      $xr3,  %3,    4             \n\t"  // load rgbconstants
+      "xvldrepl.h      $xr3,  %3,    96            \n\t"  // load rgbconstants
       "xvld            $xr4,  %4,    0             \n\t"  // load shuff
       "xvld            $xr5,  %4,    32            \n\t"
       "xvld            $xr6,  %4,    64            \n\t"
