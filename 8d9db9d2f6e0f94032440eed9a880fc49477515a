@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8c4f316_d33c8a46",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 1002030
+      },
+      "writtenOn": "2026-08-25T20:22:26Z",
+      "side": 1,
+      "message": "why independant volatile sections. looks like clobber is covered in the final volatile but small window that could get clobbered depending on where the registers are saved?",
+      "revId": "8d9db9d2f6e0f94032440eed9a880fc49477515a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
