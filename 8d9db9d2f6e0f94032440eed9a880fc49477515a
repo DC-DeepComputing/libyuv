@@ -16,6 +16,24 @@
       "message": "why independant volatile sections. looks like clobber is covered in the final volatile but small window that could get clobbered depending on where the registers are saved?",
       "revId": "8d9db9d2f6e0f94032440eed9a880fc49477515a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1337461_ac3b2de5",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-25T21:18:09Z",
+      "side": 1,
+      "message": "Done.  ah this is a regression.  in the previous PR the multiple blocks of asm in scale were joined into 1 block for LTCG safety.\n\nin the past the multiple blocks were a work around for x86 32 bit compilers running out of registers.  currently I can not reproduce this, but if it still happens the easiest work around is disable these row functions for 32 bit and only do 64 bit.",
+      "parentUuid": "b8c4f316_d33c8a46",
+      "revId": "8d9db9d2f6e0f94032440eed9a880fc49477515a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
