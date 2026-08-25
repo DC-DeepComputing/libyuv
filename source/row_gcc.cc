@@ -48,8 +48,6 @@ static const uvec16 kSub128 = {0x8080u, 0x8080u, 0x8080u, 0x8080u,
 
 #endif  // defined(HAS_ARGBTOYMATRIXROW_SSSE3) || defined(HAS_I422TOARGBROW_SSSE3)
 
-#ifdef HAS_RGB24TOARGBROW_SSSE3
-
 // Shuffle table for converting RGB24 to ARGB.
 static const uvec8 kShuffleMaskRGB24ToARGB[2] = {
     {0u, 1u, 2u, 128u, 3u, 4u, 5u, 128u, 6u, 7u, 8u, 128u, 9u, 10u, 11u, 128u},
@@ -68,6 +66,27 @@ static const uvec8 kShuffleMaskRAWToARGB_AVX512BW[2] = {
     {2u, 1u, 0u, 128u, 5u, 4u, 3u, 128u, 8u, 7u, 6u, 128u, 11u, 10u, 9u, 128u},
     {6u, 5u, 4u, 128u, 9u, 8u, 7u, 128u, 12u, 11u, 10u, 128u, 15u, 14u, 13u,
      128u}};
+#endif
+#if defined(HAS_RAWTORGB24ROW_AVX2) || defined(HAS_RAWTORGB24ROW_AVX512BW)
+static const uvec8 kShuffleMaskRAWToRGB24_AVX2[2] = {
+    {2u, 1u, 0u, 5u, 4u, 3u, 8u, 7u, 6u, 11u, 10u, 9u, 128u, 128u, 128u, 128u},
+    {6u, 5u, 4u, 9u, 8u, 7u, 12u, 11u, 10u, 15u, 14u, 13u, 128u, 128u, 128u,
+     128u}};
+#endif
+#if defined(HAS_RAWTORGB24ROW_AVX2)
+static const uint32_t kPermd0_AVX2[8] = {0, 1, 2, 4, 5, 6, 0, 0};
+static const uint32_t kPermd1_AVX2[8] = {2, 4, 5, 6, 0, 0, 0, 0};
+static const uint32_t kPermd2_AVX2[8] = {0, 0, 0, 0, 0, 1, 2, 4};
+static const uint32_t kPermd3_AVX2[8] = {5, 6, 0, 0, 0, 0, 0, 0};
+static const uint32_t kPermd4_AVX2[8] = {0, 0, 0, 1, 2, 4, 5, 6};
+#endif
+#if defined(HAS_RAWTORGB24ROW_AVX512BW)
+static const uint32_t kPermdRGB24_0_AVX512BW[16] = {
+    0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 20};
+static const uint32_t kPermdRGB24_1_AVX512BW[16] = {
+    5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 20, 21, 22, 24, 25};
+static const uint32_t kPermdRGB24_2_AVX512BW[16] = {
+    10, 12, 13, 14, 16, 17, 18, 20, 21, 22, 24, 25, 26, 28, 29, 30};
 #endif
 
 // Shuffle table for converting RAW to RGBA.
@@ -122,7 +141,6 @@ static const lvec8 kShuffleNV21 = {
     1, 0, 1, 0, 3, 2, 3, 2, 5, 4, 5, 4, 7, 6, 7, 6,
     1, 0, 1, 0, 3, 2, 3, 2, 5, 4, 5, 4, 7, 6, 7, 6,
 };
-#endif  // HAS_RGB24TOARGBROW_SSSE3
 
 #if defined(HAS_J400TOARGBROW_AVX2) || defined(HAS_J400TOARGBROW_AVX512BW)
 static const uint8_t kShuffleMaskJ400ToARGB[64] = {
@@ -235,6 +253,7 @@ void RGB24ToARGBRow_SSSE3(const uint8_t* src_rgb24,
       : "m"(kShuffleMaskRGB24ToARGB[0])  // %3
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
 }
+#endif  // HAS_RGB24TOARGBROW_SSSE3
 
 #ifdef HAS_RGB24TOARGBROW_AVX2
 void RGB24ToARGBRow_AVX2(const uint8_t* src_rgb24,
@@ -282,6 +301,7 @@ void RGB24ToARGBRow_AVX2(const uint8_t* src_rgb24,
 }
 #endif  // HAS_RGB24TOARGBROW_AVX2
 
+#ifdef HAS_RAWTOARGBROW_SSSE3
 void RAWToARGBRow_SSSE3(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
   asm volatile(
       "pcmpeqb     %%xmm6,%%xmm6                 \n"  // 0xff000000
@@ -318,7 +338,9 @@ void RAWToARGBRow_SSSE3(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
         "m"(kShuffleMaskRAWToARGB_0)  // %4
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6");
 }
+#endif  // HAS_RAWTOARGBROW_SSSE3
 
+#ifdef HAS_RAWTOARGBROW_AVX2
 void RAWToARGBRow_AVX2(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
   asm volatile(
       "vpcmpeqb    %%ymm6,%%ymm6,%%ymm6          \n"  // 0xff000000
@@ -360,9 +382,11 @@ void RAWToARGBRow_AVX2(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
         "m"(kShuffleMaskRAWToARGB_0)  // %4
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6");
 }
+#endif  // HAS_RAWTOARGBROW_AVX2
 
 #if defined(HAS_RAWTOARGBROW_AVX512BW) || \
     defined(HAS_RGB24TOARGBROW_AVX512BW) || \
+    defined(HAS_RAWTORGB24ROW_AVX512BW) ||  \
     defined(HAS_RGBTOYMATRIXROW_AVX512BW)
 static const uint64_t kPermqRGB24ToARGB0_AVX512BW[8] = {0, 1, 1, 2,
                                                          3, 4, 4, 5};
@@ -446,6 +470,7 @@ void RGB24ToARGBRow_AVX512BW(const uint8_t* src_rgb24,
 }
 #endif
 
+#ifdef HAS_RAWTORGBAROW_SSSE3
 // Same code as RAWToARGB with different shuffler and A in low bits
 void RAWToRGBARow_SSSE3(const uint8_t* src_raw, uint8_t* dst_rgba, int width) {
   asm volatile(
@@ -484,7 +509,9 @@ void RAWToRGBARow_SSSE3(const uint8_t* src_raw, uint8_t* dst_rgba, int width) {
       : "m"(kShuffleMaskRAWToRGBA)  // %3
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
 }
+#endif  // HAS_RAWTORGBAROW_SSSE3
 
+#ifdef HAS_RAWTORGB24ROW_SSSE3
 void RAWToRGB24Row_SSSE3(const uint8_t* src_raw,
                          uint8_t* dst_rgb24,
                          int width) {
@@ -516,6 +543,134 @@ void RAWToRGB24Row_SSSE3(const uint8_t* src_raw,
         "m"(kShuffleMaskRAWToRGB24_2)   // %5
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
 }
+#endif  // HAS_RAWTORGB24ROW_SSSE3
+
+#ifdef HAS_RAWTORGB24ROW_AVX2
+void RAWToRGB24Row_AVX2(const uint8_t* src_raw,
+                        uint8_t* dst_rgb24,
+                        int width) {
+  asm volatile(
+      "vmovdqu     %3,%%ymm7                     \n"  // shuffler (32 bytes)
+      "vmovdqu     %4,%%ymm8                     \n"  // kPermd0_AVX2
+      "vmovdqu     %5,%%ymm9                     \n"  // kPermd1_AVX2
+      "vmovdqu     %6,%%ymm10                    \n"  // kPermd2_AVX2
+      "vmovdqu     %7,%%ymm11                    \n"  // kPermd3_AVX2
+      "vmovdqu     %8,%%ymm12                    \n"  // kPermd4_AVX2
+
+      LABELALIGN
+      "1:                                        \n"
+      "vmovdqu     (%0),%%ymm0                   \n"  // raw0
+      "vmovdqu     32(%0),%%ymm1                 \n"  // raw1
+      "vmovdqu     64(%0),%%ymm2                 \n"  // raw2
+      "lea         96(%0),%0                     \n"
+
+      "vpermq      $0x94,%%ymm0,%%ymm3           \n"  // b0
+      "vperm2i128  $0x21,%%ymm1,%%ymm0,%%ymm4    \n"  // m01
+      "vperm2i128  $0x21,%%ymm2,%%ymm1,%%ymm5    \n"  // m12
+      "vpermq      $0xe9,%%ymm2,%%ymm6           \n"  // b3
+      "vpermq      $0xe9,%%ymm4,%%ymm4           \n"  // b1
+      "vpermq      $0x94,%%ymm5,%%ymm5           \n"  // b2
+
+      "vpshufb     %%ymm7,%%ymm3,%%ymm3          \n"
+      "vpshufb     %%ymm7,%%ymm4,%%ymm4          \n"
+      "vpshufb     %%ymm7,%%ymm5,%%ymm5          \n"
+      "vpshufb     %%ymm7,%%ymm6,%%ymm6          \n"
+
+      // Dst0
+      "vpermd      %%ymm3,%%ymm8,%%ymm0          \n"
+      "vpermq      $0x00,%%ymm4,%%ymm1           \n"
+      "vpermd      %%ymm4,%%ymm9,%%ymm2          \n"
+      "vpermd      %%ymm5,%%ymm10,%%ymm3         \n"
+      "vpblendd    $0xc0,%%ymm1,%%ymm0,%%ymm0    \n"
+      "vmovdqu     %%ymm0,(%1)                   \n"
+
+      // Dst1
+      "vpblendd    $0xf0,%%ymm3,%%ymm2,%%ymm2    \n"
+      "vpermd      %%ymm5,%%ymm11,%%ymm4         \n"
+      "vpermd      %%ymm6,%%ymm12,%%ymm5         \n"
+      "vmovdqu     %%ymm2,32(%1)                 \n"
+
+      // Dst2
+      "vpblendd    $0xfc,%%ymm5,%%ymm4,%%ymm4    \n"
+      "vmovdqu     %%ymm4,64(%1)                 \n"
+
+      "lea         96(%1),%1                     \n"
+      "sub         $32,%2                        \n"
+      "jg          1b                            \n"
+      "vzeroupper                                \n"
+      : "+r"(src_raw),                            // %0
+        "+r"(dst_rgb24),                          // %1
+        "+r"(width)                               // %2
+      : "m"(kShuffleMaskRAWToRGB24_AVX2[0]),      // %3
+        "m"(kPermd0_AVX2),                        // %4
+        "m"(kPermd1_AVX2),                        // %5
+        "m"(kPermd2_AVX2),                        // %6
+        "m"(kPermd3_AVX2),                        // %7
+        "m"(kPermd4_AVX2)                         // %8
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
+        "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12");
+}
+#endif  // HAS_RAWTORGB24ROW_AVX2
+
+#ifdef HAS_RAWTORGB24ROW_AVX512BW
+void RAWToRGB24Row_AVX512BW(const uint8_t* src_raw,
+                            uint8_t* dst_rgb24,
+                            int width) {
+  asm volatile(
+      "vmovdqu64   %3,%%zmm20                    \n"  // kPermqRGB24ToARGB0_AVX512BW
+      "vmovdqu64   %4,%%zmm21                    \n"  // kPermqRGB24ToARGB1_AVX512BW
+      "vmovdqu64   %5,%%zmm22                    \n"  // kPermqRGB24ToARGB2_AVX512BW
+      "vmovdqu64   %6,%%zmm23                    \n"  // kPermqRGB24ToARGB3_AVX512BW
+      "vbroadcasti64x4 %7,%%zmm4                 \n"  // shuffler (32 bytes)
+      "vmovdqu32   %8,%%zmm24                    \n"  // kPermdRGB24_0_AVX512BW
+      "vmovdqu32   %9,%%zmm25                    \n"  // kPermdRGB24_1_AVX512BW
+      "vmovdqu32   %10,%%zmm26                   \n"  // kPermdRGB24_2_AVX512BW
+
+      LABELALIGN
+      "1:                                        \n"
+      "vmovdqu8    (%0),%%zmm0                   \n"
+      "vmovdqu8    64(%0),%%zmm1                 \n"
+      "vmovdqu8    128(%0),%%zmm2                \n"
+      "lea         192(%0),%0                    \n"
+      "vpermq      %%zmm2,%%zmm23,%%zmm3         \n"
+      "vmovdqa64   %%zmm22,%%zmm18               \n"
+      "vpermi2q    %%zmm2,%%zmm1,%%zmm18         \n"
+      "vmovdqa64   %%zmm21,%%zmm19               \n"
+      "vpermi2q    %%zmm1,%%zmm0,%%zmm19         \n"
+      "vpermq      %%zmm0,%%zmm20,%%zmm0         \n"
+      "vpshufb     %%zmm4,%%zmm0,%%zmm0          \n"
+      "vpshufb     %%zmm4,%%zmm19,%%zmm1         \n"
+      "vpshufb     %%zmm4,%%zmm18,%%zmm2         \n"
+      "vpshufb     %%zmm4,%%zmm3,%%zmm3          \n"
+      "vmovdqa32   %%zmm24,%%zmm16               \n"
+      "vpermi2d    %%zmm1,%%zmm0,%%zmm16         \n"
+      "vmovdqa32   %%zmm25,%%zmm17               \n"
+      "vpermi2d    %%zmm2,%%zmm1,%%zmm17         \n"
+      "vmovdqa32   %%zmm26,%%zmm18               \n"
+      "vpermi2d    %%zmm3,%%zmm2,%%zmm18         \n"
+      "vmovdqu8    %%zmm16,(%1)                  \n"
+      "vmovdqu8    %%zmm17,0x40(%1)              \n"
+      "vmovdqu8    %%zmm18,0x80(%1)              \n"
+      "lea         0xc0(%1),%1                   \n"
+      "sub         $0x40,%2                      \n"
+      "jg          1b                            \n"
+      "vzeroupper                                \n"
+      : "+r"(src_raw),                            // %0
+        "+r"(dst_rgb24),                          // %1
+        "+r"(width)                               // %2
+      : "m"(kPermqRGB24ToARGB0_AVX512BW),         // %3
+        "m"(kPermqRGB24ToARGB1_AVX512BW),         // %4
+        "m"(kPermqRGB24ToARGB2_AVX512BW),         // %5
+        "m"(kPermqRGB24ToARGB3_AVX512BW),         // %6
+        "m"(kShuffleMaskRAWToRGB24_AVX2[0]),      // %7
+        "m"(kPermdRGB24_0_AVX512BW),              // %8
+        "m"(kPermdRGB24_1_AVX512BW),              // %9
+        "m"(kPermdRGB24_2_AVX512BW)               // %10
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm16",
+        "xmm17", "xmm18", "xmm19", "xmm20", "xmm21", "xmm22", "xmm23",
+        "xmm24", "xmm25", "xmm26");
+}
+#endif  // HAS_RAWTORGB24ROW_AVX512BW
 
 #ifdef HAS_RGB565TOARGBROW_AVX2
 void RGB565ToARGBRow_AVX2(const uint8_t* src, uint8_t* dst, int width) {
@@ -655,6 +810,7 @@ void ARGB4444ToARGBRow_AVX2(const uint8_t* src, uint8_t* dst, int width) {
 }
 #endif
 
+#ifdef HAS_ARGBTORGB24ROW_SSSE3
 void ARGBToRGB24Row_SSSE3(const uint8_t* src, uint8_t* dst, int width) {
   asm volatile("movdqa      %3,%%xmm6                     \n"
 
@@ -692,7 +848,9 @@ void ARGBToRGB24Row_SSSE3(const uint8_t* src, uint8_t* dst, int width) {
                : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
                  "xmm6");
 }
+#endif  // HAS_ARGBTORGB24ROW_SSSE3
 
+#ifdef HAS_ARGBTORAWROW_SSSE3
 void ARGBToRAWRow_SSSE3(const uint8_t* src, uint8_t* dst, int width) {
   asm volatile("movdqa      %3,%%xmm6                     \n"
 
@@ -730,6 +888,7 @@ void ARGBToRAWRow_SSSE3(const uint8_t* src, uint8_t* dst, int width) {
                : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
                  "xmm6");
 }
+#endif  // HAS_ARGBTORAWROW_SSSE3
 
 #ifdef HAS_ARGBTORGB24ROW_AVX2
 // vpermd for 12+12 to 24
@@ -1038,8 +1197,6 @@ void ARGBToARGB4444Row_AVX2(const uint8_t* src, uint8_t* dst, int width) {
         "xmm7");
 }
 #endif  // HAS_ARGBTOARGB4444ROW_AVX2
-
-#endif  // HAS_RGB24TOARGBROW_SSSE3
 
 /*
 
