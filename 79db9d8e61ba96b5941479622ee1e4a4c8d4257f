@@ -16,6 +16,23 @@
       "message": "@wtc@google.com, could you please help stamp this CL, as Dale is OOO this week.",
       "revId": "79db9d8e61ba96b5941479622ee1e4a4c8d4257f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12bf4e02_a68e6f9e",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1477,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-25T00:36:43Z",
+      "side": 1,
+      "message": "Just curious: Why isn\u0027t this boolean named \"bilinear\" or \"is_bilinear\"?",
+      "revId": "79db9d8e61ba96b5941479622ee1e4a4c8d4257f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
