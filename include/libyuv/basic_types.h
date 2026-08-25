@@ -11,6 +11,10 @@
 #ifndef INCLUDE_LIBYUV_BASIC_TYPES_H_
 #define INCLUDE_LIBYUV_BASIC_TYPES_H_
 
+#if defined(ROW_WIN) && !defined(LIBYUV_ENABLE_ROWWIN)
+#define LIBYUV_ENABLE_ROWWIN 1
+#endif
+
 #include <stddef.h>  // For size_t and NULL
 
 #if !defined(INT_TYPES_DEFINED) && !defined(GG_LONGLONG)

@@ -11,6 +11,10 @@
 #ifndef INCLUDE_LIBYUV_CPU_SUPPORT_H_
 #define INCLUDE_LIBYUV_CPU_SUPPORT_H_
 
+#if defined(ROW_WIN) && !defined(LIBYUV_ENABLE_ROWWIN)
+#define LIBYUV_ENABLE_ROWWIN 1
+#endif
+
 #ifdef __cplusplus
 namespace libyuv {
 extern "C" {
