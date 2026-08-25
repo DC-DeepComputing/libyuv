@@ -1474,18 +1474,8 @@ void ScalePlaneVertical(int src_height,
   void (*InterpolateRow)(uint8_t* dst_argb, const uint8_t* src_argb,
                          ptrdiff_t src_stride, int dst_width,
                          int source_y_fraction) = InterpolateRow_C;
-  const bool interpolate = filtering == kFilterBilinear;
-  int64_t max_y = 0;
-  if (src_height > 1) {
-    max_y = ((int64_t)src_height - 1) << 16;
-    if (interpolate) {
-      --max_y;
-    }
-  }
-  // Without vertical interpolation, InterpolateRow() copies one row. A zero
-  // stride keeps it from forming a second source row pointer past the end when
-  // y is clamped to the last row.
-  const ptrdiff_t interpolate_stride = interpolate ? src_stride : 0;
+  const int64_t max_y =
+      (src_height > 1) ? (((int64_t)src_height - 1) << 16) - 1 : 0;
   int64_t y64 = y;
   int j;
   assert(bpp >= 1 && bpp <= 4);
@@ -1540,9 +1530,9 @@ void ScalePlaneVertical(int src_height,
       y64 = max_y;
     }
     yi = (int)(y64 >> 16);
-    yf = interpolate ? (int)((y64 >> 8) & 255) : 0;
-    InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride,
-                   interpolate_stride, dst_width_bytes, yf);
+    yf = filtering ? (int)((y64 >> 8) & 255) : 0;
+    InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride, src_stride,
+                   dst_width_bytes, yf);
     dst_argb += dst_stride;
     y64 += dy;
   }
@@ -1565,18 +1555,8 @@ void ScalePlaneVertical_16(int src_height,
   void (*InterpolateRow)(uint16_t* dst_argb, const uint16_t* src_argb,
                          ptrdiff_t src_stride, int dst_width,
                          int source_y_fraction) = InterpolateRow_16_C;
-  const bool interpolate = filtering == kFilterBilinear;
-  int64_t max_y = 0;
-  if (src_height > 1) {
-    max_y = ((int64_t)src_height - 1) << 16;
-    if (interpolate) {
-      --max_y;
-    }
-  }
-  // Without vertical interpolation, InterpolateRow() copies one row. A zero
-  // stride keeps it from forming a second source row pointer past the end when
-  // y is clamped to the last row.
-  const ptrdiff_t interpolate_stride = interpolate ? src_stride : 0;
+  const int64_t max_y =
+      (src_height > 1) ? (((int64_t)src_height - 1) << 16) - 1 : 0;
   int64_t y64 = y;
   int j;
   assert(wpp >= 1 && wpp <= 2);
@@ -1620,9 +1600,9 @@ void ScalePlaneVertical_16(int src_height,
       y64 = max_y;
     }
     yi = (int)(y64 >> 16);
-    yf = interpolate ? (int)((y64 >> 8) & 255) : 0;
-    InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride,
-                   interpolate_stride, dst_width_words, yf);
+    yf = filtering ? (int)((y64 >> 8) & 255) : 0;
+    InterpolateRow(dst_argb, src_argb + yi * (ptrdiff_t)src_stride, src_stride,
+                   dst_width_words, yf);
     dst_argb += dst_stride;
     y64 += dy;
   }
