@@ -223,7 +223,7 @@ if (libyuv_use_neon) {
 
     deps = [ ":libyuv_internal" ]
 
-    public_configs = [ ":libyuv_config" ]
+    configs = [ ":libyuv_config" ]
 
     if (current_cpu == "arm64") {
       # The -march arguments below are incompatible with libc++ modules.
@@ -241,7 +241,7 @@ if (libyuv_use_sve) {
 
     deps = [ ":libyuv_internal" ]
 
-    public_configs = [ ":libyuv_config" ]
+    configs = [ ":libyuv_config" ]
 
     # The -march arguments below are incompatible with libc++ modules.
     use_libcxx_modules = false
@@ -261,7 +261,7 @@ if (libyuv_use_sme) {
 
     deps = [ ":libyuv_internal" ]
 
-    public_configs = [ ":libyuv_config" ]
+    configs = [ ":libyuv_config" ]
 
     # The -march arguments below are incompatible with libc++ modules.
     use_libcxx_modules = false
@@ -287,7 +287,7 @@ if (libyuv_use_lsx) {
 
     deps = [ ":libyuv_internal" ]
 
-    public_configs = [ ":libyuv_config" ]
+    configs = [ ":libyuv_config" ]
   }
 }
 
@@ -305,7 +305,7 @@ if (libyuv_use_lasx) {
 
     deps = [ ":libyuv_internal" ]
 
-    public_configs = [ ":libyuv_config" ]
+    configs = [ ":libyuv_config" ]
   }
 }
 
@@ -368,10 +368,12 @@ if (libyuv_include_tests) {
       ]
     }
 
-    configs += [ ":libyuv_unittest_warnings_config" ]
+    configs += [
+      ":libyuv_unittest_warnings_config",
+      ":libyuv_unittest_config",
+    ]
 
     public_deps = [ "//testing/gtest" ]
-    public_configs = [ ":libyuv_unittest_config" ]
 
     if (is_linux || is_chromeos) {
       cflags = [ "-fexceptions" ]
