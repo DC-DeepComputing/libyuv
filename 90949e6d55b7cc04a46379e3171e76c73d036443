@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03b12b77_838c60ea",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T19:42:20Z",
+      "side": 1,
+      "message": "Please rebase this CL, otherwise we can\u0027t submit it. Thanks.",
+      "revId": "90949e6d55b7cc04a46379e3171e76c73d036443",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "100b1c76_979682a5",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T19:42:20Z",
+      "side": 1,
+      "message": "This follows the same pattern used for the various Arm object libraries above. Good.",
+      "revId": "90949e6d55b7cc04a46379e3171e76c73d036443",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
