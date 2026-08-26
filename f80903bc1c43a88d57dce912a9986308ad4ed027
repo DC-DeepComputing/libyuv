@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8c12927_4f7bf4fb",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T18:00:49Z",
+      "side": 1,
+      "message": "I believe this `public_deps` could also be changed to `deps`, but I didn\u0027t look into that.",
+      "revId": "f80903bc1c43a88d57dce912a9986308ad4ed027",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
