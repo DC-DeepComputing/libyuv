@@ -3065,6 +3065,22 @@ int BlendPlane(const uint8_t* src_y0,
     }
   }
 #endif
+#if defined(HAS_BLENDPLANEROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    BlendPlaneRow = BlendPlaneRow_Any_AVX512BW;
+    if (IS_ALIGNED(width, 64)) {
+      BlendPlaneRow = BlendPlaneRow_AVX512BW;
+    }
+  }
+#endif
+#if defined(HAS_BLENDPLANEROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    BlendPlaneRow = BlendPlaneRow_Any_NEON;
+    if (IS_ALIGNED(width, 16)) {
+      BlendPlaneRow = BlendPlaneRow_NEON;
+    }
+  }
+#endif
 #if defined(HAS_BLENDPLANEROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
     BlendPlaneRow = BlendPlaneRow_RVV;
@@ -3145,6 +3161,22 @@ int I420Blend(const uint8_t* src_y0,
     BlendPlaneRow = BlendPlaneRow_Any_AVX2;
     if (IS_ALIGNED(halfwidth, 32)) {
       BlendPlaneRow = BlendPlaneRow_AVX2;
+    }
+  }
+#endif
+#if defined(HAS_BLENDPLANEROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    BlendPlaneRow = BlendPlaneRow_Any_AVX512BW;
+    if (IS_ALIGNED(halfwidth, 64)) {
+      BlendPlaneRow = BlendPlaneRow_AVX512BW;
+    }
+  }
+#endif
+#if defined(HAS_BLENDPLANEROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    BlendPlaneRow = BlendPlaneRow_Any_NEON;
+    if (IS_ALIGNED(halfwidth, 16)) {
+      BlendPlaneRow = BlendPlaneRow_NEON;
     }
   }
 #endif
