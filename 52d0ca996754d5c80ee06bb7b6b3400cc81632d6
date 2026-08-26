@@ -1,0 +1,225 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86e3f8f2_634d6644",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "The commit message needs updating.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb5ab3b7_4409e742",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "Does `TAG\u003dagy` mean this CL was written by Antigravity?\n\nWhat is the `CONV\u003d` line?",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbd5d9ab_2dc87957",
+        "filename": "BUILD.gn",
+        "patchSetId": 3
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "Should we undo this?",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9d05583_31275b88",
+        "filename": "include/libyuv/compare_row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "Add a blank line after the C system headers.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "75a5b60a_428b1fff",
+        "filename": "include/libyuv/mjpeg_decoder.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "Inside the `MJpegDecoder` class we are in C++ territory, so we should use the C++ `bool`, `true`, and `false`.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db2ff840_6d4818cb",
+        "filename": "include/libyuv/rotate_row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "Add a blank line after the C system headers.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85285aac_b2f8115e",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "List this before `\u003cstdlib.h\u003e`",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "558812e3_1fa10e8e",
+        "filename": "include/libyuv/scale_row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "Add a blank line after C system headers.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ffd6327_5f514bdd",
+        "filename": "source/convert_jpeg.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "`ret` can be declared as `bool`. See my comment in include/libyuv/mjpeg_decoder.h.\n\nMake the same change to the other functions below.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2abb0e40_e12dedc3",
+        "filename": "source/mjpeg_decoder.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "See my comment in include/libyuv/mjpeg_decoder.h. Use the C++ `bool`, `true`, and `false` with the `MJpegDecoder` class.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f54ed21_8cd1f488",
+        "filename": "source/row_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "Add a blank line after the C system headers.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3520f438_ef8a9375",
+        "filename": "unit_test/unit_test.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "This is a C++ file (rather than C code in a .cc file). So we should use the C++ `bool`, `true`, and `false`.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39e79be9_56d7740f",
+        "filename": "unit_test/unit_test.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T02:29:21Z",
+      "side": 1,
+      "message": "List this after `\u003cstddef.h\u003e` (line 14).",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
