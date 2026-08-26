@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06cb7668_6357d479",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1221903
+      },
+      "writtenOn": "2026-08-26T07:08:00Z",
+      "side": 1,
+      "message": "It\u0027s better to split into two patches.",
+      "revId": "2cf8371798c133a87ea58d1dcb7b4caf0d5a988a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
