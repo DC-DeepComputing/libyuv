@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cf8cfd7_abebdba1",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-26T18:06:09Z",
+      "side": 1,
+      "message": "Apparently these do need to be `public_configs`. I will look at the CQ dry run failures.",
+      "revId": "f80903bc1c43a88d57dce912a9986308ad4ed027",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "e8c12927_4f7bf4fb",
