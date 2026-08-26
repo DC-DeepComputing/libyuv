@@ -342,6 +342,9 @@ ANY31(BlendPlaneRow_Any_AVX2, BlendPlaneRow_AVX2, 0, 0, 1, 31)
 #ifdef HAS_BLENDPLANEROW_SSSE3
 ANY31(BlendPlaneRow_Any_SSSE3, BlendPlaneRow_SSSE3, 0, 0, 1, 7)
 #endif
+#ifdef HAS_BLENDPLANEROW_NEON
+ANY31(BlendPlaneRow_Any_NEON, BlendPlaneRow_NEON, 0, 0, 1, 15)
+#endif
 #undef ANY31
 
 // Note that odd width replication includes 444 due to implementation

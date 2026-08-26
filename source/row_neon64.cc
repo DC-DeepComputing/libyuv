@@ -4276,6 +4276,41 @@ void ARGBSubtractRow_NEON(const uint8_t* src_argb,
       : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7");
 }
 
+// Blend 16 pixels at a time.
+// dst = (((a) * src0) + ((255 - a) * src1) + 255) >> 8
+void BlendPlaneRow_NEON(const uint8_t* src0,
+                        const uint8_t* src1,
+                        const uint8_t* alpha,
+                        uint8_t* dst,
+                        int width) {
+  asm volatile(
+      "movi        v6.8h, #255                   \n"
+      "1:                                        \n"
+      "ld1         {v0.16b}, [%0], #16           \n"  // load 16 src0
+      "ld1         {v1.16b}, [%1], #16           \n"  // load 16 src1
+      "ld1         {v2.16b}, [%2], #16           \n"  // load 16 alpha
+      "subs        %w4, %w4, #16                 \n"  // 16 processed per loop
+      "mvn         v3.16b, v2.16b                \n"  // 255 - alpha
+      "umull       v4.8h, v0.8b, v2.8b           \n"  // low src0 * alpha
+      "umull2      v5.8h, v0.16b, v2.16b         \n"  // high src0 * alpha
+      "umlal       v4.8h, v1.8b, v3.8b           \n"  // low + src1 * (255 -
+                                                      // alpha)
+      "umlal2      v5.8h, v1.16b, v3.16b         \n"  // high + src1 * (255 -
+                                                      // alpha)
+      "prfm        pldl1keep, [%0, 448]          \n"
+      "prfm        pldl1keep, [%1, 448]          \n"
+      "prfm        pldl1keep, [%2, 448]          \n"
+      "add         v4.8h, v4.8h, v6.8h           \n"  // + 255
+      "add         v5.8h, v5.8h, v6.8h           \n"  // + 255
+      "shrn        v0.8b, v4.8h, #8              \n"  // >> 8
+      "shrn2       v0.16b, v5.8h, #8             \n"  // >> 8
+      "st1         {v0.16b}, [%3], #16           \n"  // store 16 dst
+      "b.gt        1b                            \n"
+      : "+r"(src0), "+r"(src1), "+r"(alpha), "+r"(dst), "+r"(width)
+      :
+      : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v6");
+}
+
 // Adds Sobel X and Sobel Y and stores Sobel into ARGB.
 // A = 255
 // R = Sobel
