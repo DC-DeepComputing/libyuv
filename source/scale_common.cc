@@ -1119,6 +1119,17 @@ void ScaleARGBFilterCols64_C(uint8_t* dst_argb,
 // UV scale row functions
 // same as ARGB but 2 channels
 
+// Byte-oriented UV row functions must support unaligned buffers.
+static __inline uint16_t LoadUnaligned16(const uint8_t* src) {
+  uint16_t value;
+  memcpy(&value, src, sizeof(value));
+  return value;
+}
+
+static __inline void StoreUnaligned16(uint8_t* dst, uint16_t value) {
+  memcpy(dst, &value, sizeof(value));
+}
+
 void ScaleUVRowDown2_C(const uint8_t* src_uv,
                        ptrdiff_t src_stride,
                        uint8_t* dst_uv,
@@ -1169,18 +1180,16 @@ void ScaleUVRowDownEven_C(const uint8_t* src_uv,
                           int src_stepx,
                           uint8_t* dst_uv,
                           int dst_width) {
-  const uint16_t* src = (const uint16_t*)(src_uv);
-  uint16_t* dst = (uint16_t*)(dst_uv);
   (void)src_stride;
   int x;
   for (x = 0; x < dst_width - 1; x += 2) {
-    dst[0] = src[0];
-    dst[1] = src[src_stepx];
-    src += src_stepx * 2;
-    dst += 2;
+    StoreUnaligned16(dst_uv, LoadUnaligned16(src_uv));
+    StoreUnaligned16(dst_uv + 2, LoadUnaligned16(src_uv + src_stepx * 2));
+    src_uv += src_stepx * 4;
+    dst_uv += 4;
   }
   if (dst_width & 1) {
-    dst[0] = src[0];
+    StoreUnaligned16(dst_uv, LoadUnaligned16(src_uv));
   }
 }
 
@@ -1324,18 +1333,16 @@ void ScaleUVCols_C(uint8_t* dst_uv,
                    int dst_width,
                    int x,
                    int dx) {
-  const uint16_t* src = (const uint16_t*)(src_uv);
-  uint16_t* dst = (uint16_t*)(dst_uv);
   int j;
   for (j = 0; j < dst_width - 1; j += 2) {
-    dst[0] = src[x >> 16];
+    StoreUnaligned16(dst_uv, LoadUnaligned16(src_uv + (x >> 16) * 2));
     x += dx;
-    dst[1] = src[x >> 16];
+    StoreUnaligned16(dst_uv + 2, LoadUnaligned16(src_uv + (x >> 16) * 2));
     x += dx;
-    dst += 2;
+    dst_uv += 4;
   }
   if (dst_width & 1) {
-    dst[0] = src[x >> 16];
+    StoreUnaligned16(dst_uv, LoadUnaligned16(src_uv + (x >> 16) * 2));
   }
 }
 
@@ -1345,18 +1352,16 @@ void ScaleUVCols64_C(uint8_t* dst_uv,
                      int x32,
                      int dx) {
   int64_t x = (int64_t)(x32);
-  const uint16_t* src = (const uint16_t*)(src_uv);
-  uint16_t* dst = (uint16_t*)(dst_uv);
   int j;
   for (j = 0; j < dst_width - 1; j += 2) {
-    dst[0] = src[x >> 16];
+    StoreUnaligned16(dst_uv, LoadUnaligned16(src_uv + (x >> 16) * 2));
     x += dx;
-    dst[1] = src[x >> 16];
+    StoreUnaligned16(dst_uv + 2, LoadUnaligned16(src_uv + (x >> 16) * 2));
     x += dx;
-    dst += 2;
+    dst_uv += 4;
   }
   if (dst_width & 1) {
-    dst[0] = src[x >> 16];
+    StoreUnaligned16(dst_uv, LoadUnaligned16(src_uv + (x >> 16) * 2));
   }
 }
 
@@ -1366,18 +1371,18 @@ void ScaleUVColsUp2_C(uint8_t* dst_uv,
                       int dst_width,
                       int x,
                       int dx) {
-  const uint16_t* src = (const uint16_t*)(src_uv);
-  uint16_t* dst = (uint16_t*)(dst_uv);
   int j;
   (void)x;
   (void)dx;
   for (j = 0; j < dst_width - 1; j += 2) {
-    dst[1] = dst[0] = src[0];
-    src += 1;
-    dst += 2;
+    const uint16_t value = LoadUnaligned16(src_uv);
+    StoreUnaligned16(dst_uv, value);
+    StoreUnaligned16(dst_uv + 2, value);
+    src_uv += 2;
+    dst_uv += 4;
   }
   if (dst_width & 1) {
-    dst[0] = src[0];
+    StoreUnaligned16(dst_uv, LoadUnaligned16(src_uv));
   }
 }
 
@@ -1393,30 +1398,28 @@ void ScaleUVFilterCols_C(uint8_t* dst_uv,
                          int dst_width,
                          int x,
                          int dx) {
-  const uint16_t* src = (const uint16_t*)(src_uv);
-  uint16_t* dst = (uint16_t*)(dst_uv);
   int j;
   for (j = 0; j < dst_width - 1; j += 2) {
     int xi = x >> 16;
     int xf = (x >> 9) & 0x7f;
-    uint16_t a = src[xi];
-    uint16_t b = src[xi + 1];
-    dst[0] = BLENDER(a, b, xf);
+    uint16_t a = LoadUnaligned16(src_uv + xi * 2);
+    uint16_t b = LoadUnaligned16(src_uv + (xi + 1) * 2);
+    StoreUnaligned16(dst_uv, BLENDER(a, b, xf));
     x += dx;
     xi = x >> 16;
     xf = (x >> 9) & 0x7f;
-    a = src[xi];
-    b = src[xi + 1];
-    dst[1] = BLENDER(a, b, xf);
+    a = LoadUnaligned16(src_uv + xi * 2);
+    b = LoadUnaligned16(src_uv + (xi + 1) * 2);
+    StoreUnaligned16(dst_uv + 2, BLENDER(a, b, xf));
     x += dx;
-    dst += 2;
+    dst_uv += 4;
   }
   if (dst_width & 1) {
     int xi = x >> 16;
     int xf = (x >> 9) & 0x7f;
-    uint16_t a = src[xi];
-    uint16_t b = src[xi + 1];
-    dst[0] = BLENDER(a, b, xf);
+    uint16_t a = LoadUnaligned16(src_uv + xi * 2);
+    uint16_t b = LoadUnaligned16(src_uv + (xi + 1) * 2);
+    StoreUnaligned16(dst_uv, BLENDER(a, b, xf));
   }
 }
 
@@ -1426,30 +1429,28 @@ void ScaleUVFilterCols64_C(uint8_t* dst_uv,
                            int x32,
                            int dx) {
   int64_t x = (int64_t)(x32);
-  const uint16_t* src = (const uint16_t*)(src_uv);
-  uint16_t* dst = (uint16_t*)(dst_uv);
   int j;
   for (j = 0; j < dst_width - 1; j += 2) {
     int64_t xi = x >> 16;
     int xf = (x >> 9) & 0x7f;
-    uint16_t a = src[xi];
-    uint16_t b = src[xi + 1];
-    dst[0] = BLENDER(a, b, xf);
+    uint16_t a = LoadUnaligned16(src_uv + xi * 2);
+    uint16_t b = LoadUnaligned16(src_uv + (xi + 1) * 2);
+    StoreUnaligned16(dst_uv, BLENDER(a, b, xf));
     x += dx;
     xi = x >> 16;
     xf = (x >> 9) & 0x7f;
-    a = src[xi];
-    b = src[xi + 1];
-    dst[1] = BLENDER(a, b, xf);
+    a = LoadUnaligned16(src_uv + xi * 2);
+    b = LoadUnaligned16(src_uv + (xi + 1) * 2);
+    StoreUnaligned16(dst_uv + 2, BLENDER(a, b, xf));
     x += dx;
-    dst += 2;
+    dst_uv += 4;
   }
   if (dst_width & 1) {
     int64_t xi = x >> 16;
     int xf = (x >> 9) & 0x7f;
-    uint16_t a = src[xi];
-    uint16_t b = src[xi + 1];
-    dst[0] = BLENDER(a, b, xf);
+    uint16_t a = LoadUnaligned16(src_uv + xi * 2);
+    uint16_t b = LoadUnaligned16(src_uv + (xi + 1) * 2);
+    StoreUnaligned16(dst_uv, BLENDER(a, b, xf));
   }
 }
 #undef BLENDER1
