@@ -129,7 +129,16 @@ static void ScaleUVDown2(int src_width,
   }
 #endif
 #if defined(HAS_SCALEUVROWDOWN2_RVV)
-  if (TestCpuFlag(kCpuHasRVV)) {
+  // Point uses 32-bit loads and 16-bit stores; linear uses 16-bit loads.
+  // Box only accesses bytes.
+  bool can_use_rvv = true;
+  if (filtering == kFilterNone) {
+    can_use_rvv = IS_ALIGNED(src_uv, 4) && IS_ALIGNED(row_stride, 4) &&
+                  IS_ALIGNED(dst_uv, 2) && IS_ALIGNED(dst_stride, 2);
+  } else if (filtering == kFilterLinear) {
+    can_use_rvv = IS_ALIGNED(src_uv, 2) && IS_ALIGNED(row_stride, 2);
+  }
+  if (TestCpuFlag(kCpuHasRVV) && can_use_rvv) {
     ScaleUVRowDown2 =
         filtering == kFilterNone
             ? ScaleUVRowDown2_RVV
@@ -308,7 +317,11 @@ static void ScaleUVDownEven(int src_width,
 #if defined(HAS_SCALEUVROWDOWNEVEN_RVV) || defined(HAS_SCALEUVROWDOWN4_RVV)
   if (TestCpuFlag(kCpuHasRVV) && !filtering) {
 #if defined(HAS_SCALEUVROWDOWNEVEN_RVV)
-    ScaleUVRowDownEven = ScaleUVRowDownEven_RVV;
+    // Down-even uses 16-bit loads and stores; down4 only accesses bytes.
+    if (IS_ALIGNED(src_uv, 2) && IS_ALIGNED(row_stride, 2) &&
+        IS_ALIGNED(dst_uv, 2) && IS_ALIGNED(dst_stride, 2)) {
+      ScaleUVRowDownEven = ScaleUVRowDownEven_RVV;
+    }
 #endif
 #if defined(HAS_SCALEUVROWDOWN4_RVV)
     if (col_step == 4) {
@@ -661,7 +674,9 @@ static void ScaleUVLinearUp2(int src_width,
 #endif
 
 #ifdef HAS_SCALEUVROWUP2_LINEAR_RVV
-  if (TestCpuFlag(kCpuHasRVV)) {
+  // RVV stores 16-bit elements.
+  if (TestCpuFlag(kCpuHasRVV) && IS_ALIGNED(dst_uv, 2) &&
+      IS_ALIGNED(dst_stride, 2)) {
     ScaleRowUp = ScaleUVRowUp2_Linear_RVV;
   }
 #endif
@@ -720,7 +735,9 @@ static void ScaleUVBilinearUp2(int src_width,
 #endif
 
 #ifdef HAS_SCALEUVROWUP2_BILINEAR_RVV
-  if (TestCpuFlag(kCpuHasRVV)) {
+  // RVV stores 16-bit elements.
+  if (TestCpuFlag(kCpuHasRVV) && IS_ALIGNED(dst_ptr, 2) &&
+      IS_ALIGNED(dst_stride, 2)) {
     Scale2RowUp = ScaleUVRowUp2_Bilinear_RVV;
   }
 #endif
