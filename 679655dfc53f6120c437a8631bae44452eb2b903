@@ -16,6 +16,24 @@
       "message": "What I mean is to implement this function as follows:\n\n```\n  dst_uv[0] \u003d src_uv[0];\n  dst_uv[1] \u003d src_uv[1];\n```",
       "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "288a013e_a9d6b170",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 1132,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-08-28T15:52:32Z",
+      "side": 1,
+      "message": "I used `LoadUVPair` and `StoreUVPair` intentionally. With the suggested implementation, Clang emits two byte loads and two byte stores:\n\nARM64: ldrb, strb, ldrb, strb\nx64: `movzx byte, mov byte, movzx byte, mov byte\n\nThe current implementation emits only one halfword load and one halfword store:\n\nARM64: ldrh, strh\nx64: movzx word, mov word\n\nTherefore, the suggested change doubles the memory instructions in these scalar inner loops and may reduce performance. MSVC emits byte operations for both forms, so the current implementation is no worse there. It also remains alignment-safe and byte-order-independent at the C++ level. Could we keep the current implementation?",
+      "parentUuid": "a9eb4f25_eb46ddac",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
