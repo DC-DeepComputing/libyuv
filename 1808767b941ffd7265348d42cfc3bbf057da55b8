@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "386ae559_3b81ebe0",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1126,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-28T14:59:42Z",
+      "side": 1,
+      "message": "Change `__inline` to `inline`.",
+      "revId": "1808767b941ffd7265348d42cfc3bbf057da55b8",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ef880c9_9f8c3624",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 1129,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-28T14:59:42Z",
+      "side": 1,
+      "message": "Optional: Since `LoadUVPair` and `StoreUVPair` are often used together, for example,\n\n```\n    StoreUVPair(dst_uv, LoadUVPair(src_uv));\n```\n\nwe may want to add a `CopyUVPair` function to copy two bytes from `src_uv` to `dst_uv`.",
+      "revId": "1808767b941ffd7265348d42cfc3bbf057da55b8",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
