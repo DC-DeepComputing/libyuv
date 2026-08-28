@@ -34,6 +34,24 @@
       "parentUuid": "a9eb4f25_eb46ddac",
       "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e64dadfa_b9a5cb01",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 1132,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-28T16:25:20Z",
+      "side": 1,
+      "message": "Yes. Thank you for inspecting the generated code. Perhaps add a comment as a defense against future attempts to \"optimize\" this.",
+      "parentUuid": "288a013e_a9d6b170",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
