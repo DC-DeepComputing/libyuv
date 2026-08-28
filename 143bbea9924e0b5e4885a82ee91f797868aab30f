@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a9b57a45_43fa8d3a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T22:30:05Z",
+      "side": 1,
+      "message": "i\u0027ll fix the version in the next cl",
+      "revId": "143bbea9924e0b5e4885a82ee91f797868aab30f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ced2db93_77d35d05",
@@ -14,6 +31,24 @@
       "writtenOn": "2026-08-28T22:29:01Z",
       "side": 1,
       "message": "Different version numbers in README and version.h",
+      "revId": "143bbea9924e0b5e4885a82ee91f797868aab30f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c09d029_65a8a64d",
+        "filename": "README.chromium",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T22:30:05Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "ced2db93_77d35d05",
       "revId": "143bbea9924e0b5e4885a82ee91f797868aab30f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
