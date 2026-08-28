@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b167d55d_0d25e515",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1763,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T23:55:36Z",
+      "side": 1,
+      "message": "proper place is row_common.cc\nwe dont have one of these??  it would optimize easily.  unzip on arm or unpack on x86 to replicate bytes.",
+      "revId": "2b1171db5d68c802130e195d4e060df6cf9ae3e0",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
