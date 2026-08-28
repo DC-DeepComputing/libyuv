@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9eb4f25_eb46ddac",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 1132,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-28T15:37:17Z",
+      "side": 1,
+      "message": "What I mean is to implement this function as follows:\n\n```\n  dst_uv[0] \u003d src_uv[0];\n  dst_uv[1] \u003d src_uv[1];\n```",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
