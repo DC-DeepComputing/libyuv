@@ -51,6 +51,24 @@
       "parentUuid": "b3fefa8d_5b539925",
       "revId": "b64b89ab8b30888ecf94146d99ca89b30be3d042",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e417f216_2168b649",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T23:49:23Z",
+      "side": 1,
+      "message": "I\u0027ve made a CL for copying by elements, which makes more sense in the bigger picture of 3 byte rgb and 4 byte argb, where in the future we\u0027ll have 2,3 and 4 channel hdr with 16 bit elements.  for 3 element formats like rgb, we\u0027ll plan on using int16_t * to point to the elements.  -fsanitize\u003dalignment just complains when we cast to a larger element size.\nThis is a cl to sort out the C functions https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/8308575\n\nThe RVV functions I need to look at closer.",
+      "parentUuid": "fd7fba23_69ea34f3",
+      "revId": "b64b89ab8b30888ecf94146d99ca89b30be3d042",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }

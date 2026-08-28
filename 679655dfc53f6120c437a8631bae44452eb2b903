@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb2e3c55_8e4d2de2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T23:49:23Z",
+      "side": 1,
+      "message": "for rvv i used vlseg to avoid larger element reads.   https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/8315435",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a9eb4f25_eb46ddac",
@@ -50,6 +67,41 @@
       "side": 1,
       "message": "Yes. Thank you for inspecting the generated code. Perhaps add a comment as a defense against future attempts to \"optimize\" this.",
       "parentUuid": "288a013e_a9d6b170",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f13a90dd_79ba68a5",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 1132,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T23:49:23Z",
+      "side": 1,
+      "message": "the original code using int16 works on all platforms and is simplier... this is an overzealous build option.\nnever the less, if we dont mind potentially slower code, i would treat \u0027uv\u0027 as 2 channel int8 and do the code the same as argb does or rgb will, which is unroll 8 bit loads in the function.  an additional function call to do it doesnt add value, and in this case breaks the intent, which is endian sensitive int16.",
+      "parentUuid": "e64dadfa_b9a5cb01",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3447017_da7f7946",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T23:49:23Z",
+      "side": 1,
+      "message": "rvv (risc v vector) does not require alignment.  ditto for all cpus libyuv supports - arm, x86, loongsoon.  The only cpu I\u0027m aware of an int alignment applies to is hexagon, which libyuv does not currently support.",
       "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
