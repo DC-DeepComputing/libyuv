@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ecaacb8_82ff4ffa",
+        "filename": "source/mjpeg_decoder.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-28T15:32:02Z",
+      "side": 1,
+      "message": "libjpeg-turbo uses `FALSE` with `boolean` variables. It is fine to use `(boolean)(0)` here.",
+      "revId": "113ccf8f4e1ab14c1ab1fbcd7e7e21ec6d2fd712",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
