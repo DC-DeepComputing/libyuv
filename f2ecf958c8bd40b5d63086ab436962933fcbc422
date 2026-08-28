@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "07849e01_c1ca52bc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:54:21Z",
+      "side": 1,
+      "message": "i found tidy pretty unsafe in the paste, since it removes code that it thinks is not used based on build flags.",
+      "revId": "f2ecf958c8bd40b5d63086ab436962933fcbc422",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd9bec4f_bc699ea6",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:54:21Z",
+      "side": 1,
+      "message": "we dont use actual strings, so a comment is preferred to say why we need string.h",
+      "revId": "f2ecf958c8bd40b5d63086ab436962933fcbc422",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
