@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ced2db93_77d35d05",
+        "filename": "README.chromium",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-28T22:29:01Z",
+      "side": 1,
+      "message": "Different version numbers in README and version.h",
+      "revId": "143bbea9924e0b5e4885a82ee91f797868aab30f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
