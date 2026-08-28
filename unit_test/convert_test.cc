@@ -2571,6 +2571,70 @@ TEST_F(LibYUVConvertTest, TestARGBToI420Matrix) {
   free_aligned_buffer_page_end(ref_v);
 }
 
+TEST_F(LibYUVConvertTest, TestARGBToNV16Matrix) {
+  const int kWidth = 17;
+  const int kHeight = 5;
+  const int kUVStride = ((kWidth + 1) / 2) * 2;
+  align_buffer_page_end(src_argb, kWidth * kHeight * 4);
+  align_buffer_page_end(dst_y, kWidth * kHeight);
+  align_buffer_page_end(dst_uv, kUVStride * kHeight);
+
+  MemRandomize(src_argb, kWidth * kHeight * 4);
+
+  MaskCpuFlags(disable_cpu_flags_);
+  ARGBToNV16Matrix(src_argb, kWidth * 4, dst_y, kWidth, dst_uv, kUVStride,
+                   &kArgbI601Constants, kWidth, kHeight);
+  align_buffer_page_end(ref_y, kWidth * kHeight);
+  align_buffer_page_end(ref_uv, kUVStride * kHeight);
+  MaskCpuFlags(benchmark_cpu_info_);
+  ARGBToNV16(src_argb, kWidth * 4, ref_y, kWidth, ref_uv, kUVStride, kWidth,
+             kHeight);
+  for (int i = 0; i < kWidth * kHeight; ++i) {
+    ASSERT_EQ(dst_y[i], ref_y[i]);
+  }
+  for (int i = 0; i < kUVStride * kHeight; ++i) {
+    ASSERT_EQ(dst_uv[i], ref_uv[i]);
+  }
+
+  free_aligned_buffer_page_end(src_argb);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_uv);
+  free_aligned_buffer_page_end(ref_y);
+  free_aligned_buffer_page_end(ref_uv);
+}
+
+TEST_F(LibYUVConvertTest, TestARGBToNV24Matrix) {
+  const int kWidth = 17;
+  const int kHeight = 5;
+  const int kUVStride = kWidth * 2;
+  align_buffer_page_end(src_argb, kWidth * kHeight * 4);
+  align_buffer_page_end(dst_y, kWidth * kHeight);
+  align_buffer_page_end(dst_uv, kUVStride * kHeight);
+
+  MemRandomize(src_argb, kWidth * kHeight * 4);
+
+  MaskCpuFlags(disable_cpu_flags_);
+  ARGBToNV24Matrix(src_argb, kWidth * 4, dst_y, kWidth, dst_uv, kUVStride,
+                   &kArgbI601Constants, kWidth, kHeight);
+  align_buffer_page_end(ref_y, kWidth * kHeight);
+  align_buffer_page_end(ref_uv, kUVStride * kHeight);
+  MaskCpuFlags(benchmark_cpu_info_);
+  ARGBToNV24(src_argb, kWidth * 4, ref_y, kWidth, ref_uv, kUVStride, kWidth,
+             kHeight);
+  for (int i = 0; i < kWidth * kHeight; ++i) {
+    ASSERT_EQ(dst_y[i], ref_y[i]);
+  }
+  for (int i = 0; i < kUVStride * kHeight; ++i) {
+    ASSERT_EQ(dst_uv[i], ref_uv[i]);
+  }
+
+  free_aligned_buffer_page_end(src_argb);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_uv);
+  free_aligned_buffer_page_end(ref_y);
+  free_aligned_buffer_page_end(ref_uv);
+}
+
 TEST_F(LibYUVConvertTest, TestARGBToI422Matrix) {
   const int kWidth = 16;
   const int kHeight = 16;
