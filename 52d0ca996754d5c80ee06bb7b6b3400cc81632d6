@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "95cc2eab_183a8d35",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "86e3f8f2_634d6644",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eb5ab3b7_4409e742",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-08-26T02:29:21Z",
       "side": 1,
       "message": "Does `TAG\u003dagy` mean this CL was written by Antigravity?\n\nWhat is the `CONV\u003d` line?",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c890f83_11bf647f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Yes, TAG\u003dagy indicates an AI assistant-assisted CL (Antigravity/Jetski pair programming), and CONV\u003d is the conversation session ID used for traceability and context retrieval per Google development tooling guidelines.",
+      "parentUuid": "eb5ab3b7_4409e742",
       "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -52,6 +88,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d7942e2_2af17678",
+        "filename": "BUILD.gn",
+        "patchSetId": 3
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dbd5d9ab_2dc87957",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e9d05583_31275b88",
@@ -65,6 +119,24 @@
       "writtenOn": "2026-08-26T02:29:21Z",
       "side": 1,
       "message": "Add a blank line after the C system headers.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d5c2659_1ddbe0ee",
+        "filename": "include/libyuv/compare_row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9d05583_31275b88",
       "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -86,6 +158,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "49147094_71e2b8c0",
+        "filename": "include/libyuv/mjpeg_decoder.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "75a5b60a_428b1fff",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "db2ff840_6d4818cb",
@@ -99,6 +189,24 @@
       "writtenOn": "2026-08-26T02:29:21Z",
       "side": 1,
       "message": "Add a blank line after the C system headers.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36b57b81_d30d53f9",
+        "filename": "include/libyuv/rotate_row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "db2ff840_6d4818cb",
       "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -120,6 +228,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b02dbfaf_c221c931",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85285aac_b2f8115e",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "558812e3_1fa10e8e",
@@ -133,6 +259,24 @@
       "writtenOn": "2026-08-26T02:29:21Z",
       "side": 1,
       "message": "Add a blank line after C system headers.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f4880fd_5c0840da",
+        "filename": "include/libyuv/scale_row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "558812e3_1fa10e8e",
       "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -154,6 +298,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "75af498b_342582c3",
+        "filename": "source/convert_jpeg.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3ffd6327_5f514bdd",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2abb0e40_e12dedc3",
@@ -167,6 +329,24 @@
       "writtenOn": "2026-08-26T02:29:21Z",
       "side": 1,
       "message": "See my comment in include/libyuv/mjpeg_decoder.h. Use the C++ `bool`, `true`, and `false` with the `MJpegDecoder` class.",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec23cbee_e332ed21",
+        "filename": "source/mjpeg_decoder.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2abb0e40_e12dedc3",
       "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -188,6 +368,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e61161b2_1347d3f3",
+        "filename": "source/row_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3f54ed21_8cd1f488",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3520f438_ef8a9375",
@@ -205,6 +403,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d500a833_77aaad61",
+        "filename": "unit_test/unit_test.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3520f438_ef8a9375",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "39e79be9_56d7740f",
@@ -218,6 +434,24 @@
       "writtenOn": "2026-08-26T02:29:21Z",
       "side": 1,
       "message": "List this after `\u003cstddef.h\u003e` (line 14).",
+      "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e789275_aa872aa1",
+        "filename": "unit_test/unit_test.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:40:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "39e79be9_56d7740f",
       "revId": "52d0ca996754d5c80ee06bb7b6b3400cc81632d6",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
