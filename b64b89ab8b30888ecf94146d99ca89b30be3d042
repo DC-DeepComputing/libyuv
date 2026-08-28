@@ -16,6 +16,23 @@
       "message": "PTAL, Thanks!",
       "revId": "b64b89ab8b30888ecf94146d99ca89b30be3d042",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b3fefa8d_5b539925",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-28T01:52:53Z",
+      "side": 1,
+      "message": "uv is typically for nv12/nv21.  the uv plane follows the y plane.  the y plane can be 1 byte or odd, followed by uv plane which is unaligned.\n\nbut all cpus that i know allow unaligned 16 bit values.  I think this is ubsan and an explite warning added for unaligned int/short references?\nis the a real hardware issue?\n\nalthough it is uint8 for u and v, nv12 can be considered big endian.  u followed by v.  and nv21 is little endian v followed by u.\nandroid considered these to be \u0027planes\u0027 of u and v with a \u0027pixel stride\u0027 of 1 or -1 but that does not implement well.\nwe could go back to reading bytes for this use case, but for 16 bit rgb565 and 2 bit ar30 it makes more sense to treat them as integers with bit fields.\n\nfor simd there are different issues with neon and sse.  but the assembly does unaligned loads/stores.\n\ni\u0027m reluctant to add 2 byte memcpy because in the past, or with build options, it really does push 2 pointers and count and make a function call, which is alot more code and slower.  This change relies on a modern compiler and build options to avoid that.",
+      "revId": "b64b89ab8b30888ecf94146d99ca89b30be3d042",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
