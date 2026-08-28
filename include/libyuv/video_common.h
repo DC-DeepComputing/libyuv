@@ -13,9 +13,6 @@
 #ifndef INCLUDE_LIBYUV_VIDEO_COMMON_H_
 #define INCLUDE_LIBYUV_VIDEO_COMMON_H_
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "libyuv/basic_types.h"
 
 #ifdef __cplusplus

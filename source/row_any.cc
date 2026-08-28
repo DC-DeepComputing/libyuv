@@ -13,6 +13,8 @@
 #include <assert.h>
 #include <string.h>  // For memset.
 
+#include "libyuv/basic_types.h"
+
 #ifdef __cplusplus
 namespace libyuv {
 extern "C" {

@@ -10,9 +10,9 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 
+#include "libyuv/basic_types.h"
 #include "libyuv/compare.h"
 #include "libyuv/convert.h"
 #include "libyuv/convert_argb.h"
@@ -1737,9 +1737,9 @@ TEST_F(LibYUVConvertTest, TestMJPGToARGB) {
   free_aligned_buffer_page_end(dst_argb);
 }
 
-static bool ShowJPegInfo(const uint8_t* sample, size_t sample_size) {
+static int ShowJPegInfo(const uint8_t* sample, size_t sample_size) {
   MJpegDecoder mjpeg_decoder;
-  bool ret = mjpeg_decoder.LoadFrame(sample, sample_size);
+  LIBYUV_BOOL ret = mjpeg_decoder.LoadFrame(sample, sample_size);
 
   int width = mjpeg_decoder.GetWidth();
   int height = mjpeg_decoder.GetHeight();
@@ -1794,12 +1794,12 @@ static bool ShowJPegInfo(const uint8_t* sample, size_t sample_size) {
 }
 
 TEST_F(LibYUVConvertTest, TestMJPGInfo) {
-  ASSERT_TRUE(ShowJPegInfo(kTest0Jpg, kTest0JpgLen));
-  ASSERT_TRUE(ShowJPegInfo(kTest1Jpg, kTest1JpgLen));
-  ASSERT_TRUE(ShowJPegInfo(kTest2Jpg, kTest2JpgLen));
-  ASSERT_TRUE(ShowJPegInfo(kTest3Jpg, kTest3JpgLen));
-  ASSERT_TRUE(ShowJPegInfo(kTest4Jpg,
-                           kTest4JpgLen));  // Valid but unsupported.
+  ASSERT_EQ(1, ShowJPegInfo(kTest0Jpg, kTest0JpgLen));
+  ASSERT_EQ(1, ShowJPegInfo(kTest1Jpg, kTest1JpgLen));
+  ASSERT_EQ(1, ShowJPegInfo(kTest2Jpg, kTest2JpgLen));
+  ASSERT_EQ(1, ShowJPegInfo(kTest3Jpg, kTest3JpgLen));
+  ASSERT_EQ(1, ShowJPegInfo(kTest4Jpg,
+                            kTest4JpgLen));  // Valid but unsupported.
 }
 #endif  // HAVE_JPEG
 

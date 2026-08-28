@@ -10,10 +10,10 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 
 #include "../unit_test/unit_test.h"
+#include "libyuv/basic_types.h"
 #include "libyuv/compare.h"
 #include "libyuv/convert.h"
 #include "libyuv/convert_argb.h"
