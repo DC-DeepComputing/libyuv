@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ada234ae_78af2168",
+        "filename": "source/scale_rvv.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-29T14:16:27Z",
+      "side": 1,
+      "message": "Note: Do not address this issue in this CL.\n\nJust curious: Should we remove the unused `src_stride` parameter?",
+      "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c7c88aa_4236a324",
+        "filename": "source/scale_rvv.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-29T14:16:27Z",
+      "side": 1,
+      "message": "`src_argb` and `dst_argb` are still cast to `uint32_t` pointers without checking alignment.\n\nYou may want to look into why this function was missed if it was modified by an AI tool.",
+      "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
