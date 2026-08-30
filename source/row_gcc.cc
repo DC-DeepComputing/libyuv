@@ -5690,6 +5690,96 @@ void MergeUVRow_SSE2(const uint8_t* src_u,
 }
 #endif  // HAS_MERGEUVROW_SSE2
 
+#ifdef HAS_MERGEUVROW_8TO10MSB_SSE2
+void MergeUVRow_8To10MSB_SSE2(const uint8_t* src_u,
+                              const uint8_t* src_v,
+                              uint16_t* dst_uv,
+                              int width) {
+  asm volatile(
+      "pcmpeqb     %%xmm4,%%xmm4                 \n"
+      "psllw       $0x6,%%xmm4                   \n"
+      "sub         %0,%1                         \n"
+
+      // 16 UV samples per loop.
+      LABELALIGN
+      "1:          \n"
+      "movdqu      (%0),%%xmm0                   \n"
+      "movdqu      0x00(%0,%1,1),%%xmm1          \n"
+      "lea         0x10(%0),%0                   \n"
+      "movdqa      %%xmm0,%%xmm2                 \n"
+      "punpcklbw   %%xmm1,%%xmm0                 \n"
+      "punpckhbw   %%xmm1,%%xmm2                 \n"
+      "movdqa      %%xmm0,%%xmm1                 \n"
+      "movdqa      %%xmm2,%%xmm3                 \n"
+      "punpcklbw   %%xmm0,%%xmm0                 \n"
+      "punpckhbw   %%xmm1,%%xmm1                 \n"
+      "punpcklbw   %%xmm2,%%xmm2                 \n"
+      "punpckhbw   %%xmm3,%%xmm3                 \n"
+      "pand        %%xmm4,%%xmm0                 \n"
+      "pand        %%xmm4,%%xmm1                 \n"
+      "pand        %%xmm4,%%xmm2                 \n"
+      "pand        %%xmm4,%%xmm3                 \n"
+      "movdqu      %%xmm0,(%2)                   \n"
+      "movdqu      %%xmm1,0x10(%2)               \n"
+      "movdqu      %%xmm2,0x20(%2)               \n"
+      "movdqu      %%xmm3,0x30(%2)               \n"
+      "lea         0x40(%2),%2                   \n"
+      "sub         $0x10,%3                      \n"
+      "jg          1b                            \n"
+      : "+r"(src_u),   // %0
+        "+r"(src_v),   // %1
+        "+r"(dst_uv),  // %2
+        "+r"(width)    // %3
+      :
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4");
+}
+#endif  // HAS_MERGEUVROW_8TO10MSB_SSE2
+
+#ifdef HAS_MERGEUVROW_8TO10MSB_AVX2
+static const uvec16 kMultiply8To10MSB = {0x0101u, 0x0101u, 0x0101u, 0x0101u,
+                                         0x0101u, 0x0101u, 0x0101u, 0x0101u};
+static const uvec16 kMask10MSB = {0xffc0u, 0xffc0u, 0xffc0u, 0xffc0u,
+                                  0xffc0u, 0xffc0u, 0xffc0u, 0xffc0u};
+
+void MergeUVRow_8To10MSB_AVX2(const uint8_t* src_u,
+                              const uint8_t* src_v,
+                              uint16_t* dst_uv,
+                              int width) {
+  asm volatile(
+      "vbroadcasti128 %4,%%ymm4                  \n"
+      "vbroadcasti128 %5,%%ymm5                  \n"
+      "sub         %0,%1                         \n"
+
+      // 16 UV samples per loop.
+      LABELALIGN
+      "1:          \n"
+      "vmovdqu     (%0),%%xmm0                   \n"
+      "vmovdqu     0x00(%0,%1,1),%%xmm1          \n"
+      "lea         0x10(%0),%0                   \n"
+      "vpunpcklbw  %%xmm1,%%xmm0,%%xmm2          \n"
+      "vpunpckhbw  %%xmm1,%%xmm0,%%xmm3          \n"
+      "vpmovzxbw   %%xmm2,%%ymm2                 \n"
+      "vpmovzxbw   %%xmm3,%%ymm3                 \n"
+      "vpmullw     %%ymm4,%%ymm2,%%ymm2          \n"
+      "vpmullw     %%ymm4,%%ymm3,%%ymm3          \n"
+      "vpand       %%ymm5,%%ymm2,%%ymm2          \n"
+      "vpand       %%ymm5,%%ymm3,%%ymm3          \n"
+      "vmovdqu     %%ymm2,(%2)                   \n"
+      "vmovdqu     %%ymm3,0x20(%2)               \n"
+      "lea         0x40(%2),%2                   \n"
+      "sub         $0x10,%3                      \n"
+      "jg          1b                            \n"
+      "vzeroupper  \n"
+      : "+r"(src_u),             // %0
+        "+r"(src_v),             // %1
+        "+r"(dst_uv),            // %2
+        "+r"(width)              // %3
+      : "m"(kMultiply8To10MSB),  // %4
+        "m"(kMask10MSB)          // %5
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
+}
+#endif  // HAS_MERGEUVROW_8TO10MSB_AVX2
+
 #ifdef HAS_MERGEUVROW_16_AVX2
 void MergeUVRow_16_AVX2(const uint16_t* src_u,
                         const uint16_t* src_v,
@@ -6210,6 +6300,65 @@ void HalfWidthRow_16To8_AVX512BW(const uint16_t* src_uv,
         "xmm6");
 }
 #endif  // HAS_HALFWIDTHROW_16TO8_AVX512BW
+
+#ifdef HAS_CONVERT8TO10MSBROW_SSE2
+void Convert8To10MSBRow_SSE2(const uint8_t* src_y, uint16_t* dst_y, int width) {
+  asm volatile(
+      "pcmpeqb     %%xmm2,%%xmm2                 \n"
+      "psllw       $0x6,%%xmm2                   \n"
+
+      // 16 pixels per loop.
+      LABELALIGN
+      "1:          \n"
+      "movdqu      (%0),%%xmm0                   \n"
+      "movdqa      %%xmm0,%%xmm1                 \n"
+      "punpcklbw   %%xmm0,%%xmm0                 \n"
+      "punpckhbw   %%xmm1,%%xmm1                 \n"
+      "pand        %%xmm2,%%xmm0                 \n"
+      "pand        %%xmm2,%%xmm1                 \n"
+      "add         $0x10,%0                      \n"
+      "movdqu      %%xmm0,(%1)                   \n"
+      "movdqu      %%xmm1,0x10(%1)               \n"
+      "add         $0x20,%1                      \n"
+      "sub         $0x10,%2                      \n"
+      "jg          1b                            \n"
+      : "+r"(src_y),  // %0
+        "+r"(dst_y),  // %1
+        "+r"(width)   // %2
+      :
+      : "memory", "cc", "xmm0", "xmm1", "xmm2");
+}
+#endif  // HAS_CONVERT8TO10MSBROW_SSE2
+
+#ifdef HAS_CONVERT8TO10MSBROW_AVX2
+void Convert8To10MSBRow_AVX2(const uint8_t* src_y, uint16_t* dst_y, int width) {
+  asm volatile(
+      "vpcmpeqb    %%ymm2,%%ymm2,%%ymm2          \n"
+      "vpsllw      $0x6,%%ymm2,%%ymm2            \n"
+
+      // 32 pixels per loop.
+      LABELALIGN
+      "1:          \n"
+      "vmovdqu     (%0),%%ymm0                   \n"
+      "vpermq      $0xd8,%%ymm0,%%ymm0           \n"
+      "vpunpckhbw  %%ymm0,%%ymm0,%%ymm1          \n"
+      "vpunpcklbw  %%ymm0,%%ymm0,%%ymm0          \n"
+      "vpand       %%ymm2,%%ymm0,%%ymm0          \n"
+      "vpand       %%ymm2,%%ymm1,%%ymm1          \n"
+      "add         $0x20,%0                      \n"
+      "vmovdqu     %%ymm0,(%1)                   \n"
+      "vmovdqu     %%ymm1,0x20(%1)               \n"
+      "add         $0x40,%1                      \n"
+      "sub         $0x20,%2                      \n"
+      "jg          1b                            \n"
+      "vzeroupper  \n"
+      : "+r"(src_y),  // %0
+        "+r"(dst_y),  // %1
+        "+r"(width)   // %2
+      :
+      : "memory", "cc", "ymm0", "ymm1", "ymm2");
+}
+#endif  // HAS_CONVERT8TO10MSBROW_AVX2
 
 // Use scale to convert to lsb formats depending how many bits there are:
 // 512 = 9 bits

@@ -505,6 +505,58 @@ __arm_locally_streaming void MergeUVRow_SME(const uint8_t* src_u,
       : "memory", "cc", "z0", "z1", "z2", "p0");
 }
 
+__arm_locally_streaming void MergeUVRow_8To10MSB_SME(const uint8_t* src_u,
+                                                     const uint8_t* src_v,
+                                                     uint16_t* dst_uv,
+                                                     int width) {
+  // Streaming-SVE only, no use of ZA tile.
+  int vl;
+  asm volatile(
+      "cnth    %x[vl]                                   \n"
+      "subs    %w[width], %w[width], %w[vl]             \n"
+      "b.lt    2f                                       \n"
+
+      // Run bulk of computation with an all-true predicate to avoid predicate
+      // generation overhead.
+      "ptrue   p0.h                                     \n"
+      "1:                                               \n"
+      "ld1b    {z1.h}, p0/z, [%[src_u]]                 \n"
+      "ld1b    {z2.h}, p0/z, [%[src_v]]                 \n"
+      "inch    %[src_u]                                 \n"
+      "inch    %[src_v]                                 \n"
+      "trn1    z1.b, z1.b, z1.b                         \n"
+      "trn1    z2.b, z2.b, z2.b                         \n"
+      "and     z1.h, z1.h, #0xffc0                      \n"
+      "and     z2.h, z2.h, #0xffc0                      \n"
+      "subs    %w[width], %w[width], %w[vl]             \n"
+      "st2h    {z1.h, z2.h}, p0, [%[dst_uv]]            \n"
+      "incb    %[dst_uv], all, mul #2                   \n"
+      "b.ge    1b                                       \n"
+
+      "2:                                               \n"
+      "adds    %w[width], %w[width], %w[vl]             \n"
+      "b.eq    99f                                      \n"
+
+      // Calculate a predicate for the final iteration to deal with the tail.
+      "whilelt p0.h, wzr, %w[width]                     \n"
+      "ld1b    {z1.h}, p0/z, [%[src_u]]                 \n"
+      "ld1b    {z2.h}, p0/z, [%[src_v]]                 \n"
+      "trn1    z1.b, z1.b, z1.b                         \n"
+      "trn1    z2.b, z2.b, z2.b                         \n"
+      "and     z1.h, z1.h, #0xffc0                      \n"
+      "and     z2.h, z2.h, #0xffc0                      \n"
+      "st2h    {z1.h, z2.h}, p0, [%[dst_uv]]            \n"
+
+      "99:                                              \n"
+      : [src_u] "+r"(src_u),    // %[src_u]
+        [src_v] "+r"(src_v),    // %[src_v]
+        [dst_uv] "+r"(dst_uv),  // %[dst_uv]
+        [width] "+r"(width),    // %[width]
+        [vl] "=&r"(vl)          // %[vl]
+      :
+      : "memory", "cc", "z1", "z2", "p0");
+}
+
 __arm_locally_streaming void MergeUVRow_16_SME(const uint16_t* src_u,
                                                const uint16_t* src_v,
                                                uint16_t* dst_uv,
@@ -1037,6 +1089,57 @@ __arm_locally_streaming void Convert8To8Row_SME(const uint8_t* src_y,
                                                 int width) {
   Convert8To8Row_SVE_SC(src_y, dst_y, scale, bias, width);
 }
+
+#define CONVERT8TO10MSB_SVE                              \
+  "ld1b        {z0.h}, p0/z, [%[src]]                \n" \
+  "ld1b        {z1.h}, p1/z, [%[src], #1, mul vl]    \n" \
+  "incb        %[src]                                \n" \
+  "subs        %w[width], %w[width], %w[vl], lsl #1  \n" \
+  "trn1        z0.b, z0.b, z0.b                      \n" \
+  "trn1        z1.b, z1.b, z1.b                      \n" \
+  "and         z0.h, z0.h, #0xffc0                   \n" \
+  "and         z1.h, z1.h, #0xffc0                   \n" \
+  "prfm        pldl1keep, [%[src], 448]              \n" \
+  "st1h        {z0.h}, p0, [%[dst]]                  \n" \
+  "st1h        {z1.h}, p1, [%[dst], #1, mul vl]      \n" \
+  "incb        %[dst], all, mul #2                   \n"
+
+__arm_locally_streaming void Convert8To10MSBRow_SME(const uint8_t* src_y,
+                                                    uint16_t* dst_y,
+                                                    int width) {
+  uint64_t vl;
+  asm volatile(
+      "cnth        %[vl]                                \n"
+      "subs        %w[width], %w[width], %w[vl], lsl #1 \n"
+      "b.lt        2f                                   \n"
+
+      // Run bulk of computation with all-true predicates to avoid predicate
+      // generation overhead.
+      "ptrue       p0.h                                 \n"
+      "ptrue       p1.h                                 \n"
+      "1:                                               \n"  //
+      CONVERT8TO10MSB_SVE
+      "b.ge        1b                                   \n"
+
+      "2:                                               \n"
+      "adds        %w[width], %w[width], %w[vl], lsl #1 \n"
+      "b.eq        99f                                  \n"
+
+      // Calculate predicates for the final iteration to deal with the tail.
+      "whilelt     p0.h, wzr, %w[width]                 \n"
+      "whilelt     p1.h, %w[vl], %w[width]              \n"  //
+      CONVERT8TO10MSB_SVE
+
+      "99:                                              \n"
+      : [src] "+r"(src_y),    // %[src]
+        [dst] "+r"(dst_y),    // %[dst]
+        [width] "+r"(width),  // %[width]
+        [vl] "=&r"(vl)        // %[vl]
+      :
+      : "cc", "memory", "z0", "z1", "p0", "p1");
+}
+
+#undef CONVERT8TO10MSB_SVE
 
 #define CONVERT8TO16_SVE                                 \
   "ld1b        {z0.h}, p0/z, [%[src]]                \n" \
