@@ -1386,6 +1386,35 @@ void MergeUVRow_16_NEON(const uint16_t* src_u,
 }
 #endif  // LIBYUV_USE_ST2
 
+void MergeUVRow_8To10MSB_NEON(const uint8_t* src_u,
+                              const uint8_t* src_v,
+                              uint16_t* dst_uv,
+                              int width) {
+  asm volatile(
+      "1:          \n"
+      "ldr         q0, [%0], #16                \n"
+      "ldr         q1, [%1], #16                \n"
+      "zip1        v2.16b, v0.16b, v1.16b       \n"
+      "zip2        v3.16b, v0.16b, v1.16b       \n"
+      "zip1        v4.16b, v2.16b, v2.16b       \n"
+      "zip2        v5.16b, v2.16b, v2.16b       \n"
+      "zip1        v6.16b, v3.16b, v3.16b       \n"
+      "zip2        v7.16b, v3.16b, v3.16b       \n"
+      "subs        %w3, %w3, #16                \n"
+      "bic         v4.8h, #0x3f                 \n"
+      "bic         v5.8h, #0x3f                 \n"
+      "bic         v6.8h, #0x3f                 \n"
+      "bic         v7.8h, #0x3f                 \n"
+      "st1         {v4.8h-v7.8h}, [%2], #64     \n"
+      "b.gt        1b                            \n"
+      : "+r"(src_u),   // %0
+        "+r"(src_v),   // %1
+        "+r"(dst_uv),  // %2
+        "+r"(width)    // %3
+      :
+      : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7");
+}
+
 // Reads 16 packed RGB and write to planar dst_r, dst_g, dst_b.
 void SplitRGBRow_NEON(const uint8_t* src_rgb,
                       uint8_t* dst_r,
@@ -5265,6 +5294,24 @@ void Convert8To8Row_NEON(const uint8_t* src_y,
       : "r"(scale),   // %3
         "r"(bias)     // %4
       : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v5");
+}
+
+void Convert8To10MSBRow_NEON(const uint8_t* src_y, uint16_t* dst_y, int width) {
+  asm volatile(
+      "1:          \n"
+      "ldr         q0, [%[src]], #16                \n"
+      "zip2        v1.16b, v0.16b, v0.16b           \n"
+      "zip1        v0.16b, v0.16b, v0.16b           \n"
+      "subs        %w[width], %w[width], #16        \n"
+      "bic         v1.8h, #0x3f                     \n"
+      "bic         v0.8h, #0x3f                     \n"
+      "stp         q0, q1, [%[dst]], #32            \n"
+      "b.ne        1b                               \n"
+      : [src] "+r"(src_y),   // %[src]
+        [dst] "+r"(dst_y),   // %[dst]
+        [width] "+r"(width)  // %[width]
+      :
+      : "cc", "memory", "v0", "v1");
 }
 
 // Use scale to convert lsb formats to msb, depending how many bits there are:

@@ -3183,6 +3183,19 @@ void MergeUVRow_16_C(const uint16_t* src_u,
   }
 }
 
+// Convert 8 bit U and V to interleaved 10 bit MSB-aligned UV.
+void MergeUVRow_8To10MSB_C(const uint8_t* src_u,
+                           const uint8_t* src_v,
+                           uint16_t* dst_uv,
+                           int width) {
+  int x;
+  for (x = 0; x < width; ++x) {
+    dst_uv[0] = (src_u[x] * 0x0101) & 0xffc0;
+    dst_uv[1] = (src_v[x] * 0x0101) & 0xffc0;
+    dst_uv += 2;
+  }
+}
+
 // Convert msb formats to lsb, depending on sample depth.
 void SplitUVRow_16_C(const uint16_t* src_uv,
                      uint16_t* dst_u,
@@ -3238,6 +3251,14 @@ void Convert16To8Row_C(const uint16_t* src_y,
 
   for (x = 0; x < width; ++x) {
     dst_y[x] = STATIC_CAST(uint8_t, C16TO8(src_y[x], scale));
+  }
+}
+
+// Convert 8 bit values to 10 bit MSB-aligned values.
+void Convert8To10MSBRow_C(const uint8_t* src_y, uint16_t* dst_y, int width) {
+  int x;
+  for (x = 0; x < width; ++x) {
+    dst_y[x] = (src_y[x] * 0x0101) & 0xffc0;
   }
 }
 

@@ -3768,6 +3768,61 @@ TEST_F(LibYUVPlanarTest, MergeUVRow_16_Opt) {
 }
 #endif
 
+#ifdef ENABLE_ROW_TESTS
+TEST_F(LibYUVPlanarTest, MergeUVRow_8To10MSB_Any) {
+  const int kMaxPixels = 257;
+  const int kWidths[] = {1, 15, 16, 17, 31, 32, 33, kMaxPixels};
+  align_buffer_page_end(src_pixels_u, kMaxPixels);
+  align_buffer_page_end(src_pixels_v, kMaxPixels);
+  align_buffer_page_end(dst_pixels_uv_opt, kMaxPixels * 4);
+  align_buffer_page_end(dst_pixels_uv_c, kMaxPixels * 4);
+
+  for (int i = 0; i < kMaxPixels; ++i) {
+    src_pixels_u[i] = i & 255;
+    src_pixels_v[i] = 255 - (i & 255);
+  }
+
+  void (*MergeUVRow_8To10MSB)(const uint8_t* src_u, const uint8_t* src_v,
+                              uint16_t* dst_uv, int width) =
+      MergeUVRow_8To10MSB_C;
+#if defined(HAS_MERGEUVROW_8TO10MSB_SSE2)
+  if (TestCpuFlag(kCpuHasSSE2)) {
+    MergeUVRow_8To10MSB = MergeUVRow_8To10MSB_Any_SSE2;
+  }
+#endif
+#if defined(HAS_MERGEUVROW_8TO10MSB_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    MergeUVRow_8To10MSB = MergeUVRow_8To10MSB_Any_AVX2;
+  }
+#endif
+#if defined(HAS_MERGEUVROW_8TO10MSB_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    MergeUVRow_8To10MSB = MergeUVRow_8To10MSB_Any_NEON;
+  }
+#endif
+#if defined(HAS_MERGEUVROW_8TO10MSB_SME)
+  if (TestCpuFlag(kCpuHasSME)) {
+    MergeUVRow_8To10MSB = MergeUVRow_8To10MSB_SME;
+  }
+#endif
+
+  for (int width : kWidths) {
+    MergeUVRow_8To10MSB_C(src_pixels_u, src_pixels_v,
+                          reinterpret_cast<uint16_t*>(dst_pixels_uv_c), width);
+    MergeUVRow_8To10MSB(src_pixels_u, src_pixels_v,
+                        reinterpret_cast<uint16_t*>(dst_pixels_uv_opt), width);
+    for (int i = 0; i < width * 4; ++i) {
+      EXPECT_EQ(dst_pixels_uv_c[i], dst_pixels_uv_opt[i]);
+    }
+  }
+
+  free_aligned_buffer_page_end(src_pixels_u);
+  free_aligned_buffer_page_end(src_pixels_v);
+  free_aligned_buffer_page_end(dst_pixels_uv_opt);
+  free_aligned_buffer_page_end(dst_pixels_uv_c);
+}
+#endif  // ENABLE_ROW_TESTS
+
 // TODO(fbarchard): Improve test for more platforms.
 #ifdef HAS_MULTIPLYROW_16_AVX2
 TEST_F(LibYUVPlanarTest, MultiplyRow_16_Opt) {
@@ -4180,6 +4235,55 @@ TEST_F(LibYUVPlanarTest, Convert8To16Plane) {
 }
 
 #ifdef ENABLE_ROW_TESTS
+TEST_F(LibYUVPlanarTest, Convert8To10MSBRow_Any) {
+  const int kMaxPixels = 257;
+  const int kWidths[] = {1, 15, 16, 17, 31, 32, 33, kMaxPixels};
+  align_buffer_page_end(src_pixels_y, kMaxPixels);
+  align_buffer_page_end(dst_pixels_y_opt, kMaxPixels * 2);
+  align_buffer_page_end(dst_pixels_y_c, kMaxPixels * 2);
+
+  for (int i = 0; i < kMaxPixels; ++i) {
+    src_pixels_y[i] = i & 255;
+  }
+
+  void (*Convert8To10MSBRow)(const uint8_t* src_y, uint16_t* dst_y, int width) =
+      Convert8To10MSBRow_C;
+#if defined(HAS_CONVERT8TO10MSBROW_SSE2)
+  if (TestCpuFlag(kCpuHasSSE2)) {
+    Convert8To10MSBRow = Convert8To10MSBRow_Any_SSE2;
+  }
+#endif
+#if defined(HAS_CONVERT8TO10MSBROW_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    Convert8To10MSBRow = Convert8To10MSBRow_Any_AVX2;
+  }
+#endif
+#if defined(HAS_CONVERT8TO10MSBROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    Convert8To10MSBRow = Convert8To10MSBRow_Any_NEON;
+  }
+#endif
+#if defined(HAS_CONVERT8TO10MSBROW_SME)
+  if (TestCpuFlag(kCpuHasSME)) {
+    Convert8To10MSBRow = Convert8To10MSBRow_SME;
+  }
+#endif
+
+  for (int width : kWidths) {
+    Convert8To10MSBRow_C(src_pixels_y,
+                         reinterpret_cast<uint16_t*>(dst_pixels_y_c), width);
+    Convert8To10MSBRow(src_pixels_y,
+                       reinterpret_cast<uint16_t*>(dst_pixels_y_opt), width);
+    for (int i = 0; i < width * 2; ++i) {
+      EXPECT_EQ(dst_pixels_y_c[i], dst_pixels_y_opt[i]);
+    }
+  }
+
+  free_aligned_buffer_page_end(src_pixels_y);
+  free_aligned_buffer_page_end(dst_pixels_y_opt);
+  free_aligned_buffer_page_end(dst_pixels_y_c);
+}
+
 // TODO(fbarchard): Improve test for more platforms.
 #ifdef HAS_CONVERT8TO16ROW_AVX2
 TEST_F(LibYUVPlanarTest, Convert8To16Row_Opt) {
