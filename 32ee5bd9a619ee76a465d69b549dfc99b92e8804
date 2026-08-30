@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ffbf3d2d_4a605364",
+        "filename": "source/row_lasx.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1939,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-30T07:30:10Z",
+      "side": 1,
+      "message": "Please add `const`.",
+      "revId": "32ee5bd9a619ee76a465d69b549dfc99b92e8804",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
