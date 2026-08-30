@@ -758,6 +758,54 @@ ANY21(SobelXYRow_Any_LSX, SobelXYRow_LSX, 0, 1, 1, 4, 15)
 #endif
 #undef ANY21
 
+// Any 2 planes to 1 with type
+#define ANY21T(NAMEANY, ANY_SIMD, SBPP, BPP, STYPE, DTYPE, MASK)              \
+  void NAMEANY(const STYPE* src0, const STYPE* src1, DTYPE* dst, int width) { \
+    SIMD_ALIGNED(uint8_t vin[(MASK + 1) * SBPP * 2]);                         \
+    SIMD_ALIGNED(uint8_t vout[(MASK + 1) * BPP]);                             \
+    memset(vin, 0, sizeof(vin)); /* for msan */                               \
+    int r = width & MASK;                                                     \
+    int n = width & ~MASK;                                                    \
+    if (n > 0) {                                                              \
+      ANY_SIMD(src0, src1, dst, n);                                           \
+    }                                                                         \
+    ptrdiff_t np = n;                                                         \
+    memcpy(vin, (const uint8_t*)(src0 + np), r * SBPP);                       \
+    memcpy(vin + (MASK + 1) * SBPP, (const uint8_t*)(src1 + np), r * SBPP);   \
+    ANY_SIMD((const STYPE*)vin, (const STYPE*)(vin + (MASK + 1) * SBPP),      \
+             (DTYPE*)vout, MASK + 1);                                         \
+    memcpy((uint8_t*)dst + np * BPP, vout, r * BPP);                          \
+  }
+
+#ifdef HAS_MERGEUVROW_8TO10MSB_SSE2
+ANY21T(MergeUVRow_8To10MSB_Any_SSE2,
+       MergeUVRow_8To10MSB_SSE2,
+       1,
+       4,
+       uint8_t,
+       uint16_t,
+       15)
+#endif
+#ifdef HAS_MERGEUVROW_8TO10MSB_AVX2
+ANY21T(MergeUVRow_8To10MSB_Any_AVX2,
+       MergeUVRow_8To10MSB_AVX2,
+       1,
+       4,
+       uint8_t,
+       uint16_t,
+       15)
+#endif
+#ifdef HAS_MERGEUVROW_8TO10MSB_NEON
+ANY21T(MergeUVRow_8To10MSB_Any_NEON,
+       MergeUVRow_8To10MSB_NEON,
+       1,
+       4,
+       uint8_t,
+       uint16_t,
+       15)
+#endif
+#undef ANY21T
+
 // Any 2 planes to 1 with stride
 // width is measured in source pixels. 4 bytes contains 2 pixels
 #define ANY21S(NAMEANY, ANY_SIMD, SBPP, BPP, MASK)                        \
@@ -1488,6 +1536,36 @@ ANY11T(AR64ToARGBRow_Any_NEON, AR64ToARGBRow_NEON, 8, 4, uint16_t, uint8_t, 7)
 
 #ifdef HAS_ARGBTOAR64ROW_NEON
 ANY11T(AB64ToARGBRow_Any_NEON, AB64ToARGBRow_NEON, 8, 4, uint16_t, uint8_t, 7)
+#endif
+
+#ifdef HAS_CONVERT8TO10MSBROW_SSE2
+ANY11T(Convert8To10MSBRow_Any_SSE2,
+       Convert8To10MSBRow_SSE2,
+       1,
+       2,
+       uint8_t,
+       uint16_t,
+       15)
+#endif
+
+#ifdef HAS_CONVERT8TO10MSBROW_AVX2
+ANY11T(Convert8To10MSBRow_Any_AVX2,
+       Convert8To10MSBRow_AVX2,
+       1,
+       2,
+       uint8_t,
+       uint16_t,
+       31)
+#endif
+
+#ifdef HAS_CONVERT8TO10MSBROW_NEON
+ANY11T(Convert8To10MSBRow_Any_NEON,
+       Convert8To10MSBRow_NEON,
+       1,
+       2,
+       uint8_t,
+       uint16_t,
+       15)
 #endif
 
 #undef ANY11T

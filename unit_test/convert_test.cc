@@ -2635,6 +2635,249 @@ TEST_F(LibYUVConvertTest, TestARGBToNV24Matrix) {
   free_aligned_buffer_page_end(ref_uv);
 }
 
+static int ARGBToPx10Reference(const uint8_t* src_argb,
+                               int src_stride_argb,
+                               uint16_t* dst_y,
+                               int dst_stride_y,
+                               uint16_t* dst_uv,
+                               int dst_stride_uv,
+                               const struct ArgbConstants* argbconstants,
+                               int width,
+                               int height,
+                               int subsample_x,
+                               int subsample_y) {
+  const int abs_height = height < 0 ? -height : height;
+  const int uv_width = (width + subsample_x - 1) / subsample_x;
+  const int uv_height = (abs_height + subsample_y - 1) / subsample_y;
+  const size_t y_size = static_cast<size_t>(width) * abs_height;
+  const size_t uv_size = static_cast<size_t>(uv_width) * uv_height;
+  align_buffer_page_end(i8, y_size + uv_size * 2);
+  align_buffer_page_end(i10, (y_size + uv_size * 2) * sizeof(uint16_t));
+  if (!i8 || !i10) {
+    free_aligned_buffer_page_end(i8);
+    free_aligned_buffer_page_end(i10);
+    return 1;
+  }
+  uint8_t* y8 = i8;
+  uint8_t* u8 = y8 + y_size;
+  uint8_t* v8 = u8 + uv_size;
+  uint16_t* y10 = reinterpret_cast<uint16_t*>(i10);
+  uint16_t* u10 = y10 + y_size;
+  uint16_t* v10 = u10 + uv_size;
+
+  int result;
+  if (subsample_y == 2) {
+    result =
+        ARGBToI420Matrix(src_argb, src_stride_argb, y8, width, u8, uv_width, v8,
+                         uv_width, argbconstants, width, height);
+  } else if (subsample_x == 2) {
+    result =
+        ARGBToI422Matrix(src_argb, src_stride_argb, y8, width, u8, uv_width, v8,
+                         uv_width, argbconstants, width, height);
+  } else {
+    result =
+        ARGBToI444Matrix(src_argb, src_stride_argb, y8, width, u8, uv_width, v8,
+                         uv_width, argbconstants, width, height);
+  }
+  if (!result) {
+    Convert8To16Plane(y8, width, y10, width, 1024, width, abs_height);
+    Convert8To16Plane(u8, uv_width, u10, uv_width, 1024, uv_width, uv_height);
+    Convert8To16Plane(v8, uv_width, v10, uv_width, 1024, uv_width, uv_height);
+    ConvertToMSBPlane_16(y10, width, dst_y, dst_stride_y, width, abs_height,
+                         10);
+    MergeUVPlane_16(u10, uv_width, v10, uv_width, dst_uv, dst_stride_uv,
+                    uv_width, uv_height, 10);
+  }
+
+  free_aligned_buffer_page_end(i8);
+  free_aligned_buffer_page_end(i10);
+  return result;
+}
+
+TEST_F(LibYUVConvertTest, TestARGBToP010Matrix) {
+  const int kWidth = 17;
+  const int kHeight = 5;
+  const int kSrcStride = kWidth * 4 + 12;
+  const int kYStride = kWidth + 3;
+  const int kUVWidth = (kWidth + 1) / 2;
+  const int kUVHeight = (kHeight + 1) / 2;
+  const int kUVStride = kUVWidth * 2 + 4;
+  align_buffer_page_end(src_argb, kSrcStride * kHeight);
+  align_buffer_page_end(dst_y, kYStride * kHeight * sizeof(uint16_t));
+  align_buffer_page_end(dst_uv, kUVStride * kUVHeight * sizeof(uint16_t));
+  align_buffer_page_end(ref_y, kYStride * kHeight * sizeof(uint16_t));
+  align_buffer_page_end(ref_uv, kUVStride * kUVHeight * sizeof(uint16_t));
+
+  MemRandomize(src_argb, kSrcStride * kHeight);
+
+  MaskCpuFlags(disable_cpu_flags_);
+  ASSERT_EQ(
+      0, ARGBToPx10Reference(src_argb, kSrcStride, (uint16_t*)ref_y, kYStride,
+                             (uint16_t*)ref_uv, kUVStride, &kArgbI601Constants,
+                             kWidth, -kHeight, 2, 2));
+  ASSERT_EQ(0, ARGBToP010Matrix(src_argb, kSrcStride, (uint16_t*)dst_y,
+                                kYStride, (uint16_t*)dst_uv, kUVStride,
+                                &kArgbI601Constants, kWidth, -kHeight));
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kWidth; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_y)[y * kYStride + x],
+                ((uint16_t*)dst_y)[y * kYStride + x]);
+    }
+  }
+  for (int y = 0; y < kUVHeight; ++y) {
+    for (int x = 0; x < kUVWidth * 2; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_uv)[y * kUVStride + x],
+                ((uint16_t*)dst_uv)[y * kUVStride + x]);
+    }
+  }
+
+  MaskCpuFlags(benchmark_cpu_info_);
+  ASSERT_EQ(0, ARGBToP010(src_argb, kSrcStride, (uint16_t*)dst_y, kYStride,
+                          (uint16_t*)dst_uv, kUVStride, kWidth, -kHeight));
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kWidth; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_y)[y * kYStride + x],
+                ((uint16_t*)dst_y)[y * kYStride + x]);
+    }
+  }
+  for (int y = 0; y < kUVHeight; ++y) {
+    for (int x = 0; x < kUVWidth * 2; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_uv)[y * kUVStride + x],
+                ((uint16_t*)dst_uv)[y * kUVStride + x]);
+    }
+  }
+
+  memset(src_argb, 255, kSrcStride * kHeight);
+  ARGBToP010(src_argb, kSrcStride, (uint16_t*)dst_y, kYStride,
+             (uint16_t*)dst_uv, kUVStride, kWidth, kHeight);
+  EXPECT_EQ(0xebc0, ((uint16_t*)dst_y)[0]);
+  EXPECT_EQ(0x8080, ((uint16_t*)dst_uv)[0]);
+  EXPECT_EQ(0x8080, ((uint16_t*)dst_uv)[1]);
+
+  free_aligned_buffer_page_end(src_argb);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_uv);
+  free_aligned_buffer_page_end(ref_y);
+  free_aligned_buffer_page_end(ref_uv);
+}
+
+TEST_F(LibYUVConvertTest, TestARGBToP210Matrix) {
+  const int kWidth = 17;
+  const int kHeight = 5;
+  const int kSrcStride = kWidth * 4 + 12;
+  const int kYStride = kWidth + 3;
+  const int kUVWidth = (kWidth + 1) / 2;
+  const int kUVStride = kUVWidth * 2 + 4;
+  align_buffer_page_end(src_argb, kSrcStride * kHeight);
+  align_buffer_page_end(dst_y, kYStride * kHeight * sizeof(uint16_t));
+  align_buffer_page_end(dst_uv, kUVStride * kHeight * sizeof(uint16_t));
+  align_buffer_page_end(ref_y, kYStride * kHeight * sizeof(uint16_t));
+  align_buffer_page_end(ref_uv, kUVStride * kHeight * sizeof(uint16_t));
+
+  MemRandomize(src_argb, kSrcStride * kHeight);
+
+  MaskCpuFlags(disable_cpu_flags_);
+  ASSERT_EQ(
+      0, ARGBToPx10Reference(src_argb, kSrcStride, (uint16_t*)ref_y, kYStride,
+                             (uint16_t*)ref_uv, kUVStride, &kArgbI601Constants,
+                             kWidth, -kHeight, 2, 1));
+  ASSERT_EQ(0, ARGBToP210Matrix(src_argb, kSrcStride, (uint16_t*)dst_y,
+                                kYStride, (uint16_t*)dst_uv, kUVStride,
+                                &kArgbI601Constants, kWidth, -kHeight));
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kWidth; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_y)[y * kYStride + x],
+                ((uint16_t*)dst_y)[y * kYStride + x]);
+    }
+  }
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kUVWidth * 2; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_uv)[y * kUVStride + x],
+                ((uint16_t*)dst_uv)[y * kUVStride + x]);
+    }
+  }
+
+  MaskCpuFlags(benchmark_cpu_info_);
+  ASSERT_EQ(0, ARGBToP210(src_argb, kSrcStride, (uint16_t*)dst_y, kYStride,
+                          (uint16_t*)dst_uv, kUVStride, kWidth, -kHeight));
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kWidth; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_y)[y * kYStride + x],
+                ((uint16_t*)dst_y)[y * kYStride + x]);
+    }
+  }
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kUVWidth * 2; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_uv)[y * kUVStride + x],
+                ((uint16_t*)dst_uv)[y * kUVStride + x]);
+    }
+  }
+
+  free_aligned_buffer_page_end(src_argb);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_uv);
+  free_aligned_buffer_page_end(ref_y);
+  free_aligned_buffer_page_end(ref_uv);
+}
+
+TEST_F(LibYUVConvertTest, TestARGBToP410Matrix) {
+  const int kWidth = 17;
+  const int kHeight = 5;
+  const int kSrcStride = kWidth * 4 + 12;
+  const int kYStride = kWidth + 3;
+  const int kUVStride = kWidth * 2 + 4;
+  align_buffer_page_end(src_argb, kSrcStride * kHeight);
+  align_buffer_page_end(dst_y, kYStride * kHeight * sizeof(uint16_t));
+  align_buffer_page_end(dst_uv, kUVStride * kHeight * sizeof(uint16_t));
+  align_buffer_page_end(ref_y, kYStride * kHeight * sizeof(uint16_t));
+  align_buffer_page_end(ref_uv, kUVStride * kHeight * sizeof(uint16_t));
+
+  MemRandomize(src_argb, kSrcStride * kHeight);
+
+  MaskCpuFlags(disable_cpu_flags_);
+  ASSERT_EQ(
+      0, ARGBToPx10Reference(src_argb, kSrcStride, (uint16_t*)ref_y, kYStride,
+                             (uint16_t*)ref_uv, kUVStride, &kArgbI601Constants,
+                             kWidth, -kHeight, 1, 1));
+  ASSERT_EQ(0, ARGBToP410Matrix(src_argb, kSrcStride, (uint16_t*)dst_y,
+                                kYStride, (uint16_t*)dst_uv, kUVStride,
+                                &kArgbI601Constants, kWidth, -kHeight));
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kWidth; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_y)[y * kYStride + x],
+                ((uint16_t*)dst_y)[y * kYStride + x]);
+    }
+  }
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kWidth * 2; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_uv)[y * kUVStride + x],
+                ((uint16_t*)dst_uv)[y * kUVStride + x]);
+    }
+  }
+
+  MaskCpuFlags(benchmark_cpu_info_);
+  ASSERT_EQ(0, ARGBToP410(src_argb, kSrcStride, (uint16_t*)dst_y, kYStride,
+                          (uint16_t*)dst_uv, kUVStride, kWidth, -kHeight));
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kWidth; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_y)[y * kYStride + x],
+                ((uint16_t*)dst_y)[y * kYStride + x]);
+    }
+  }
+  for (int y = 0; y < kHeight; ++y) {
+    for (int x = 0; x < kWidth * 2; ++x) {
+      ASSERT_EQ(((uint16_t*)ref_uv)[y * kUVStride + x],
+                ((uint16_t*)dst_uv)[y * kUVStride + x]);
+    }
+  }
+
+  free_aligned_buffer_page_end(src_argb);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_uv);
+  free_aligned_buffer_page_end(ref_y);
+  free_aligned_buffer_page_end(ref_uv);
+}
+
 TEST_F(LibYUVConvertTest, TestARGBToI422Matrix) {
   const int kWidth = 16;
   const int kHeight = 16;
