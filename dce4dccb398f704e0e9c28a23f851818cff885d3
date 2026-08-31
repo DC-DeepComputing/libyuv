@@ -16,6 +16,24 @@
       "message": "I believe this CL is independent of https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/8292090/5?usp\u003drelated-change even though the two CLs were written as a chain. I will go ahead and submit this CL first to avoid unnecessary delay.",
       "revId": "dce4dccb398f704e0e9c28a23f851818cff885d3",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0686183_c80750cb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-31T17:06:41Z",
+      "side": 1,
+      "message": "It turns out that the two CLs in the chain must be submitted together. I suggest not making any change to the chain to avoid invalidating the +1 approvals accidentally.",
+      "parentUuid": "8fbe37d7_9509bb13",
+      "revId": "dce4dccb398f704e0e9c28a23f851818cff885d3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
