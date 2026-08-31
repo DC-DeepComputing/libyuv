@@ -87,6 +87,24 @@
       "parentUuid": "c53362cb_15df9d03",
       "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbd4a5f3_d8972c38",
+        "filename": "source/scale_rvv.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-31T20:12:46Z",
+      "side": 1,
+      "message": "We don\u0027t know whether `src_argb` or `dst_argb` is the return value of a heap allocattion function (such as `malloc()` or `calloc()`), so we can\u0027t assume the minimum allocation alignment.",
+      "parentUuid": "5c110033_3c4ac8b3",
+      "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
