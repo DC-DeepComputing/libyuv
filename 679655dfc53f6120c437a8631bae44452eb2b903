@@ -89,6 +89,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "70eb62d8_2a293814",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 1132,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-08-31T10:56:14Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "f13a90dd_79ba68a5",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a3447017_da7f7946",
@@ -102,6 +120,24 @@
       "writtenOn": "2026-08-28T23:49:23Z",
       "side": 1,
       "message": "rvv (risc v vector) does not require alignment.  ditto for all cpus libyuv supports - arm, x86, loongsoon.  The only cpu I\u0027m aware of an int alignment applies to is hexagon, which libyuv does not currently support.",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21014a0a_ee0bd834",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-08-31T10:56:14Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "a3447017_da7f7946",
       "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
