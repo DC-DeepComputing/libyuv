@@ -105,6 +105,24 @@
       "parentUuid": "5c110033_3c4ac8b3",
       "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e429b76_66799cf1",
+        "filename": "source/scale_rvv.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-31T20:21:45Z",
+      "side": 1,
+      "message": "In your earlier CL https://chromium-review.googlesource.com/c/libyuv/libyuv/+/8308575, `ScaleARGBRowDown2_C()` was changed to the following:\n\n```\nvoid ScaleARGBRowDown2_C(const uint8_t* src_argb,\n                         ptrdiff_t src_stride,\n                         uint8_t* dst_argb,\n                         int dst_width) {\n  int x;\n  (void)src_stride;\n  for (x \u003d 0; x \u003c dst_width; ++x) {\n    dst_argb[0] \u003d src_argb[4];\n    dst_argb[1] \u003d src_argb[5];\n    dst_argb[2] \u003d src_argb[6];\n    dst_argb[3] \u003d src_argb[7];\n    src_argb +\u003d 8;\n    dst_argb +\u003d 4;\n  }\n}\n```\n\nIt does not assume a minimum allocation alignment of 4, otherwise we could just use the original code:\n\n```\nvoid ScaleARGBRowDown2_C(const uint8_t* src_argb,\n                         ptrdiff_t src_stride,\n                         uint8_t* dst_argb,\n                         int dst_width) {\n  const uint32_t* src \u003d (const uint32_t*)(src_argb);\n  uint32_t* dst \u003d (uint32_t*)(dst_argb);\n  int x;\n  (void)src_stride;\n  for (x \u003d 0; x \u003c dst_width - 1; x +\u003d 2) {\n    dst[0] \u003d src[1];\n    dst[1] \u003d src[3];\n    src +\u003d 4;\n    dst +\u003d 2;\n  }\n  if (dst_width \u0026 1) {\n    dst[0] \u003d src[1];\n  }\n}\n```",
+      "parentUuid": "cbd4a5f3_d8972c38",
+      "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
