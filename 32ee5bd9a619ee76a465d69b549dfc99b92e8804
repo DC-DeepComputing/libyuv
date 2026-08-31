@@ -16,6 +16,24 @@
       "message": "Please add `const`.",
       "revId": "32ee5bd9a619ee76a465d69b549dfc99b92e8804",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7710190d_e0f6dcdf",
+        "filename": "source/row_lasx.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1939,
+      "author": {
+        "id": 1532462
+      },
+      "writtenOn": "2026-08-31T07:58:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ffbf3d2d_4a605364",
+      "revId": "32ee5bd9a619ee76a465d69b549dfc99b92e8804",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
