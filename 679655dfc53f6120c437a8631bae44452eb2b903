@@ -109,6 +109,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d062d042_725405a2",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 1184,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-08-31T16:57:27Z",
+      "side": 1,
+      "message": "Sidu: I believe all the changes to source/scale_common.cc in this CL were made obsolete by Frank\u0027s CL https://chromium-review.googlesource.com/c/libyuv/libyuv/+/8308575. Could you please double check?",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a3447017_da7f7946",
         "filename": "source/scale_uv.cc",
         "patchSetId": 6
