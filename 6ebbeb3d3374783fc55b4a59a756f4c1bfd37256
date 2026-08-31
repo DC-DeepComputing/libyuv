@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7dc216c3_ddaecb1b",
+        "filename": "source/scale_rvv.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-31T18:50:55Z",
+      "side": 1,
+      "message": "no the caller passes stride without knowing the filter.  this is the kFilterNone that is rarely used point sampling.  Usually bilinear would use stride to get to the next row.",
+      "parentUuid": "ada234ae_78af2168",
+      "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8c7c88aa_4236a324",
@@ -49,6 +67,24 @@
       "side": 1,
       "message": "It would also be good to look into why this wasn\u0027t caught by tests built with --copt\u003d-fsanitize\u003dalignment --copt\u003d-fsanitize-trap\u003dalignment.\n\nIf this is intentional (for example, if `src` and `dst` are only used with intrinsics functions that allow unaligned access), please add a comment.",
       "parentUuid": "8c7c88aa_4236a324",
+      "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c110033_3c4ac8b3",
+        "filename": "source/scale_rvv.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-08-31T18:50:55Z",
+      "side": 1,
+      "message": "I think its a minimum allocation alignment of 4?  the ubsan ran --copt\u003d-fsanitize\u003dalignment \nin the external bug report/fix they only changed the call to this funcion.\npreviously i cast to int64 as an optimization to read 8 bytes, which is larger than ARGB.\n\nThis function is now the same as linear, doing a __riscv_vlseg2e32_v_u32m4\n\nI dont have a good way to benchmark on real hardware at the moment, so I rely on AI for performance estimates.",
+      "parentUuid": "c53362cb_15df9d03",
       "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
