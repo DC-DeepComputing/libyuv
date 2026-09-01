@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8e2812a_715b8b08",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T18:58:56Z",
+      "side": 1,
+      "message": "nit first class formats should usually have a few more things\nnot necessary, but nice to have\n\nFOURCC in include/libyuv/video_common.h\neg\nFOURCC_NV12 \u003d FOURCC(\u0027N\u0027, \u0027V\u0027, \u00271\u0027, \u00272\u0027),\n\ndocumentation\n./docs/formats.md:      FOURCC_NV12 \u003d FOURCC(\u0027N\u0027, \u0027V\u0027, \u00271\u0027, \u00272\u0027),\n\nconvert to/from I420 and ARGB\n./source/convert_to_i420.cc:    case FOURCC_NV12:\n./source/convert_argb.cc:  // General case fallback creates NV12\n./source/convert_to_argb.cc:    case FOURCC_NV12:\n./source/convert_from.cc:    case FOURCC_NV12: {",
+      "revId": "6f0b93c3c329ba1246c003d98b5eedda43a9abcb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
