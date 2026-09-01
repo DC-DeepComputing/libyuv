@@ -1249,6 +1249,23 @@ void MergeUVRow_RVV(const uint8_t* src_u,
 }
 #endif
 
+#ifdef HAS_SWAPUVROW_RVV
+void SwapUVRow_RVV(const uint8_t* src_uv, uint8_t* dst_vu, int width) {
+  size_t w = (size_t)width;
+  do {
+    size_t vl = __riscv_vsetvl_e8m4(w);
+    vuint8m4x2_t v_src = __riscv_vlseg2e8_v_u8m4x2(src_uv, vl);
+    vuint8m4_t v_u = __riscv_vget_v_u8m4x2_u8m4(v_src, 0);
+    vuint8m4_t v_v = __riscv_vget_v_u8m4x2_u8m4(v_src, 1);
+    vuint8m4x2_t v_dst = __riscv_vcreate_v_u8m4x2(v_v, v_u);
+    __riscv_vsseg2e8_v_u8m4x2(dst_vu, v_dst, vl);
+    w -= vl;
+    src_uv += 2 * vl;
+    dst_vu += 2 * vl;
+  } while (w > 0);
+}
+#endif
+
 // ARGB expects first 3 values to contain RGB and 4th value is ignored
 #ifdef HAS_ARGBTOYMATRIXROW_RVV
 void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
