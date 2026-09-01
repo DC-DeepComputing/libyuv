@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27173fe3_70c19659",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T02:49:32Z",
+      "side": 1,
+      "message": "for internal testing we can use `blaze test --config\u003dmpu64 -c fastbuild --copt\u003d-fsanitize\u003dalignment --copt\u003d-fsanitize-trap\u003dalignment //third_party/libyuv:libyuv_test`",
+      "revId": "4166778f29f53ea1b93c1b6ccbe630a5674eba9f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}

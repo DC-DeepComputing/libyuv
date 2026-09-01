@@ -123,6 +123,24 @@
       "parentUuid": "cbd4a5f3_d8972c38",
       "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e82e9a9a_dc22fcf0",
+        "filename": "source/scale_rvv.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T02:49:32Z",
+      "side": 1,
+      "message": "Acknowledged\n\n1. Why uint64_t* failed vs uint32_t*:\nARGB row stride is width * 4. When the image width is odd (e.g. 1281 pixels), the stride is 5124 bytes (which is 4 mod 8). Even if the initial buffer is aligned, odd rows start at 4-byte boundaries,\ncausing 8-byte alignment violations when cast to uint64_t*. In contrast, every ARGB row stride is a multiple of 4 bytes, so row pointers for standard 4-byte aligned ARGB buffers remain 4-byte aligned.\n2. Why -fsanitize\u003dalignment didn\u0027t catch unaligned pointers:\n    • Existing tests allocate with align_buffer_page_end() (64-byte aligned) with 4-byte aligned row strides.\n    • More importantly, Clang\u0027s -fsanitize\u003dalignment checks pointer alignment on C/C++ dereferences (*ptr, ptr[i]), not on raw pointer casts or arguments passed to RVV compiler builtins. In\n    ScaleARGBRowDown2_RVV, src and dst are never dereferenced in C/C++; they are passed directly to __riscv_vlseg2e32 / __riscv_vse32.\n    • The RISC-V Vector architecture (RVV spec §7.3) natively supports unaligned addresses for vector loads and stores, so neither Clang nor QEMU traps when unaligned addresses are passed.\n3. Addressing the uint32_t* cast:\nThe RVV intrinsics for 32-bit elements (vlseg2e32, vse32, vlsseg2e32, etc.) require const uint32_t* / uint32_t* base pointers in \u003criscv_vector.h\u003e. All ARGB RVV kernels in scale_rvv.cc (including\nScaleARGBRowDown2Linear_RVV, ScaleARGBRowDown2Box_RVV, and ScaleARGBRowDownEven_RVV) use (const uint32_t*) for this reason.Per your suggestion, I can add an explicit comment in ScaleARGBRowDown2_RVV\nexplaining that the pointers are cast to uint32_t* to satisfy the RVV e32 intrinsic signatures, and rely on RVV\u0027s native support for unaligned vector memory accesses.",
+      "parentUuid": "3e429b76_66799cf1",
+      "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
