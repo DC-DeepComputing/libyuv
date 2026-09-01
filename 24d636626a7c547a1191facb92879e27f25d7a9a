@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b501a6b_54bfa153",
+        "filename": "source/row_lasx.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1939,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T02:59:42Z",
+      "side": 1,
+      "message": "static const int8_t shuff[128] \u003d {",
+      "revId": "24d636626a7c547a1191facb92879e27f25d7a9a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
