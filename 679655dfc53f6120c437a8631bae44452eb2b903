@@ -144,6 +144,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fbee4f06_baed53f8",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 1184,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T03:41:47Z",
+      "side": 1,
+      "message": "The C versions are fixed.  The RVV is still in review.  https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/8315435",
+      "parentUuid": "89814785_0cdf7c0a",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a3447017_da7f7946",
         "filename": "source/scale_uv.cc",
         "patchSetId": 6
