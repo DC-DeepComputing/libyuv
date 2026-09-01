@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e3d32c19_8d19a76d",
+        "filename": "include/libyuv/convert_from_argb.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T02:58:12Z",
+      "side": 1,
+      "message": "nit ARGB not RGB\n// ARGB to NV16 with matrix. See ArgbConstants at the top of this file for usage.",
+      "revId": "1e4b4256f04770410ba9fdd736189a00011200e3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0b9fdda_15ea635a",
+        "filename": "include/libyuv/convert_from_argb.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 457,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T02:58:12Z",
+      "side": 1,
+      "message": "// ARGB to NV24 with matrix. See ArgbConstants at the top of this file for usage.",
+      "revId": "1e4b4256f04770410ba9fdd736189a00011200e3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0221a26a_2f8886f3",
+        "filename": "unit_test/convert_test.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 2574,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T02:58:12Z",
+      "side": 1,
+      "message": "prefer a test that does all variations\nlibyuv_test --gunit_also_run_disabled_tests \u0027--gunit_filter\u003d*ARGBToNV*\u0027\n[----------] 9 tests from LibYUVConvertTest\n[ RUN      ] LibYUVConvertTest.ARGBToNV12_Any\n[       OK ] LibYUVConvertTest.ARGBToNV12_Any (0 ms)\n[ RUN      ] LibYUVConvertTest.ARGBToNV12_Unaligned\n[       OK ] LibYUVConvertTest.ARGBToNV12_Unaligned (0 ms)\n[ RUN      ] LibYUVConvertTest.ARGBToNV12_Invert\n[       OK ] LibYUVConvertTest.ARGBToNV12_Invert (0 ms)\n[ RUN      ] LibYUVConvertTest.ARGBToNV12_Opt\n[       OK ] LibYUVConvertTest.ARGBToNV12_Opt (0 ms)\n[ RUN      ] LibYUVConvertTest.ARGBToNV21_Any\n[       OK ] LibYUVConvertTest.ARGBToNV21_Any (0 ms)\n[ RUN      ] LibYUVConvertTest.ARGBToNV21_Unaligned\n[       OK ] LibYUVConvertTest.ARGBToNV21_Unaligned (0 ms)\n[ RUN      ] LibYUVConvertTest.ARGBToNV21_Invert\n[       OK ] LibYUVConvertTest.ARGBToNV21_Invert (0 ms)\n[ RUN      ] LibYUVConvertTest.ARGBToNV21_Opt\n[       OK ] LibYUVConvertTest.ARGBToNV21_Opt (0 ms)\n[ RUN      ] LibYUVConvertTest.TestARGBToNV12Matrix\n[       OK ] LibYUVConvertTest.TestARGBToNV12Matrix (0 ms)\n\nps there are little endian versions of both:\nNV61 is little endian version of NV16\nNV42 is little endian version of NV24\nBut I wouldnt suggest adding formats unless theres a real use case, like a camera that supports them.",
+      "revId": "1e4b4256f04770410ba9fdd736189a00011200e3",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
