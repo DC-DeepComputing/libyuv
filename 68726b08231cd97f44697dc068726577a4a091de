@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e63c457_898bdf86",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T03:16:21Z",
+      "side": 1,
+      "message": "nit I\u0027m not a fan of AND 0xFFC0\nIf you treat 0xFFFF as fully white, the 0xFFC0 is a grey and sensitive to rounding down causing\n\nThe existing Convert8To16 would work, if changed to use shift and passed 16 for number of bits.",
+      "revId": "68726b08231cd97f44697dc068726577a4a091de",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
