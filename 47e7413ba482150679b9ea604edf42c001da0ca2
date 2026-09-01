@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c2a4d6f_3ba9d8d4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T23:43:56Z",
+      "side": 1,
+      "message": "Key Performance Takeaways\n  \n  • Speedup over C Reference (row_common.cc:2326-2350):\n  Scalar RV64GC C code averages ~16–22 cycles/pixel.\n  On SiFive X280, expected speedup is ~12× to 16×.\n  On 128-bit RVV cores, expected speedup is ~4× to 6×.\n  • Advantage over I422ToARGBRow_RVV:\n  While AR30 requires extra vector ALU instructions for bitfield packing, it writes memory via a unit-stride vector store (vse32.v), avoiding the 4-\n  component segmented store (vsseg4e8.v) used in ARGB which is significantly more expensive on many RVV cores.\n  • Full Frame Latency (1080p @ 1.5 GHz X280):\n  1920 × 1080 × 1.2  cycles/1.5  GHz ≈ 𝟏.𝟔𝟓  ms per frame (~600 FPS).",
+      "revId": "47e7413ba482150679b9ea604edf42c001da0ca2",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
