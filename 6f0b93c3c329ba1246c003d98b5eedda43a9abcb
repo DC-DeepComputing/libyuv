@@ -16,6 +16,24 @@
       "message": "nit first class formats should usually have a few more things\nnot necessary, but nice to have\n\nFOURCC in include/libyuv/video_common.h\neg\nFOURCC_NV12 \u003d FOURCC(\u0027N\u0027, \u0027V\u0027, \u00271\u0027, \u00272\u0027),\n\ndocumentation\n./docs/formats.md:      FOURCC_NV12 \u003d FOURCC(\u0027N\u0027, \u0027V\u0027, \u00271\u0027, \u00272\u0027),\n\nconvert to/from I420 and ARGB\n./source/convert_to_i420.cc:    case FOURCC_NV12:\n./source/convert_argb.cc:  // General case fallback creates NV12\n./source/convert_to_argb.cc:    case FOURCC_NV12:\n./source/convert_from.cc:    case FOURCC_NV12: {",
       "revId": "6f0b93c3c329ba1246c003d98b5eedda43a9abcb",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c46ddcf_0226e66b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-09-01T20:16:15Z",
+      "side": 1,
+      "message": "Thanks, I will add them to make `Nvxx` \u0026 `Px10` first class format, after the `Px10` CL got merged.",
+      "parentUuid": "f8e2812a_715b8b08",
+      "revId": "6f0b93c3c329ba1246c003d98b5eedda43a9abcb",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ],
   "submitRequirementResults": [
