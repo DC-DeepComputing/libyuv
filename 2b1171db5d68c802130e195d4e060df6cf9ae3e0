@@ -52,6 +52,24 @@
       "parentUuid": "5c511cf7_ecdd3317",
       "revId": "2b1171db5d68c802130e195d4e060df6cf9ae3e0",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d13f086d_c7ddf9a4",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1763,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-09-01T14:07:32Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "1b33cd89_f18ce21c",
+      "revId": "2b1171db5d68c802130e195d4e060df6cf9ae3e0",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
