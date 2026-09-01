@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1fb157f4_c9e0261c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T22:50:31Z",
+      "side": 1,
+      "message": "FYI this CL changed \u0027scale\u0027 to bits for Convert8To16 and added some NV16/NV24 doc and fourcc https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/8339427",
+      "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
