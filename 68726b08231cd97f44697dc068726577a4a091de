@@ -34,6 +34,24 @@
       "parentUuid": "6e63c457_898bdf86",
       "revId": "68726b08231cd97f44697dc068726577a4a091de",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "119b0c56_0a4756a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-09-01T15:05:26Z",
+      "side": 1,
+      "message": "`Convert8To16` with 16 bits replicates (0xAB -\u003e 0xABAB). That is `P016`, not `P010`.\n\n`P010` is 10-bit in a 16-bit word, value in the MSBs, low 6 bits zero:\n  \n1. V4L2: [Data in the 10 high bits, zeros in the 6 low bits](https://docs.kernel.org/userspace-api/media/v4l/pixfmt-yuv-planar.html)\n  \n2. DXGI_FORMAT_P010: [10-bit format that uses 16 bits; lowest 6 bits expected to be 0](https://learn.microsoft.com/en-us/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format)\n  \n3. Media Foundation: [P010 is 10-bit, P016 is 16-bit, same planar layout](https://learn.microsoft.com/en-us/windows/win32/medfound/10-bit-and-16-bit-yuv-video-formats).\n\nChromium‘s `PIXEL_FORMAT_P010LE` also uses that packing. Using `P016` to represent `P010` fails the `VideoFrameConverter` media_unittests.\n\nSo I changed the code to use `Convert8To16Row(1024)` then `MultiplyRow_16(64)` (0xAB -\u003e 0xAB80).",
+      "parentUuid": "1a5299d5_082c547d",
+      "revId": "68726b08231cd97f44697dc068726577a4a091de",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
