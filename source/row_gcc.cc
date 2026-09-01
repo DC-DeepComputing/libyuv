@@ -6215,14 +6215,14 @@ void HalfWidthRow_16To8_AVX512BW(const uint16_t* src_uv,
 // 512 = 9 bits
 // 1024 = 10 bits
 // 4096 = 12 bits
+// 65536 = 16 bits
 void Convert8To16Row_SSE2(const uint8_t* src_y,
                           uint16_t* dst_y,
                           int scale,
                           int width) {
+  const int shift = __builtin_clz(scale) - 15;
   asm volatile(
       "movd        %3,%%xmm2                     \n"
-      "punpcklwd   %%xmm2,%%xmm2                 \n"
-      "pshufd      $0x0,%%xmm2,%%xmm2            \n"
 
       // 32 pixels per loop.
       LABELALIGN
@@ -6232,8 +6232,8 @@ void Convert8To16Row_SSE2(const uint8_t* src_y,
       "punpcklbw   %%xmm0,%%xmm0                 \n"
       "punpckhbw   %%xmm1,%%xmm1                 \n"
       "add         $0x10,%0                      \n"
-      "pmulhuw     %%xmm2,%%xmm0                 \n"
-      "pmulhuw     %%xmm2,%%xmm1                 \n"
+      "psrlw       %%xmm2,%%xmm0                 \n"
+      "psrlw       %%xmm2,%%xmm1                 \n"
       "movdqu      %%xmm0,(%1)                   \n"
       "movdqu      %%xmm1,0x10(%1)               \n"
       "add         $0x20,%1                      \n"
@@ -6242,7 +6242,7 @@ void Convert8To16Row_SSE2(const uint8_t* src_y,
       : "+r"(src_y),  // %0
         "+r"(dst_y),  // %1
         "+r"(width)   // %2
-      : "r"(scale)    // %3
+      : "r"(shift)    // %3
       : "memory", "cc", "xmm0", "xmm1", "xmm2");
 }
 
