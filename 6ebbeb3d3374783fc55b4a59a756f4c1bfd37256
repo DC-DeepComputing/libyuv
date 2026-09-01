@@ -141,6 +141,24 @@
       "parentUuid": "3e429b76_66799cf1",
       "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cba3b51e_43aacb4d",
+        "filename": "source/scale_rvv.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-01T03:23:19Z",
+      "side": 1,
+      "message": "Re the C change\naround clang 18, -O2 unrolls agressively, making the manual unrolling by 2 ineffective if not detrimental.  So I suggest going back to 1 pixel loops.\n\nRe 4 bytes vs 1 int.  This is for ubsan -fsanitize\u003dalignment. Actual hardware prefers int.  But the compiler can likely figure that out.",
+      "parentUuid": "e82e9a9a_dc22fcf0",
+      "revId": "6ebbeb3d3374783fc55b4a59a756f4c1bfd37256",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
