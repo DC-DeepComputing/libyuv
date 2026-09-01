@@ -3252,7 +3252,7 @@ void Convert8To16Row_C(const uint8_t* src_y,
   int x;
   scale *= 0x0101;  // replicates the byte.
   for (x = 0; x < width; ++x) {
-    dst_y[x] = (src_y[x] * scale) >> 16;
+    dst_y[x] = (src_y[x] * (unsigned int)scale) >> 16;
   }
 }
 
