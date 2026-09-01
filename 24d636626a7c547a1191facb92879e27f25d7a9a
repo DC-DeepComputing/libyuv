@@ -16,6 +16,24 @@
       "message": "static const int8_t shuff[128] \u003d {",
       "revId": "24d636626a7c547a1191facb92879e27f25d7a9a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0299e390_ed744c64",
+        "filename": "source/row_lasx.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1939,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-01T03:39:53Z",
+      "side": 1,
+      "message": "Done in patchset 5.",
+      "parentUuid": "4b501a6b_54bfa153",
+      "revId": "24d636626a7c547a1191facb92879e27f25d7a9a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
