@@ -20,6 +20,23 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "66f34dd0_46d3d2c2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 17
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-02T02:27:50Z",
+      "side": 1,
+      "message": "I think this is overall right, but if there were AR30ToI010 it would ideally stay 10 bit+ intermediately.  Its not currently supported.  I010ToAR30 does maintain 2.14 and there are histogram tests to ensure the rounding is symetric and low error.  ARGBToI420 etc for classic webcam applications is typically a screen capture to codec format, and AR30 is not a common screen image format, so there hasnt been demand.  When it comes along, it\u0027ll be slow and higher quality would be good.",
+      "revId": "7cc2de195047984541d7782670ad18c6844d1031",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "e0843c42_659a5e0f",
         "filename": "source/convert_from_argb.cc",
         "patchSetId": 17
