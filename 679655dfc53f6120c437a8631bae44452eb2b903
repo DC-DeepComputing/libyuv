@@ -178,6 +178,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "df114ed0_926f1088",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 6
+      },
+      "lineNbr": 1184,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-09-02T02:20:39Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "9f787ff6_bcdecc8e",
+      "revId": "679655dfc53f6120c437a8631bae44452eb2b903",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a3447017_da7f7946",
