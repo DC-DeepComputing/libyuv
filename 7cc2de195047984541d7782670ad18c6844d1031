@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0843c42_659a5e0f",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 17
+      },
+      "lineNbr": 2152,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-02T02:21:00Z",
+      "side": 1,
+      "message": "this is the most row functions i\u0027ve seen to date, but I\u0027d like to move away from multiple passes when possible\n1. if SME becomes common and fast, instead of doing SME row functions, do SVE2 and call them from SME streaming mode.   But it requires 100% of the row functions to be SVE, not NEON.\n2. make a wrapper in row_common.cc that appears to be a single pass row function, but actually breaks up the row into \u0027TWIDTH\u0027 chunks.\nIn this case, there would be 2 functions.. something like\nARGBToY10, ARGBToUV10\nhere there would be just the 2 rows functions and no row buffer.\n\nDont change anything... thats just an idea, mainly to benefit SME, but it helps performance with with large images.",
+      "revId": "7cc2de195047984541d7782670ad18c6844d1031",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}

@@ -157,6 +157,24 @@
       "parentUuid": "4059e8e3_67dac619",
       "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "346449d0_42aaad02",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 2142,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-02T02:21:00Z",
+      "side": 1,
+      "message": "landed the Multiply_16, which ports it to some missing cpus.\n\nI noted that it is used by a public function that doesnt have a unittest/benchmark, but left it as is.   ConvertToMSBPlane_16_Opt and ConvertToLSBPlane_16_Opt basically shift the 16 bits.\n\nand I8MM checks are fixed",
+      "parentUuid": "4059e8e3_67dac619",
+      "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
