@@ -34,6 +34,57 @@
       "parentUuid": "1fb157f4_c9e0261c",
       "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d81f877_7841d847",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 1883,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-02T01:59:03Z",
+      "side": 1,
+      "message": "should be sufficient to check kCpuHasNeonI8MM:\nif (TestCpuFlag(kCpuHasNeonI8MM)) {\n\ni\u0027ll fix this for other functions.  note that I8MM naming is confusing because this ISA is really just used for 4 way neon dot product where pixels are unsigned and coefficients are signed.",
+      "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78d48548_2c93af61",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 2141,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-02T01:59:03Z",
+      "side": 1,
+      "message": "note the new version takes \u0027bits\u0027 aka 10.  it was implemented as shift most of the time so the lzc was extra complexity/overhead.  The high level Convert8To16Plane accepts either scale or bits and it could be done, but the idea is to simplify the internal functions.",
+      "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "654f5bc3_2a7fc792",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 2142,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-02T01:59:03Z",
+      "side": 1,
+      "message": "note i\u0027m adding more variations of this for avx512, windows, rvv and 32 bit neon.  it wont break but an update is needed to take advantage of the new functions.\ndepending which lands first.  https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/8343467",
+      "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
