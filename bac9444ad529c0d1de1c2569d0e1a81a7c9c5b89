@@ -53,6 +53,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ff059f6_318920da",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 1883,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-09-02T02:07:43Z",
+      "side": 1,
+      "message": "Done, thanks for reminding.",
+      "parentUuid": "6d81f877_7841d847",
+      "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "78d48548_2c93af61",
@@ -70,6 +88,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "185c61fe_daa81f1f",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 2141,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-09-02T02:07:43Z",
+      "side": 1,
+      "message": "Done, replaced.",
+      "parentUuid": "78d48548_2c93af61",
+      "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "654f5bc3_2a7fc792",
@@ -83,6 +119,24 @@
       "writtenOn": "2026-09-02T01:59:03Z",
       "side": 1,
       "message": "note i\u0027m adding more variations of this for avx512, windows, rvv and 32 bit neon.  it wont break but an update is needed to take advantage of the new functions.\ndepending which lands first.  https://chromium-review.git.corp.google.com/c/libyuv/libyuv/+/8343467",
+      "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4059e8e3_67dac619",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 2142,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-09-02T02:07:43Z",
+      "side": 1,
+      "message": "Acknowledged, I can wait for that CL landing, than rebase + modify again...",
+      "parentUuid": "654f5bc3_2a7fc792",
       "revId": "bac9444ad529c0d1de1c2569d0e1a81a7c9c5b89",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
