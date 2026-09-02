@@ -3158,6 +3158,36 @@ TEST_F(LibYUVPlanarTest, SwapUVPlane_Opt) {
   free_aligned_buffer_page_end(dst_pixels_c);
 }
 
+TEST_F(LibYUVPlanarTest, SwapUVPlane_Unaligned) {
+  // Round count up to multiple of 16
+  const int kPixels = benchmark_width_ * benchmark_height_;
+  align_buffer_page_end(src_pixels, kPixels * 2 + 1);
+  align_buffer_page_end(dst_pixels_opt, kPixels * 2 + 1);
+  align_buffer_page_end(dst_pixels_c, kPixels * 2 + 1);
+
+  MemRandomize(src_pixels + 1, kPixels * 2);
+  MemRandomize(dst_pixels_opt + 1, kPixels * 2);
+  MemRandomize(dst_pixels_c + 1, kPixels * 2);
+
+  MaskCpuFlags(disable_cpu_flags_);
+  SwapUVPlane(src_pixels + 1, benchmark_width_ * 2, dst_pixels_c + 1,
+              benchmark_width_ * 2, benchmark_width_, benchmark_height_);
+  MaskCpuFlags(benchmark_cpu_info_);
+
+  for (int i = 0; i < benchmark_iterations_; ++i) {
+    SwapUVPlane(src_pixels + 1, benchmark_width_ * 2, dst_pixels_opt + 1,
+                benchmark_width_ * 2, benchmark_width_, benchmark_height_);
+  }
+
+  for (int i = 0; i < kPixels * 2; ++i) {
+    ASSERT_EQ(dst_pixels_c[i + 1], dst_pixels_opt[i + 1]);
+  }
+
+  free_aligned_buffer_page_end(src_pixels);
+  free_aligned_buffer_page_end(dst_pixels_opt);
+  free_aligned_buffer_page_end(dst_pixels_c);
+}
+
 TEST_F(LibYUVPlanarTest, MergeRGBPlane_Opt) {
   // Round count up to multiple of 16
   const int kPixels = benchmark_width_ * benchmark_height_;
@@ -4800,6 +4830,11 @@ TEST_F(LibYUVPlanarTest, SwapUVRow) {
     if (IS_ALIGNED(kPixels, 16)) {
       SwapUVRow = SwapUVRow_NEON;
     }
+  }
+#endif
+#if defined(HAS_SWAPUVROW_RVV)
+  if (TestCpuFlag(kCpuHasRVV)) {
+    SwapUVRow = SwapUVRow_RVV;
   }
 #endif
 
