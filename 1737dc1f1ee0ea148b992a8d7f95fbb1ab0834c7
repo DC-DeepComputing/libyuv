@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49e8f01c_029990c1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-03T15:29:45Z",
+      "side": 1,
+      "message": "Please update the commit message. It is clear this CL does more than add SwapUVRow_RVV, otherwise you would not need to measure the speedup on Intel, AMD, and Arm CPUs.",
+      "revId": "1737dc1f1ee0ea148b992a8d7f95fbb1ab0834c7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
