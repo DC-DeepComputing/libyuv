@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "25376fe9_165d9d28",
+        "filename": "BUILD.bazel",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-04T21:01:40Z",
+      "side": 1,
+      "message": "Comparing how RVV_COPTS, NEON_COPTS, and SVE_COPTS are used, I wonder why RVV_COPTS has a higher status because it is directly incorporated into ALL_COPTS rather than being added to an ALL_RVV_COPTS variable. Is this intentional?",
+      "revId": "af1aaca84027a69ab25f251ade1bf1714b180d89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
