@@ -34,6 +34,24 @@
       "parentUuid": "25376fe9_165d9d28",
       "revId": "af1aaca84027a69ab25f251ade1bf1714b180d89",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5b23f46_b97992de",
+        "filename": "BUILD.bazel",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-04T21:53:55Z",
+      "side": 1,
+      "message": "My question is: why can ALL_COPTS include RVV_COPTS but cannot include NEON_COPTS and SVE_COPTS?",
+      "parentUuid": "6a455199_16a50d8b",
+      "revId": "af1aaca84027a69ab25f251ade1bf1714b180d89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
