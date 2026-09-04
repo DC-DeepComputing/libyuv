@@ -16,6 +16,24 @@
       "message": "Comparing how RVV_COPTS, NEON_COPTS, and SVE_COPTS are used, I wonder why RVV_COPTS has a higher status because it is directly incorporated into ALL_COPTS rather than being added to an ALL_RVV_COPTS variable. Is this intentional?",
       "revId": "af1aaca84027a69ab25f251ade1bf1714b180d89",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a455199_16a50d8b",
+        "filename": "BUILD.bazel",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-04T21:26:41Z",
+      "side": 1,
+      "message": "if you just mean, it should be lower in the file, sure. I feel like we should emphasis our ARM support, because intel still lags behind, and rvv has yet to prove itself.\n\nif you mean why is it complicated/necessary, on most cpus neon or sse is default, but even using the native compiler, vectors are disabled on most machines.  Thats a major reason for this change.  And the macrh to enable it (rv64gcv) is different for 32 bit and 64 bit.\n\nthis change was blocking some other fixes/benchmarks so its a WIP.  now that we can compile code with cmake, the first issue is a ton of warnings about memset.\nThen test that cmake produces comparable results to ninja and bazel.\nthen run on real hardware or ubsan and clean up rvv code.\n\nFor bazel specifically, this is also a step toward all OS/config supporting --cpu\u003driscv64 and hopefully cross builds that dont require build tools on the target",
+      "parentUuid": "25376fe9_165d9d28",
+      "revId": "af1aaca84027a69ab25f251ade1bf1714b180d89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
