@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f064a2df_4239381f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 21
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1536182
+      },
+      "writtenOn": "2026-09-05T05:29:17Z",
+      "side": 1,
+      "message": "@fbarchard@google.com, thanks for the previous +1. Could you please re-apply your +1 on the latest patch set? Thanks",
+      "revId": "cab1f496ea4c50d02cd1ea737210a599d5d121f1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
