@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "47ff6446_02fa54c2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 21
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-08T22:52:47Z",
+      "side": 1,
+      "message": "  1. MultiplyUVRow_16 and Convert8To16UVRow are redundant and can be removed.                                                                           \n  You can directly use MultiplyRow_16 and Convert8To16Row for both the Y plane and the UV plane. Removing them eliminates ~300 lines of duplicated #if  \n  defined(...) dispatch boilerplate across convert_from_argb.cc:1775, convert_from_argb.cc:2196, and convert_from_argb.cc:2604.                         \n  2. All row functions have all available architectures hooked up correctly with proper SIMD alignment checks and fallback to _Any kernels.             \n  3. Patch Set 21 currently breaks the build in convert_test.cc:1094 because TESTATOBP16TRANSITIVE calls non-existent functions I420ToP010, I422ToP210, \n  and I444ToP410.",
+      "revId": "cab1f496ea4c50d02cd1ea737210a599d5d121f1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "34664f3d_a92b21dc",
         "filename": "source/convert_from_argb.cc",
         "patchSetId": 21
