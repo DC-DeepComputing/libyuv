@@ -37,6 +37,41 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ce905798_67d24388",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 21
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-08T22:55:55Z",
+      "side": 1,
+      "message": "nit Premature CPU flag checks before parameter validation                                                                                         \n                                                                                                                                                        \n  In convert_from_argb.cc:1934, convert_from_argb.cc:2347, and convert_from_argb.cc:2742, the parameter check:                                          \n                                                                                                                                                        \n    if (!src_argb || !dst_y || !dst_uv || !argbconstants || width \u003c\u003d 0 ||                                                                               \n        width \u003e (INT_MAX / 2) || height \u003d\u003d 0 || height \u003d\u003d INT_MIN) {                                                                                    \n      return -1;                                                                                                                                        \n    }                                                                                                                                                   \n                                                                                                                                                        \n  is placed halfway down the function (after ARGBToYMatrixRow and ARGBToUVMatrixRow dispatch, but before Convert8To16Row, MultiplyRow_16, and           \n  MergeUVRow). Moving this check to the very start of each function avoids running unnecessary TestCpuFlag(...) calls when parameters are invalid.",
+      "parentUuid": "47ff6446_02fa54c2",
+      "revId": "cab1f496ea4c50d02cd1ea737210a599d5d121f1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0bcad87e_ed60954e",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 21
+      },
+      "lineNbr": 1933,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-08T22:55:55Z",
+      "side": 1,
+      "message": "nit Premature CPU flag checks before parameter validation                                                                                         \n                                                                                                                                                        \n  In convert_from_argb.cc:1934, convert_from_argb.cc:2347, and convert_from_argb.cc:2742, the parameter check:                                          \n                                                                                                                                                        \n    if (!src_argb || !dst_y || !dst_uv || !argbconstants || width \u003c\u003d 0 ||                                                                               \n        width \u003e (INT_MAX / 2) || height \u003d\u003d 0 || height \u003d\u003d INT_MIN) {                                                                                    \n      return -1;                                                                                                                                        \n    }                                                                                                                                                   \n                                                                                                                                                        \n  is placed halfway down the function (after ARGBToYMatrixRow and ARGBToUVMatrixRow dispatch, but before Convert8To16Row, MultiplyRow_16, and           \n  MergeUVRow). Moving this check to the very start of each function avoids running unnecessary TestCpuFlag(...) calls when parameters are invalid.",
+      "revId": "cab1f496ea4c50d02cd1ea737210a599d5d121f1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "34664f3d_a92b21dc",
         "filename": "source/convert_from_argb.cc",
         "patchSetId": 21
