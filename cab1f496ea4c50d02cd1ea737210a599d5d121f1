@@ -16,6 +16,23 @@
       "message": "@fbarchard@google.com, thanks for the previous +1. Could you please re-apply your +1 on the latest patch set? Thanks",
       "revId": "cab1f496ea4c50d02cd1ea737210a599d5d121f1",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34664f3d_a92b21dc",
+        "filename": "source/convert_from_argb.cc",
+        "patchSetId": 21
+      },
+      "lineNbr": 2172,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-08T22:45:00Z",
+      "side": 1,
+      "message": "is MultiplyUVRow_16 needed?   could MultiplyRow_16 be used instead?",
+      "revId": "cab1f496ea4c50d02cd1ea737210a599d5d121f1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
