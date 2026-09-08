@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b603c975_8da29bde",
+        "filename": "include/libyuv/video_common.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-08T22:37:03Z",
+      "side": 1,
+      "message": "These 10 bit formats seem to have the wrong bits per pixel?  P010 etc takes 16 bits and 4 channels \u003d 64",
+      "revId": "0bbbdb4d4d1c483a70548a99a10a45bb1b30fd46",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
