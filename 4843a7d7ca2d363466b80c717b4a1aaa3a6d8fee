@@ -34,6 +34,24 @@
       "parentUuid": "bd832135_17307777",
       "revId": "4843a7d7ca2d363466b80c717b4a1aaa3a6d8fee",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "098cccff_52eae636",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-08T22:45:39Z",
+      "side": 1,
+      "message": "We are passing these values as `size_t` parameters to functions such as `malloc()` and `memset()`, so these strides and heights cannot be negative.\n\nThe problem with using `int64_t` is that in 32-bit systems it needs to be converted to the 32-bit `size_t` type, but there is no check to ensure the `int64_t` values are \u003c\u003d `SIZE_MAX`. So we might as well use the `size_t` type directly. In these tests the operands are all small constants so their products won\u0027t overflow 32-bit `size_t`, otherwise we would need to exclude these tests in 32-bit builds.",
+      "parentUuid": "1f1407d3_384879a4",
+      "revId": "4843a7d7ca2d363466b80c717b4a1aaa3a6d8fee",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
