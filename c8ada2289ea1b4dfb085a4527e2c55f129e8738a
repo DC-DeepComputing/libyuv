@@ -16,6 +16,24 @@
       "message": "Everything else matches the patterns for Neon and SVE except the new select block here. Why does RISC-V receive special treatment here?",
       "revId": "c8ada2289ea1b4dfb085a4527e2c55f129e8738a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a92a7bff_6d399b1b",
+        "filename": "BUILD.bazel",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-08T18:20:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f02d77f5_ec8568f2",
+      "revId": "c8ada2289ea1b4dfb085a4527e2c55f129e8738a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
