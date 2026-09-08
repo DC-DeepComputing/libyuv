@@ -34,6 +34,24 @@
       "parentUuid": "f02d77f5_ec8568f2",
       "revId": "c8ada2289ea1b4dfb085a4527e2c55f129e8738a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa7a99c7_4394c0f7",
+        "filename": "BUILD.bazel",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-08T20:00:02Z",
+      "side": 1,
+      "message": "Frank: Could you upload a new patchset? Thanks!",
+      "parentUuid": "a92a7bff_6d399b1b",
+      "revId": "c8ada2289ea1b4dfb085a4527e2c55f129e8738a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
