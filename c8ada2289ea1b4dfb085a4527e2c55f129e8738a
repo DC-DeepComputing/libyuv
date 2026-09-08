@@ -70,6 +70,24 @@
       "parentUuid": "fa7a99c7_4394c0f7",
       "revId": "c8ada2289ea1b4dfb085a4527e2c55f129e8738a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9845fbf3_12c0fd6c",
+        "filename": "BUILD.bazel",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-08T20:46:33Z",
+      "side": 1,
+      "message": "Patchset 2 is wrong. BUILD.bazel is the same in patchset 1 and patchset 2. On the other hand, patchset 2 contains unrelated changes to convert_argb_test.cc and planar_test.cc.",
+      "parentUuid": "ab9939d0_84b5209d",
+      "revId": "c8ada2289ea1b4dfb085a4527e2c55f129e8738a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }

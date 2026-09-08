@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bd832135_17307777",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-08T20:46:33Z",
+      "side": 1,
+      "message": "Please cast to `size_t` instead of `int64_t`. The functions expect a `size_t` parameter.\n\nDelete the `int` cast for `sizeof(TYPE_A)`.\n\nNote: If these incorrect casts were added by Antigravity, please update your instructions for the AI tool.",
+      "revId": "4843a7d7ca2d363466b80c717b4a1aaa3a6d8fee",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
