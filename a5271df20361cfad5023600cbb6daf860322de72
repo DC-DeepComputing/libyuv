@@ -16,6 +16,24 @@
       "message": "nits: Commit Message Subject:\n  The title \"DEPS: replace internal python3 usage with DEPS provided one.\" is slightly confusing, as the change replaces system/PATH Python with the DEPS- \n  provided hermetic Python. A title like:\n  │ [build] Use hermetic python3 for script_executable in .gn\n  would match V8\u0027s commit and more accurately reflect what changed, along with a note that gn and buildtools were rolled to support it.\n\n2. Comment in .gn:\n  In .gn, the old comment was retained:\n    # The python interpreter to use by default. On Windows, this will look\n    # for python3.exe and python3.bat.\n    script_executable \u003d \"//third_party/cpython3/host/bin/python3\"\n  Updating it to match Chromium and V8 would be cleaner:\n    # The hermetic Python interpreter to use by default.\n    script_executable \u003d \"//third_party/cpython3/host/bin/python3\"",
       "revId": "a5271df20361cfad5023600cbb6daf860322de72",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7794d85c_aab101dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1552902
+      },
+      "writtenOn": "2026-09-09T00:09:56Z",
+      "side": 1,
+      "message": "Sounds good, done.",
+      "parentUuid": "78cae416_328874f0",
+      "revId": "a5271df20361cfad5023600cbb6daf860322de72",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
