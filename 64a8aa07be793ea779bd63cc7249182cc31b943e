@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4de2eb9_491c3077",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-09T15:58:49Z",
+      "side": 1,
+      "message": "I found that I made the change to the SVE target in https://chromium-review.googlesource.com/c/libyuv/libyuv/+/6405834 for a different reason -- compatibility with gcc 10. (That change was reviewed by George Steed.) Hopefully the change to the SVE target is safe for Chrome\u0027s build system.\n\n(In hindsight I should have ported that change to the other two build systems.)",
+      "revId": "64a8aa07be793ea779bd63cc7249182cc31b943e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3cef0210_b91e23fa",
+        "filename": "BUILD.bazel",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-09T15:58:49Z",
+      "side": 1,
+      "message": "Please remember to make the same change to the BUILD file in Google\u0027s internal repository.",
+      "revId": "64a8aa07be793ea779bd63cc7249182cc31b943e",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
