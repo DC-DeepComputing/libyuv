@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9494b2e4_112d27bd",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 519,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-09T16:53:08Z",
+      "side": 1,
+      "message": "This could be changed to the following:\n\n```\n    for (size_t i \u003d 0; i \u003c (size_t)kStrideA * kHeightA * sizeof(TYPE_A); ++i) {      \\\n```\n\nI wrote a [follow-up CL](https://chromium-review.googlesource.com/c/libyuv/libyuv/+/8383016) for this change.",
+      "revId": "24b6126b0ed5c139476407fc55ec8a601c028aa5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cbf8a7af_445eb21d",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-09T16:53:08Z",
+      "side": 1,
+      "message": "This change (adding `* sizeof(TYPE_B)`) is a bug fix. In the following invocations of this macro, `TYPE_B` is `uint16_t`, so the third argument passed to these two `memset()` calls was too small:\n\n```\nTESTATOB(ARGB, uint8_t, 4, 4, 1, AR64, uint16_t, 4, 4, 1)\nTESTATOB(ARGB, uint8_t, 4, 4, 1, AB64, uint16_t, 4, 4, 1)\nTESTATOB(ABGR, uint8_t, 4, 4, 1, AR64, uint16_t, 4, 4, 1)\nTESTATOB(ABGR, uint8_t, 4, 4, 1, AB64, uint16_t, 4, 4, 1)\n...\nTESTATOB(AR64, uint16_t, 4, 4, 1, AB64, uint16_t, 4, 4, 1)\nTESTATOB(AB64, uint16_t, 4, 4, 1, AR64, uint16_t, 4, 4, 1)\n```",
+      "revId": "24b6126b0ed5c139476407fc55ec8a601c028aa5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "41e56996_e3ac10c4",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 685,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-09T16:53:08Z",
+      "side": 1,
+      "message": "This is missed. I left this alone in my [follow-up CL](https://chromium-review.googlesource.com/c/libyuv/libyuv/+/8383016), i.e., I only aimed for consistency within a macro.",
+      "revId": "24b6126b0ed5c139476407fc55ec8a601c028aa5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
