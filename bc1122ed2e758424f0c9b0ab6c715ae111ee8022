@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71a73568_7c137f8f",
+        "filename": "unit_test/convert_argb_test.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-09T16:57:19Z",
+      "side": 1,
+      "message": "In this macro I only changed the two for loops. Unfortunatelhy clang-format reformatted the whole macro, making it hard to see the actual changes.",
+      "revId": "bc1122ed2e758424f0c9b0ab6c715ae111ee8022",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
