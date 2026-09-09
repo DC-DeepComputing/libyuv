@@ -52,6 +52,24 @@
       "parentUuid": "6a455199_16a50d8b",
       "revId": "af1aaca84027a69ab25f251ade1bf1714b180d89",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b3c4b03_5c544051",
+        "filename": "BUILD.bazel",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-09T01:15:57Z",
+      "side": 1,
+      "message": "Acknowledged.  Should be cleaned up in a followup.  rvv is like neon - vectors. vs riscv is gpr, like arm.  but rvv is disabled by default, so we did need to add an option to enable it, at least for row_rvv.",
+      "parentUuid": "d5b23f46_b97992de",
+      "revId": "af1aaca84027a69ab25f251ade1bf1714b180d89",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
