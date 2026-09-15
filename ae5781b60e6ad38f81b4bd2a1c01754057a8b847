@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2785da25_5c53624f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5089542
+      },
+      "writtenOn": "2026-09-15T01:23:39Z",
+      "side": 1,
+      "message": "FYI frank @fbarchard@google.com, this accout will be suspend in this wednesday (I will leave bytedance this week), if we could finish the review before that, thats perfect, otherwise I will need to use my new chromium account re-upload these two CLs.",
+      "revId": "ae5781b60e6ad38f81b4bd2a1c01754057a8b847",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
