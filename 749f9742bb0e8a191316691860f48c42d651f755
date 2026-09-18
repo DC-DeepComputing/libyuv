@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "071ea4e5_c285e783",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-18T23:39:53Z",
+      "side": 1,
+      "message": "Argh, I forgot to comment about this. What is the correct bug number?",
+      "revId": "749f9742bb0e8a191316691860f48c42d651f755",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
