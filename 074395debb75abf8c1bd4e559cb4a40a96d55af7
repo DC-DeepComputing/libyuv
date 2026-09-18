@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "50386601_db16d7f3",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-18T15:18:16Z",
+      "side": 1,
+      "message": "There are a lot of reformatting changes in this CL. Could you please move the unrelated reformatting changes to a separate CL?",
+      "revId": "074395debb75abf8c1bd4e559cb4a40a96d55af7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0352f6ac_8cd97428",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 633,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-18T15:18:16Z",
+      "side": 1,
+      "message": "This is not reformatted properly. I suggest moving the comment to the previous line:\n\n```\n// Disabled: NEON version is faster for 128 bit vectors.\n// #define HAS_CONVERT16TO8ROW_SVE2\n```",
+      "revId": "074395debb75abf8c1bd4e559cb4a40a96d55af7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94f129ed_a334e1db",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 641,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-18T15:18:16Z",
+      "side": 1,
+      "message": "Similarly, move the comments to separate lines to avoid bad reformatting:\n\n```\n// Disabled: NEON version is faster for 128 bit vectors.\n// #define HAS_HALFROW_16TO8_SVE2\n// Disabled: NEON version is faster for 128 bit vectors.\n// #define HAS_HALFWIDTHROW_16TO8_SVE2\n```",
+      "revId": "074395debb75abf8c1bd4e559cb4a40a96d55af7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "567928af_4d16eb7a",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 2763,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-18T15:18:16Z",
+      "side": 1,
+      "message": "More examples of unrelated reformatting that should be moved to a separate CL.",
+      "revId": "074395debb75abf8c1bd4e559cb4a40a96d55af7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
