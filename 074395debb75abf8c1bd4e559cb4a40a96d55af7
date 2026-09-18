@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b0936d5a_a2a09cd7",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-18T18:38:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "50386601_db16d7f3",
+      "revId": "074395debb75abf8c1bd4e559cb4a40a96d55af7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0352f6ac_8cd97428",
@@ -35,6 +53,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "65c49361_e286ecef",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 633,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-18T18:38:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0352f6ac_8cd97428",
+      "revId": "074395debb75abf8c1bd4e559cb4a40a96d55af7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "94f129ed_a334e1db",
@@ -48,6 +84,24 @@
       "writtenOn": "2026-09-18T15:18:16Z",
       "side": 1,
       "message": "Similarly, move the comments to separate lines to avoid bad reformatting:\n\n```\n// Disabled: NEON version is faster for 128 bit vectors.\n// #define HAS_HALFROW_16TO8_SVE2\n// Disabled: NEON version is faster for 128 bit vectors.\n// #define HAS_HALFWIDTHROW_16TO8_SVE2\n```",
+      "revId": "074395debb75abf8c1bd4e559cb4a40a96d55af7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06d42d3a_dbc9cd29",
+        "filename": "include/libyuv/row.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 641,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-18T18:38:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "94f129ed_a334e1db",
       "revId": "074395debb75abf8c1bd4e559cb4a40a96d55af7",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
