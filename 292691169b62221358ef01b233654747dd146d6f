@@ -24,6 +24,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "55088903_6eb7e770",
+        "filename": "source/row_rvv.cc",
+        "patchSetId": 23
+      },
+      "lineNbr": 1326,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-18T21:25:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7c787d7c_9abe4008",
+      "range": {
+        "startLine": 1326,
+        "startChar": 6,
+        "endLine": 1326,
+        "endChar": 14
+      },
+      "revId": "292691169b62221358ef01b233654747dd146d6f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d28686ef_3cf97df2",
@@ -37,6 +61,30 @@
       "writtenOn": "2026-09-18T20:52:02Z",
       "side": 1,
       "message": "memory region should be marked in constraints, in addition to the pointers (I see you\u0027re incrementing them)",
+      "range": {
+        "startLine": 1329,
+        "startChar": 23,
+        "endLine": 1329,
+        "endChar": 34
+      },
+      "revId": "292691169b62221358ef01b233654747dd146d6f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0eb01f4_a58ac4b8",
+        "filename": "source/row_rvv.cc",
+        "patchSetId": 23
+      },
+      "lineNbr": 1329,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-18T21:25:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d28686ef_3cf97df2",
       "range": {
         "startLine": 1329,
         "startChar": 23,
@@ -70,6 +118,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8518885_e56cd858",
+        "filename": "source/row_rvv.cc",
+        "patchSetId": 23
+      },
+      "lineNbr": 1333,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-18T21:25:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d53f42e0_74e544e8",
+      "range": {
+        "startLine": 1333,
+        "startChar": 23,
+        "endLine": 1333,
+        "endChar": 35
+      },
+      "revId": "292691169b62221358ef01b233654747dd146d6f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "701e8376_830b5965",
@@ -83,6 +155,30 @@
       "writtenOn": "2026-09-18T20:52:02Z",
       "side": 1,
       "message": "once they\u0027re marked, don\u0027t clobber memory any more",
+      "range": {
+        "startLine": 1344,
+        "startChar": 8,
+        "endLine": 1344,
+        "endChar": 16
+      },
+      "revId": "292691169b62221358ef01b233654747dd146d6f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ee50f1c_a9eb4456",
+        "filename": "source/row_rvv.cc",
+        "patchSetId": 23
+      },
+      "lineNbr": 1344,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-18T21:25:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "701e8376_830b5965",
       "range": {
         "startLine": 1344,
         "startChar": 8,
