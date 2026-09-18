@@ -253,7 +253,7 @@ static bool have_feature(const char* feature) {
   if (sysctlbyname(feature, &feature_present, &size, NULL, 0) != 0) {
     return false;
   }
-  return feature_present;
+  return feature_present > 0;
 }
 
 // For AArch64, but public to allow testing on any CPU.
@@ -265,7 +265,13 @@ LIBYUV_API SAFEBUFFERS int AArch64CpuCaps() {
     features |= kCpuHasNeonDotProd;
     if (have_feature("hw.optional.arm.FEAT_I8MM")) {
       features |= kCpuHasNeonI8MM;
-      if (have_feature("hw.optional.arm.FEAT_SME")) {
+      // An Apple processor may have SME hardware (e.g. A18/A19), but the XNU
+      // kernel only enables EL0 execution if sme_max_svl_b > 0.
+      // macOS and iPadOS (e.g. on M4) support and enable user-mode SME, but iOS
+      // disables user-mode SME, which causes SMSTART to trigger an
+      // EXC_BAD_INSTRUCTION fault.
+      if (have_feature("hw.optional.arm.sme_max_svl_b") &&
+          have_feature("hw.optional.arm.FEAT_SME")) {
         features |= kCpuHasSME;
         if (have_feature("hw.optional.arm.FEAT_SME2")) {
           features |= kCpuHasSME2;
