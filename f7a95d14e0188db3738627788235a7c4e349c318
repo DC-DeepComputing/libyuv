@@ -16,6 +16,24 @@
       "message": "Please add `\u003e 0` (or `!\u003d 0`) back for the \"hw.optional.arm.sme_max_svl_b\" case. Otherwise I am worried that some sanitizer may complain that we are converting the value 64 to `bool`.",
       "revId": "f7a95d14e0188db3738627788235a7c4e349c318",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e80611c_e0019c18",
+        "filename": "source/cpu_id.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-18T22:53:36Z",
+      "side": 1,
+      "message": "Done.  ya i would worry that 256 byte vectors could return \u0027false\u0027 as bool.",
+      "parentUuid": "7c1af3c8_65290c27",
+      "revId": "f7a95d14e0188db3738627788235a7c4e349c318",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
