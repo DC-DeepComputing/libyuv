@@ -34,6 +34,24 @@
       "parentUuid": "7c1af3c8_65290c27",
       "revId": "f7a95d14e0188db3738627788235a7c4e349c318",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "342df79c_6e92a4f7",
+        "filename": "source/cpu_id.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-18T23:38:31Z",
+      "side": 1,
+      "message": "Good point about 256 being truncated to `false`. Not sure if that\u0027s how `int64_t` is converted to `bool`, but it is best to avoid this altogether.",
+      "parentUuid": "7e80611c_e0019c18",
+      "revId": "f7a95d14e0188db3738627788235a7c4e349c318",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
