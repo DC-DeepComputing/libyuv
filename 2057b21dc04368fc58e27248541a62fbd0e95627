@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fcfdc708_1dff7f54",
+        "filename": "source/cpu_id.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-18T17:23:50Z",
+      "side": 1,
+      "message": "The Apple documentation cited at line 250 says:\n\n\u003e Implemented features have a parameter value of 1. Features that aren’t implemented have a parameter value of 0. Non-existent features return an error.\n\nTherefore, the `\u003e 0` check should not be necessary. Is it really necessary to add `\u003e 0`?\n\nUpdate: I see the `\u003e 0` check is apparently intended to handle sme_max_svl_b, which is greater than 1. I probably would add a separate function to get the value of sme_max_svl_b because its value isn\u0027t a boolean.\n\nIf you want to keep it simple and just use this function, please add a comment that if feature is \"hw.optional.arm.sme_max_svl_b\", this function returns whether the value of sme_max_svl_b is nonzero.\n\nI also suggest linking to https://github.com/pytorch/cpuinfo/pull/433 or https://github.com/pytorch/cpuinfo/issues/432 in the comment or in the commit message.",
+      "revId": "2057b21dc04368fc58e27248541a62fbd0e95627",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
