@@ -91,6 +91,7 @@ extern "C" {
 #define HAS_SCALEADDROW_AVX2
 #define HAS_SCALEROWDOWN2_AVX2
 #define HAS_SCALEROWDOWN4_AVX2
+#define HAS_SCALEUVADDCOLS1_BOX3_AVX2
 #endif
 
 // The following are available on Neon platforms:
@@ -813,6 +814,10 @@ void ScaleRowDown38_2_Box_Any_SSSE3(const uint8_t* src_ptr,
 
 void ScaleAddRow_SSE2(const uint8_t* src_ptr, uint16_t* dst_ptr, int src_width);
 void ScaleAddRow_AVX2(const uint8_t* src_ptr, uint16_t* dst_ptr, int src_width);
+void ScaleUVAddCols1_Box3_AVX2(int dst_width,
+                               int scaleval,
+                               const uint16_t* src_uv,
+                               uint8_t* dst_uv);
 void ScaleAddRow_Any_SSE2(const uint8_t* src_ptr,
                           uint16_t* dst_ptr,
                           int src_width);
