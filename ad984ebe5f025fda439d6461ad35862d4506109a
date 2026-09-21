@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c10d7e03_6b058026",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1234564
+      },
+      "writtenOn": "2026-09-21T11:12:56Z",
+      "side": 1,
+      "message": "\\o usually I would not say this matters but scaling from 1080p to 360p in simulcast might be an actual use-case.\n\nNote that this makes performance *worse* (~34%) so vectorization is needed in the chained CL to bring the regression back to 3%.\n\nFor some reason this is very visible on typical swedish sceneries involving houses painted in red with white bars around the windows. sprang@ has a great one as part of the webrtc repo",
+      "revId": "ad984ebe5f025fda439d6461ad35862d4506109a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
