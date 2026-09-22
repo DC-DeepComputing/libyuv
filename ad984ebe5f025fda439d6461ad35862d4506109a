@@ -16,6 +16,40 @@
       "message": "\\o usually I would not say this matters but scaling from 1080p to 360p in simulcast might be an actual use-case.\n\nNote that this makes performance *worse* (~34%) so vectorization is needed in the chained CL to bring the regression back to 3%.\n\nFor some reason this is very visible on typical swedish sceneries involving houses painted in red with white bars around the windows. sprang@ has a great one as part of the webrtc repo",
       "revId": "ad984ebe5f025fda439d6461ad35862d4506109a",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1275c58_fe50b0ba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-22T19:36:09Z",
+      "side": 1,
+      "message": "overall ok, but 34% slower due to missing row/col functions.\n(note i plan to change scaleplane row functions to avx512 in near future or today)\n\nmissing unittest.  eg libyuv_unittest --gunit_filter\u003d*UVScaleBox*",
+      "revId": "ad984ebe5f025fda439d6461ad35862d4506109a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "560e9005_039127a2",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-22T19:36:09Z",
+      "side": 1,
+      "message": "Avoid src_cols truncation — use src_width * 2 directly (like ScalePlaneBox in source/scale.cc:877).\n\nBecause dx \u003d FixedDiv(src_width, dst_width) \u003d (src_width \u003c\u003c 16) / dst_width truncates toward zero, whenever (src_width \u003c\u003c 16) is not evenly divisible by dst_width, dst_width * dx is\n(src_width \u003c\u003c 16) - remainder, which makes src_cols \u003d (dst_width * dx) \u003e\u003e 16 evaluate to src_width - 1 (an odd number).\n\nFor example, with 720p chroma (src_width \u003d 640) scaled to 214x120 (By3Rounded) or 106x60 (By6):\n\n• src_width * 2 \u003d 1280 is 32-byte aligned (IS_ALIGNED(1280, 32) is true), so ScaleAddRow uses ScaleAddRow_AVX2 / ScaleAddRow_SSE2 / ScaleAddRow_NEON.\n• src_cols becomes 639, so row_samples \u003d 1278 (1278 % 16 \u003d\u003d 14), which breaks 16/32-byte SIMD alignment and forces ScaleAddRow_Any_* on every source row just to avoid accumulating 1\ntrailing UV pair (2 bytes).\n\nSince ScaleUVBox is only called when clip_x \u003d\u003d 0, we can remove src_cols and use const int row_samples \u003d src_width * 2; directly:\n\n    const int row_samples \u003d src_width * 2;\n    {\n      // Row accumulator, two uint16_t per source pixel.\n      align_buffer_64(row16, row_samples * 2);",
+      "revId": "ad984ebe5f025fda439d6461ad35862d4506109a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
