@@ -155,6 +155,7 @@ void ARGBToAR64Row_RVV(const uint8_t* src_argb, uint16_t* dst_ar64, int width) {
       "vwcvtu.x.x.v v8, v16                      \n"
       "vsetvli     zero, zero, e16, m4, ta, ma   \n"
       "vmul.vx     v8, v8, %[k0101]              \n"
+      // dst_ar64 is uint16_t*, naturally 2-byte aligned.
       "vse16.v     v8, (%[dst_ar64])             \n"
       "sub         %[w], %[w], %[vl]             \n"
       "add         %[src_argb], %[src_argb], %[vl]\n"
@@ -186,6 +187,7 @@ void ARGBToAB64Row_RVV(const uint8_t* src_argb, uint16_t* dst_ab64, int width) {
       "vmul.vx     v10, v10, %[k0101]            \n"
       "vmul.vx     v12, v12, %[k0101]            \n"
       "vmul.vx     v14, v14, %[k0101]            \n"
+      // dst_ab64 is uint16_t*, naturally 2-byte aligned.
       "vsseg4e16.v v8, (%[dst_ab64])             \n"
       "sub         %[w], %[w], %[vl]             \n"
       "slli        %[vl], %[vl], 2               \n"
@@ -211,6 +213,7 @@ void AR64ToARGBRow_RVV(const uint16_t* src_ar64, uint8_t* dst_argb, int width) {
 
       "1:          \n"
       "vsetvli     %[vl], %[w], e8, m2, ta, ma   \n"
+      // src_ar64 is const uint16_t*, naturally 2-byte aligned.
       "vle16.v     v8, (%[src_ar64])             \n"
       "vnsrl.wi    v16, v8, 8                    \n"
       "vse8.v      v16, (%[dst_argb])            \n"
@@ -236,6 +239,7 @@ void AR64ToAB64Row_RVV(const uint16_t* src_ar64,
   asm volatile(
       "1:          \n"
       "vsetvli     %[vl], %[w], e16, m2, ta, ma  \n"
+      // src_ar64 and dst_ab64 are uint16_t*, naturally 2-byte aligned.
       "vlseg4e16.v v8, (%[src_ar64])             \n"
       "vmv2r.v     v16, v12                      \n"
       "vmv2r.v     v18, v10                      \n"
@@ -263,6 +267,7 @@ void AB64ToARGBRow_RVV(const uint16_t* src_ab64, uint8_t* dst_argb, int width) {
   asm volatile(
       "1:          \n"
       "vsetvli     %[vl], %[w], e8, m1, ta, ma   \n"
+      // src_ab64 is const uint16_t*, naturally 2-byte aligned.
       "vlseg4e16.v v8, (%[src_ab64])             \n"
       "vnsrl.wi    v4, v12, 8                    \n"
       "vnsrl.wi    v5, v10, 8                    \n"
@@ -463,12 +468,15 @@ void ARGBToABGRRow_RVV(const uint8_t* src_argb, uint8_t* dst_abgr, int width) {
 
 #ifdef HAS_ARGBTOBGRAROW_RVV
 void ARGBToBGRARow_RVV(const uint8_t* src_argb, uint8_t* dst_bgra, int width) {
-  size_t vl;
+  size_t vl, vl_b;
   asm volatile(
       "1:          \n"
       "vsetvli     %[vl], %[w], e32, m4, ta, ma  \n"
-      "vle32.v     v8, (%[src_argb])             \n"
       "sub         %[w], %[w], %[vl]             \n"
+      "slli        %[vl_b], %[vl], 2             \n"
+      "vsetvli     zero, %[vl_b], e8, m4, ta, ma \n"
+      "vle8.v      v8, (%[src_argb])             \n"
+      "vsetvli     zero, %[vl], e32, m4, ta, ma  \n"
       "vsrl.vi     v12, v8, 16                   \n"
       "vsll.vi     v8, v8, 16                    \n"
       "vor.vv      v8, v8, v12                   \n"
@@ -477,15 +485,16 @@ void ARGBToBGRARow_RVV(const uint8_t* src_argb, uint8_t* dst_bgra, int width) {
       "vsrl.vi     v12, v8, 8                    \n"
       "vsll.vi     v8, v8, 8                     \n"
       "vor.vv      v8, v8, v12                   \n"
-      "vse16.v     v8, (%[dst_bgra])             \n"
-      "slli        %[vl], %[vl], 1               \n"
-      "add         %[src_argb], %[src_argb], %[vl]\n"
-      "add         %[dst_bgra], %[dst_bgra], %[vl]\n"
+      "vsetvli     zero, %[vl_b], e8, m4, ta, ma \n"
+      "vse8.v      v8, (%[dst_bgra])             \n"
+      "add         %[src_argb], %[src_argb], %[vl_b]\n"
+      "add         %[dst_bgra], %[dst_bgra], %[vl_b]\n"
       "bgtz        %[w], 1b                      \n"
       : [src_argb] "+r"(src_argb),  // %[src_argb]
         [dst_bgra] "+r"(dst_bgra),  // %[dst_bgra]
         [w] "+r"(width),            // %[w]
-        [vl] "=&r"(vl)              // %[vl]
+        [vl] "=&r"(vl),             // %[vl]
+        [vl_b] "=&r"(vl_b)          // %[vl_b]
       :
       : "vl", "vtype", "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
@@ -494,24 +503,28 @@ void ARGBToBGRARow_RVV(const uint8_t* src_argb, uint8_t* dst_bgra, int width) {
 
 #ifdef HAS_ARGBTORGBAROW_RVV
 void ARGBToRGBARow_RVV(const uint8_t* src_argb, uint8_t* dst_rgba, int width) {
-  size_t vl;
+  size_t vl, vl_b;
   asm volatile(
       "1:          \n"
       "vsetvli     %[vl], %[w], e32, m4, ta, ma  \n"
-      "vle32.v     v8, (%[src_argb])             \n"
+      "sub         %[w], %[w], %[vl]             \n"
+      "slli        %[vl_b], %[vl], 2             \n"
+      "vsetvli     zero, %[vl_b], e8, m4, ta, ma \n"
+      "vle8.v      v8, (%[src_argb])             \n"
+      "vsetvli     zero, %[vl], e32, m4, ta, ma  \n"
       "vsrl.vi     v12, v8, 24                   \n"
       "vsll.vi     v8, v8, 8                     \n"
       "vor.vv      v8, v8, v12                   \n"
-      "vse32.v     v8, (%[dst_rgba])             \n"
-      "sub         %[w], %[w], %[vl]             \n"
-      "slli        %[vl], %[vl], 2               \n"
-      "add         %[src_argb], %[src_argb], %[vl]\n"
-      "add         %[dst_rgba], %[dst_rgba], %[vl]\n"
+      "vsetvli     zero, %[vl_b], e8, m4, ta, ma \n"
+      "vse8.v      v8, (%[dst_rgba])             \n"
+      "add         %[src_argb], %[src_argb], %[vl_b]\n"
+      "add         %[dst_rgba], %[dst_rgba], %[vl_b]\n"
       "bgtz        %[w], 1b                      \n"
       : [src_argb] "+r"(src_argb),  // %[src_argb]
         [dst_rgba] "+r"(dst_rgba),  // %[dst_rgba]
         [w] "+r"(width),            // %[w]
-        [vl] "=&r"(vl)              // %[vl]
+        [vl] "=&r"(vl),             // %[vl]
+        [vl_b] "=&r"(vl_b)          // %[vl_b]
       :
       : "vl", "vtype", "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
@@ -520,24 +533,28 @@ void ARGBToRGBARow_RVV(const uint8_t* src_argb, uint8_t* dst_rgba, int width) {
 
 #ifdef HAS_RGBATOARGBROW_RVV
 void RGBAToARGBRow_RVV(const uint8_t* src_rgba, uint8_t* dst_argb, int width) {
-  size_t vl;
+  size_t vl, vl_b;
   asm volatile(
       "1:          \n"
       "vsetvli     %[vl], %[w], e32, m4, ta, ma  \n"
-      "vle32.v     v8, (%[src_rgba])             \n"
+      "sub         %[w], %[w], %[vl]             \n"
+      "slli        %[vl_b], %[vl], 2             \n"
+      "vsetvli     zero, %[vl_b], e8, m4, ta, ma \n"
+      "vle8.v      v8, (%[src_rgba])             \n"
+      "vsetvli     zero, %[vl], e32, m4, ta, ma  \n"
       "vsrl.vi     v12, v8, 8                    \n"
       "vsll.vi     v8, v8, 24                    \n"
       "vor.vv      v8, v8, v12                   \n"
-      "vse32.v     v8, (%[dst_argb])             \n"
-      "sub         %[w], %[w], %[vl]             \n"
-      "slli        %[vl], %[vl], 2               \n"
-      "add         %[src_rgba], %[src_rgba], %[vl]\n"
-      "add         %[dst_argb], %[dst_argb], %[vl]\n"
+      "vsetvli     zero, %[vl_b], e8, m4, ta, ma \n"
+      "vse8.v      v8, (%[dst_argb])             \n"
+      "add         %[src_rgba], %[src_rgba], %[vl_b]\n"
+      "add         %[dst_argb], %[dst_argb], %[vl_b]\n"
       "bgtz        %[w], 1b                      \n"
       : [src_rgba] "+r"(src_rgba),  // %[src_rgba]
         [dst_argb] "+r"(dst_argb),  // %[dst_argb]
         [w] "+r"(width),            // %[w]
-        [vl] "=&r"(vl)              // %[vl]
+        [vl] "=&r"(vl),             // %[vl]
+        [vl_b] "=&r"(vl_b)          // %[vl_b]
       :
       : "vl", "vtype", "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
@@ -978,13 +995,14 @@ void I422ToAR30Row_RVV(const uint8_t* src_y,
       "vsetvli     zero, zero, e32, m4, ta, ma   \n"
       "vsll.vi     v20, v20, 20                  \n"
       "vor.vv      v16, v16, v20                 \n"
-      "vse32.v     v16, (%[dst_ar30])            \n"
       "sub         %[w], %[w], %[vl]             \n"
       "add         %[src_y], %[src_y], %[vl]     \n"
       "srli        %[k0101], %[vl], 1            \n"
       "add         %[src_u], %[src_u], %[k0101]  \n"
       "add         %[src_v], %[src_v], %[k0101]  \n"
       "slli        %[vl], %[vl], 2               \n"
+      "vsetvli     zero, %[vl], e8, m4, ta, ma   \n"
+      "vse8.v      v16, (%[dst_ar30])            \n"
       "add         %[dst_ar30], %[dst_ar30], %[vl]\n"
       "li          %[k0101], 0x0101              \n"
       "bgtz        %[w], 1b                      \n"
@@ -1689,23 +1707,27 @@ void SwapUVRow_RVV(const uint8_t* src_uv, uint8_t* dst_vu, int width) {
   assert(width != 0);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wvla"
-  size_t vl;
+  size_t vl, vl_b;
   asm("1:          \n"
       "vsetvli     %[vl], %[w], e16, m4, ta, ma  \n"
-      "vle16.v     v8, (%[src_uv])               \n"
+      "sub         %[w], %[w], %[vl]             \n"
+      "slli        %[vl_b], %[vl], 1             \n"
+      "vsetvli     zero, %[vl_b], e8, m4, ta, ma \n"
+      "vle8.v      v8, (%[src_uv])               \n"
+      "vsetvli     zero, %[vl], e16, m4, ta, ma  \n"
       "vsrl.vi     v12, v8, 8                    \n"
       "vsll.vi     v8, v8, 8                     \n"
       "vor.vv      v8, v8, v12                   \n"
-      "vse16.v     v8, (%[dst_vu])               \n"
-      "sub         %[w], %[w], %[vl]             \n"
-      "slli        %[vl], %[vl], 1               \n"
-      "add         %[src_uv], %[src_uv], %[vl]   \n"
-      "add         %[dst_vu], %[dst_vu], %[vl]   \n"
+      "vsetvli     zero, %[vl_b], e8, m4, ta, ma \n"
+      "vse8.v      v8, (%[dst_vu])               \n"
+      "add         %[src_uv], %[src_uv], %[vl_b] \n"
+      "add         %[dst_vu], %[dst_vu], %[vl_b] \n"
       "bgtz        %[w], 1b                      \n"
       : [src_uv] "+r"(src_uv),  // %[src_uv]
         [dst_vu] "+r"(dst_vu),  // %[dst_vu]
         [w] "+r"(width),        // %[w]
         [vl] "=&r"(vl),         // %[vl]
+        [vl_b] "=&r"(vl_b),     // %[vl_b]
         "=m"(*(uint8_t (*)[width * 2]) dst_vu)
       : "m"(*(const uint8_t (*)[width * 2]) src_uv)
       : "vl", "vtype", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15");
@@ -2341,24 +2363,27 @@ void ARGBMultiplyRow_RVV(const uint8_t* src_argb,
 void ARGBExtractAlphaRow_RVV(const uint8_t* src_argb,
                              uint8_t* dst_a,
                              int width) {
-  int vl;
+  int vl, vl_b;
   asm volatile(
       "1:          \n"
       "vsetvli     %[vl], %[w], e16, m2, ta, ma  \n"
-      "vle32.v     v8, (%[src_argb])             \n"
+      "sub         %[w], %[w], %[vl]             \n"
+      "slli        %[vl_b], %[vl], 2             \n"
+      "vsetvli     zero, %[vl_b], e8, m4, ta, ma \n"
+      "vle8.v      v8, (%[src_argb])             \n"
+      "add         %[src_argb], %[src_argb], %[vl_b]\n"
+      "vsetvli     zero, %[vl], e16, m2, ta, ma  \n"
       "vnsrl.wi    v16, v8, 16                   \n"
       "vsetvli     zero, zero, e8, m1, ta, ma    \n"
       "vnsrl.wi    v8, v16, 8                    \n"
       "vse8.v      v8, (%[dst_a])                \n"
-      "sub         %[w], %[w], %[vl]             \n"
       "add         %[dst_a], %[dst_a], %[vl]     \n"
-      "slli        %[vl], %[vl], 2               \n"
-      "add         %[src_argb], %[src_argb], %[vl]\n"
       "bgtz        %[w], 1b                      \n"
       : [src_argb] "+r"(src_argb),  // %[src_argb]
         [dst_a] "+r"(dst_a),        // %[dst_a]
         [w] "+r"(width),            // %[w]
-        [vl] "=&r"(vl)              // %[vl]
+        [vl] "=&r"(vl),             // %[vl]
+        [vl_b] "=&r"(vl_b)          // %[vl_b]
       :
       : "vl", "vtype", "memory", "v8", "v9", "v10", "v11", "v16", "v17");
 }
@@ -2397,6 +2422,7 @@ void Convert16To8Row_RVV(const uint16_t* src_y,
   asm volatile(
       "1:          \n"
       "vsetvli     %[vl], %[w], e8, m2, ta, ma   \n"
+      // src_y is const uint16_t*, naturally 2-byte aligned.
       "vle16.v     v8, (%[src_y])                \n"
       "vnsrl.wx    v16, v8, %[shift]             \n"
       "vse8.v      v16, (%[dst_y])               \n"
@@ -2433,6 +2459,7 @@ void Convert8To16Row_RVV(const uint8_t* src_y,
       "vsetvli     zero, zero, e16, m4, ta, ma   \n"
       "vmul.vx     v8, v8, %[k0101]              \n"
       "vsrl.vx     v8, v8, %[shift]              \n"
+      // dst_y is uint16_t*, naturally 2-byte aligned.
       "vse16.v     v8, (%[dst_y])                \n"
       "sub         %[w], %[w], %[vl]             \n"
       "add         %[src_y], %[src_y], %[vl]     \n"
@@ -2457,6 +2484,7 @@ void MultiplyRow_16_RVV(const uint16_t* src_y,
   asm volatile(
       "1:          \n"
       "vsetvli     %[vl], %[w], e16, m4, ta, ma  \n"
+      // src_y and dst_y are uint16_t*, naturally 2-byte aligned.
       "vle16.v     v8, (%[src_y])                \n"
       "vmul.vx     v8, v8, %[scale]              \n"
       "vse16.v     v8, (%[dst_y])                \n"
@@ -2488,6 +2516,7 @@ void HalfRow_16To8_RVV(const uint16_t* src_uv,
 
       "1:          \n"
       "vsetvli     %[vl], %[w], e16, m4, ta, ma  \n"
+      // src_uv and src_uv1 are const uint16_t*, naturally 2-byte aligned.
       "vle16.v     v8, (%[src_uv])               \n"
       "vle16.v     v12, (%[src_uv1])             \n"
       "vaaddu.vv   v8, v8, v12                   \n"
@@ -2525,6 +2554,7 @@ void HalfWidthRow_16To8_RVV(const uint16_t* src_uv,
 
       "1:          \n"
       "vsetvli     %[vl], %[w], e16, m2, ta, ma  \n"
+      // src_uv is const uint16_t*, naturally 2-byte aligned.
       "vlseg2e16.v v16, (%[s])                   \n"
       "vlseg2e16.v v20, (%[t])                   \n"
       "vwaddu.vv   v8, v16, v18                  \n"
