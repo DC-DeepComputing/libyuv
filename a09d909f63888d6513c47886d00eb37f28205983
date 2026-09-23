@@ -16,6 +16,24 @@
       "message": "I suggest naming this macro MSAN_MEMSET to make it clear that it is intended to appease MSan.",
       "revId": "a09d909f63888d6513c47886d00eb37f28205983",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "399240a4_a1233004",
+        "filename": "source/row_any.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-23T17:17:51Z",
+      "side": 1,
+      "message": "Acknowledged.   But we dont actually enable SIMD when msan is enabled,so near term it could simply be removed.\nThe performance gain for memset alone is small... the win for avoiding _Any is a bit more... up to 40%.\nThe other consideration is use MASK to allocate the temp buffers so they are not overly large.",
+      "parentUuid": "9d4f409f_d3a7e58d",
+      "revId": "a09d909f63888d6513c47886d00eb37f28205983",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
