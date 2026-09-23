@@ -23,6 +23,15 @@ namespace libyuv {
 extern "C" {
 #endif
 
+#if defined(__has_feature)
+#if __has_feature(memory_sanitizer) && !defined(LIBYUV_MSAN)
+#define LIBYUV_MSAN 1
+#endif
+#endif
+#if defined(MEMORY_SANITIZER) && !defined(LIBYUV_MSAN)
+#define LIBYUV_MSAN 1
+#endif
+
 // This module is for Visual C 32/64 bit
 #if !defined(LIBYUV_DISABLE_X86) &&                                 \
     (defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || \
