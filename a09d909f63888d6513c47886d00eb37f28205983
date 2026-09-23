@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d4f409f_d3a7e58d",
+        "filename": "source/row_any.cc",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-23T15:35:59Z",
+      "side": 1,
+      "message": "I suggest naming this macro MSAN_MEMSET to make it clear that it is intended to appease MSan.",
+      "revId": "a09d909f63888d6513c47886d00eb37f28205983",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
