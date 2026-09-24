@@ -5275,18 +5275,6 @@ void NV12ToRGB565Row_Any_AVX2(const uint8_t* y_buf,
                               uint8_t* dst_ptr,
                               const struct YuvConstants* yuvconstants,
                               int width);
-void I422ToRGB24Row_Any_AVX512VBMI(const uint8_t* y_buf,
-                                   const uint8_t* u_buf,
-                                   const uint8_t* v_buf,
-                                   uint8_t* dst_ptr,
-                                   const struct YuvConstants* yuvconstants,
-                                   int width);
-void I422ToRGB24Row_Any_AVX512BW(const uint8_t* y_buf,
-                                 const uint8_t* u_buf,
-                                 const uint8_t* v_buf,
-                                 uint8_t* dst_ptr,
-                                 const struct YuvConstants* yuvconstants,
-                                 int width);
 
 void I400ToARGBRow_C(const uint8_t* src_y,
                      uint8_t* rgb_buf,
