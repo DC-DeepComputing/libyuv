@@ -154,7 +154,7 @@ int main(void) { return 0; }
       include(CheckCSourceCompiles)
       set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
       set(OLD_CMAKE_TRY_COMPILE_TARGET_TYPE ${CMAKE_TRY_COMPILE_TARGET_TYPE})
-      set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} ${RISCV_COMPILER_FLAGS}")
+      set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} ${RISCV_COMPILER_FLAGS} -fno-tree-vectorize -fno-tree-slp-vectorize")
       set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
       check_c_source_compiles("
 int main(void) { return 0; }
@@ -164,8 +164,8 @@ int main(void) { return 0; }
 
       if(CAN_COMPILE_RVV)
         if(NOT CMAKE_C_FLAGS MATCHES "-march=" AND NOT CMAKE_C_FLAGS MATCHES "-mcpu=")
-          set(CMAKE_C_FLAGS "${RISCV_COMPILER_FLAGS} -fno-vectorize -fno-slp-vectorize ${CMAKE_C_FLAGS}")
-          set(CMAKE_CXX_FLAGS "${RISCV_COMPILER_FLAGS} -fno-vectorize -fno-slp-vectorize ${CMAKE_CXX_FLAGS}")
+          set(CMAKE_C_FLAGS "${RISCV_COMPILER_FLAGS} -fno-tree-vectorize -fno-tree-slp-vectorize ${CMAKE_C_FLAGS}")
+          set(CMAKE_CXX_FLAGS "${RISCV_COMPILER_FLAGS} -fno-tree-vectorize -fno-tree-slp-vectorize ${CMAKE_CXX_FLAGS}")
         endif()
       else()
         add_definitions(-DLIBYUV_DISABLE_RVV)
@@ -234,6 +234,9 @@ target_link_libraries	( yuvconvert ${ly_lib_static} )
 # this creates the yuvconstants tool
 add_executable      ( yuvconstants ${ly_base_dir}/util/yuvconstants.c )
 target_link_libraries  ( yuvconstants ${ly_lib_static} )
+if(NOT MSVC)
+  target_link_libraries  ( yuvconstants m )
+endif()
 
 if (NOT LIBYUV_DISABLE_JPEG)
   find_package ( JPEG )
