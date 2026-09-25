@@ -20,6 +20,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bb922999_03bd3592",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-25T16:16:53Z",
+      "side": 1,
+      "message": "In my experience, `-lm` cannot be omitted. Nathan, do you know why we don\u0027t need to link with `-lm` for other CPUs?",
+      "revId": "14ebd47e3f0fc54375a65c12bc5a76b9633074ce",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fb09fc3c_b60d5c25",
         "filename": "CMakeLists.txt",
         "patchSetId": 4
