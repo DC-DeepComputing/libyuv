@@ -9629,6 +9629,241 @@ void CumulativeSumToAverageRow_SSE2(const int32_t* topleft,
 }
 #endif  // HAS_CUMULATIVESUMTOAVERAGEROW_SSE2
 
+#ifdef HAS_COMPUTECUMULATIVESUMROW_AVX512BW
+void ComputeCumulativeSumRow_AVX512BW(const uint8_t* row,
+                                      int32_t* cumsum,
+                                      const int32_t* previous_cumsum,
+                                      int width) {
+  int temp;
+  asm volatile(
+      "vpxord      %%zmm0,%%zmm0,%%zmm0          \n"
+      "vpxord      %%zmm1,%%zmm1,%%zmm1          \n"
+      "sub         $0x8,%3                       \n"
+      "jl          89f                           \n"
+
+      // 8 pixel loop.
+      LABELALIGN
+      "80:         \n"
+      "vpmovzxbd   (%0),%%zmm2                   \n"
+      "vpmovzxbd   0x10(%0),%%zmm5               \n"
+      "lea         0x20(%0),%0                   \n"
+      "valignd     $0xc,%%zmm1,%%zmm2,%%zmm3     \n"
+      "valignd     $0xc,%%zmm1,%%zmm5,%%zmm6     \n"
+      "vpaddd      %%zmm3,%%zmm2,%%zmm2          \n"
+      "vpaddd      %%zmm6,%%zmm5,%%zmm5          \n"
+      "valignd     $0x8,%%zmm1,%%zmm2,%%zmm3     \n"
+      "valignd     $0x8,%%zmm1,%%zmm5,%%zmm6     \n"
+      "vpaddd      %%zmm3,%%zmm2,%%zmm2          \n"
+      "vpaddd      %%zmm6,%%zmm5,%%zmm5          \n"
+      "vshufi32x4  $0xff,%%zmm2,%%zmm2,%%zmm4    \n"
+      "vshufi32x4  $0xff,%%zmm5,%%zmm5,%%zmm7    \n"
+      "vpaddd      (%2),%%zmm2,%%zmm2            \n"
+      "vpaddd      0x40(%2),%%zmm5,%%zmm5        \n"
+      "lea         0x80(%2),%2                   \n"
+      "vpaddd      %%zmm0,%%zmm2,%%zmm2          \n"
+      "vpaddd      %%zmm4,%%zmm0,%%zmm0          \n"
+      "vpaddd      %%zmm0,%%zmm5,%%zmm5          \n"
+      "vpaddd      %%zmm7,%%zmm0,%%zmm0          \n"
+      "vmovdqu32   %%zmm2,(%1)                   \n"
+      "vmovdqu32   %%zmm5,0x40(%1)               \n"
+      "lea         0x80(%1),%1                   \n"
+      "sub         $0x8,%3                       \n"
+      "jge         80b                           \n"
+
+      "89:         \n"
+      "add         $0x4,%3                       \n"
+      "jl          49f                           \n"
+
+      // 4 pixel cleanup.
+      "vpmovzxbd   (%0),%%zmm2                   \n"
+      "lea         0x10(%0),%0                   \n"
+      "valignd     $0xc,%%zmm1,%%zmm2,%%zmm3     \n"
+      "vpaddd      %%zmm3,%%zmm2,%%zmm2          \n"
+      "valignd     $0x8,%%zmm1,%%zmm2,%%zmm3     \n"
+      "vpaddd      %%zmm3,%%zmm2,%%zmm2          \n"
+      "vshufi32x4  $0xff,%%zmm2,%%zmm2,%%zmm4    \n"
+      "vpaddd      (%2),%%zmm2,%%zmm2            \n"
+      "lea         0x40(%2),%2                   \n"
+      "vpaddd      %%zmm0,%%zmm2,%%zmm2          \n"
+      "vpaddd      %%zmm4,%%zmm0,%%zmm0          \n"
+      "vmovdqu32   %%zmm2,(%1)                   \n"
+      "lea         0x40(%1),%1                   \n"
+      "sub         $0x4,%3                       \n"
+
+      "49:         \n"
+      "add         $0x4,%3                       \n"
+      "jz          19f                           \n"
+
+      // 1..3 pixel masked tail.
+      "shl         $0x2,%k3                      \n"
+      "mov         $-1,%k4                       \n"
+      "bzhi        %k3,%k4,%k4                   \n"
+      "kmovw       %k4,%%k1                      \n"
+      "vpmovzxbd   (%0),%%zmm2%{%%k1%}%{z%}      \n"
+      "valignd     $0xc,%%zmm1,%%zmm2,%%zmm3     \n"
+      "vpaddd      %%zmm3,%%zmm2,%%zmm2          \n"
+      "valignd     $0x8,%%zmm1,%%zmm2,%%zmm3     \n"
+      "vpaddd      %%zmm3,%%zmm2,%%zmm2          \n"
+      "vpaddd      (%2),%%zmm2,%%zmm2%{%%k1%}%{z%} \n"
+      "vpaddd      %%zmm0,%%zmm2,%%zmm2          \n"
+      "vmovdqu32   %%zmm2,(%1)%{%%k1%}           \n"
+
+      "19:         \n"
+      "vzeroupper  \n"
+      : "+r"(row),              // %0
+        "+r"(cumsum),           // %1
+        "+r"(previous_cumsum),  // %2
+        "+r"(width),            // %3
+        "=&r"(temp)             // %4
+      :
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
+        "xmm7", "k1");
+}
+#endif  // HAS_COMPUTECUMULATIVESUMROW_AVX512BW
+
+#ifdef HAS_CUMULATIVESUMTOAVERAGEROW_AVX512BW
+static const uint32_t kPermdCumulativeSumToAverage[16] = {
+    0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15};
+
+void CumulativeSumToAverageRow_AVX512BW(const int32_t* topleft,
+                                        const int32_t* botleft,
+                                        int width,
+                                        int area,
+                                        uint8_t* dst,
+                                        int count) {
+  int temp;
+  asm volatile(
+      "vmovd       %6,%%xmm4                     \n"
+      "vcvtdq2ps   %%xmm4,%%xmm4                 \n"
+      "vrcp14ss    %%xmm4,%%xmm4,%%xmm4          \n"
+      "cmp         $0x1,%3                       \n"
+      "je          1f                            \n"
+      "vpbroadcastd %%xmm4,%%zmm4                \n"
+      "sub         $0x10,%3                      \n"
+      "jl          19f                           \n"
+      "vmovdqu64   %7,%%zmm5                     \n"
+
+      // 16 pixel loop
+      LABELALIGN
+      "10:         \n"
+      "vmovdqu32   (%0),%%zmm0                   \n"
+      "vmovdqu32   0x40(%0),%%zmm1               \n"
+      "vmovdqu32   0x80(%0),%%zmm2               \n"
+      "vmovdqu32   0xc0(%0),%%zmm3               \n"
+      "vpsubd      0x00(%0,%5,4),%%zmm0,%%zmm0   \n"
+      "vpsubd      0x40(%0,%5,4),%%zmm1,%%zmm1   \n"
+      "vpsubd      0x80(%0,%5,4),%%zmm2,%%zmm2   \n"
+      "vpsubd      0xc0(%0,%5,4),%%zmm3,%%zmm3   \n"
+      "lea         0x100(%0),%0                  \n"
+      "vmovdqu32   0x00(%1,%5,4),%%zmm6          \n"
+      "vmovdqu32   0x40(%1,%5,4),%%zmm7          \n"
+      "vmovdqu32   0x80(%1,%5,4),%%zmm16         \n"
+      "vmovdqu32   0xc0(%1,%5,4),%%zmm17         \n"
+      "vpsubd      (%1),%%zmm6,%%zmm6            \n"
+      "vpsubd      0x40(%1),%%zmm7,%%zmm7        \n"
+      "vpsubd      0x80(%1),%%zmm16,%%zmm16      \n"
+      "vpsubd      0xc0(%1),%%zmm17,%%zmm17      \n"
+      "lea         0x100(%1),%1                  \n"
+      "vpaddd      %%zmm6,%%zmm0,%%zmm0          \n"
+      "vpaddd      %%zmm7,%%zmm1,%%zmm1          \n"
+      "vpaddd      %%zmm16,%%zmm2,%%zmm2         \n"
+      "vpaddd      %%zmm17,%%zmm3,%%zmm3         \n"
+      "vcvtdq2ps   %%zmm0,%%zmm0                 \n"
+      "vcvtdq2ps   %%zmm1,%%zmm1                 \n"
+      "vcvtdq2ps   %%zmm2,%%zmm2                 \n"
+      "vcvtdq2ps   %%zmm3,%%zmm3                 \n"
+      "vmulps      %%zmm4,%%zmm0,%%zmm0          \n"
+      "vmulps      %%zmm4,%%zmm1,%%zmm1          \n"
+      "vmulps      %%zmm4,%%zmm2,%%zmm2          \n"
+      "vmulps      %%zmm4,%%zmm3,%%zmm3          \n"
+      "vcvtps2dq   %%zmm0,%%zmm0                 \n"
+      "vcvtps2dq   %%zmm1,%%zmm1                 \n"
+      "vcvtps2dq   %%zmm2,%%zmm2                 \n"
+      "vcvtps2dq   %%zmm3,%%zmm3                 \n"
+      "vpackssdw   %%zmm1,%%zmm0,%%zmm0          \n"
+      "vpackssdw   %%zmm3,%%zmm2,%%zmm2          \n"
+      "vpackuswb   %%zmm2,%%zmm0,%%zmm0          \n"
+      "vpermd      %%zmm0,%%zmm5,%%zmm0          \n"
+      "vmovdqu64   %%zmm0,(%2)                   \n"
+      "lea         0x40(%2),%2                   \n"
+      "sub         $0x10,%3                      \n"
+      "jge         10b                           \n"
+
+      "19:         \n"
+      "add         $0xc,%3                       \n"
+      "jl          29f                           \n"
+
+      // 4 pixel loop
+      LABELALIGN
+      "20:         \n"
+      "vmovdqu32   (%0),%%zmm0                   \n"
+      "vpsubd      0x00(%0,%5,4),%%zmm0,%%zmm0   \n"
+      "lea         0x40(%0),%0                   \n"
+      "vmovdqu32   0x00(%1,%5,4),%%zmm6          \n"
+      "vpsubd      (%1),%%zmm6,%%zmm6            \n"
+      "lea         0x40(%1),%1                   \n"
+      "vpaddd      %%zmm6,%%zmm0,%%zmm0          \n"
+      "vcvtdq2ps   %%zmm0,%%zmm0                 \n"
+      "vmulps      %%zmm4,%%zmm0,%%zmm0          \n"
+      "vcvtps2dq   %%zmm0,%%zmm0                 \n"
+      "vpmovusdb   %%zmm0,%%xmm0                 \n"
+      "vmovdqu     %%xmm0,(%2)                   \n"
+      "lea         0x10(%2),%2                   \n"
+      "sub         $0x4,%3                       \n"
+      "jge         20b                           \n"
+
+      "29:         \n"
+      "add         $0x4,%3                       \n"
+      "jz          99f                           \n"
+
+      // 1..3 pixel masked tail.
+      "shl         $0x2,%k3                      \n"
+      "mov         $-1,%k4                       \n"
+      "bzhi        %k3,%k4,%k4                   \n"
+      "kmovw       %k4,%%k1                      \n"
+      "vmovdqu32   (%0),%%zmm0%{%%k1%}%{z%}      \n"
+      "vpsubd      0x00(%0,%5,4),%%zmm0,%%zmm0%{%%k1%} \n"
+      "vpsubd      (%1),%%zmm0,%%zmm0%{%%k1%}    \n"
+      "vpaddd      0x00(%1,%5,4),%%zmm0,%%zmm0%{%%k1%} \n"
+      "vcvtdq2ps   %%zmm0,%%zmm0                 \n"
+      "vmulps      %%zmm4,%%zmm0,%%zmm0          \n"
+      "vcvtps2dq   %%zmm0,%%zmm0                 \n"
+      "vpmovusdb   %%zmm0,%%xmm0                 \n"
+      "vmovdqu8    %%xmm0,(%2)%{%%k1%}           \n"
+      "vzeroupper  \n"
+      "jmp         100f                          \n"
+
+      // 1 pixel fast path (no ZMM / vzeroupper needed).
+      "1:          \n"
+      "vpshufd     $0x0,%%xmm4,%%xmm4            \n"
+      "vmovdqu     (%0),%%xmm0                   \n"
+      "vpsubd      0x00(%0,%5,4),%%xmm0,%%xmm0   \n"
+      "vmovdqu     0x00(%1,%5,4),%%xmm1          \n"
+      "vpsubd      (%1),%%xmm1,%%xmm1            \n"
+      "vpaddd      %%xmm1,%%xmm0,%%xmm0          \n"
+      "vcvtdq2ps   %%xmm0,%%xmm0                 \n"
+      "vmulps      %%xmm4,%%xmm0,%%xmm0          \n"
+      "vcvtps2dq   %%xmm0,%%xmm0                 \n"
+      "vpmovusdb   %%xmm0,%%xmm0                 \n"
+      "vmovd       %%xmm0,(%2)                   \n"
+      "jmp         100f                          \n"
+
+      "99:         \n"
+      "vzeroupper  \n"
+      "100:        \n"
+      : "+r"(topleft),                     // %0
+        "+r"(botleft),                     // %1
+        "+r"(dst),                         // %2
+        "+r"(count),                       // %3
+        "=&r"(temp)                        // %4
+      : "r"((ptrdiff_t)(width)),           // %5
+        "rm"(area),                        // %6
+        "m"(kPermdCumulativeSumToAverage)  // %7
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
+        "xmm7", "xmm16", "xmm17", "k1");
+}
+#endif  // HAS_CUMULATIVESUMTOAVERAGEROW_AVX512BW
+
 #ifdef HAS_ARGBAFFINEROW_SSE2
 // Copy ARGB pixels from source image with slope to a row of destination.
 LIBYUV_API
