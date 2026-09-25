@@ -18,6 +18,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5c7d5800_89e49870",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-25T18:37:37Z",
+      "side": 1,
+      "message": "Done. Updated the commit message to use -DCMAKE_CXX_COMPILER\u003dclang++.",
+      "parentUuid": "ae2d8f5b_792d0bc7",
+      "isAi": true,
+      "revId": "14ebd47e3f0fc54375a65c12bc5a76b9633074ce",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bb922999_03bd3592",
@@ -35,6 +54,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cce1f3e_fda7d9ef",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-25T18:37:37Z",
+      "side": 1,
+      "message": "Because yuvconstants links against ${ly_lib_static} (libyuv.a), which is compiled from C++ sources, CMake promotes yuvconstants\u0027s LINKER_LANGUAGE to CXX and invokes CMAKE_CXX_COMPILER as the linker driver. On Linux, C++ compiler drivers (g++ and clang++) implicitly pass -lstdc++ -lm to ld, whereas C compiler drivers (gcc and clang) do not pass -lm implicitly. Keeping target_link_libraries(yuvconstants m) makes the libm dependency for round() explicit.",
+      "parentUuid": "bb922999_03bd3592",
+      "isAi": true,
+      "revId": "14ebd47e3f0fc54375a65c12bc5a76b9633074ce",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fb09fc3c_b60d5c25",
@@ -48,6 +86,25 @@
       "writtenOn": "2026-09-25T15:57:24Z",
       "side": 1,
       "message": "It is strange to need to link with the Standard C++ Library explicitly. I think this is caused by setting `CMAKE_CXX_COMPILER` to a C compiler (clang). If `CMAKE_CXX_COMPILER` is a C++ compiler, it will take care of linking with the Standard C++ Library when used as the linker.",
+      "revId": "14ebd47e3f0fc54375a65c12bc5a76b9633074ce",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db618b8d_68e936c6",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-25T18:37:37Z",
+      "side": 1,
+      "message": "Done. Removed the explicit stdc++ link from CMakeLists.txt since setting CMAKE_CXX_COMPILER to a C++ compiler (clang++) links the C++ standard library automatically.",
+      "parentUuid": "fb09fc3c_b60d5c25",
+      "isAi": true,
       "revId": "14ebd47e3f0fc54375a65c12bc5a76b9633074ce",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
