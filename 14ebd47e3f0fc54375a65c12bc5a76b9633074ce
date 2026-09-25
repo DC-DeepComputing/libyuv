@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae2d8f5b_792d0bc7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-25T15:57:24Z",
+      "side": 1,
+      "message": "It is uncommon to set `CMAKE_CXX_COMPILER` to a C compiler. Can you set `CMAKE_CXX_COMPILER` to `clang++`?",
+      "revId": "14ebd47e3f0fc54375a65c12bc5a76b9633074ce",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb09fc3c_b60d5c25",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 4
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-09-25T15:57:24Z",
+      "side": 1,
+      "message": "It is strange to need to link with the Standard C++ Library explicitly. I think this is caused by setting `CMAKE_CXX_COMPILER` to a C compiler (clang). If `CMAKE_CXX_COMPILER` is a C++ compiler, it will take care of linking with the Standard C++ Library when used as the linker.",
+      "revId": "14ebd47e3f0fc54375a65c12bc5a76b9633074ce",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
