@@ -2360,32 +2360,36 @@ TEST_F(LibYUVPlanarTest, DISABLED_ARM(ARGBBlur_Opt)) {
   ASSERT_LE(max_diff, 1);
 }
 
-static const int kBlurSmallSize = 5;
+static const int kBlurSmallSize = 1;
 TEST_F(LibYUVPlanarTest, DISABLED_ARM(ARGBBlurSmall_Any)) {
   int max_diff =
-      TestBlur(benchmark_width_ + 1, benchmark_height_, benchmark_iterations_,
-               disable_cpu_flags_, benchmark_cpu_info_, +1, 0, kBlurSmallSize);
+      TestBlur((benchmark_width_ + 3) / 4 + 1, (benchmark_height_ + 3) / 4,
+               benchmark_iterations_, disable_cpu_flags_, benchmark_cpu_info_,
+               +1, 0, kBlurSmallSize);
   ASSERT_LE(max_diff, 1);
 }
 
 TEST_F(LibYUVPlanarTest, DISABLED_ARM(ARGBBlurSmall_Unaligned)) {
   int max_diff =
-      TestBlur(benchmark_width_, benchmark_height_, benchmark_iterations_,
-               disable_cpu_flags_, benchmark_cpu_info_, +1, 1, kBlurSmallSize);
+      TestBlur((benchmark_width_ + 3) / 4, (benchmark_height_ + 3) / 4,
+               benchmark_iterations_, disable_cpu_flags_, benchmark_cpu_info_,
+               +1, 1, kBlurSmallSize);
   ASSERT_LE(max_diff, 1);
 }
 
 TEST_F(LibYUVPlanarTest, DISABLED_ARM(ARGBBlurSmall_Invert)) {
   int max_diff =
-      TestBlur(benchmark_width_, benchmark_height_, benchmark_iterations_,
-               disable_cpu_flags_, benchmark_cpu_info_, -1, 0, kBlurSmallSize);
+      TestBlur((benchmark_width_ + 3) / 4, (benchmark_height_ + 3) / 4,
+               benchmark_iterations_, disable_cpu_flags_, benchmark_cpu_info_,
+               -1, 0, kBlurSmallSize);
   ASSERT_LE(max_diff, 1);
 }
 
 TEST_F(LibYUVPlanarTest, DISABLED_ARM(ARGBBlurSmall_Opt)) {
   int max_diff =
-      TestBlur(benchmark_width_, benchmark_height_, benchmark_iterations_,
-               disable_cpu_flags_, benchmark_cpu_info_, +1, 0, kBlurSmallSize);
+      TestBlur((benchmark_width_ + 3) / 4, (benchmark_height_ + 3) / 4,
+               benchmark_iterations_, disable_cpu_flags_, benchmark_cpu_info_,
+               +1, 0, kBlurSmallSize);
   ASSERT_LE(max_diff, 1);
 }
 
