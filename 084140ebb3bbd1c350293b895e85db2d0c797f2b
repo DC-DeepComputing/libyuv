@@ -18,6 +18,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "94973b76_0b39f13d",
+        "filename": "include/libyuv/scale_row.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1234564
+      },
+      "writtenOn": "2026-09-25T11:25:32Z",
+      "side": 1,
+      "message": "Done (PS6)",
+      "parentUuid": "a6fe80a0_4e01377a",
+      "revId": "084140ebb3bbd1c350293b895e85db2d0c797f2b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "70d62c08_244b85a6",
@@ -35,6 +53,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4927c494_f4ae3bca",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1795,
+      "author": {
+        "id": 1234564
+      },
+      "writtenOn": "2026-09-25T11:25:32Z",
+      "side": 1,
+      "message": "Done in PS7",
+      "parentUuid": "70d62c08_244b85a6",
+      "revId": "084140ebb3bbd1c350293b895e85db2d0c797f2b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e31fbc79_3c0ffade",
@@ -48,6 +84,30 @@
       "writtenOn": "2026-09-22T20:46:54Z",
       "side": 1,
       "message": "Suggest the name ScaleUVAddCols3_AVX2\ncleanest match to third_party/libyuv/files/include/libyuv/scale_row.h:815 and third_party/libyuv/files/source/scale.cc:819)    \n      • AddCols already denotes the box-filter column accumulator pass (the counterpart to ScaleAddRow), and 3 replaces the generic 1/2 suffix to mean \"sum 3 columns\": \n          • Kernel: ScaleUVAddCols3_AVX2 (macro: HAS_SCALEUVADDCOLS3_AVX2)\n          • Tail wrapper: ScaleUVAddCols3_Any_AVX2 (instead of ScaleUVAddCols1_Box3_AVX2_C)\n          • C reference (if added): ScaleUVAddCols3_C",
+      "range": {
+        "startLine": 1803,
+        "startChar": 5,
+        "endLine": 1803,
+        "endChar": 30
+      },
+      "revId": "084140ebb3bbd1c350293b895e85db2d0c797f2b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1588d7a8_41893a27",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 1803,
+      "author": {
+        "id": 1234564
+      },
+      "writtenOn": "2026-09-25T11:25:32Z",
+      "side": 1,
+      "message": "Done (PS6)",
+      "parentUuid": "e31fbc79_3c0ffade",
       "range": {
         "startLine": 1803,
         "startChar": 5,
