@@ -423,6 +423,8 @@ extern "C" {
 #define HAS_HALFROW_16TO8_AVX512BW
 #define HAS_HALFWIDTHROW_16TO8_AVX512BW
 #define HAS_MULTIPLYROW_16_AVX512BW
+#define HAS_COMPUTECUMULATIVESUMROW_AVX512BW
+#define HAS_CUMULATIVESUMTOAVERAGEROW_AVX512BW
 #endif
 
 // The following are available for AVX512 clang x64 platforms:
@@ -587,6 +589,8 @@ extern "C" {
 #if !defined(LIBYUV_DISABLE_NEON) && defined(__aarch64__)
 #define HAS_ABGRTOAR30ROW_NEON
 #define HAS_ARGBTOAR30ROW_NEON
+#define HAS_COMPUTECUMULATIVESUMROW_NEON
+#define HAS_CUMULATIVESUMTOAVERAGEROW_NEON
 #define HAS_I210ALPHATOARGBROW_NEON
 #define HAS_I210TOAR30ROW_NEON
 #define HAS_I210TOARGBROW_NEON
@@ -6609,6 +6613,26 @@ void CumulativeSumToAverageRow_SSE2(const int32_t* topleft,
                                     uint8_t* dst,
                                     int count);
 void ComputeCumulativeSumRow_SSE2(const uint8_t* row,
+                                  int32_t* cumsum,
+                                  const int32_t* previous_cumsum,
+                                  int width);
+void CumulativeSumToAverageRow_AVX512BW(const int32_t* topleft,
+                                        const int32_t* botleft,
+                                        int width,
+                                        int area,
+                                        uint8_t* dst,
+                                        int count);
+void ComputeCumulativeSumRow_AVX512BW(const uint8_t* row,
+                                      int32_t* cumsum,
+                                      const int32_t* previous_cumsum,
+                                      int width);
+void CumulativeSumToAverageRow_NEON(const int32_t* topleft,
+                                    const int32_t* botleft,
+                                    int width,
+                                    int area,
+                                    uint8_t* dst,
+                                    int count);
+void ComputeCumulativeSumRow_NEON(const uint8_t* row,
                                   int32_t* cumsum,
                                   const int32_t* previous_cumsum,
                                   int width);
