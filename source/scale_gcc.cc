@@ -1792,6 +1792,62 @@ void ScaleAddRow_AVX2(const uint8_t* src_ptr,
 }
 #endif  // HAS_SCALEADDROW_AVX2
 
+#ifdef HAS_SCALEUVADDCOLS3_AVX2
+static const ulvec32 kPermUVBox3A = {0, 3, 6, 0, 0, 0, 0, 0};
+static const ulvec32 kPermUVBox3B = {0, 0, 0, 1, 4, 7, 0, 0};
+static const ulvec32 kPermUVBox3C = {0, 0, 0, 0, 0, 0, 2, 5};
+
+// A UV pair is 32 bits, so vpermd can compact every third pair and vpaddw keeps
+// U and V in separate halves. dst_width must be a multiple of 8. Reads 2
+// accumulator entries past the 24 it consumes per iteration.
+void ScaleUVAddCols3_AVX2(int dst_width,
+                          int scaleval,
+                          const uint16_t* src_uv,
+                          uint8_t* dst_uv) {
+  asm volatile(
+      "vmovd        %3,%%xmm7                    \n"
+      "vpbroadcastw %%xmm7,%%ymm7                \n"
+      "vmovdqu      %4,%%ymm4                    \n"
+      "vmovdqu      %5,%%ymm5                    \n"
+      "vmovdqu      %6,%%ymm6                    \n"
+
+      LABELALIGN
+      "1:          \n"
+      "vmovdqu      (%0),%%ymm0                  \n"
+      "vpaddw       0x4(%0),%%ymm0,%%ymm0        \n"
+      "vpaddw       0x8(%0),%%ymm0,%%ymm0        \n"
+      "vmovdqu      0x20(%0),%%ymm1              \n"
+      "vpaddw       0x24(%0),%%ymm1,%%ymm1       \n"
+      "vpaddw       0x28(%0),%%ymm1,%%ymm1       \n"
+      "vmovdqu      0x40(%0),%%ymm2              \n"
+      "vpaddw       0x44(%0),%%ymm2,%%ymm2       \n"
+      "vpaddw       0x48(%0),%%ymm2,%%ymm2       \n"
+      "vpermd       %%ymm0,%%ymm4,%%ymm0         \n"
+      "vpermd       %%ymm1,%%ymm5,%%ymm1         \n"
+      "vpermd       %%ymm2,%%ymm6,%%ymm2         \n"
+      "vpblendd     $0x38,%%ymm1,%%ymm0,%%ymm0   \n"
+      "vpblendd     $0xc0,%%ymm2,%%ymm0,%%ymm0   \n"
+      "vpmulhuw     %%ymm7,%%ymm0,%%ymm0         \n"
+      "vpackuswb    %%ymm0,%%ymm0,%%ymm0         \n"
+      "vextracti128 $1,%%ymm0,%%xmm1             \n"
+      "vpunpcklqdq  %%xmm1,%%xmm0,%%xmm0         \n"
+      "vmovdqu      %%xmm0,(%1)                  \n"
+      "lea          0x60(%0),%0                  \n"
+      "lea          0x10(%1),%1                  \n"
+      "sub          $0x8,%2                      \n"
+      "jg           1b                           \n"
+      "vzeroupper   \n"
+      : "+r"(src_uv),                // %0
+        "+r"(dst_uv),                // %1
+        "+r"(dst_width)              // %2
+      : "r"(scaleval),               // %3
+        "m"(kPermUVBox3A),           // %4
+        "m"(kPermUVBox3B),           // %5
+        "m"(kPermUVBox3C)            // %6
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm4", "xmm5", "xmm6", "xmm7");
+}
+#endif  // HAS_SCALEUVADDCOLS3_AVX2
+
 static const uvec16 kFadd40 = {0x0040, 0x0040, 0x0040, 0x0040,
                                0x0040, 0x0040, 0x0040, 0x0040};
 
