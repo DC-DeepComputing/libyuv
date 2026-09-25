@@ -16,6 +16,24 @@
       "message": "Are you sure we need to initialize `vout` buffers?\n\nWhy didn\u0027t need to initialize `vout` buffers before this CL?",
       "revId": "a12b4561abdddbfbe5cd8313e54837cee4a84637",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "595dc316_12348c24",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-25T20:47:06Z",
+      "side": 1,
+      "message": "in general we do not need to memset in or out buffers.  its because we dont \u0027poison\u0027 out buffers for msan.\nin historical valgrind this was eventually fixed, but msan does not understand inline directly.\n\noutside msan, theres an edge case of subsampled formats, such as YUY2, where width \u003d 1 the second Y is not used.  But its preferable to output a zero instead of random garbage.\n\nuntil now, this memset/msan was disabled, but now we can actually build and run with msan for x86 by leveraging row_win instead.",
+      "parentUuid": "1787ff07_aef8778f",
+      "revId": "a12b4561abdddbfbe5cd8313e54837cee4a84637",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
