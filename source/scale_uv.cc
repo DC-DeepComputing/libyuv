@@ -311,6 +311,31 @@ static void ScaleUVAddCols2_C(int dst_width,
   }
 }
 
+#if defined(HAS_SCALEUVADDCOLS1_BOX3_AVX2)
+static void ScaleUVAddCols1_Box3_AVX2_C(int dst_width,
+                                        int boxheight,
+                                        int x,
+                                        int dx,
+                                        const uint16_t* src_uv,
+                                        uint8_t* dst_uv) {
+  int n = dst_width & ~7;
+  // 255 * boxheight * 3 has to stay inside the 16 bit accumulator.
+  if (boxheight > 85) {
+    ScaleUVAddCols1_C(dst_width, boxheight, x, dx, src_uv, dst_uv);
+    return;
+  }
+  if (n) {
+    ScaleUVAddCols1_Box3_AVX2(n, 65536 / (3 * boxheight),
+                              src_uv + (ptrdiff_t)(x >> 16) * 2, dst_uv);
+  }
+  if (n < dst_width) {
+    ScaleUVAddCols1_C(dst_width - n, boxheight, 0, dx,
+                      src_uv + (ptrdiff_t)((x >> 16) + n * 3) * 2,
+                      dst_uv + (ptrdiff_t)n * 2);
+  }
+}
+#endif
+
 static int ScaleUVBox(int src_width,
                       int src_height,
                       int dst_width,
@@ -328,14 +353,21 @@ static int ScaleUVBox(int src_width,
   // Sized on src_width to keep ScaleAddRow aligned.
   const int row_samples = src_width * 2;
   {
-    // Row accumulator, two uint16_t per source pixel.
-    align_buffer_64(row16, row_samples * 2);
+    // Row accumulator, two uint16_t per source pixel. The last 32 bytes are
+    // padding for the SIMD column kernels, which over-read.
+    align_buffer_64(row16, row_samples * 2 + 32);
     if (!row16)
       return 1;
+    memset(row16, 0, row_samples * 2 + 32);
     {
       void (*ScaleUVAddCols)(int dst_width, int boxheight, int x, int dx,
                              const uint16_t* src_uv, uint8_t* dst_uv) =
           (dx & 0xffff) ? ScaleUVAddCols2_C : ScaleUVAddCols1_C;
+#if defined(HAS_SCALEUVADDCOLS1_BOX3_AVX2)
+      if (!(dx & 0xffff) && (dx >> 16) == 3 && TestCpuFlag(kCpuHasAVX2)) {
+        ScaleUVAddCols = ScaleUVAddCols1_Box3_AVX2_C;
+      }
+#endif
       // Summing a row is position wise, so an interleaved UV row can be fed to
       // the plane accumulator as src_width * 2 samples.
       void (*ScaleAddRow)(const uint8_t* src_ptr, uint16_t* dst_ptr,
