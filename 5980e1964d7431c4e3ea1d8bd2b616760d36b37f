@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0d7c832_a5defd2d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-09-30T02:06:15Z",
+      "side": 1,
+      "message": "without real hardware to test on, i can only guess that this hurts performance on t-head, andres, spacemit, coral and break even on sifive.  So I\u0027m inclined to abandon this change, except the scale down by 4 may be wanted for coral that doesnt support e64 but is ok with vlseg2",
+      "revId": "5980e1964d7431c4e3ea1d8bd2b616760d36b37f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
