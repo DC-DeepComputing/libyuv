@@ -21,103 +21,14 @@ extern "C" {
     (defined(__x86_64__) || defined(__i386__)) && \
     !defined(LIBYUV_ENABLE_ROWWIN)
 
-// Transpose 8x8. 32 or 64 bit, but not NaCL for 64 bit.
 #if defined(HAS_TRANSPOSEWX8_SSSE3)
+#if defined(__x86_64__)
+// Transpose 16x8. 64 bit.
 void TransposeWx8_SSSE3(const uint8_t* src,
                         int src_stride,
                         uint8_t* dst,
                         int dst_stride,
                         int width) {
-  asm volatile(
-      // Read in the data from the source pointer.
-      // First round of bit swap.
-      LABELALIGN
-      "1:          \n"
-      "movq        (%0),%%xmm0                   \n"
-      "movq        (%0,%3),%%xmm1                \n"
-      "lea         (%0,%3,2),%0                  \n"
-      "punpcklbw   %%xmm1,%%xmm0                 \n"
-      "movq        (%0),%%xmm2                   \n"
-      "movdqa      %%xmm0,%%xmm1                 \n"
-      "palignr     $0x8,%%xmm1,%%xmm1            \n"
-      "movq        (%0,%3),%%xmm3                \n"
-      "lea         (%0,%3,2),%0                  \n"
-      "punpcklbw   %%xmm3,%%xmm2                 \n"
-      "movdqa      %%xmm2,%%xmm3                 \n"
-      "movq        (%0),%%xmm4                   \n"
-      "palignr     $0x8,%%xmm3,%%xmm3            \n"
-      "movq        (%0,%3),%%xmm5                \n"
-      "lea         (%0,%3,2),%0                  \n"
-      "punpcklbw   %%xmm5,%%xmm4                 \n"
-      "movdqa      %%xmm4,%%xmm5                 \n"
-      "movq        (%0),%%xmm6                   \n"
-      "palignr     $0x8,%%xmm5,%%xmm5            \n"
-      "movq        (%0,%3),%%xmm7                \n"
-      "lea         (%0,%3,2),%0                  \n"
-      "punpcklbw   %%xmm7,%%xmm6                 \n"
-      "neg         %3                            \n"
-      "movdqa      %%xmm6,%%xmm7                 \n"
-      "lea         0x8(%0,%3,8),%0               \n"
-      "palignr     $0x8,%%xmm7,%%xmm7            \n"
-      "neg         %3                            \n"
-      // Second round of bit swap.
-      "punpcklwd   %%xmm2,%%xmm0                 \n"
-      "punpcklwd   %%xmm3,%%xmm1                 \n"
-      "movdqa      %%xmm0,%%xmm2                 \n"
-      "movdqa      %%xmm1,%%xmm3                 \n"
-      "palignr     $0x8,%%xmm2,%%xmm2            \n"
-      "palignr     $0x8,%%xmm3,%%xmm3            \n"
-      "punpcklwd   %%xmm6,%%xmm4                 \n"
-      "punpcklwd   %%xmm7,%%xmm5                 \n"
-      "movdqa      %%xmm4,%%xmm6                 \n"
-      "movdqa      %%xmm5,%%xmm7                 \n"
-      "palignr     $0x8,%%xmm6,%%xmm6            \n"
-      "palignr     $0x8,%%xmm7,%%xmm7            \n"
-      // Third round of bit swap.
-      // Write to the destination pointer.
-      "punpckldq   %%xmm4,%%xmm0                 \n"
-      "movq        %%xmm0,(%1)                   \n"
-      "movdqa      %%xmm0,%%xmm4                 \n"
-      "palignr     $0x8,%%xmm4,%%xmm4            \n"
-      "movq        %%xmm4,(%1,%4)                \n"
-      "lea         (%1,%4,2),%1                  \n"
-      "punpckldq   %%xmm6,%%xmm2                 \n"
-      "movdqa      %%xmm2,%%xmm6                 \n"
-      "movq        %%xmm2,(%1)                   \n"
-      "palignr     $0x8,%%xmm6,%%xmm6            \n"
-      "punpckldq   %%xmm5,%%xmm1                 \n"
-      "movq        %%xmm6,(%1,%4)                \n"
-      "lea         (%1,%4,2),%1                  \n"
-      "movdqa      %%xmm1,%%xmm5                 \n"
-      "movq        %%xmm1,(%1)                   \n"
-      "palignr     $0x8,%%xmm5,%%xmm5            \n"
-      "movq        %%xmm5,(%1,%4)                \n"
-      "lea         (%1,%4,2),%1                  \n"
-      "punpckldq   %%xmm7,%%xmm3                 \n"
-      "movq        %%xmm3,(%1)                   \n"
-      "movdqa      %%xmm3,%%xmm7                 \n"
-      "palignr     $0x8,%%xmm7,%%xmm7            \n"
-      "sub         $0x8,%2                       \n"
-      "movq        %%xmm7,(%1,%4)                \n"
-      "lea         (%1,%4,2),%1                  \n"
-      "jg          1b                            \n"
-      : "+r"(src),                     // %0
-        "+r"(dst),                     // %1
-        "+r"(width)                    // %2
-      : "r"((ptrdiff_t)(src_stride)),  // %3
-        "r"((ptrdiff_t)(dst_stride))   // %4
-      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
-        "xmm7");
-}
-#endif  // defined(HAS_TRANSPOSEWX8_SSSE3)
-
-// Transpose 16x8. 64 bit
-#if defined(HAS_TRANSPOSEWX8_FAST_SSSE3)
-void TransposeWx8_Fast_SSSE3(const uint8_t* src,
-                             int src_stride,
-                             uint8_t* dst,
-                             int dst_stride,
-                             int width) {
   asm volatile(
       // Read in the data from the source pointer.
       // First round of bit swap.
@@ -252,7 +163,336 @@ void TransposeWx8_Fast_SSSE3(const uint8_t* src,
         "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14",
         "xmm15");
 }
-#endif  // defined(HAS_TRANSPOSEWX8_FAST_SSSE3)
+#else   // defined(__x86_64__)
+// Transpose 8x8. 32 bit.
+void TransposeWx8_SSSE3(const uint8_t* src,
+                        int src_stride,
+                        uint8_t* dst,
+                        int dst_stride,
+                        int width) {
+  asm volatile(
+      // Read in the data from the source pointer.
+      // First round of bit swap.
+      LABELALIGN
+      "1:          \n"
+      "movq        (%0),%%xmm0                   \n"
+      "movq        (%0,%3),%%xmm1                \n"
+      "lea         (%0,%3,2),%0                  \n"
+      "punpcklbw   %%xmm1,%%xmm0                 \n"
+      "movq        (%0),%%xmm2                   \n"
+      "movdqa      %%xmm0,%%xmm1                 \n"
+      "palignr     $0x8,%%xmm1,%%xmm1            \n"
+      "movq        (%0,%3),%%xmm3                \n"
+      "lea         (%0,%3,2),%0                  \n"
+      "punpcklbw   %%xmm3,%%xmm2                 \n"
+      "movdqa      %%xmm2,%%xmm3                 \n"
+      "movq        (%0),%%xmm4                   \n"
+      "palignr     $0x8,%%xmm3,%%xmm3            \n"
+      "movq        (%0,%3),%%xmm5                \n"
+      "lea         (%0,%3,2),%0                  \n"
+      "punpcklbw   %%xmm5,%%xmm4                 \n"
+      "movdqa      %%xmm4,%%xmm5                 \n"
+      "movq        (%0),%%xmm6                   \n"
+      "palignr     $0x8,%%xmm5,%%xmm5            \n"
+      "movq        (%0,%3),%%xmm7                \n"
+      "lea         (%0,%3,2),%0                  \n"
+      "punpcklbw   %%xmm7,%%xmm6                 \n"
+      "neg         %3                            \n"
+      "movdqa      %%xmm6,%%xmm7                 \n"
+      "lea         0x8(%0,%3,8),%0               \n"
+      "palignr     $0x8,%%xmm7,%%xmm7            \n"
+      "neg         %3                            \n"
+      // Second round of bit swap.
+      "punpcklwd   %%xmm2,%%xmm0                 \n"
+      "punpcklwd   %%xmm3,%%xmm1                 \n"
+      "movdqa      %%xmm0,%%xmm2                 \n"
+      "movdqa      %%xmm1,%%xmm3                 \n"
+      "palignr     $0x8,%%xmm2,%%xmm2            \n"
+      "palignr     $0x8,%%xmm3,%%xmm3            \n"
+      "punpcklwd   %%xmm6,%%xmm4                 \n"
+      "punpcklwd   %%xmm7,%%xmm5                 \n"
+      "movdqa      %%xmm4,%%xmm6                 \n"
+      "movdqa      %%xmm5,%%xmm7                 \n"
+      "palignr     $0x8,%%xmm6,%%xmm6            \n"
+      "palignr     $0x8,%%xmm7,%%xmm7            \n"
+      // Third round of bit swap.
+      // Write to the destination pointer.
+      "punpckldq   %%xmm4,%%xmm0                 \n"
+      "movq        %%xmm0,(%1)                   \n"
+      "movdqa      %%xmm0,%%xmm4                 \n"
+      "palignr     $0x8,%%xmm4,%%xmm4            \n"
+      "movq        %%xmm4,(%1,%4)                \n"
+      "lea         (%1,%4,2),%1                  \n"
+      "punpckldq   %%xmm6,%%xmm2                 \n"
+      "movdqa      %%xmm2,%%xmm6                 \n"
+      "movq        %%xmm2,(%1)                   \n"
+      "palignr     $0x8,%%xmm6,%%xmm6            \n"
+      "punpckldq   %%xmm5,%%xmm1                 \n"
+      "movq        %%xmm6,(%1,%4)                \n"
+      "lea         (%1,%4,2),%1                  \n"
+      "movdqa      %%xmm1,%%xmm5                 \n"
+      "movq        %%xmm1,(%1)                   \n"
+      "palignr     $0x8,%%xmm5,%%xmm5            \n"
+      "movq        %%xmm5,(%1,%4)                \n"
+      "lea         (%1,%4,2),%1                  \n"
+      "punpckldq   %%xmm7,%%xmm3                 \n"
+      "movq        %%xmm3,(%1)                   \n"
+      "movdqa      %%xmm3,%%xmm7                 \n"
+      "palignr     $0x8,%%xmm7,%%xmm7            \n"
+      "sub         $0x8,%2                       \n"
+      "movq        %%xmm7,(%1,%4)                \n"
+      "lea         (%1,%4,2),%1                  \n"
+      "jg          1b                            \n"
+      : "+r"(src),                     // %0
+        "+r"(dst),                     // %1
+        "+r"(width)                    // %2
+      : "r"((ptrdiff_t)(src_stride)),  // %3
+        "r"((ptrdiff_t)(dst_stride))   // %4
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
+        "xmm7");
+}
+#endif  // defined(__x86_64__)
+#endif  // defined(HAS_TRANSPOSEWX8_SSSE3)
+
+#if defined(HAS_TRANSPOSEWX16_AVX512VBMI) || \
+    defined(HAS_TRANSPOSEUVWX16_AVX512VBMI)
+static const uvec8 kShufTranspose_AVX512VBMI[8] = {
+    {0, 16, 32, 48, 64, 80, 96, 112, 4, 20, 36, 52, 68, 84, 100, 116},
+    {2, 18, 34, 50, 66, 82, 98, 114, 6, 22, 38, 54, 70, 86, 102, 118},
+    {8, 24, 40, 56, 72, 88, 104, 120, 12, 28, 44, 60, 76, 92, 108, 124},
+    {10, 26, 42, 58, 74, 90, 106, 122, 14, 30, 46, 62, 78, 94, 110, 126},
+    {1, 17, 33, 49, 65, 81, 97, 113, 5, 21, 37, 53, 69, 85, 101, 117},
+    {3, 19, 35, 51, 67, 83, 99, 115, 7, 23, 39, 55, 71, 87, 103, 119},
+    {9, 25, 41, 57, 73, 89, 105, 121, 13, 29, 45, 61, 77, 93, 109, 125},
+    {11, 27, 43, 59, 75, 91, 107, 123, 15, 31, 47, 63, 79, 95, 111, 127}};
+
+// Transpose 16x16 bytes held in 4 lanes of 4 zmm registers.
+// zmm0..zmm3 are 16 source rows. Outputs zmm0..zmm3 are 16 destination rows,
+// lane n of zmm0/zmm2 for dst_a and lane n of zmm1/zmm3 for dst_b.
+#define TRANSPOSE16X16_AVX512VBMI                \
+  "vmovdqa64   %%zmm0,%%zmm4                 \n" \
+  "vpermt2b    %%zmm1,%%zmm6,%%zmm4          \n" \
+  "vpermt2b    %%zmm1,%%zmm7,%%zmm0          \n" \
+  "vmovdqa64   %%zmm2,%%zmm5                 \n" \
+  "vpermt2b    %%zmm3,%%zmm6,%%zmm5          \n" \
+  "vpermt2b    %%zmm3,%%zmm7,%%zmm2          \n" \
+  "vpunpcklqdq %%zmm2,%%zmm0,%%zmm1          \n" \
+  "vpunpckhqdq %%zmm2,%%zmm0,%%zmm3          \n" \
+  "vpunpcklqdq %%zmm5,%%zmm4,%%zmm0          \n" \
+  "vpunpckhqdq %%zmm5,%%zmm4,%%zmm2          \n"
+
+// Transpose 16x16 bytes using 4 lanes of AVX512VBMI with tail masking.
+// Can be used for 8-bit planar transpose (dst_a = even rows, dst_b = odd rows)
+// or 16-bit UV split transpose (dst_a = U plane, dst_b = V plane).
+// TODO(fbarchard): Port to rotate_win.cc using intrinsics.
+// TODO(fbarchard): Use for ARGB (32 bit) and 16 bit channel transposes.
+static void TransposeWx16_Byte_AVX512VBMI(const uint8_t* src,
+                                          int src_stride,
+                                          uint8_t* dst_a,
+                                          int dst_stride_a,
+                                          uint8_t* dst_b,
+                                          int dst_stride_b,
+                                          int byte_width) {
+  uintptr_t temp;
+  asm volatile(
+      "vmovdqa64   (%[shuf]),%%zmm6              \n"
+      "vmovdqa64   0x40(%[shuf]),%%zmm7          \n"
+      "sub         $0x10,%[width]                \n"
+      "jl          2f                            \n"
+
+      // Main loop: 16 source rows x 16 bytes.
+      LABELALIGN
+      "1:          \n"
+      "vmovdqu     (%[src]),%%xmm0               \n"
+      "vinserti32x4 $1,(%[src],%[src_stride]),%%zmm0,%%zmm0 \n"
+      "lea         (%[src],%[src_stride],2),%[temp] \n"
+      "lea         0x10(%[src]),%[src]           \n"
+      "vinserti32x4 $2,(%[temp]),%%zmm0,%%zmm0   \n"
+      "vinserti32x4 $3,(%[temp],%[src_stride]),%%zmm0,%%zmm0 \n"
+      "lea         (%[temp],%[src_stride],2),%[temp] \n"
+      "vmovdqu     (%[temp]),%%xmm1              \n"
+      "vinserti32x4 $1,(%[temp],%[src_stride]),%%zmm1,%%zmm1 \n"
+      "lea         (%[temp],%[src_stride],2),%[temp] \n"
+      "vinserti32x4 $2,(%[temp]),%%zmm1,%%zmm1   \n"
+      "vinserti32x4 $3,(%[temp],%[src_stride]),%%zmm1,%%zmm1 \n"
+      "lea         (%[temp],%[src_stride],2),%[temp] \n"
+      "vmovdqu     (%[temp]),%%xmm2              \n"
+      "vinserti32x4 $1,(%[temp],%[src_stride]),%%zmm2,%%zmm2 \n"
+      "lea         (%[temp],%[src_stride],2),%[temp] \n"
+      "vinserti32x4 $2,(%[temp]),%%zmm2,%%zmm2   \n"
+      "vinserti32x4 $3,(%[temp],%[src_stride]),%%zmm2,%%zmm2 \n"
+      "lea         (%[temp],%[src_stride],2),%[temp] \n"
+      "vmovdqu     (%[temp]),%%xmm3              \n"
+      "vinserti32x4 $1,(%[temp],%[src_stride]),%%zmm3,%%zmm3 \n"
+      "lea         (%[temp],%[src_stride],2),%[temp] \n"
+      "vinserti32x4 $2,(%[temp]),%%zmm3,%%zmm3   \n"
+      "vinserti32x4 $3,(%[temp],%[src_stride]),%%zmm3,%%zmm3 \n"
+
+      TRANSPOSE16X16_AVX512VBMI
+
+      "vmovdqu     %%xmm0,(%[dst_a])             \n"
+      "vmovdqu     %%xmm1,(%[dst_b])             \n"
+      "vextracti32x4 $1,%%zmm0,(%[dst_a],%[dst_stride_a]) \n"
+      "vextracti32x4 $1,%%zmm1,(%[dst_b],%[dst_stride_b]) \n"
+      "lea         (%[dst_a],%[dst_stride_a],2),%[dst_a] \n"
+      "lea         (%[dst_b],%[dst_stride_b],2),%[dst_b] \n"
+      "vmovdqu     %%xmm2,(%[dst_a])             \n"
+      "vmovdqu     %%xmm3,(%[dst_b])             \n"
+      "vextracti32x4 $1,%%zmm2,(%[dst_a],%[dst_stride_a]) \n"
+      "vextracti32x4 $1,%%zmm3,(%[dst_b],%[dst_stride_b]) \n"
+      "lea         (%[dst_a],%[dst_stride_a],2),%[dst_a] \n"
+      "lea         (%[dst_b],%[dst_stride_b],2),%[dst_b] \n"
+      "vextracti32x4 $2,%%zmm0,(%[dst_a])        \n"
+      "vextracti32x4 $2,%%zmm1,(%[dst_b])        \n"
+      "vextracti32x4 $3,%%zmm0,(%[dst_a],%[dst_stride_a]) \n"
+      "vextracti32x4 $3,%%zmm1,(%[dst_b],%[dst_stride_b]) \n"
+      "lea         (%[dst_a],%[dst_stride_a],2),%[dst_a] \n"
+      "lea         (%[dst_b],%[dst_stride_b],2),%[dst_b] \n"
+      "vextracti32x4 $2,%%zmm2,(%[dst_a])        \n"
+      "vextracti32x4 $2,%%zmm3,(%[dst_b])        \n"
+      "vextracti32x4 $3,%%zmm2,(%[dst_a],%[dst_stride_a]) \n"
+      "vextracti32x4 $3,%%zmm3,(%[dst_b],%[dst_stride_b]) \n"
+      "lea         (%[dst_a],%[dst_stride_a],2),%[dst_a] \n"
+      "lea         (%[dst_b],%[dst_stride_b],2),%[dst_b] \n"
+      "sub         $0x10,%[width]                \n"
+      "jge         1b                            \n"
+
+      // Remainder: 1 to 15 bytes, masked loads.
+      "2:          \n"
+      "add         $0x10,%[width]                \n"
+      "je          99f                           \n"
+      "mov         $-1,%k[temp]                  \n"
+      "bzhi        %k[width],%k[temp],%k[temp]   \n"
+      "kmovw       %k[temp],%%k1                 \n"
+      "vmovdqu8    (%[src]),%%xmm0%{%%k1%}%{z%} \n"
+      "vmovdqu8    (%[src],%[src_stride]),%%xmm4%{%%k1%}%{z%} \n"
+      "lea         (%[src],%[src_stride],2),%[src] \n"
+      "vinserti32x4 $1,%%xmm4,%%zmm0,%%zmm0 \n"
+      "vmovdqu8    (%[src]),%%xmm4%{%%k1%}%{z%} \n"
+      "vinserti32x4 $2,%%xmm4,%%zmm0,%%zmm0 \n"
+      "vmovdqu8    (%[src],%[src_stride]),%%xmm4%{%%k1%}%{z%} \n"
+      "lea         (%[src],%[src_stride],2),%[src] \n"
+      "vinserti32x4 $3,%%xmm4,%%zmm0,%%zmm0 \n"
+      "vmovdqu8    (%[src]),%%xmm1%{%%k1%}%{z%} \n"
+      "vmovdqu8    (%[src],%[src_stride]),%%xmm4%{%%k1%}%{z%} \n"
+      "lea         (%[src],%[src_stride],2),%[src] \n"
+      "vinserti32x4 $1,%%xmm4,%%zmm1,%%zmm1 \n"
+      "vmovdqu8    (%[src]),%%xmm4%{%%k1%}%{z%} \n"
+      "vinserti32x4 $2,%%xmm4,%%zmm1,%%zmm1 \n"
+      "vmovdqu8    (%[src],%[src_stride]),%%xmm4%{%%k1%}%{z%} \n"
+      "lea         (%[src],%[src_stride],2),%[src] \n"
+      "vinserti32x4 $3,%%xmm4,%%zmm1,%%zmm1 \n"
+      "vmovdqu8    (%[src]),%%xmm2%{%%k1%}%{z%} \n"
+      "vmovdqu8    (%[src],%[src_stride]),%%xmm4%{%%k1%}%{z%} \n"
+      "lea         (%[src],%[src_stride],2),%[src] \n"
+      "vinserti32x4 $1,%%xmm4,%%zmm2,%%zmm2 \n"
+      "vmovdqu8    (%[src]),%%xmm4%{%%k1%}%{z%} \n"
+      "vinserti32x4 $2,%%xmm4,%%zmm2,%%zmm2 \n"
+      "vmovdqu8    (%[src],%[src_stride]),%%xmm4%{%%k1%}%{z%} \n"
+      "lea         (%[src],%[src_stride],2),%[src] \n"
+      "vinserti32x4 $3,%%xmm4,%%zmm2,%%zmm2 \n"
+      "vmovdqu8    (%[src]),%%xmm3%{%%k1%}%{z%} \n"
+      "vmovdqu8    (%[src],%[src_stride]),%%xmm4%{%%k1%}%{z%} \n"
+      "lea         (%[src],%[src_stride],2),%[src] \n"
+      "vinserti32x4 $1,%%xmm4,%%zmm3,%%zmm3 \n"
+      "vmovdqu8    (%[src]),%%xmm4%{%%k1%}%{z%} \n"
+      "vinserti32x4 $2,%%xmm4,%%zmm3,%%zmm3 \n"
+      "vmovdqu8    (%[src],%[src_stride]),%%xmm4%{%%k1%}%{z%} \n"
+      "lea         (%[src],%[src_stride],2),%[src] \n"
+      "vinserti32x4 $3,%%xmm4,%%zmm3,%%zmm3 \n"
+
+      TRANSPOSE16X16_AVX512VBMI
+
+      // Store 1 destination row per remaining byte.
+      "vmovdqu     %%xmm0,(%[dst_a])             \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vmovdqu     %%xmm1,(%[dst_b])             \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $1,%%zmm0,(%[dst_a],%[dst_stride_a]) \n"
+      "lea         (%[dst_a],%[dst_stride_a],2),%[dst_a] \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $1,%%zmm1,(%[dst_b],%[dst_stride_b]) \n"
+      "lea         (%[dst_b],%[dst_stride_b],2),%[dst_b] \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vmovdqu     %%xmm2,(%[dst_a])             \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vmovdqu     %%xmm3,(%[dst_b])             \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $1,%%zmm2,(%[dst_a],%[dst_stride_a]) \n"
+      "lea         (%[dst_a],%[dst_stride_a],2),%[dst_a] \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $1,%%zmm3,(%[dst_b],%[dst_stride_b]) \n"
+      "lea         (%[dst_b],%[dst_stride_b],2),%[dst_b] \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $2,%%zmm0,(%[dst_a])        \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $2,%%zmm1,(%[dst_b])        \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $3,%%zmm0,(%[dst_a],%[dst_stride_a]) \n"
+      "lea         (%[dst_a],%[dst_stride_a],2),%[dst_a] \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $3,%%zmm1,(%[dst_b],%[dst_stride_b]) \n"
+      "lea         (%[dst_b],%[dst_stride_b],2),%[dst_b] \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $2,%%zmm2,(%[dst_a])        \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $2,%%zmm3,(%[dst_b])        \n"
+      "sub         $0x1,%[width]                 \n"
+      "je          99f                           \n"
+      "vextracti32x4 $3,%%zmm2,(%[dst_a],%[dst_stride_a]) \n"
+
+      "99:         \n"
+      "vzeroupper  \n"
+      : [src] "+r"(src), [dst_a] "+r"(dst_a), [dst_b] "+r"(dst_b),
+        [width] "+r"(byte_width), [temp] "=&r"(temp)
+      : [src_stride] "r"((ptrdiff_t)src_stride),
+        [dst_stride_a] "r"((ptrdiff_t)dst_stride_a),
+        [dst_stride_b] "r"((ptrdiff_t)dst_stride_b),
+        [shuf] "r"(kShufTranspose_AVX512VBMI)
+      : "memory", "cc", "k1", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
+        "xmm6", "xmm7");
+}
+#undef TRANSPOSE16X16_AVX512VBMI
+#endif  // defined(HAS_TRANSPOSEWX16_AVX512VBMI) ||
+        // defined(HAS_TRANSPOSEUVWX16_AVX512VBMI)
+
+#if defined(HAS_TRANSPOSEWX16_AVX512VBMI)
+void TransposeWx16_AVX512VBMI(const uint8_t* src,
+                              int src_stride,
+                              uint8_t* dst,
+                              int dst_stride,
+                              int width) {
+  TransposeWx16_Byte_AVX512VBMI(src, src_stride, dst, dst_stride * 2,
+                                dst + (width > 1 ? dst_stride : 0),
+                                dst_stride * 2, width);
+}
+#endif  // defined(HAS_TRANSPOSEWX16_AVX512VBMI)
+
+#if defined(HAS_TRANSPOSEUVWX16_AVX512VBMI)
+void TransposeUVWx16_AVX512VBMI(const uint8_t* src,
+                                int src_stride,
+                                uint8_t* dst_a,
+                                int dst_stride_a,
+                                uint8_t* dst_b,
+                                int dst_stride_b,
+                                int width) {
+  TransposeWx16_Byte_AVX512VBMI(src, src_stride, dst_a, dst_stride_a, dst_b,
+                                dst_stride_b, width * 2);
+}
+#endif  // defined(HAS_TRANSPOSEUVWX16_AVX512VBMI)
 
 // Transpose UV 8x8.  64 bit.
 #if defined(HAS_TRANSPOSEUVWX8_SSE2)
