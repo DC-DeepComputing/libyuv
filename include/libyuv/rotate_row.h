@@ -21,12 +21,23 @@ namespace libyuv {
 extern "C" {
 #endif
 
-// The following are available for Visual C 32 bit:
-// TODO - port to clangcl on rotate_win
-#if !defined(LIBYUV_DISABLE_X86) && defined(_M_IX86) && defined(_MSC_VER) && \
-    !defined(__clang__)
+// The following are available for Visual C 32/64 bit, and for clang with
+// LIBYUV_ENABLE_ROWWIN, which is also enabled for MemorySanitizer:
+#if !defined(LIBYUV_DISABLE_X86) &&                                 \
+    (defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || \
+     defined(_M_IX86)) &&                                           \
+    ((defined(_MSC_VER) && !defined(__clang__)) ||                  \
+     defined(LIBYUV_ENABLE_ROWWIN))
 #define HAS_TRANSPOSEWX8_SSSE3
 #define HAS_TRANSPOSEUVWX8_SSE2
+#define HAS_TRANSPOSE4X4_32_SSE2
+#define HAS_TRANSPOSE4X4_32_AVX2
+#define HAS_TRANSPOSEWX16_AVX2
+#define HAS_TRANSPOSEUVWX16_AVX2
+#if defined(__x86_64__) || defined(_M_X64)
+#define HAS_TRANSPOSEWX16_AVX512BW
+#define HAS_TRANSPOSEUVWX16_AVX512BW
+#endif
 #endif
 
 // The following are available for GCC 32 or 64 bit:
