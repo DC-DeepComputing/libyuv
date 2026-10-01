@@ -92,6 +92,13 @@ extern "C" {
 #define HAS_SCALEROWDOWN4_AVX2
 #endif
 
+#if !defined(LIBYUV_DISABLE_X86) &&                       \
+    (defined(__x86_64__) || defined(__i386__)) &&         \
+    (defined(CLANG_HAS_AVX2) || defined(GCC_HAS_AVX2)) && \
+    !defined(LIBYUV_ENABLE_ROWWIN)
+#define HAS_SCALEUVADDCOLS3_AVX2
+#endif
+
 // The following are available for AVX512 clang x64 platforms:
 #if !defined(LIBYUV_DISABLE_X86) &&                                          \
     (defined(__x86_64__) || defined(_M_X64)) && defined(CLANG_HAS_AVX512) && \
@@ -857,6 +864,10 @@ void ScaleAddRow_AVX2(const uint8_t* src_ptr, uint16_t* dst_ptr, int src_width);
 void ScaleAddRow_AVX512BW(const uint8_t* src_ptr,
                           uint16_t* dst_ptr,
                           int src_width);
+void ScaleUVAddCols3_AVX2(int dst_width,
+                          int scaleval,
+                          const uint16_t* src_uv,
+                          uint8_t* dst_uv);
 void ScaleAddRow_Any_SSE2(const uint8_t* src_ptr,
                           uint16_t* dst_ptr,
                           int src_width);
