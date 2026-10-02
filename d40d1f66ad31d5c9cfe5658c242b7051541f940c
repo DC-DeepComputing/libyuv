@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "af05b6b7_45e62762",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-02T20:12:53Z",
+      "side": 1,
+      "message": "the improvement in quality is great and consistent with the direction i\u0027m heading, so i do want to land this, but I expect it to break \u0027golden tests\u0027.  applications that use libyuv write tests that expect exactly the same results as in the past.\nOne work around is add a compile time macro that is off by default and make users set the macro to true to get the improved quality.\nBut I prefer try to land it without that hackery.  LGTM\n\nI did some rotate changes this week and one idea is 2 step row functions to handle complex types like rgb24.  It would take take 3 vectors worth of rgb per row, split it into 3 tiles (splitrgb), use existing transposeplane, then merge.  does per 16x16 tile it would be reasonable efficient.  on arm a custom row function can do native rgb with the same approach of ld3 into 3 tiles of 16x16, use 3 transposes, then st3.  A similar idea could be applied to scaling.\nprovide a row function api, implement it as a c 2 pass wrapper.  The row_common.cc has examples of \u0027avx2\u0027 row functions that do this for rgb24, while allowing neon to do them natively, since its easy on arm and riscv - use ld3.",
+      "revId": "d40d1f66ad31d5c9cfe5658c242b7051541f940c",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
