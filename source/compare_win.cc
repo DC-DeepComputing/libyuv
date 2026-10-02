@@ -11,8 +11,18 @@
 #include "libyuv/compare_row.h"
 #include "libyuv/row.h"
 
-#if defined(_MSC_VER)
-#include <intrin.h>  // For __popcnt
+// This module is for Visual C 32/64 bit, and for clang with
+// LIBYUV_ENABLE_ROWWIN, which is also enabled for MemorySanitizer.
+#if !defined(LIBYUV_DISABLE_X86) &&                                 \
+    (defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || \
+     defined(_M_IX86)) &&                                           \
+    ((defined(_MSC_VER) && !defined(__clang__)) ||                  \
+     defined(LIBYUV_ENABLE_ROWWIN))
+
+#include <immintrin.h>  // For SSE2 to AVX512 intrinsics
+#include <string.h>     // For memcpy
+#if defined(_MSC_VER) && !defined(__clang__)
+#include <intrin.h>
 #endif
 
 #ifdef __cplusplus
@@ -20,224 +30,297 @@ namespace libyuv {
 extern "C" {
 #endif
 
-// This module is for 32 bit Visual C x86
-#if !defined(LIBYUV_DISABLE_X86) && defined(_MSC_VER) && defined(_M_IX86) && \
-    (!defined(__clang__) || defined(LIBYUV_ENABLE_ROWWIN))
+// Target attributes allow gcc and clang to build each function for its
+// instruction set regardless of the baseline.
+#if defined(__clang__) || defined(__GNUC__)
+#define LIBYUV_TARGET_SSE2 __attribute__((target("sse2")))
+#define LIBYUV_TARGET_SSE41 __attribute__((target("sse4.1")))
+#define LIBYUV_TARGET_SSE42 __attribute__((target("sse4.2,popcnt")))
+#define LIBYUV_TARGET_AVX2 __attribute__((target("avx2")))
+#define LIBYUV_TARGET_AVX512BW __attribute__((target("avx512bw,avx512f")))
+#else
+#define LIBYUV_TARGET_SSE2
+#define LIBYUV_TARGET_SSE41
+#define LIBYUV_TARGET_SSE42
+#define LIBYUV_TARGET_AVX2
+#define LIBYUV_TARGET_AVX512BW
+#endif  // defined(__clang__) || defined(__GNUC__)
 
+#if defined(HAS_HAMMINGDISTANCE_SSE42)
+// Count is a multiple of 8.
+LIBYUV_TARGET_SSE42
 uint32_t HammingDistance_SSE42(const uint8_t* src_a,
                                const uint8_t* src_b,
                                int count) {
   uint32_t diff = 0u;
-
   int i;
-  for (i = 0; i < count - 3; i += 4) {
-    uint32_t x = *((uint32_t*)src_a) ^ *((uint32_t*)src_b);  // NOLINT
-    src_a += 4;
-    src_b += 4;
-    diff += __popcnt(x);
+  for (i = 0; i < count; i += 8) {
+    uint64_t a;
+    uint64_t b;
+    memcpy(&a, src_a + i, 8);
+    memcpy(&b, src_b + i, 8);
+#if defined(__x86_64__) || defined(_M_X64)
+    diff += (uint32_t)_mm_popcnt_u64(a ^ b);
+#else
+    diff += _mm_popcnt_u32((uint32_t)(a ^ b)) +
+            _mm_popcnt_u32((uint32_t)((a ^ b) >> 32));
+#endif
   }
   return diff;
 }
+#endif  // HAS_HAMMINGDISTANCE_SSE42
 
-__declspec(naked) uint32_t SumSquareError_SSE2(const uint8_t* src_a,
-                                               const uint8_t* src_b,
-                                               int count) {
-  __asm {
-    mov        eax, [esp + 4]  // src_a
-    mov        edx, [esp + 8]  // src_b
-    mov        ecx, [esp + 12]  // count
-    pxor       xmm0, xmm0
-    pxor       xmm5, xmm5
-
-  wloop:
-    movdqu     xmm1, [eax]
-    lea        eax,  [eax + 16]
-    movdqu     xmm2, [edx]
-    lea        edx,  [edx + 16]
-    movdqa     xmm3, xmm1  // abs trick
-    psubusb    xmm1, xmm2
-    psubusb    xmm2, xmm3
-    por        xmm1, xmm2
-    movdqa     xmm2, xmm1
-    punpcklbw  xmm1, xmm5
-    punpckhbw  xmm2, xmm5
-    pmaddwd    xmm1, xmm1
-    pmaddwd    xmm2, xmm2
-    paddd      xmm0, xmm1
-    paddd      xmm0, xmm2
-    sub        ecx, 16
-    jg         wloop
-
-    pshufd     xmm1, xmm0, 0xee
-    paddd      xmm0, xmm1
-    pshufd     xmm1, xmm0, 0x01
-    paddd      xmm0, xmm1
-    movd       eax, xmm0
-    ret
-  }
+#if defined(HAS_HAMMINGDISTANCE_AVX512BW) || \
+    defined(HAS_SUMSQUAREERROR_AVX512BW) || defined(HAS_HASHDJB2_AVX512BW)
+// Mask of the low n bytes, for n = 0 to 64.
+static __mmask64 LowBytesMask64(int n) {
+  return (__mmask64)(n >= 64 ? ~0ULL : (1ULL << n) - 1);
 }
+#endif
 
-#ifdef HAS_SUMSQUAREERROR_AVX2
-// C4752: found Intel(R) Advanced Vector Extensions; consider using /arch:AVX.
-#pragma warning(disable : 4752)
-__declspec(naked) uint32_t SumSquareError_AVX2(const uint8_t* src_a,
-                                               const uint8_t* src_b,
-                                               int count) {
-  __asm {
-    mov        eax, [esp + 4]  // src_a
-    mov        edx, [esp + 8]  // src_b
-    mov        ecx, [esp + 12]  // count
-    vpxor      ymm0, ymm0, ymm0  // sum
-    vpxor      ymm5, ymm5, ymm5  // constant 0 for unpck
-    sub        edx, eax
-
-  wloop:
-    vmovdqu    ymm1, [eax]
-    vmovdqu    ymm2, [eax + edx]
-    lea        eax,  [eax + 32]
-    vpsubusb   ymm3, ymm1, ymm2  // abs difference trick
-    vpsubusb   ymm2, ymm2, ymm1
-    vpor       ymm1, ymm2, ymm3
-    vpunpcklbw ymm2, ymm1, ymm5  // u16.  mutates order.
-    vpunpckhbw ymm1, ymm1, ymm5
-    vpmaddwd   ymm2, ymm2, ymm2  // square + hadd to u32.
-    vpmaddwd   ymm1, ymm1, ymm1
-    vpaddd     ymm0, ymm0, ymm1
-    vpaddd     ymm0, ymm0, ymm2
-    sub        ecx, 32
-    jg         wloop
-
-    vpshufd    ymm1, ymm0, 0xee  // 3, 2 + 1, 0 both lanes.
-    vpaddd     ymm0, ymm0, ymm1
-    vpshufd    ymm1, ymm0, 0x01  // 1 + 0 both lanes.
-    vpaddd     ymm0, ymm0, ymm1
-    vpermq     ymm1, ymm0, 0x02  // high + low lane.
-    vpaddd     ymm0, ymm0, ymm1
-    vmovd      eax, xmm0
-    vzeroupper
-    ret
+#if defined(HAS_HAMMINGDISTANCE_AVX512BW)
+// Process 64 bytes per loop and the remainder of 1 to 63 bytes with masked
+// loads that read zeros, so any count is supported.
+LIBYUV_TARGET_AVX512BW
+uint32_t HammingDistance_AVX512BW(const uint8_t* src_a,
+                                  const uint8_t* src_b,
+                                  int count) {
+  const __m512i kNibbleMask = _mm512_set1_epi8(15);
+  const __m512i kBitCount = _mm512_broadcast_i32x4(
+      _mm_setr_epi8(0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4));
+  const __m512i zero = _mm512_setzero_si512();
+  __m512i sum = _mm512_setzero_si512();
+  while (count > 0) {
+    const __mmask64 k = LowBytesMask64(count);
+    __m512i x = _mm512_xor_si512(_mm512_maskz_loadu_epi8(k, src_a),
+                                 _mm512_maskz_loadu_epi8(k, src_b));
+    __m512i lo =
+        _mm512_shuffle_epi8(kBitCount, _mm512_and_si512(x, kNibbleMask));
+    __m512i hi = _mm512_shuffle_epi8(
+        kBitCount, _mm512_and_si512(_mm512_srli_epi16(x, 4), kNibbleMask));
+    sum = _mm512_add_epi64(sum, _mm512_sad_epu8(_mm512_add_epi8(lo, hi), zero));
+    src_a += 64;
+    src_b += 64;
+    count -= 64;
   }
+  return (uint32_t)_mm512_reduce_add_epi64(sum);
+}
+#endif  // HAS_HAMMINGDISTANCE_AVX512BW
+
+#if defined(HAS_SUMSQUAREERROR_SSE2)
+// Count is a multiple of 16.
+LIBYUV_TARGET_SSE2
+uint32_t SumSquareError_SSE2(const uint8_t* src_a,
+                             const uint8_t* src_b,
+                             int count) {
+  const __m128i zero = _mm_setzero_si128();
+  __m128i sum = _mm_setzero_si128();
+  int i;
+  for (i = 0; i < count; i += 16) {
+    __m128i a = _mm_loadu_si128((const __m128i*)(src_a + i));
+    __m128i b = _mm_loadu_si128((const __m128i*)(src_b + i));
+    __m128i d = _mm_or_si128(_mm_subs_epu8(a, b), _mm_subs_epu8(b, a));
+    __m128i lo = _mm_unpacklo_epi8(d, zero);
+    __m128i hi = _mm_unpackhi_epi8(d, zero);
+    sum = _mm_add_epi32(sum, _mm_madd_epi16(lo, lo));
+    sum = _mm_add_epi32(sum, _mm_madd_epi16(hi, hi));
+  }
+  sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, 0xee));
+  sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, 0x01));
+  return (uint32_t)_mm_cvtsi128_si32(sum);
+}
+#endif  // HAS_SUMSQUAREERROR_SSE2
+
+#if defined(HAS_SUMSQUAREERROR_AVX2)
+// Count is a multiple of 32.
+LIBYUV_TARGET_AVX2
+uint32_t SumSquareError_AVX2(const uint8_t* src_a,
+                             const uint8_t* src_b,
+                             int count) {
+  const __m256i zero = _mm256_setzero_si256();
+  __m256i sum = _mm256_setzero_si256();
+  __m128i sum128;
+  int i;
+  for (i = 0; i < count; i += 32) {
+    __m256i a = _mm256_loadu_si256((const __m256i*)(src_a + i));
+    __m256i b = _mm256_loadu_si256((const __m256i*)(src_b + i));
+    __m256i d = _mm256_or_si256(_mm256_subs_epu8(a, b), _mm256_subs_epu8(b, a));
+    __m256i lo = _mm256_unpacklo_epi8(d, zero);
+    __m256i hi = _mm256_unpackhi_epi8(d, zero);
+    sum = _mm256_add_epi32(sum, _mm256_madd_epi16(lo, lo));
+    sum = _mm256_add_epi32(sum, _mm256_madd_epi16(hi, hi));
+  }
+  sum128 = _mm_add_epi32(_mm256_castsi256_si128(sum),
+                         _mm256_extracti128_si256(sum, 1));
+  sum128 = _mm_add_epi32(sum128, _mm_shuffle_epi32(sum128, 0xee));
+  sum128 = _mm_add_epi32(sum128, _mm_shuffle_epi32(sum128, 0x01));
+  _mm256_zeroupper();
+  return (uint32_t)_mm_cvtsi128_si32(sum128);
 }
 #endif  // HAS_SUMSQUAREERROR_AVX2
 
-uvec32 kHash16x33 = {0x92d9e201, 0, 0, 0};  // 33 ^ 16
-uvec32 kHashMul0 = {
-    0x0c3525e1,  // 33 ^ 15
-    0xa3476dc1,  // 33 ^ 14
-    0x3b4039a1,  // 33 ^ 13
-    0x4f5f0981,  // 33 ^ 12
-};
-uvec32 kHashMul1 = {
-    0x30f35d61,  // 33 ^ 11
-    0x855cb541,  // 33 ^ 10
-    0x040a9121,  // 33 ^ 9
-    0x747c7101,  // 33 ^ 8
-};
-uvec32 kHashMul2 = {
-    0xec41d4e1,  // 33 ^ 7
-    0x4cfa3cc1,  // 33 ^ 6
-    0x025528a1,  // 33 ^ 5
-    0x00121881,  // 33 ^ 4
-};
-uvec32 kHashMul3 = {
-    0x00008c61,  // 33 ^ 3
-    0x00000441,  // 33 ^ 2
-    0x00000021,  // 33 ^ 1
-    0x00000001,  // 33 ^ 0
-};
-
-__declspec(naked) uint32_t HashDjb2_SSE41(const uint8_t* src,
-                                          int count,
-                                          uint32_t seed) {
-  __asm {
-    mov        eax, [esp + 4]  // src
-    mov        ecx, [esp + 8]  // count
-    movd       xmm0, [esp + 12]  // seed
-
-    pxor       xmm7, xmm7  // constant 0 for unpck
-    movdqa     xmm6, xmmword ptr kHash16x33
-
-  wloop:
-    movdqu     xmm1, [eax]  // src[0-15]
-    lea        eax, [eax + 16]
-    pmulld     xmm0, xmm6  // hash *= 33 ^ 16
-    movdqa     xmm5, xmmword ptr kHashMul0
-    movdqa     xmm2, xmm1
-    punpcklbw  xmm2, xmm7  // src[0-7]
-    movdqa     xmm3, xmm2
-    punpcklwd  xmm3, xmm7  // src[0-3]
-    pmulld     xmm3, xmm5
-    movdqa     xmm5, xmmword ptr kHashMul1
-    movdqa     xmm4, xmm2
-    punpckhwd  xmm4, xmm7  // src[4-7]
-    pmulld     xmm4, xmm5
-    movdqa     xmm5, xmmword ptr kHashMul2
-    punpckhbw  xmm1, xmm7  // src[8-15]
-    movdqa     xmm2, xmm1
-    punpcklwd  xmm2, xmm7  // src[8-11]
-    pmulld     xmm2, xmm5
-    movdqa     xmm5, xmmword ptr kHashMul3
-    punpckhwd  xmm1, xmm7  // src[12-15]
-    pmulld     xmm1, xmm5
-    paddd      xmm3, xmm4  // add 16 results
-    paddd      xmm1, xmm2
-    paddd      xmm1, xmm3
-
-    pshufd     xmm2, xmm1, 0x0e  // upper 2 dwords
-    paddd      xmm1, xmm2
-    pshufd     xmm2, xmm1, 0x01
-    paddd      xmm1, xmm2
-    paddd      xmm0, xmm1
-    sub        ecx, 16
-    jg         wloop
-
-    movd       eax, xmm0  // return hash
-    ret
+#if defined(HAS_SUMSQUAREERROR_AVX512BW)
+// Process 64 bytes per loop and the remainder of 1 to 63 bytes with masked
+// loads that read zeros, so any count is supported.
+LIBYUV_TARGET_AVX512BW
+uint32_t SumSquareError_AVX512BW(const uint8_t* src_a,
+                                 const uint8_t* src_b,
+                                 int count) {
+  const __m512i zero = _mm512_setzero_si512();
+  __m512i sum = _mm512_setzero_si512();
+  while (count > 0) {
+    const __mmask64 k = LowBytesMask64(count);
+    __m512i a = _mm512_maskz_loadu_epi8(k, src_a);
+    __m512i b = _mm512_maskz_loadu_epi8(k, src_b);
+    __m512i d = _mm512_or_si512(_mm512_subs_epu8(a, b), _mm512_subs_epu8(b, a));
+    __m512i lo = _mm512_unpacklo_epi8(d, zero);
+    __m512i hi = _mm512_unpackhi_epi8(d, zero);
+    sum = _mm512_add_epi32(sum, _mm512_madd_epi16(lo, lo));
+    sum = _mm512_add_epi32(sum, _mm512_madd_epi16(hi, hi));
+    src_a += 64;
+    src_b += 64;
+    count -= 64;
   }
+  return (uint32_t)_mm512_reduce_add_epi32(sum);
 }
+#endif  // HAS_SUMSQUAREERROR_AVX512BW
 
-// Visual C 2012 required for AVX2.
-#ifdef HAS_HASHDJB2_AVX2
-__declspec(naked) uint32_t HashDjb2_AVX2(const uint8_t* src,
-                                         int count,
-                                         uint32_t seed) {
-  __asm {
-    mov        eax, [esp + 4]  // src
-    mov        ecx, [esp + 8]  // count
-    vmovd      xmm0, [esp + 12]  // seed
+#if defined(HAS_HASHDJB2_SSE41) || defined(HAS_HASHDJB2_AVX2) || \
+    defined(HAS_HASHDJB2_AVX512BW)
+// 33 ^ (63 - i) for byte i of 64. The last 16 are used for 16 bytes.
+static const uint32_t kHashMul[64] = {
+    0xd8be0be1, 0xef4b93c1, 0x64579fa1, 0x6021af81,  // 33 ^ 63 .. 60
+    0x40f94361, 0x193ddb41, 0x6d5ef721, 0x31dc1701,  // 33 ^ 59 .. 56
+    0x0944bae1, 0xc23862c1, 0x15668ea1, 0xa38ebe81,  // 33 ^ 55 .. 52
+    0x33807261, 0x301b2a41, 0x664e6621, 0x0319a601,  // 33 ^ 51 .. 48
+    0xd18c69e1, 0xb8c631c1, 0x79f67da1, 0xae5ccd81,  // 33 ^ 47 .. 44
+    0x0548a161, 0xc2197941, 0x7a3ed521, 0x13383501,  // 33 ^ 43 .. 40
+    0x009518e1, 0xc1f500c1, 0xa1076ca1, 0xaf8bdc81,  // 33 ^ 39 .. 36
+    0x0551d061, 0x3e38c841, 0x38304421, 0x1137c401,  // 33 ^ 35 .. 32
+    0x655ec7e1, 0xccc4cfc1, 0x99995ba1, 0xd61beb81,  // 33 ^ 31 .. 28
+    0x829bff61, 0x13791741, 0x2f22b321, 0xac185301,  // 33 ^ 27 .. 24
+    0xcee976e1, 0xc8359ec1, 0x72ac4aa1, 0x510cfa81,  // 33 ^ 23 .. 20
+    0xcc272e61, 0xb0da6641, 0xee162221, 0x92d9e201,  // 33 ^ 19 .. 16
+    0x0c3525e1, 0xa3476dc1, 0x3b4039a1, 0x4f5f0981,  // 33 ^ 15 .. 12
+    0x30f35d61, 0x855cb541, 0x040a9121, 0x747c7101,  // 33 ^ 11 .. 8
+    0xec41d4e1, 0x4cfa3cc1, 0x025528a1, 0x00121881,  // 33 ^ 7 .. 4
+    0x00008c61, 0x00000441, 0x00000021, 0x00000001,  // 33 ^ 3 .. 0
+};
+static const uint32_t kHash16x33 = 0x92d9e201;  // 33 ^ 16
+#endif
 
-  wloop:
-    vpmovzxbd  xmm3, [eax]  // src[0-3]
-    vpmulld    xmm0, xmm0, xmmword ptr kHash16x33  // hash *= 33 ^ 16
-    vpmovzxbd  xmm4, [eax + 4]  // src[4-7]
-    vpmulld    xmm3, xmm3, xmmword ptr kHashMul0
-    vpmovzxbd  xmm2, [eax + 8]  // src[8-11]
-    vpmulld    xmm4, xmm4, xmmword ptr kHashMul1
-    vpmovzxbd  xmm1, [eax + 12]  // src[12-15]
-    vpmulld    xmm2, xmm2, xmmword ptr kHashMul2
-    lea        eax, [eax + 16]
-    vpmulld    xmm1, xmm1, xmmword ptr kHashMul3
-    vpaddd     xmm3, xmm3, xmm4  // add 16 results
-    vpaddd     xmm1, xmm1, xmm2
-    vpaddd     xmm1, xmm1, xmm3
-    vpshufd    xmm2, xmm1, 0x0e  // upper 2 dwords
-    vpaddd     xmm1, xmm1,xmm2
-    vpshufd    xmm2, xmm1, 0x01
-    vpaddd     xmm1, xmm1, xmm2
-    vpaddd     xmm0, xmm0, xmm1
-    sub        ecx, 16
-    jg         wloop
-
-    vmovd      eax, xmm0  // return hash
-    vzeroupper
-    ret
+#if defined(HAS_HASHDJB2_SSE41)
+// Count is a multiple of 16.
+LIBYUV_TARGET_SSE41
+uint32_t HashDjb2_SSE41(const uint8_t* src, int count, uint32_t seed) {
+  const __m128i zero = _mm_setzero_si128();
+  const __m128i mul0 = _mm_loadu_si128((const __m128i*)(kHashMul + 48));
+  const __m128i mul1 = _mm_loadu_si128((const __m128i*)(kHashMul + 52));
+  const __m128i mul2 = _mm_loadu_si128((const __m128i*)(kHashMul + 56));
+  const __m128i mul3 = _mm_loadu_si128((const __m128i*)(kHashMul + 60));
+  int i;
+  for (i = 0; i < count; i += 16) {
+    __m128i s = _mm_loadu_si128((const __m128i*)(src + i));
+    __m128i lo = _mm_unpacklo_epi8(s, zero);
+    __m128i hi = _mm_unpackhi_epi8(s, zero);
+    __m128i sum = _mm_add_epi32(
+        _mm_add_epi32(_mm_mullo_epi32(_mm_unpacklo_epi16(lo, zero), mul0),
+                      _mm_mullo_epi32(_mm_unpackhi_epi16(lo, zero), mul1)),
+        _mm_add_epi32(_mm_mullo_epi32(_mm_unpacklo_epi16(hi, zero), mul2),
+                      _mm_mullo_epi32(_mm_unpackhi_epi16(hi, zero), mul3)));
+    sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, 0x0e));
+    sum = _mm_add_epi32(sum, _mm_shuffle_epi32(sum, 0x01));
+    seed = seed * kHash16x33 + (uint32_t)_mm_cvtsi128_si32(sum);
   }
+  return seed;
+}
+#endif  // HAS_HASHDJB2_SSE41
+
+#if defined(HAS_HASHDJB2_AVX2)
+// Count is a multiple of 16.
+LIBYUV_TARGET_AVX2
+uint32_t HashDjb2_AVX2(const uint8_t* src, int count, uint32_t seed) {
+  const __m256i mul0 = _mm256_loadu_si256((const __m256i*)(kHashMul + 48));
+  const __m256i mul1 = _mm256_loadu_si256((const __m256i*)(kHashMul + 56));
+  int i;
+  for (i = 0; i < count; i += 16) {
+    __m256i s0 =
+        _mm256_cvtepu8_epi32(_mm_loadl_epi64((const __m128i*)(src + i)));
+    __m256i s1 =
+        _mm256_cvtepu8_epi32(_mm_loadl_epi64((const __m128i*)(src + i + 8)));
+    __m256i sum = _mm256_add_epi32(_mm256_mullo_epi32(s0, mul0),
+                                   _mm256_mullo_epi32(s1, mul1));
+    __m128i sum128 = _mm_add_epi32(_mm256_castsi256_si128(sum),
+                                   _mm256_extracti128_si256(sum, 1));
+    sum128 = _mm_add_epi32(sum128, _mm_shuffle_epi32(sum128, 0x0e));
+    sum128 = _mm_add_epi32(sum128, _mm_shuffle_epi32(sum128, 0x01));
+    seed = seed * kHash16x33 + (uint32_t)_mm_cvtsi128_si32(sum128);
+  }
+  _mm256_zeroupper();
+  return seed;
 }
 #endif  // HAS_HASHDJB2_AVX2
 
-#endif  // !defined(LIBYUV_DISABLE_X86) && defined(_M_IX86)
+#if defined(HAS_HASHDJB2_AVX512BW)
+static uint32_t Pow33(int n) {
+  uint32_t r = 1u;
+  uint32_t b = 33u;
+  while (n) {
+    if (n & 1) {
+      r *= b;
+    }
+    b *= b;
+    n >>= 1;
+  }
+  return r;
+}
+
+// Sum of 64 bytes times 33 ^ (63 - i).
+LIBYUV_TARGET_AVX512BW
+static uint32_t HashSum64_AVX512BW(__m512i s) {
+  __m512i p0 =
+      _mm512_mullo_epi32(_mm512_cvtepu8_epi32(_mm512_castsi512_si128(s)),
+                         _mm512_loadu_si512(kHashMul));
+  __m512i p1 =
+      _mm512_mullo_epi32(_mm512_cvtepu8_epi32(_mm512_extracti32x4_epi32(s, 1)),
+                         _mm512_loadu_si512(kHashMul + 16));
+  __m512i p2 =
+      _mm512_mullo_epi32(_mm512_cvtepu8_epi32(_mm512_extracti32x4_epi32(s, 2)),
+                         _mm512_loadu_si512(kHashMul + 32));
+  __m512i p3 =
+      _mm512_mullo_epi32(_mm512_cvtepu8_epi32(_mm512_extracti32x4_epi32(s, 3)),
+                         _mm512_loadu_si512(kHashMul + 48));
+  return (uint32_t)_mm512_reduce_add_epi32(
+      _mm512_add_epi32(_mm512_add_epi32(p0, p1), _mm512_add_epi32(p2, p3)));
+}
+
+// hash = hash * 33 ^ 64 + sum(src[i] * 33 ^ (63 - i)) for each 64 bytes.
+// The remainder of n = 1 to 63 bytes is loaded into the high n bytes with a
+// masked load ending at src + count, so the same multipliers apply, and
+// hash is multiplied by 33 ^ n.
+LIBYUV_TARGET_AVX512BW
+uint32_t HashDjb2_AVX512BW(const uint8_t* src, int count, uint32_t seed) {
+  const uint32_t kHash64x33 = 0xf07f8801;  // 33 ^ 64
+  int n;
+  while (count >= 64) {
+    seed = seed * kHash64x33 + HashSum64_AVX512BW(_mm512_loadu_si512(src));
+    src += 64;
+    count -= 64;
+  }
+  n = count;
+  if (n) {
+    const __mmask64 k = (__mmask64)~LowBytesMask64(64 - n);
+    seed = seed * Pow33(n) +
+           HashSum64_AVX512BW(_mm512_maskz_loadu_epi8(k, src + n - 64));
+  }
+  return seed;
+}
+#endif  // HAS_HASHDJB2_AVX512BW
 
 #ifdef __cplusplus
 }  // extern "C"
 }  // namespace libyuv
 #endif
+
+#endif  // !defined(LIBYUV_DISABLE_X86) && (x86 or x64) &&
+        // (Visual C or LIBYUV_ENABLE_ROWWIN)
