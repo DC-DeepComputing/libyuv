@@ -31,125 +31,15 @@ extern "C" {
 #endif
 
 // Target attributes allow gcc and clang to build each function for its
-// instruction set regardless of the baseline, which may lack SSE2 for 32 bit.
+// instruction set regardless of the baseline, which may lack AVX2.
 #if defined(__clang__) || defined(__GNUC__)
-#define LIBYUV_TARGET_SSE2 __attribute__((target("sse2")))
 #define LIBYUV_TARGET_AVX2 __attribute__((target("avx2")))
 #define LIBYUV_TARGET_AVX512BW \
   __attribute__((target("avx512bw,avx512vl,avx512f")))
 #else
-#define LIBYUV_TARGET_SSE2
 #define LIBYUV_TARGET_AVX2
 #define LIBYUV_TARGET_AVX512BW
 #endif  // defined(__clang__) || defined(__GNUC__)
-
-#if defined(HAS_TRANSPOSEWX8_SSSE3) || defined(HAS_TRANSPOSEUVWX8_SSE2)
-// Transpose 8 rows x 16 bytes with SSE2. Each output holds 2 columns x 8 rows.
-// The low 8 bytes (even column) go to dst_a and the high 8 bytes (odd column)
-// go to dst_b. Width is a multiple of 16 bytes.
-LIBYUV_TARGET_SSE2
-static void TransposeWx8_Byte_SSE2(const uint8_t* src,
-                                   int src_stride,
-                                   uint8_t* dst_a,
-                                   int dst_stride_a,
-                                   uint8_t* dst_b,
-                                   int dst_stride_b,
-                                   int byte_width) {
-  const ptrdiff_t s = src_stride;
-  const ptrdiff_t sa = dst_stride_a;
-  const ptrdiff_t sb = dst_stride_b;
-  while (byte_width > 0) {
-    __m128i r0 = _mm_loadu_si128((const __m128i*)(src));
-    __m128i r1 = _mm_loadu_si128((const __m128i*)(src + s));
-    __m128i r2 = _mm_loadu_si128((const __m128i*)(src + s * 2));
-    __m128i r3 = _mm_loadu_si128((const __m128i*)(src + s * 3));
-    __m128i r4 = _mm_loadu_si128((const __m128i*)(src + s * 4));
-    __m128i r5 = _mm_loadu_si128((const __m128i*)(src + s * 5));
-    __m128i r6 = _mm_loadu_si128((const __m128i*)(src + s * 6));
-    __m128i r7 = _mm_loadu_si128((const __m128i*)(src + s * 7));
-
-    // Bytes of row pairs. a0 is columns 0..7 of rows 0, 1.
-    __m128i a0 = _mm_unpacklo_epi8(r0, r1);
-    __m128i a1 = _mm_unpackhi_epi8(r0, r1);
-    __m128i a2 = _mm_unpacklo_epi8(r2, r3);
-    __m128i a3 = _mm_unpackhi_epi8(r2, r3);
-    __m128i a4 = _mm_unpacklo_epi8(r4, r5);
-    __m128i a5 = _mm_unpackhi_epi8(r4, r5);
-    __m128i a6 = _mm_unpacklo_epi8(r6, r7);
-    __m128i a7 = _mm_unpackhi_epi8(r6, r7);
-
-    // Words. b0 is columns 0..3 of rows 0..3.
-    __m128i b0 = _mm_unpacklo_epi16(a0, a2);
-    __m128i b1 = _mm_unpackhi_epi16(a0, a2);
-    __m128i b2 = _mm_unpacklo_epi16(a1, a3);
-    __m128i b3 = _mm_unpackhi_epi16(a1, a3);
-    __m128i b4 = _mm_unpacklo_epi16(a4, a6);
-    __m128i b5 = _mm_unpackhi_epi16(a4, a6);
-    __m128i b6 = _mm_unpacklo_epi16(a5, a7);
-    __m128i b7 = _mm_unpackhi_epi16(a5, a7);
-
-    // Dwords. c0 is columns 0, 1 of rows 0..7.
-    __m128i c0 = _mm_unpacklo_epi32(b0, b4);
-    __m128i c1 = _mm_unpackhi_epi32(b0, b4);
-    __m128i c2 = _mm_unpacklo_epi32(b1, b5);
-    __m128i c3 = _mm_unpackhi_epi32(b1, b5);
-    __m128i c4 = _mm_unpacklo_epi32(b2, b6);
-    __m128i c5 = _mm_unpackhi_epi32(b2, b6);
-    __m128i c6 = _mm_unpacklo_epi32(b3, b7);
-    __m128i c7 = _mm_unpackhi_epi32(b3, b7);
-
-    _mm_storel_epi64((__m128i*)(dst_a), c0);
-    _mm_storeh_pd((double*)(dst_b), _mm_castsi128_pd(c0));
-    _mm_storel_epi64((__m128i*)(dst_a + sa), c1);
-    _mm_storeh_pd((double*)(dst_b + sb), _mm_castsi128_pd(c1));
-    _mm_storel_epi64((__m128i*)(dst_a + sa * 2), c2);
-    _mm_storeh_pd((double*)(dst_b + sb * 2), _mm_castsi128_pd(c2));
-    _mm_storel_epi64((__m128i*)(dst_a + sa * 3), c3);
-    _mm_storeh_pd((double*)(dst_b + sb * 3), _mm_castsi128_pd(c3));
-    _mm_storel_epi64((__m128i*)(dst_a + sa * 4), c4);
-    _mm_storeh_pd((double*)(dst_b + sb * 4), _mm_castsi128_pd(c4));
-    _mm_storel_epi64((__m128i*)(dst_a + sa * 5), c5);
-    _mm_storeh_pd((double*)(dst_b + sb * 5), _mm_castsi128_pd(c5));
-    _mm_storel_epi64((__m128i*)(dst_a + sa * 6), c6);
-    _mm_storeh_pd((double*)(dst_b + sb * 6), _mm_castsi128_pd(c6));
-    _mm_storel_epi64((__m128i*)(dst_a + sa * 7), c7);
-    _mm_storeh_pd((double*)(dst_b + sb * 7), _mm_castsi128_pd(c7));
-
-    src += 16;
-    dst_a += sa * 8;
-    dst_b += sb * 8;
-    byte_width -= 16;
-  }
-}
-#endif  // defined(HAS_TRANSPOSEWX8_SSSE3) || defined(HAS_TRANSPOSEUVWX8_SSE2)
-
-#if defined(HAS_TRANSPOSEWX8_SSSE3)
-// Transpose 16x8. Width is a multiple of 16.
-LIBYUV_TARGET_SSE2
-void TransposeWx8_SSSE3(const uint8_t* src,
-                        int src_stride,
-                        uint8_t* dst,
-                        int dst_stride,
-                        int width) {
-  TransposeWx8_Byte_SSE2(src, src_stride, dst, dst_stride * 2, dst + dst_stride,
-                         dst_stride * 2, width);
-}
-#endif  // defined(HAS_TRANSPOSEWX8_SSSE3)
-
-#if defined(HAS_TRANSPOSEUVWX8_SSE2)
-// Transpose UV 8x8. Width is a multiple of 8.
-LIBYUV_TARGET_SSE2
-void TransposeUVWx8_SSE2(const uint8_t* src,
-                         int src_stride,
-                         uint8_t* dst_a,
-                         int dst_stride_a,
-                         uint8_t* dst_b,
-                         int dst_stride_b,
-                         int width) {
-  TransposeWx8_Byte_SSE2(src, src_stride, dst_a, dst_stride_a, dst_b,
-                         dst_stride_b, width * 2);
-}
-#endif  // defined(HAS_TRANSPOSEUVWX8_SSE2)
 
 #if defined(HAS_TRANSPOSEWX16_AVX2) || defined(HAS_TRANSPOSEUVWX16_AVX2)
 // Load row r into lane 0 and row r + 8 into lane 1.
@@ -416,36 +306,6 @@ void TransposeUVWx16_AVX512BW(const uint8_t* src,
                               dst_stride_b, width * 2);
 }
 #endif  // defined(HAS_TRANSPOSEUVWX16_AVX512BW)
-
-#if defined(HAS_TRANSPOSE4X4_32_SSE2)
-// Transpose 32 bit values (ARGB). Read a column of 4 pixels, write a row.
-LIBYUV_TARGET_SSE2
-void Transpose4x4_32_SSE2(const uint8_t* src,
-                          int src_stride,
-                          uint8_t* dst,
-                          int dst_stride,
-                          int width) {
-  const ptrdiff_t s = src_stride;
-  const ptrdiff_t d = dst_stride;
-  while (width > 0) {
-    __m128i r0 = _mm_loadu_si128((const __m128i*)(src));            // a b c d
-    __m128i r1 = _mm_loadu_si128((const __m128i*)(src + s));        // e f g h
-    __m128i r2 = _mm_loadu_si128((const __m128i*)(src + s * 2));    // i j k l
-    __m128i r3 = _mm_loadu_si128((const __m128i*)(src + s * 3));    // m n o p
-    __m128i t0 = _mm_unpacklo_epi32(r0, r1);                        // a e b f
-    __m128i t1 = _mm_unpacklo_epi32(r2, r3);                        // i m j n
-    __m128i t2 = _mm_unpackhi_epi32(r0, r1);                        // c g d h
-    __m128i t3 = _mm_unpackhi_epi32(r2, r3);                        // k o l p
-    _mm_storeu_si128((__m128i*)(dst), _mm_unpacklo_epi64(t0, t1));  // a e i m
-    _mm_storeu_si128((__m128i*)(dst + d), _mm_unpackhi_epi64(t0, t1));
-    _mm_storeu_si128((__m128i*)(dst + d * 2), _mm_unpacklo_epi64(t2, t3));
-    _mm_storeu_si128((__m128i*)(dst + d * 3), _mm_unpackhi_epi64(t2, t3));
-    src += s * 4;
-    dst += 16;
-    width -= 4;
-  }
-}
-#endif  // defined(HAS_TRANSPOSE4X4_32_SSE2)
 
 #if defined(HAS_TRANSPOSE4X4_32_AVX2)
 // Transpose 32 bit values (ARGB). Read a column of 8 pixels, write a row.

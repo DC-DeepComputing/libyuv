@@ -23,158 +23,11 @@ extern "C" {
 
 // "memory" clobber prevents the reads from being removed
 
-#if defined(__x86_64__)
-uint32_t HammingDistance_SSE42(const uint8_t* src_a,
-                               const uint8_t* src_b,
-                               int count) {
-  uint64_t diff;
-
-  asm volatile(
-      "xor         %3,%3                         \n"
-      "xor         %%r8,%%r8                     \n"
-      "xor         %%r9,%%r9                     \n"
-      "xor         %%r10,%%r10                   \n"
-
-      // Process 32 bytes per loop.
-      LABELALIGN
-      "1:          \n"
-      "mov         (%0),%%rcx                    \n"
-      "mov         0x8(%0),%%rdx                 \n"
-      "xor         (%1),%%rcx                    \n"
-      "xor         0x8(%1),%%rdx                 \n"
-      "popcnt      %%rcx,%%rcx                   \n"
-      "popcnt      %%rdx,%%rdx                   \n"
-      "mov         0x10(%0),%%rsi                \n"
-      "mov         0x18(%0),%%rdi                \n"
-      "xor         0x10(%1),%%rsi                \n"
-      "xor         0x18(%1),%%rdi                \n"
-      "popcnt      %%rsi,%%rsi                   \n"
-      "popcnt      %%rdi,%%rdi                   \n"
-      "add         $0x20,%0                      \n"
-      "add         $0x20,%1                      \n"
-      "add         %%rcx,%3                      \n"
-      "add         %%rdx,%%r8                    \n"
-      "add         %%rsi,%%r9                    \n"
-      "add         %%rdi,%%r10                   \n"
-      "sub         $0x20,%2                      \n"
-      "jg          1b                            \n"
-
-      "add         %%r8, %3                      \n"
-      "add         %%r9, %3                      \n"
-      "add         %%r10, %3                     \n"
-      : "+r"(src_a),  // %0
-        "+r"(src_b),  // %1
-        "+r"(count),  // %2
-        "=&r"(diff)   // %3
-      :
-      : "cc", "memory", "rcx", "rdx", "rsi", "rdi", "r8", "r9", "r10");
-
-  return (uint32_t)(diff);
-}
-#else
-uint32_t HammingDistance_SSE42(const uint8_t* src_a,
-                               const uint8_t* src_b,
-                               int count) {
-  uint32_t diff = 0u;
-
-  asm volatile(
-      // Process 16 bytes per loop.
-      LABELALIGN
-      "1:          \n"
-      "mov         (%0),%%ecx                    \n"
-      "mov         0x4(%0),%%edx                 \n"
-      "xor         (%1),%%ecx                    \n"
-      "xor         0x4(%1),%%edx                 \n"
-      "popcnt      %%ecx,%%ecx                   \n"
-      "add         %%ecx,%3                      \n"
-      "popcnt      %%edx,%%edx                   \n"
-      "add         %%edx,%3                      \n"
-      "mov         0x8(%0),%%ecx                 \n"
-      "mov         0xc(%0),%%edx                 \n"
-      "xor         0x8(%1),%%ecx                 \n"
-      "xor         0xc(%1),%%edx                 \n"
-      "popcnt      %%ecx,%%ecx                   \n"
-      "add         %%ecx,%3                      \n"
-      "popcnt      %%edx,%%edx                   \n"
-      "add         %%edx,%3                      \n"
-      "add         $0x10,%0                      \n"
-      "add         $0x10,%1                      \n"
-      "sub         $0x10,%2                      \n"
-      "jg          1b                            \n"
-      : "+r"(src_a),  // %0
-        "+r"(src_b),  // %1
-        "+r"(count),  // %2
-        "+r"(diff)    // %3
-      :
-      : "cc", "memory", "ecx", "edx");
-
-  return diff;
-}
-#endif
-
+#if defined(HAS_HAMMINGDISTANCE_AVX2) || defined(HAS_HAMMINGDISTANCE_AVX512BW)
 static const vec8 kNibbleMask = {15, 15, 15, 15, 15, 15, 15, 15,
                                  15, 15, 15, 15, 15, 15, 15, 15};
 static const vec8 kBitCount = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4};
-
-uint32_t HammingDistance_SSSE3(const uint8_t* src_a,
-                               const uint8_t* src_b,
-                               int count) {
-  uint32_t diff;
-
-  asm volatile(
-      "movdqa      %4,%%xmm2                     \n"
-      "movdqa      %5,%%xmm3                     \n"
-      "pxor        %%xmm0,%%xmm0                 \n"
-      "pxor        %%xmm1,%%xmm1                 \n"
-      "sub         %0,%1                         \n"
-
-      LABELALIGN
-      "1:          \n"
-      "movdqu      (%0),%%xmm4                   \n"
-      "movdqu      0x10(%0), %%xmm5              \n"
-      "movdqu      (%0,%1), %%xmm6               \n"
-      "pxor        %%xmm6, %%xmm4                \n"
-      "movdqa      %%xmm4,%%xmm6                 \n"
-      "pand        %%xmm2,%%xmm6                 \n"
-      "psrlw       $0x4,%%xmm4                   \n"
-      "movdqa      %%xmm3,%%xmm7                 \n"
-      "pshufb      %%xmm6,%%xmm7                 \n"
-      "pand        %%xmm2,%%xmm4                 \n"
-      "movdqa      %%xmm3,%%xmm6                 \n"
-      "pshufb      %%xmm4,%%xmm6                 \n"
-      "paddb       %%xmm7,%%xmm6                 \n"
-      "movdqu      0x10(%0,%1),%%xmm7            \n"
-      "pxor        %%xmm7,%%xmm5                 \n"
-      "add         $0x20,%0                      \n"
-      "movdqa      %%xmm5,%%xmm4                 \n"
-      "pand        %%xmm2,%%xmm5                 \n"
-      "psrlw       $0x4,%%xmm4                   \n"
-      "movdqa      %%xmm3,%%xmm7                 \n"
-      "pshufb      %%xmm5,%%xmm7                 \n"
-      "pand        %%xmm2,%%xmm4                 \n"
-      "movdqa      %%xmm3,%%xmm5                 \n"
-      "pshufb      %%xmm4,%%xmm5                 \n"
-      "paddb       %%xmm7,%%xmm5                 \n"
-      "paddb       %%xmm5,%%xmm6                 \n"
-      "psadbw      %%xmm1,%%xmm6                 \n"
-      "paddd       %%xmm6,%%xmm0                 \n"
-      "sub         $0x20,%2                      \n"
-      "jg          1b                            \n"
-
-      "pshufd      $0xaa,%%xmm0,%%xmm1           \n"
-      "paddd       %%xmm1,%%xmm0                 \n"
-      "movd        %%xmm0, %3                    \n"
-      : "+r"(src_a),       // %0
-        "+r"(src_b),       // %1
-        "+r"(count),       // %2
-        "=r"(diff)         // %3
-      : "m"(kNibbleMask),  // %4
-        "m"(kBitCount)     // %5
-      : "cc", "memory", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
-        "xmm7");
-
-  return diff;
-}
+#endif
 
 #ifdef HAS_HAMMINGDISTANCE_AVX2
 uint32_t HammingDistance_AVX2(const uint8_t* src_a,
@@ -232,39 +85,42 @@ uint32_t HammingDistance_AVX2(const uint8_t* src_a,
 }
 #endif  // HAS_HAMMINGDISTANCE_AVX2
 
-uint32_t SumSquareError_SSE2(const uint8_t* src_a,
+#ifdef HAS_SUMSQUAREERROR_AVX2
+uint32_t SumSquareError_AVX2(const uint8_t* src_a,
                              const uint8_t* src_b,
                              int count) {
   uint32_t sse;
   asm volatile(
-      "pxor        %%xmm0,%%xmm0                 \n"
-      "pxor        %%xmm5,%%xmm5                 \n"
+      "vpxor       %%ymm0,%%ymm0,%%ymm0          \n"
+      "vpxor       %%ymm5,%%ymm5,%%ymm5          \n"
+      "sub         %0,%1                         \n"
 
+      // Process 32 bytes per loop.
       LABELALIGN
       "1:          \n"
-      "movdqu      (%0),%%xmm1                   \n"
-      "lea         0x10(%0),%0                   \n"
-      "movdqu      (%1),%%xmm2                   \n"
-      "lea         0x10(%1),%1                   \n"
-      "movdqa      %%xmm1,%%xmm3                 \n"
-      "psubusb     %%xmm2,%%xmm1                 \n"
-      "psubusb     %%xmm3,%%xmm2                 \n"
-      "por         %%xmm2,%%xmm1                 \n"
-      "movdqa      %%xmm1,%%xmm2                 \n"
-      "punpcklbw   %%xmm5,%%xmm1                 \n"
-      "punpckhbw   %%xmm5,%%xmm2                 \n"
-      "pmaddwd     %%xmm1,%%xmm1                 \n"
-      "pmaddwd     %%xmm2,%%xmm2                 \n"
-      "paddd       %%xmm1,%%xmm0                 \n"
-      "paddd       %%xmm2,%%xmm0                 \n"
-      "sub         $0x10,%2                      \n"
+      "vmovdqu     (%0),%%ymm1                   \n"
+      "vmovdqu     (%0,%1),%%ymm2                \n"
+      "add         $0x20,%0                      \n"
+      "vpsubusb    %%ymm2,%%ymm1,%%ymm3          \n"
+      "vpsubusb    %%ymm1,%%ymm2,%%ymm2          \n"
+      "vpor        %%ymm2,%%ymm3,%%ymm1          \n"
+      "vpunpcklbw  %%ymm5,%%ymm1,%%ymm2          \n"
+      "vpunpckhbw  %%ymm5,%%ymm1,%%ymm1          \n"
+      "vpmaddwd    %%ymm2,%%ymm2,%%ymm2          \n"
+      "vpmaddwd    %%ymm1,%%ymm1,%%ymm1          \n"
+      "vpaddd      %%ymm2,%%ymm0,%%ymm0          \n"
+      "vpaddd      %%ymm1,%%ymm0,%%ymm0          \n"
+      "sub         $0x20,%2                      \n"
       "jg          1b                            \n"
 
-      "pshufd      $0xee,%%xmm0,%%xmm1           \n"
-      "paddd       %%xmm1,%%xmm0                 \n"
-      "pshufd      $0x1,%%xmm0,%%xmm1            \n"
-      "paddd       %%xmm1,%%xmm0                 \n"
-      "movd        %%xmm0,%3                     \n"
+      "vextracti128 $1,%%ymm0,%%xmm1             \n"
+      "vpaddd      %%xmm1,%%xmm0,%%xmm0          \n"
+      "vpshufd     $0xee,%%xmm0,%%xmm1           \n"
+      "vpaddd      %%xmm1,%%xmm0,%%xmm0          \n"
+      "vpshufd     $0x1,%%xmm0,%%xmm1            \n"
+      "vpaddd      %%xmm1,%%xmm0,%%xmm0          \n"
+      "vmovd       %%xmm0,%3                     \n"
+      "vzeroupper  \n"
       : "+r"(src_a),  // %0
         "+r"(src_b),  // %1
         "+r"(count),  // %2
@@ -273,87 +129,73 @@ uint32_t SumSquareError_SSE2(const uint8_t* src_a,
       : "cc", "memory", "xmm0", "xmm1", "xmm2", "xmm3", "xmm5");
   return sse;
 }
+#endif  // HAS_SUMSQUAREERROR_AVX2
 
-static const uvec32 kHash16x33 = {0x92d9e201, 0, 0, 0};  // 33 ^ 16
-static const uvec32 kHashMul0 = {
-    0x0c3525e1,  // 33 ^ 15
-    0xa3476dc1,  // 33 ^ 14
-    0x3b4039a1,  // 33 ^ 13
-    0x4f5f0981,  // 33 ^ 12
+#if defined(HAS_HASHDJB2_AVX2) || defined(HAS_HASHDJB2_AVX512BW)
+// 33 ^ (63 - i) for byte i of 64.
+static const uint32_t kHashMul64[64] = {
+    0xd8be0be1, 0xef4b93c1, 0x64579fa1, 0x6021af81,  // 33 ^ 63 .. 60
+    0x40f94361, 0x193ddb41, 0x6d5ef721, 0x31dc1701,  // 33 ^ 59 .. 56
+    0x0944bae1, 0xc23862c1, 0x15668ea1, 0xa38ebe81,  // 33 ^ 55 .. 52
+    0x33807261, 0x301b2a41, 0x664e6621, 0x0319a601,  // 33 ^ 51 .. 48
+    0xd18c69e1, 0xb8c631c1, 0x79f67da1, 0xae5ccd81,  // 33 ^ 47 .. 44
+    0x0548a161, 0xc2197941, 0x7a3ed521, 0x13383501,  // 33 ^ 43 .. 40
+    0x009518e1, 0xc1f500c1, 0xa1076ca1, 0xaf8bdc81,  // 33 ^ 39 .. 36
+    0x0551d061, 0x3e38c841, 0x38304421, 0x1137c401,  // 33 ^ 35 .. 32
+    0x655ec7e1, 0xccc4cfc1, 0x99995ba1, 0xd61beb81,  // 33 ^ 31 .. 28
+    0x829bff61, 0x13791741, 0x2f22b321, 0xac185301,  // 33 ^ 27 .. 24
+    0xcee976e1, 0xc8359ec1, 0x72ac4aa1, 0x510cfa81,  // 33 ^ 23 .. 20
+    0xcc272e61, 0xb0da6641, 0xee162221, 0x92d9e201,  // 33 ^ 19 .. 16
+    0x0c3525e1, 0xa3476dc1, 0x3b4039a1, 0x4f5f0981,  // 33 ^ 15 .. 12
+    0x30f35d61, 0x855cb541, 0x040a9121, 0x747c7101,  // 33 ^ 11 .. 8
+    0xec41d4e1, 0x4cfa3cc1, 0x025528a1, 0x00121881,  // 33 ^ 7 .. 4
+    0x00008c61, 0x00000441, 0x00000021, 0x00000001,  // 33 ^ 3 .. 0
 };
-static const uvec32 kHashMul1 = {
-    0x30f35d61,  // 33 ^ 11
-    0x855cb541,  // 33 ^ 10
-    0x040a9121,  // 33 ^ 9
-    0x747c7101,  // 33 ^ 8
-};
-static const uvec32 kHashMul2 = {
-    0xec41d4e1,  // 33 ^ 7
-    0x4cfa3cc1,  // 33 ^ 6
-    0x025528a1,  // 33 ^ 5
-    0x00121881,  // 33 ^ 4
-};
-static const uvec32 kHashMul3 = {
-    0x00008c61,  // 33 ^ 3
-    0x00000441,  // 33 ^ 2
-    0x00000021,  // 33 ^ 1
-    0x00000001,  // 33 ^ 0
-};
+#endif
 
-uint32_t HashDjb2_SSE41(const uint8_t* src, int count, uint32_t seed) {
-  uint32_t hash;
+#ifdef HAS_HASHDJB2_AVX2
+static const uint32_t kHash32x33 = 0x1137c401;  // 33 ^ 32
+
+// hash = hash * 33 ^ 32 + sum(src[i] * 33 ^ (31 - i)) for each 32 bytes.
+uint32_t HashDjb2_AVX2(const uint8_t* src, int count, uint32_t seed) {
   asm volatile(
-      "movd        %2,%%xmm0                     \n"
-      "pxor        %%xmm7,%%xmm7                 \n"
-      "movdqa      %4,%%xmm6                     \n"
+      "vmovd       %[seed],%%xmm0                \n"
+      "vmovd       %[pow32],%%xmm6               \n"
 
+      // Process 32 bytes per loop.
       LABELALIGN
       "1:          \n"
-      "movdqu      (%0),%%xmm1                   \n"
-      "lea         0x10(%0),%0                   \n"
-      "pmulld      %%xmm6,%%xmm0                 \n"
-      "movdqa      %5,%%xmm5                     \n"
-      "movdqa      %%xmm1,%%xmm2                 \n"
-      "punpcklbw   %%xmm7,%%xmm2                 \n"
-      "movdqa      %%xmm2,%%xmm3                 \n"
-      "punpcklwd   %%xmm7,%%xmm3                 \n"
-      "pmulld      %%xmm5,%%xmm3                 \n"
-      "movdqa      %6,%%xmm5                     \n"
-      "movdqa      %%xmm2,%%xmm4                 \n"
-      "punpckhwd   %%xmm7,%%xmm4                 \n"
-      "pmulld      %%xmm5,%%xmm4                 \n"
-      "movdqa      %7,%%xmm5                     \n"
-      "punpckhbw   %%xmm7,%%xmm1                 \n"
-      "movdqa      %%xmm1,%%xmm2                 \n"
-      "punpcklwd   %%xmm7,%%xmm2                 \n"
-      "pmulld      %%xmm5,%%xmm2                 \n"
-      "movdqa      %8,%%xmm5                     \n"
-      "punpckhwd   %%xmm7,%%xmm1                 \n"
-      "pmulld      %%xmm5,%%xmm1                 \n"
-      "paddd       %%xmm4,%%xmm3                 \n"
-      "paddd       %%xmm2,%%xmm1                 \n"
-      "paddd       %%xmm3,%%xmm1                 \n"
-      "pshufd      $0xe,%%xmm1,%%xmm2            \n"
-      "paddd       %%xmm2,%%xmm1                 \n"
-      "pshufd      $0x1,%%xmm1,%%xmm2            \n"
-      "paddd       %%xmm2,%%xmm1                 \n"
-      "paddd       %%xmm1,%%xmm0                 \n"
-      "sub         $0x10,%1                      \n"
+      "vpmovzxbd   (%[src]),%%ymm1               \n"
+      "vpmovzxbd   0x8(%[src]),%%ymm2            \n"
+      "vpmovzxbd   0x10(%[src]),%%ymm3           \n"
+      "vpmovzxbd   0x18(%[src]),%%ymm4           \n"
+      "add         $0x20,%[src]                  \n"
+      "vpmulld     (%[mul]),%%ymm1,%%ymm1        \n"
+      "vpmulld     0x20(%[mul]),%%ymm2,%%ymm2    \n"
+      "vpmulld     0x40(%[mul]),%%ymm3,%%ymm3    \n"
+      "vpmulld     0x60(%[mul]),%%ymm4,%%ymm4    \n"
+      "vpaddd      %%ymm2,%%ymm1,%%ymm1          \n"
+      "vpaddd      %%ymm4,%%ymm3,%%ymm3          \n"
+      "vpaddd      %%ymm3,%%ymm1,%%ymm1          \n"
+      "vextracti128 $1,%%ymm1,%%xmm2             \n"
+      "vpaddd      %%xmm2,%%xmm1,%%xmm1          \n"
+      "vpshufd     $0xee,%%xmm1,%%xmm2           \n"
+      "vpaddd      %%xmm2,%%xmm1,%%xmm1          \n"
+      "vpshufd     $0x1,%%xmm1,%%xmm2            \n"
+      "vpaddd      %%xmm2,%%xmm1,%%xmm1          \n"
+      "vpmulld     %%xmm6,%%xmm0,%%xmm0          \n"
+      "vpaddd      %%xmm1,%%xmm0,%%xmm0          \n"
+      "sub         $0x20,%[count]                \n"
       "jg          1b                            \n"
-      "movd        %%xmm0,%3                     \n"
-      : "+r"(src),        // %0
-        "+r"(count),      // %1
-        "+rm"(seed),      // %2
-        "=r"(hash)        // %3
-      : "m"(kHash16x33),  // %4
-        "m"(kHashMul0),   // %5
-        "m"(kHashMul1),   // %6
-        "m"(kHashMul2),   // %7
-        "m"(kHashMul3)    // %8
-      : "cc", "memory", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
-        "xmm7");
-  return hash;
+
+      "vmovd       %%xmm0,%[seed]                \n"
+      "vzeroupper  \n"
+      : [src] "+r"(src), [count] "+r"(count), [seed] "+r"(seed)
+      : [mul] "r"(kHashMul64 + 32), [pow32] "m"(kHash32x33)
+      : "cc", "memory", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm6");
+  return seed;
 }
+#endif  // HAS_HASHDJB2_AVX2
 #if defined(HAS_HAMMINGDISTANCE_AVX512BW) || \
     defined(HAS_SUMSQUAREERROR_AVX512BW) || defined(HAS_HASHDJB2_AVX512BW)
 // Mask of the low n bytes, for n = 0 to 63.
@@ -500,25 +342,6 @@ uint32_t SumSquareError_AVX512BW(const uint8_t* src_a,
 #endif  // HAS_SUMSQUAREERROR_AVX512BW
 
 #ifdef HAS_HASHDJB2_AVX512BW
-// 33 ^ (63 - i) for byte i of 64.
-static const uint32_t kHashMul_AVX512BW[64] = {
-    0xd8be0be1, 0xef4b93c1, 0x64579fa1, 0x6021af81,  // 33 ^ 63 .. 60
-    0x40f94361, 0x193ddb41, 0x6d5ef721, 0x31dc1701,  // 33 ^ 59 .. 56
-    0x0944bae1, 0xc23862c1, 0x15668ea1, 0xa38ebe81,  // 33 ^ 55 .. 52
-    0x33807261, 0x301b2a41, 0x664e6621, 0x0319a601,  // 33 ^ 51 .. 48
-    0xd18c69e1, 0xb8c631c1, 0x79f67da1, 0xae5ccd81,  // 33 ^ 47 .. 44
-    0x0548a161, 0xc2197941, 0x7a3ed521, 0x13383501,  // 33 ^ 43 .. 40
-    0x009518e1, 0xc1f500c1, 0xa1076ca1, 0xaf8bdc81,  // 33 ^ 39 .. 36
-    0x0551d061, 0x3e38c841, 0x38304421, 0x1137c401,  // 33 ^ 35 .. 32
-    0x655ec7e1, 0xccc4cfc1, 0x99995ba1, 0xd61beb81,  // 33 ^ 31 .. 28
-    0x829bff61, 0x13791741, 0x2f22b321, 0xac185301,  // 33 ^ 27 .. 24
-    0xcee976e1, 0xc8359ec1, 0x72ac4aa1, 0x510cfa81,  // 33 ^ 23 .. 20
-    0xcc272e61, 0xb0da6641, 0xee162221, 0x92d9e201,  // 33 ^ 19 .. 16
-    0x0c3525e1, 0xa3476dc1, 0x3b4039a1, 0x4f5f0981,  // 33 ^ 15 .. 12
-    0x30f35d61, 0x855cb541, 0x040a9121, 0x747c7101,  // 33 ^ 11 .. 8
-    0xec41d4e1, 0x4cfa3cc1, 0x025528a1, 0x00121881,  // 33 ^ 7 .. 4
-    0x00008c61, 0x00000441, 0x00000021, 0x00000001,  // 33 ^ 3 .. 0
-};
 static const uint32_t kHash64x33 = 0xf07f8801;  // 33 ^ 64
 
 static uint32_t Pow33(int n) {
@@ -599,8 +422,8 @@ uint32_t HashDjb2_AVX512BW(const uint8_t* src, int count, uint32_t seed) {
       "vmovd       %%xmm0,%[seed]                \n"
       "vzeroupper  \n"
       : [src] "+r"(src), [width] "+r"(width), [seed] "+r"(seed)
-      : [mul] "r"(kHashMul_AVX512BW), [pow64] "m"(kHash64x33),
-        [pow_n] "m"(pow_n), [mask] "m"(mask)
+      : [mul] "r"(kHashMul64), [pow64] "m"(kHash64x33), [pow_n] "m"(pow_n),
+        [mask] "m"(mask)
       : "cc", "memory", "k1", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
         "xmm6");
   return seed;
