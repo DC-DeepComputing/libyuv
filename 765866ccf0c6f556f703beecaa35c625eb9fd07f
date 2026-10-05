@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d998c458_d789f130",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-05T19:14:27Z",
+      "side": 1,
+      "message": "I\u0027m trying to avoid scale changes while this hasnt landed, but rebased and benchmarked and its still good",
+      "revId": "765866ccf0c6f556f703beecaa35c625eb9fd07f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
