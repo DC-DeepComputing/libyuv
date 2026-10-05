@@ -174,6 +174,14 @@ int main(void) { return 0; }
       add_definitions(-DLIBYUV_DISABLE_RVV)
     endif()
   endif()
+
+  if(arch_lowercase MATCHES "^wasm" OR EMSCRIPTEN)
+    add_definitions(-DLIBYUV_WASM=1)
+    add_library(${ly_lib_name}_wasm OBJECT
+      ${ly_src_dir}/row_wasm.cc)
+    target_compile_options(${ly_lib_name}_wasm PRIVATE -msimd128)
+    list(APPEND ly_lib_parts $<TARGET_OBJECTS:${ly_lib_name}_wasm>)
+  endif()
 endif()
 
 if(LOONGARCH64)

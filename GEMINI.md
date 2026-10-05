@@ -42,6 +42,8 @@ and compiler compatibility.
 *   **row_rvv.cc**: RISC-V Vector (RVV). Implemented using intrinsics. Optimized
     for SiFive X280.
 *   **row_lsx.cc / row_lasx.cc**: Loongarch MIPS-like extensions.
+*   **row_wasm.cc**: WebAssembly SIMD (WASM SIMD128). Implemented using
+    intrinsics (`<wasm_simd128.h>`).
 
 ### Utility and Fallbacks
 

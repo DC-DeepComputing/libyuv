@@ -13,6 +13,7 @@ def libyuv_srcs(prefix = ""):
             prefix + "source/*rvv*.cc",
             prefix + "source/*sve*.cc",
             prefix + "source/*sme*.cc",
+            prefix + "source/*wasm*.cc",
         ],
     )
 
@@ -40,6 +41,12 @@ def libyuv_rvv_srcs(prefix = ""):
 def libyuv_sve_srcs(prefix = ""):
     return native.glob([
         prefix + "source/*sve*.cc",
+        prefix + "include/libyuv/*.h",
+    ])
+
+def libyuv_wasm_srcs(prefix = ""):
+    return native.glob([
+        prefix + "source/*wasm*.cc",
         prefix + "include/libyuv/*.h",
     ])
 

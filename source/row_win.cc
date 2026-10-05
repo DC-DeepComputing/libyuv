@@ -583,7 +583,7 @@ void RAWToRGB24Row_AVX512BW(const uint8_t* src_raw,
   __m512i zmm_d1 = _mm512_loadu_si512((const __m512i*)kPermdRGB24_1_AVX512BW);
   __m512i zmm_d2 = _mm512_loadu_si512((const __m512i*)kPermdRGB24_2_AVX512BW);
 
-  while (width > 0) {
+  while (width >= 64) {
     __m512i zmm_raw0 = _mm512_loadu_si512((const __m512i*)src_raw);
     __m512i zmm_raw1 = _mm512_loadu_si512((const __m512i*)(src_raw + 64));
     __m512i zmm_raw2 = _mm512_loadu_si512((const __m512i*)(src_raw + 128));
@@ -610,6 +610,36 @@ void RAWToRGB24Row_AVX512BW(const uint8_t* src_raw,
     dst_rgb24 += 192;
     width -= 64;
   }
+  if (width > 0) {
+    int bytes = width * 3;
+    __mmask64 mask0 = bytes >= 64 ? ~0ull : (1ull << bytes) - 1ull;
+    __mmask64 mask1 = bytes >= 128
+                          ? ~0ull
+                          : (bytes > 64 ? (1ull << (bytes - 64)) - 1ull : 0ull);
+    __mmask64 mask2 = bytes > 128 ? (1ull << (bytes - 128)) - 1ull : 0ull;
+
+    __m512i zmm_raw0 = _mm512_maskz_loadu_epi8(mask0, src_raw);
+    __m512i zmm_raw1 = _mm512_maskz_loadu_epi8(mask1, src_raw + 64);
+    __m512i zmm_raw2 = _mm512_maskz_loadu_epi8(mask2, src_raw + 128);
+
+    __m512i zmm0 = _mm512_permutexvar_epi64(zmm_q0, zmm_raw0);
+    __m512i zmm1 = _mm512_permutex2var_epi64(zmm_raw0, zmm_q1, zmm_raw1);
+    __m512i zmm2 = _mm512_permutex2var_epi64(zmm_raw1, zmm_q2, zmm_raw2);
+    __m512i zmm3 = _mm512_permutexvar_epi64(zmm_q3, zmm_raw2);
+
+    zmm0 = _mm512_shuffle_epi8(zmm0, zmm_shuf);
+    zmm1 = _mm512_shuffle_epi8(zmm1, zmm_shuf);
+    zmm2 = _mm512_shuffle_epi8(zmm2, zmm_shuf);
+    zmm3 = _mm512_shuffle_epi8(zmm3, zmm_shuf);
+
+    __m512i dst0 = _mm512_permutex2var_epi32(zmm0, zmm_d0, zmm1);
+    __m512i dst1 = _mm512_permutex2var_epi32(zmm1, zmm_d1, zmm2);
+    __m512i dst2 = _mm512_permutex2var_epi32(zmm2, zmm_d2, zmm3);
+
+    _mm512_mask_storeu_epi8(dst_rgb24, mask0, dst0);
+    _mm512_mask_storeu_epi8(dst_rgb24 + 64, mask1, dst1);
+    _mm512_mask_storeu_epi8(dst_rgb24 + 128, mask2, dst2);
+  }
   _mm256_zeroupper();
 }
 #endif  // HAS_RAWTORGB24ROW_AVX512BW
@@ -624,7 +654,7 @@ void RAWToRGB24Row_AVX512VBMI(const uint8_t* src_raw,
   __m512i zmm_p2 = _mm512_loadu_si512((const __m512i*)kPermRAWToRGB24_2);
   __m512i zmm_p3 = _mm512_loadu_si512((const __m512i*)kPermRAWToRGB24_3);
 
-  while (width > 0) {
+  while (width >= 64) {
     __m512i zmm_raw0 = _mm512_loadu_si512((const __m512i*)src_raw);
     __m512i zmm_raw1 = _mm512_loadu_si512((const __m512i*)(src_raw + 64));
     __m512i zmm_raw2 = _mm512_loadu_si512((const __m512i*)(src_raw + 128));
@@ -641,6 +671,27 @@ void RAWToRGB24Row_AVX512VBMI(const uint8_t* src_raw,
     src_raw += 192;
     dst_rgb24 += 192;
     width -= 64;
+  }
+  if (width > 0) {
+    int bytes = width * 3;
+    __mmask64 mask0 = bytes >= 64 ? ~0ull : (1ull << bytes) - 1ull;
+    __mmask64 mask1 = bytes >= 128
+                          ? ~0ull
+                          : (bytes > 64 ? (1ull << (bytes - 64)) - 1ull : 0ull);
+    __mmask64 mask2 = bytes > 128 ? (1ull << (bytes - 128)) - 1ull : 0ull;
+
+    __m512i zmm_raw0 = _mm512_maskz_loadu_epi8(mask0, src_raw);
+    __m512i zmm_raw1 = _mm512_maskz_loadu_epi8(mask1, src_raw + 64);
+    __m512i zmm_raw2 = _mm512_maskz_loadu_epi8(mask2, src_raw + 128);
+
+    __m512i tmp1 = _mm512_permutex2var_epi8(zmm_raw1, zmm_p1, zmm_raw0);
+    __m512i dst0 = _mm512_permutex2var_epi8(zmm_raw0, zmm_p0, zmm_raw1);
+    __m512i dst2 = _mm512_permutex2var_epi8(zmm_raw1, zmm_p3, zmm_raw2);
+    __m512i dst1 = _mm512_permutex2var_epi8(tmp1, zmm_p2, zmm_raw2);
+
+    _mm512_mask_storeu_epi8(dst_rgb24, mask0, dst0);
+    _mm512_mask_storeu_epi8(dst_rgb24 + 64, mask1, dst1);
+    _mm512_mask_storeu_epi8(dst_rgb24 + 128, mask2, dst2);
   }
   _mm256_zeroupper();
 }

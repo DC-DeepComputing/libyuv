@@ -48,6 +48,11 @@ config("libyuv_config") {
   if (!libyuv_use_lasx) {
     defines += [ "LIBYUV_DISABLE_LASX" ]
   }
+  if (!libyuv_use_wasm) {
+    defines += [ "LIBYUV_DISABLE_WASM" ]
+  } else {
+    defines += [ "LIBYUV_WASM" ]
+  }
 }
 
 # This target is built when no specific target is specified on the command line.
@@ -100,6 +105,10 @@ group("libyuv") {
 
   if (libyuv_use_lasx) {
     deps += [ ":libyuv_lasx" ]
+  }
+
+  if (libyuv_use_wasm) {
+    deps += [ ":libyuv_wasm" ]
   }
 
   if (!is_ios && !libyuv_disable_jpeg) {
@@ -346,6 +355,21 @@ if (libyuv_use_lasx) {
   }
 }
 
+if (libyuv_use_wasm) {
+  static_library("libyuv_wasm") {
+    sources = [
+      # WASM Source Files
+      "source/row_wasm.cc",
+    ]
+
+    cflags_cc = [ "-msimd128" ]
+
+    deps = [ ":libyuv_internal" ]
+
+    public_configs = [ ":libyuv_config" ]
+  }
+}
+
 if (libyuv_include_tests) {
   config("libyuv_unittest_warnings_config") {
     if (!is_win) {
@@ -362,6 +386,7 @@ if (libyuv_include_tests) {
       ]
     }
   }
+
   config("libyuv_unittest_config") {
     defines = [ "GTEST_RELATIVE_PATH" ]
   }

@@ -658,22 +658,25 @@ void RAWToRGB24Row_AVX2(const uint8_t* src_raw, uint8_t* dst_rgb24, int width) {
 void RAWToRGB24Row_AVX512BW(const uint8_t* src_raw,
                             uint8_t* dst_rgb24,
                             int width) {
+  uintptr_t temp, mask;
   asm volatile(
-      "vmovdqu64   %3,%%zmm20                    \n"  // kPermqRGB24ToARGB0_AVX512BW
-      "vmovdqu64   %4,%%zmm21                    \n"  // kPermqRGB24ToARGB1_AVX512BW
-      "vmovdqu64   %5,%%zmm22                    \n"  // kPermqRGB24ToARGB2_AVX512BW
-      "vmovdqu64   %6,%%zmm23                    \n"  // kPermqRGB24ToARGB3_AVX512BW
-      "vbroadcasti64x4 %7,%%zmm4                 \n"  // shuffler (32 bytes)
-      "vmovdqu32   %8,%%zmm24                    \n"  // kPermdRGB24_0_AVX512BW
-      "vmovdqu32   %9,%%zmm25                    \n"  // kPermdRGB24_1_AVX512BW
-      "vmovdqu32   %10,%%zmm26                   \n"  // kPermdRGB24_2_AVX512BW
+      "vmovdqu64   %[kPermq0],%%zmm20            \n"
+      "vmovdqu64   %[kPermq1],%%zmm21            \n"
+      "vmovdqu64   %[kPermq2],%%zmm22            \n"
+      "vmovdqu64   %[kPermq3],%%zmm23            \n"
+      "vbroadcasti64x4 %[shuffler],%%zmm4        \n"
+      "vmovdqu32   %[kPermd0],%%zmm24            \n"
+      "vmovdqu32   %[kPermd1],%%zmm25            \n"
+      "vmovdqu32   %[kPermd2],%%zmm26            \n"
+      "sub         $0x40,%[width]                \n"
+      "jl          2f                            \n"
 
       LABELALIGN
       "1:          \n"
-      "vmovdqu8    (%0),%%zmm0                   \n"
-      "vmovdqu8    64(%0),%%zmm1                 \n"
-      "vmovdqu8    128(%0),%%zmm2                \n"
-      "lea         192(%0),%0                    \n"
+      "vmovdqu8    (%[src]),%%zmm0               \n"
+      "vmovdqu8    0x40(%[src]),%%zmm1           \n"
+      "vmovdqu8    0x80(%[src]),%%zmm2           \n"
+      "lea         0xc0(%[src]),%[src]           \n"
       "vpermq      %%zmm2,%%zmm23,%%zmm3         \n"
       "vmovdqa64   %%zmm0,%%zmm19                \n"
       "vpermt2q    %%zmm1,%%zmm21,%%zmm19        \n"
@@ -686,26 +689,69 @@ void RAWToRGB24Row_AVX512BW(const uint8_t* src_raw,
       "vpermt2d    %%zmm19,%%zmm24,%%zmm0        \n"
       "vpermt2d    %%zmm2,%%zmm25,%%zmm19        \n"
       "vpermt2d    %%zmm3,%%zmm26,%%zmm2         \n"
-      "vmovdqu8    %%zmm0,(%1)                   \n"
-      "vmovdqu8    %%zmm19,0x40(%1)              \n"
-      "vmovdqu8    %%zmm2,0x80(%1)               \n"
-      "lea         0xc0(%1),%1                   \n"
-      "sub         $0x40,%2                      \n"
-      "jg          1b                            \n"
+      "vmovdqu8    %%zmm0,(%[dst])               \n"
+      "vmovdqu8    %%zmm19,0x40(%[dst])          \n"
+      "vmovdqu8    %%zmm2,0x80(%[dst])           \n"
+      "lea         0xc0(%[dst]),%[dst]           \n"
+      "sub         $0x40,%[width]                \n"
+      "jge         1b                            \n"
+
+      "2:          \n"
+      "add         $0x40,%[width]                \n"
+      "je          99f                           \n"
+
+      "mov         $-1,%[temp]                   \n"
+      "lea         (%q[width],%q[width],2),%k[width] \n"
+      "bzhi        %q[width],%[temp],%[mask]     \n"
+      "kmovq       %[mask],%%k1                  \n"
+      "xor         %k[mask],%k[mask]             \n"
+      "sub         $0x40,%k[width]               \n"
+      "cmovg       %[temp],%[mask]               \n"
+      "bzhi        %q[width],%[mask],%[mask]     \n"
+      "kmovq       %[mask],%%k2                  \n"
+      "xor         %k[mask],%k[mask]             \n"
+      "sub         $0x40,%k[width]               \n"
+      "cmovg       %[temp],%[mask]               \n"
+      "bzhi        %q[width],%[mask],%[mask]     \n"
+      "kmovq       %[mask],%%k3                  \n"
+
+      "vmovdqu8    (%[src]),%%zmm0%{%%k1%}%{z%}     \n"
+      "vmovdqu8    0x40(%[src]),%%zmm1%{%%k2%}%{z%} \n"
+      "vmovdqu8    0x80(%[src]),%%zmm2%{%%k3%}%{z%} \n"
+      "vpermq      %%zmm2,%%zmm23,%%zmm3         \n"
+      "vmovdqa64   %%zmm0,%%zmm19                \n"
+      "vpermt2q    %%zmm1,%%zmm21,%%zmm19        \n"
+      "vpermt2q    %%zmm2,%%zmm22,%%zmm1         \n"
+      "vpermq      %%zmm0,%%zmm20,%%zmm0         \n"
+      "vpshufb     %%zmm4,%%zmm0,%%zmm0          \n"
+      "vpshufb     %%zmm4,%%zmm19,%%zmm19        \n"
+      "vpshufb     %%zmm4,%%zmm1,%%zmm2          \n"
+      "vpshufb     %%zmm4,%%zmm3,%%zmm3          \n"
+      "vpermt2d    %%zmm19,%%zmm24,%%zmm0        \n"
+      "vpermt2d    %%zmm2,%%zmm25,%%zmm19        \n"
+      "vpermt2d    %%zmm3,%%zmm26,%%zmm2         \n"
+      "vmovdqu8    %%zmm0,(%[dst])%{%%k1%}       \n"
+      "vmovdqu8    %%zmm19,0x40(%[dst])%{%%k2%}  \n"
+      "vmovdqu8    %%zmm2,0x80(%[dst])%{%%k3%}   \n"
+
+      "99:         \n"
       "vzeroupper  \n"
-      : "+r"(src_raw),                        // %0
-        "+r"(dst_rgb24),                      // %1
-        "+r"(width)                           // %2
-      : "m"(kPermqRGB24ToARGB0_AVX512BW),     // %3
-        "m"(kPermqRGB24ToARGB1_AVX512BW),     // %4
-        "m"(kPermqRGB24ToARGB2_AVX512BW),     // %5
-        "m"(kPermqRGB24ToARGB3_AVX512BW),     // %6
-        "m"(kShuffleMaskRAWToRGB24_AVX2[0]),  // %7
-        "m"(kPermdRGB24_0_AVX512BW),          // %8
-        "m"(kPermdRGB24_1_AVX512BW),          // %9
-        "m"(kPermdRGB24_2_AVX512BW)           // %10
+      : [src] "+r"(src_raw),    // %[src]
+        [dst] "+r"(dst_rgb24),  // %[dst]
+        [width] "+r"(width),    // %[width]
+        [temp] "=&r"(temp),     // %[temp]
+        [mask] "=&r"(mask)      // %[mask]
+      : [kPermq0] "m"(kPermqRGB24ToARGB0_AVX512BW),
+        [kPermq1] "m"(kPermqRGB24ToARGB1_AVX512BW),
+        [kPermq2] "m"(kPermqRGB24ToARGB2_AVX512BW),
+        [kPermq3] "m"(kPermqRGB24ToARGB3_AVX512BW),
+        [shuffler] "m"(kShuffleMaskRAWToRGB24_AVX2[0]),
+        [kPermd0] "m"(kPermdRGB24_0_AVX512BW),
+        [kPermd1] "m"(kPermdRGB24_1_AVX512BW),
+        [kPermd2] "m"(kPermdRGB24_2_AVX512BW)
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm19",
-        "xmm20", "xmm21", "xmm22", "xmm23", "xmm24", "xmm25", "xmm26");
+        "xmm20", "xmm21", "xmm22", "xmm23", "xmm24", "xmm25", "xmm26", "k1",
+        "k2", "k3");
 }
 #endif  // HAS_RAWTORGB24ROW_AVX512BW
 
@@ -713,39 +759,77 @@ void RAWToRGB24Row_AVX512BW(const uint8_t* src_raw,
 void RAWToRGB24Row_AVX512VBMI(const uint8_t* src_raw,
                               uint8_t* dst_rgb24,
                               int width) {
+  uintptr_t temp, mask;
   asm volatile(
       "vmovdqu32   %[kPermRAWToRGB24_0],%%zmm20  \n"
       "vmovdqu32   %[kPermRAWToRGB24_1],%%zmm21  \n"
       "vmovdqu32   %[kPermRAWToRGB24_2],%%zmm22  \n"
       "vmovdqu32   %[kPermRAWToRGB24_3],%%zmm23  \n"
+      "sub         $0x40,%[width]                \n"
+      "jl          2f                            \n"
 
       LABELALIGN
       "1:          \n"
-      "vmovdqu8    (%0),%%zmm0                   \n"
-      "vmovdqu8    64(%0),%%zmm1                 \n"
-      "vmovdqu8    128(%0),%%zmm2                \n"
-      "lea         192(%0),%0                    \n"
+      "vmovdqu8    (%[src]),%%zmm0               \n"
+      "vmovdqu8    0x40(%[src]),%%zmm1           \n"
+      "vmovdqu8    0x80(%[src]),%%zmm2           \n"
+      "lea         0xc0(%[src]),%[src]           \n"
       "vmovdqa64   %%zmm1,%%zmm3                 \n"
       "vpermt2b    %%zmm0,%%zmm21,%%zmm1         \n"
       "vpermt2b    %%zmm3,%%zmm20,%%zmm0         \n"
       "vpermt2b    %%zmm2,%%zmm23,%%zmm3         \n"
       "vpermt2b    %%zmm2,%%zmm22,%%zmm1         \n"
-      "vmovdqu8    %%zmm0,(%1)                   \n"
-      "vmovdqu8    %%zmm1,0x40(%1)               \n"
-      "vmovdqu8    %%zmm3,0x80(%1)               \n"
-      "lea         0xc0(%1),%1                   \n"
-      "sub         $0x40,%2                      \n"
-      "jg          1b                            \n"
+      "vmovdqu8    %%zmm0,(%[dst])               \n"
+      "vmovdqu8    %%zmm1,0x40(%[dst])           \n"
+      "vmovdqu8    %%zmm3,0x80(%[dst])           \n"
+      "lea         0xc0(%[dst]),%[dst]           \n"
+      "sub         $0x40,%[width]                \n"
+      "jge         1b                            \n"
+
+      "2:          \n"
+      "add         $0x40,%[width]                \n"
+      "je          99f                           \n"
+
+      "mov         $-1,%[temp]                   \n"
+      "lea         (%q[width],%q[width],2),%k[width] \n"
+      "bzhi        %q[width],%[temp],%[mask]     \n"
+      "kmovq       %[mask],%%k1                  \n"
+      "xor         %k[mask],%k[mask]             \n"
+      "sub         $0x40,%k[width]               \n"
+      "cmovg       %[temp],%[mask]               \n"
+      "bzhi        %q[width],%[mask],%[mask]     \n"
+      "kmovq       %[mask],%%k2                  \n"
+      "xor         %k[mask],%k[mask]             \n"
+      "sub         $0x40,%k[width]               \n"
+      "cmovg       %[temp],%[mask]               \n"
+      "bzhi        %q[width],%[mask],%[mask]     \n"
+      "kmovq       %[mask],%%k3                  \n"
+
+      "vmovdqu8    (%[src]),%%zmm0%{%%k1%}%{z%}     \n"
+      "vmovdqu8    0x40(%[src]),%%zmm1%{%%k2%}%{z%} \n"
+      "vmovdqu8    0x80(%[src]),%%zmm2%{%%k3%}%{z%} \n"
+      "vmovdqa64   %%zmm1,%%zmm3                 \n"
+      "vpermt2b    %%zmm0,%%zmm21,%%zmm1         \n"
+      "vpermt2b    %%zmm3,%%zmm20,%%zmm0         \n"
+      "vpermt2b    %%zmm2,%%zmm23,%%zmm3         \n"
+      "vpermt2b    %%zmm2,%%zmm22,%%zmm1         \n"
+      "vmovdqu8    %%zmm0,(%[dst])%{%%k1%}       \n"
+      "vmovdqu8    %%zmm1,0x40(%[dst])%{%%k2%}   \n"
+      "vmovdqu8    %%zmm3,0x80(%[dst])%{%%k3%}   \n"
+
+      "99:         \n"
       "vzeroupper  \n"
-      : "+r"(src_raw),    // %0
-        "+r"(dst_rgb24),  // %1
-        "+r"(width)       // %2
+      : [src] "+r"(src_raw),    // %[src]
+        [dst] "+r"(dst_rgb24),  // %[dst]
+        [width] "+r"(width),    // %[width]
+        [temp] "=&r"(temp),     // %[temp]
+        [mask] "=&r"(mask)      // %[mask]
       : [kPermRAWToRGB24_0] "m"(kPermRAWToRGB24_0),
         [kPermRAWToRGB24_1] "m"(kPermRAWToRGB24_1),
         [kPermRAWToRGB24_2] "m"(kPermRAWToRGB24_2),
         [kPermRAWToRGB24_3] "m"(kPermRAWToRGB24_3)
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm20", "xmm21",
-        "xmm22", "xmm23");
+        "xmm22", "xmm23", "k1", "k2", "k3");
 }
 #endif  // HAS_RAWTORGB24ROW_AVX512VBMI
 
