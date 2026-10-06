@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9d604c41_c29cf9d9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1001934
+      },
+      "writtenOn": "2026-10-06T01:57:21Z",
+      "side": 1,
+      "message": "Too late, but not the right bug number.",
+      "revId": "eb8eda9c7973704d1103a535059224df7a6063b5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
