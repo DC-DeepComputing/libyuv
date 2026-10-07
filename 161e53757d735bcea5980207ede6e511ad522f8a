@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94f9e0e7_70ac0d5a",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1123,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-07T22:24:44Z",
+      "side": 1,
+      "message": "`UVScale()` is the only caller of `ScaleUV()`. See line 1269.",
+      "revId": "161e53757d735bcea5980207ede6e511ad522f8a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94abe006_1d6c1653",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1269,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-07T22:24:44Z",
+      "side": 1,
+      "message": "`UVScale()` rejects `src_width \u003c\u003d 0` as invalid input before calling `ScaleUV()`.",
+      "revId": "161e53757d735bcea5980207ede6e511ad522f8a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "29639440_21ed2b30",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 1293,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-07T22:24:44Z",
+      "side": 1,
+      "message": "`src_width \u003c\u003d 0` is rejected here as invalid input.",
+      "revId": "161e53757d735bcea5980207ede6e511ad522f8a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
