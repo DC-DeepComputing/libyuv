@@ -636,4 +636,21 @@ TEST_F(LibYUVScaleTest, ARGBScale_LargeHeightOverflow) {
   free_aligned_buffer_page_end(orig_pixels);
 }
 
+TEST_F(LibYUVScaleTest, ARGBScaleDimensionOverflow) {
+  uint8_t src[16] = {};
+  uint8_t dst[4] = {};
+  EXPECT_EQ(-1, ARGBScale(src, 4, 32769, 1, dst, 4, 1, 1, kFilterNone));
+  EXPECT_EQ(-1, ARGBScale(src, 4, -32769, 1, dst, 4, 1, 1, kFilterNone));
+  EXPECT_EQ(-1, ARGBScale(src, 4, 1, 32769, dst, 4, 1, 1, kFilterNone));
+  EXPECT_EQ(-1, ARGBScale(src, 4, 1, -32769, dst, 4, 1, 1, kFilterNone));
+  EXPECT_EQ(-1, ARGBScaleClip(src, 4, 32769, 1, dst, 4, 1, 1, 0, 0, 1, 1,
+                              kFilterNone));
+  EXPECT_EQ(-1, ARGBScaleClip(src, 4, -32769, 1, dst, 4, 1, 1, 0, 0, 1, 1,
+                              kFilterNone));
+  EXPECT_EQ(-1, ARGBScaleClip(src, 4, 1, 32769, dst, 4, 1, 1, 0, 0, 1, 1,
+                              kFilterNone));
+  EXPECT_EQ(-1, ARGBScaleClip(src, 4, 1, -32769, dst, 4, 1, 1, 0, 0, 1, 1,
+                              kFilterNone));
+}
+
 }  // namespace libyuv

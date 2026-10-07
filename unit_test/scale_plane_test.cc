@@ -805,4 +805,37 @@ TEST_F(LibYUVScaleTest, ScalePlane_12_InvalidInputs) {
   EXPECT_EQ(-1, ScalePlane_12(src, 4, 4, -32769, dst, 4, 4, 4, kFilterNone));
 }
 
+TEST_F(LibYUVScaleTest, ScalePlaneOversizeHeight) {
+  const int kSrcWidth = 4;
+  const int kSrcHeight = 32768;
+  uint8_t* src = new uint8_t[kSrcWidth * kSrcHeight];
+  memset(src, 0, kSrcWidth * kSrcHeight);
+  uint8_t dst[4 * 2] = {};
+
+  for (int dst_w : {4, 2}) {
+    for (int dst_h : {1, 2}) {
+      for (FilterMode f :
+           {kFilterNone, kFilterLinear, kFilterBilinear, kFilterBox}) {
+        EXPECT_EQ(0, ScalePlane(src, kSrcWidth, kSrcWidth, kSrcHeight, dst,
+                                dst_w, dst_w, dst_h, f));
+        EXPECT_EQ(0, ScalePlane(src, kSrcWidth, kSrcWidth, -kSrcHeight, dst,
+                                dst_w, dst_w, dst_h, f));
+      }
+    }
+  }
+  delete[] src;
+}
+
+TEST_F(LibYUVScaleTest, ScalePlaneBoxMaxSrcHeight) {
+  const int kSrcWidth = 4;
+  const int kSrcHeight = 32768;
+  uint8_t* src = new uint8_t[kSrcWidth * kSrcHeight];
+  memset(src, 0, kSrcWidth * kSrcHeight);
+  uint8_t dst[2 * 4] = {};
+
+  EXPECT_EQ(0, ScalePlane(src, kSrcWidth, kSrcWidth, kSrcHeight, dst, 2, 2, 4,
+                          kFilterBox));
+  delete[] src;
+}
+
 }  // namespace libyuv
