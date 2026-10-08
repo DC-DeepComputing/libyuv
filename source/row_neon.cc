@@ -1670,8 +1670,8 @@ void YUY2ToNVUVRow_NEON(const uint8_t* src_yuy2,
         "+r"(dst_uv),       // %2
         "+r"(width)         // %3
       :
-      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
-        "d7"  // Clobber List
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d9"  // Clobber List
   );
 }
 
@@ -2981,8 +2981,8 @@ void ARGBSepiaRow_NEON(uint8_t* dst_argb, int width) {
       : "+r"(dst_argb),  // %0
         "+r"(width)      // %1
       :
-      : "cc", "memory", "q0", "q1", "q2", "q3", "q10", "q11", "q12", "q13",
-        "q14", "q15");
+      : "cc", "memory", "q0", "q1", "q2", "q3", "q8", "q10", "q11", "q12",
+        "q13", "q14", "q15");
 }
 
 // Tranform 8 ARGB pixels (32 bytes) with color matrix.

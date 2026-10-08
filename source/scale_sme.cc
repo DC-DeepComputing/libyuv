@@ -356,7 +356,7 @@ __arm_locally_streaming void ScaleUVRowDown2Linear_SME(const uint8_t* src_uv,
         [dst_width] "+r"(dst_width),  // %[dst_width]
         [vl] "=r"(vl)                 // %[vl]
       :
-      : "z0", "z1", "p0", "p1");
+      : "memory", "cc", "z0", "z1", "p0", "p1");
 }
 
 #define SCALEUVROWDOWN2BOX_SVE                               \
@@ -408,7 +408,8 @@ __arm_locally_streaming void ScaleUVRowDown2Box_SME(const uint8_t* src_uv,
         [dst_width] "+r"(dst_width),  // %[dst_width]
         [vl] "=r"(vl)                 // %[vl]
       :
-      : "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0", "p1");
+      : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0",
+        "p1");
 }
 
 #undef SCALEUVROWDOWN2BOX_SVE

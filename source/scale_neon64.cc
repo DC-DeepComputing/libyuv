@@ -431,8 +431,8 @@ void ScaleRowDown38_3_Box_NEON(const uint8_t* src_ptr,
         [tblArray2] "r"(kScaleRowDown38_3_BoxIndices2),  // %[tblArray2]
         [tblArray3] "r"(kScaleRowDown38_3_BoxIndices3),  // %[tblArray3]
         [tblArray4] "r"(kScaleRowDown38_NarrowIndices)   // %[tblArray4]
-      : "memory", "cc", "v0", "v1", "v2", "v3", "v4", "v20", "v21", "22", "23",
-        "24", "v27", "v28", "v29", "v30", "v31");
+      : "memory", "cc", "v0", "v1", "v2", "v3", "v4", "v20", "v21", "v22",
+        "v23", "v24", "v25", "v27", "v28", "v29", "v30", "v31");
 }
 
 static const uvec8 kScaleRowDown38_2_BoxIndices1[] = {
@@ -721,7 +721,7 @@ void ScaleRowUp2_Linear_16_NEON(const uint16_t* src_ptr,
         "+r"(dst_ptr),   // %2
         "+r"(dst_width)  // %3
       :
-      : "memory", "cc", "v0", "v1", "v2", "v31"  // Clobber List
+      : "memory", "cc", "v0", "v1", "v2", "v3", "v4", "v5", "v31"  // Clobber List
   );
 }
 

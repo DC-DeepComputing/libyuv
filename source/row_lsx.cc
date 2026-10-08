@@ -2637,7 +2637,8 @@ void ARGBToYMatrixRow_LSX(const uint8_t* src_argb,
         "+&r"(dst_y),     // %1
         "+&r"(width)      // %2
       : "r"(c)
-      : "memory");
+      : "memory", "$vr0", "$vr1", "$vr2", "$vr3", "$vr4", "$vr5", "$vr6",
+        "$vr7", "$vr8", "$vr9", "$vr10", "$vr11", "$vr12", "$vr13", "$vr20");
 }
 
 void RGBToYMatrixRow_LSX(const uint8_t* src_rgba,
@@ -2688,7 +2689,9 @@ void RGBToYMatrixRow_LSX(const uint8_t* src_rgba,
         "+&r"(width)      // %2
       : "r"(c),           // %3
         "r"(shuff)        // %4
-      : "memory");
+      : "memory", "$vr0", "$vr1", "$vr2", "$vr3", "$vr4", "$vr5", "$vr6",
+        "$vr7", "$vr8", "$vr9", "$vr10", "$vr12", "$vr13", "$vr14", "$vr15",
+        "$vr16", "$vr17");
 }
 
 // undef for unified sources build

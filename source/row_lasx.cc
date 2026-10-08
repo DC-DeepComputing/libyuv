@@ -1960,7 +1960,9 @@ void ARGBToYMatrixRow_LASX(const uint8_t* src_argb,
         "+&r"(dst_y),     // %1
         "+&r"(width)      // %2
       : "r"(c), "r"(shuff)
-      : "memory");
+      : "memory", "$xr0", "$xr1", "$xr2", "$xr3", "$xr4", "$xr5", "$xr6",
+        "$xr7", "$xr8", "$xr9", "$xr10", "$xr11", "$xr12", "$xr13", "$xr20",
+        "$xr21");
 }
 
 void RGBToYMatrixRow_LASX(const uint8_t* src_rgba,
@@ -2018,7 +2020,9 @@ void RGBToYMatrixRow_LASX(const uint8_t* src_rgba,
         "+&r"(width)      // %2
       : "r"(c),           // %3
         "r"(shuff)        // %4
-      : "memory");
+      : "memory", "$xr0", "$xr1", "$xr2", "$xr3", "$xr4", "$xr5", "$xr6",
+        "$xr7", "$xr8", "$xr9", "$xr10", "$xr11", "$xr12", "$xr13", "$xr14",
+        "$xr15", "$xr16", "$xr17");
 }
 // undef for unified sources build
 #undef ALPHA_VAL
