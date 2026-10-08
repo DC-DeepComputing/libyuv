@@ -1670,8 +1670,8 @@ void YUY2ToNVUVRow_NEON(const uint8_t* src_yuy2,
         "+r"(dst_uv),       // %2
         "+r"(width)         // %3
       :
-      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6",
-        "d7"  // Clobber List
+      : "cc", "memory", "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8",
+        "d9"  // Clobber List
   );
 }
 

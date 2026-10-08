@@ -2763,7 +2763,7 @@ void ScaleARGBRowDown2Linear_SSE2(const uint8_t* src_argb,
         "+r"(dst_argb),  // %1
         "+r"(dst_width)  // %2
       :
-      : "memory", "cc", "xmm0", "xmm1");
+      : "memory", "cc", "xmm0", "xmm1", "xmm2");
 }
 
 void ScaleARGBRowDown2Box_SSE2(const uint8_t* src_argb,

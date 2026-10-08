@@ -725,7 +725,7 @@ void ScaleRowUp2_Linear_16_NEON(const uint16_t* src_ptr,
         "+r"(dst_width),  // %2
         "+r"(src_temp)    // %3
       :
-      : "memory", "cc", "q0", "q1", "q2", "q15"  // Clobber List
+      : "memory", "cc", "q0", "q1", "q2", "q3", "q4", "q5", "q15"  // Clobber List
   );
 }
 
