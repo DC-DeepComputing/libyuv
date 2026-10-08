@@ -1,0 +1,293 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "da92dce3_14aa0526",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1012,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "[Note: This issue isn\u0027t introduced by this CL, so this does not block this CL.]\n\nIMPORTANT: Can we prove that `uy \u003c\u003d max_y` at this point?\n\nIf this is true, then the subtraction at line 1021 won\u0027t be negative.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e67b91d_e605a82f",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1493,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Can we prove that `uy + 65536` won\u0027t overflow? I think it is true because the caller ensures that `src_height \u003c\u003d 32768`. Just wanted to confirm this with you.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c75150a6_1af44b44",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1527,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Also move the declartion of `dy` into the `else` block, after the declaration of `uy`.\n\nMake the same changes to the other functions.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "54e98380_4dac480e",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1572,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Optional: The changes to this function don\u0027t seem necessary. They are okay if you want this function to look like the other functions.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9be5449d_34d43979",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2020,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "IMPORTANT: This is new! Please confirm you want to add `max_y` to this function.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d6bf720_30870c4c",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2062,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "IMPORTANT: Please confirm you want to add `max_y` to this function.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "31c4ac79_b3a15c7d",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2128,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "IMPORTANT: This comment should be moved if it refers to the `if (dst_height \u003c\u003d src_height)` case.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca97204b_499747a1",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2129,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Could you add a comment to explain this new case?",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11b9d13b_dc2b40ee",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2246,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "IMPORTANT: This comment should be moved if it refers to the `if (dst_height \u003c\u003d src_height)` case.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3927117a_8c28119b",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2247,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Could you add a comment to explain this new case?",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e64fabf6_2ff7ca93",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 478,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "IMPORTANT: We need to make sure that this addition cannot possibly overflow. Unsigned integer overflow is not undefined behavior, so UBSan won\u0027t warn about it by default. So we need to verify this by analyzing the code.\n\nIf we are not sure, I suggest leaving the use of `int64_t` unchanged. I understand it is good to use `uint32_t` consistencly, but we need to avoid introducing a regression.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cda90188_b1873e74",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 502,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "IMPORTANT: Are these changes necessary? We never received reports of problems with `x`.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f169d9c2_2c5ab7c4",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1093,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Nit: Did you intend to delete the comment `Store the 2nd UV`? If the comment should be deleted, it can be done in a separate CL.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "482dbe2e_cc5df415",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1646,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Optional: `Abs(src_width)` is called 12 times in this function. We can save its value in a local variable.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4390136_03e09678",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Nit: Also move the declaration of `dy` to the `else` block below, at line 851.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b10203d5_5b2e1ae2",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 937,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Nit: Also move the declaration of `dy` to the `else` block below, at line 965.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bde6e431_1409127d",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1303,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-08T20:34:19Z",
+      "side": 1,
+      "message": "Nit: Move `src_height \u003c -32768` after `src_width \u003e 32768` so that this if statement is exactly the same as the if statement in `UVScale()` (line 1278).",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
