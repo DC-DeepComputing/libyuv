@@ -2148,7 +2148,7 @@ void ARGB1555ToARGBRow_NEON(const uint8_t* src_argb1555,
         "+r"(dst_argb),      // %1
         "+r"(width)          // %2
       :
-      : "cc", "memory", "v0", "v1", "v2", "v3", "v29"  // Clobber List
+      : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v29"  // Clobber List
   );
 }
 
@@ -3489,7 +3489,8 @@ void ARGB4444ToYRow_NEON(const uint8_t* src_argb4444,
         "+r"(dst_y),         // %1
         "+r"(width)          // %2
       :
-      : "cc", "memory", "v0", "v1", "v2", "v3", "v24", "v25", "v26", "v27");
+      : "cc", "memory", "v0", "v1", "v2", "v3", "v16", "v17", "v24", "v25",
+        "v26", "v27");
 }
 
 // ARGB expects first 3 values to contain RGB and 4th value is ignored.
