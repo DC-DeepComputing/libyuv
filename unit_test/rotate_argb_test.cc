@@ -263,15 +263,15 @@ static void TestRotatePlane_16(int src_width,
   int src_plane_size = src_stride * abs(src_height);
   align_buffer_page_end_16(src, src_plane_size);
   for (int i = 0; i < src_plane_size; ++i) {
-    src[i] = fastrand() & 0xff;
+    src[i] = fastrand() & 0xffff;
   }
 
   int dst_stride = dst_width;
   int dst_plane_size = dst_stride * dst_height;
   align_buffer_page_end_16(dst_c, dst_plane_size);
   align_buffer_page_end_16(dst_opt, dst_plane_size);
-  memset(dst_c, 2, dst_plane_size);
-  memset(dst_opt, 3, dst_plane_size);
+  memset(dst_c, 2, dst_plane_size * 2);
+  memset(dst_opt, 3, dst_plane_size * 2);
 
   MaskCpuFlags(disable_cpu_flags);  // Disable all CPU optimization.
   RotatePlane_16(src, src_stride, dst_c, dst_stride, src_width, src_height,
