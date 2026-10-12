@@ -122,6 +122,36 @@ TANY32(Transpose4x4_32_Any_WASMSIMD,
 #endif
 #undef TANY32
 
+#define TANY16(NAMEANY, TPOS_SIMD, MASK, HEIGHT)                               \
+  void NAMEANY(const uint16_t* src, int src_stride, uint16_t* dst,             \
+               int dst_stride, int width) {                                    \
+    int r = width & MASK;                                                      \
+    int n = width - r;                                                         \
+    if (n > 0) {                                                               \
+      TPOS_SIMD(src, src_stride, dst, dst_stride, n);                          \
+    }                                                                          \
+    ptrdiff_t np = n;                                                          \
+    TransposeWxH_16_C(src + np, src_stride, dst + np * dst_stride, dst_stride, \
+                      r, HEIGHT);                                              \
+  }
+
+#ifdef HAS_TRANSPOSEWX8_16_NEON
+TANY16(TransposeWx8_16_Any_NEON, TransposeWx8_16_NEON, 7, 8)
+#endif
+#ifdef HAS_TRANSPOSEWX16_16_AVX2
+TANY16(TransposeWx16_16_Any_AVX2, TransposeWx16_16_AVX2, 7, 16)
+#endif
+#ifdef HAS_TRANSPOSEWX8_16_LSX
+TANY16(TransposeWx8_16_Any_LSX, TransposeWx8_16_LSX, 7, 8)
+#endif
+#ifdef HAS_TRANSPOSEWX16_16_LASX
+TANY16(TransposeWx16_16_Any_LASX, TransposeWx16_16_LASX, 7, 16)
+#endif
+#ifdef HAS_TRANSPOSEWX8_16_WASMSIMD
+TANY16(TransposeWx8_16_Any_WASMSIMD, TransposeWx8_16_WASMSIMD, 7, 8)
+#endif
+#undef TANY16
+
 #ifdef __cplusplus
 }  // extern "C"
 }  // namespace libyuv
