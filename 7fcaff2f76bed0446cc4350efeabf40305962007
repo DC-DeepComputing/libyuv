@@ -18,6 +18,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e88b8c0b_5c02ddfb",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1012,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Yes. For kFilterBox, ScaleSlope() sets y \u003d 0, so uy \u003d 0 \u003c\u003d max_y on entry. Inside the loop, uy is clamped to max_y immediately after uy +\u003d dy and before the subtraction, and nothing else modifies it, so uy \u003c\u003d max_y holds at the top of every iteration. Hence (uy \u003e\u003e 16) \u003e\u003d iy and the subtraction is never negative.",
+      "parentUuid": "da92dce3_14aa0526",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4e67b91d_e605a82f",
@@ -31,6 +50,25 @@
       "writtenOn": "2026-10-08T20:34:19Z",
       "side": 1,
       "message": "Can we prove that `uy + 65536` won\u0027t overflow? I think it is true because the caller ensures that `src_height \u003c\u003d 32768`. Just wanted to confirm this with you.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3442e5dc_00a9f5d0",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1493,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Confirmed. uy is clamped to max_y \u003d (src_height - 1) \u003c\u003c 16 just above, and src_height \u003c\u003d 32767 (now enforced by ScalePlane()), so uy + 65536 \u003c\u003d 32767 \u003c\u003c 16 \u003d 0x7FFF0000, well below UINT32_MAX.",
+      "parentUuid": "4e67b91d_e605a82f",
+      "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -52,6 +90,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2abec616_2aab5811",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1527,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Done, in all five Up2 linear helpers (ScalePlaneUp2_Linear, ScalePlaneUp2_12_Linear, ScalePlaneUp2_16_Linear, ScaleUVLinearUp2, ScaleUVLinearUp2_16).",
+      "parentUuid": "c75150a6_1af44b44",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "54e98380_4dac480e",
@@ -65,6 +122,25 @@
       "writtenOn": "2026-10-08T20:34:19Z",
       "side": 1,
       "message": "Optional: The changes to this function don\u0027t seem necessary. They are okay if you want this function to look like the other functions.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d57ff074_025d13d9",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1572,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Kept, because the final `y +\u003d dy` after the last row does overflow signed int. With src_height \u003d 32767 and dst_height \u003d 2: dy \u003d FixedDiv(32766, 1) \u003d 0x7FFE0000, y starts at 0x7FFF, and after two increments y \u003d 0xFFFC7FFF. The value is never read, but it is still UB and UBSan reports it.",
+      "parentUuid": "54e98380_4dac480e",
+      "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -86,6 +162,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "aca9fcff_cf6b520b",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2020,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "You\u0027re right, the clamp isn\u0027t needed here: for kFilterNone, y \u003d dy / 2 + j * dy \u003c src_height \u003c\u003c 16 for every row that is read. Removed the clamp and max_y. Kept uint32_t for uy, because the final increment after the last row reaches (src_height \u003c\u003c 16) + dy / 2, which overflows int when src_height \u003d 32767 and dst_height \u003c\u003d 16383.",
+      "parentUuid": "9be5449d_34d43979",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8d6bf720_30870c4c",
@@ -99,6 +194,25 @@
       "writtenOn": "2026-10-08T20:34:19Z",
       "side": 1,
       "message": "IMPORTANT: Please confirm you want to add `max_y` to this function.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b5e98dc4_b625bdaa",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2062,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Same as above; removed the clamp and max_y (also from ScaleUVSimple).",
+      "parentUuid": "8d6bf720_30870c4c",
+      "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -120,6 +234,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9fc17bf3_3b1731c8",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2128,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Removed. After rebasing onto your https://crrev.com/c/8524280, ScalePlane() and ScalePlane_16() reject src_height \u003e 32767, so this branch was dead code.",
+      "parentUuid": "31c4ac79_b3a15c7d",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ca97204b_499747a1",
@@ -133,6 +266,25 @@
       "writtenOn": "2026-10-08T20:34:19Z",
       "side": 1,
       "message": "Could you add a comment to explain this new case?",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8c320fad_0a4e8110",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2129,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Removed (dead after rebase), see above.",
+      "parentUuid": "ca97204b_499747a1",
+      "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -154,6 +306,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "60c3de4a_fbaf70f3",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2246,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Removed (dead after rebase), see above.",
+      "parentUuid": "11b9d13b_dc2b40ee",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3927117a_8c28119b",
@@ -167,6 +338,25 @@
       "writtenOn": "2026-10-08T20:34:19Z",
       "side": 1,
       "message": "Could you add a comment to explain this new case?",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc2f26a6_e37b77d4",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2247,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Removed (dead after rebase), see above.",
+      "parentUuid": "3927117a_8c28119b",
+      "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -188,6 +378,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7fa55f5_ea88a671",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 478,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Reverted scale_argb.cc to the int64_t version from main to keep this CL small; only the ARGBScale/ARGBScaleClip bounds checks remain. (For the record it cannot overflow: uy is clamped to max_y \u003c\u003d 32767 \u003c\u003c 16 before the add, and dy \u003d FixedDiv(src_height, dst_height) \u003c\u003d 32768 \u003c\u003c 16, so uy + dy \u003c\u003d 0xFFFF0000. I may revisit uint32_t in a follow-up since int64_t costs a register pair on 32-bit Arm/x86/WASM.)",
+      "parentUuid": "e64fabf6_2ff7ca93",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cda90188_b1873e74",
@@ -201,6 +410,25 @@
       "writtenOn": "2026-10-08T20:34:19Z",
       "side": 1,
       "message": "IMPORTANT: Are these changes necessary? We never received reports of problems with `x`.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1584a6b2_d6c2ea9b",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 502,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Reverted all the column (x) changes. The only possible overflow there is the trailing x +\u003d dx after the last pixel when src_width \u003e\u003d 26215 and dst_width \u003d\u003d 2, which no one has reported; it can be a separate CL if desired.",
+      "parentUuid": "cda90188_b1873e74",
+      "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -222,6 +450,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e762840_0d258560",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1093,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Not intentional; restored (file reverted to main except ScaleSlope).",
+      "parentUuid": "f169d9c2_2c5ab7c4",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "482dbe2e_cc5df415",
@@ -235,6 +482,25 @@
       "writtenOn": "2026-10-08T20:34:19Z",
       "side": 1,
       "message": "Optional: `Abs(src_width)` is called 12 times in this function. We can save its value in a local variable.",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ea87646_d5d61aa9",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1646,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Left as is to keep the diff minimal (only the two lines of the dst_width \u003d\u003d 1 check changed, to cover a mirrored src_width \u003d\u003d -32768 from ARGBScale).",
+      "parentUuid": "482dbe2e_cc5df415",
+      "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -256,6 +522,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "30c03ac1_00fa8b3f",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "f4390136_03e09678",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b10203d5_5b2e1ae2",
@@ -273,6 +558,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b4cc488_7cfe61db",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 937,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "b10203d5_5b2e1ae2",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bde6e431_1409127d",
@@ -286,6 +590,25 @@
       "writtenOn": "2026-10-08T20:34:19Z",
       "side": 1,
       "message": "Nit: Move `src_height \u003c -32768` after `src_width \u003e 32768` so that this if statement is exactly the same as the if statement in `UVScale()` (line 1278).",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21242c00_0e0cffe0",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 1303,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-12T20:21:13Z",
+      "side": 1,
+      "message": "Done; after rebasing this line is now identical to UVScale() (from https://crrev.com/c/8524280).",
+      "parentUuid": "bde6e431_1409127d",
+      "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
