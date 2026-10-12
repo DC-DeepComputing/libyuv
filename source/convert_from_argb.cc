@@ -3748,6 +3748,11 @@ int ABGRToAR30(const uint8_t* src_abgr,
     }
   }
 #endif
+#if defined(HAS_ABGRTOAR30ROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    ABGRToAR30Row = ABGRToAR30Row_AVX512BW;
+  }
+#endif
   for (y = 0; y < height; ++y) {
     ABGRToAR30Row(src_abgr, dst_ar30, width);
     src_abgr += src_stride_abgr;
@@ -3805,6 +3810,11 @@ int ARGBToAR30(const uint8_t* src_argb,
     if (IS_ALIGNED(width, 8)) {
       ARGBToAR30Row = ARGBToAR30Row_AVX2;
     }
+  }
+#endif
+#if defined(HAS_ARGBTOAR30ROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    ARGBToAR30Row = ARGBToAR30Row_AVX512BW;
   }
 #endif
   for (y = 0; y < height; ++y) {

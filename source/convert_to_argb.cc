@@ -65,6 +65,11 @@ static int NV16ToARGB(const uint8_t* src_y,
     }
   }
 #endif
+#if defined(HAS_NV12TOARGBROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    NV12ToARGBRow = NV12ToARGBRow_AVX512BW;
+  }
+#endif
 #if defined(HAS_NV12TOARGBROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     NV12ToARGBRow = NV12ToARGBRow_Any_NEON;
