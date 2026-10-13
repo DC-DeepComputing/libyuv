@@ -997,6 +997,14 @@ int I010ToNV12(const uint16_t* src_y,
     }
   }
 #endif
+#if defined(HAS_MERGEUVROW_LASX)
+  if (TestCpuFlag(kCpuHasLASX)) {
+    MergeUVRow = MergeUVRow_Any_LASX;
+    if (IS_ALIGNED(halfwidth, 32)) {
+      MergeUVRow = MergeUVRow_LASX;
+    }
+  }
+#endif
 #if defined(HAS_MERGEUVROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
     MergeUVRow = MergeUVRow_RVV;
@@ -1496,6 +1504,14 @@ int I422ToNV21(const uint8_t* src_y,
     }
   }
 #endif
+#if defined(HAS_MERGEUVROW_LASX)
+  if (TestCpuFlag(kCpuHasLASX)) {
+    MergeUVRow = MergeUVRow_Any_LASX;
+    if (IS_ALIGNED(halfwidth, 32)) {
+      MergeUVRow = MergeUVRow_LASX;
+    }
+  }
+#endif
 #if defined(HAS_MERGEUVROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
     MergeUVRow = MergeUVRow_RVV;
@@ -1543,8 +1559,16 @@ int I422ToNV21(const uint8_t* src_y,
 #if defined(HAS_INTERPOLATEROW_LSX)
   if (TestCpuFlag(kCpuHasLSX)) {
     InterpolateRow = InterpolateRow_Any_LSX;
-    if (IS_ALIGNED(width, 32)) {
+    if (IS_ALIGNED(width, 16)) {
       InterpolateRow = InterpolateRow_LSX;
+    }
+  }
+#endif
+#if defined(HAS_INTERPOLATEROW_LASX)
+  if (TestCpuFlag(kCpuHasLASX)) {
+    InterpolateRow = InterpolateRow_Any_LASX;
+    if (IS_ALIGNED(width, 32)) {
+      InterpolateRow = InterpolateRow_LASX;
     }
   }
 #endif
@@ -2085,8 +2109,16 @@ static int Px10ToI420(const uint16_t* src_y,
 #if defined(HAS_SPLITUVROW_LSX)
     if (TestCpuFlag(kCpuHasLSX)) {
       SplitUVRow = SplitUVRow_Any_LSX;
-      if (IS_ALIGNED(src_uv_width, 32)) {
+      if (IS_ALIGNED(src_uv_width, 16)) {
         SplitUVRow = SplitUVRow_LSX;
+      }
+    }
+#endif
+#if defined(HAS_SPLITUVROW_LASX)
+    if (TestCpuFlag(kCpuHasLASX)) {
+      SplitUVRow = SplitUVRow_Any_LASX;
+      if (IS_ALIGNED(src_uv_width, 32)) {
+        SplitUVRow = SplitUVRow_LASX;
       }
     }
 #endif
@@ -2564,6 +2596,16 @@ int UYVYToI420(const uint8_t* src_uyvy,
     }
   }
 #endif
+#if defined(HAS_UYVYTOYROW_LASX)
+  if (TestCpuFlag(kCpuHasLASX)) {
+    UYVYToYRow = UYVYToYRow_Any_LASX;
+    UYVYToUVRow = UYVYToUVRow_Any_LASX;
+    if (IS_ALIGNED(width, 32)) {
+      UYVYToYRow = UYVYToYRow_LASX;
+      UYVYToUVRow = UYVYToUVRow_LASX;
+    }
+  }
+#endif
 #if defined(HAS_UYVYTOYROW_LSX)
   if (TestCpuFlag(kCpuHasLSX)) {
     UYVYToYRow = UYVYToYRow_Any_LSX;
@@ -2851,7 +2893,7 @@ int ARGBToI420Matrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOYMATRIXROW_LSX)
   if (TestCpuFlag(kCpuHasLSX)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_LSX;
-    if (IS_ALIGNED(width, 16)) {
+    if (IS_ALIGNED(width, 8)) {
       ARGBToYMatrixRow = ARGBToYMatrixRow_LSX;
     }
   }
@@ -2859,7 +2901,7 @@ int ARGBToI420Matrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOYMATRIXROW_LASX)
   if (TestCpuFlag(kCpuHasLASX)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_LASX;
-    if (IS_ALIGNED(width, 32)) {
+    if (IS_ALIGNED(width, 16)) {
       ARGBToYMatrixRow = ARGBToYMatrixRow_LASX;
     }
   }
@@ -3083,7 +3125,7 @@ int ARGBToI420Alpha(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOYMATRIXROW_LSX)
   if (TestCpuFlag(kCpuHasLSX)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_LSX;
-    if (IS_ALIGNED(width, 16)) {
+    if (IS_ALIGNED(width, 8)) {
       ARGBToYMatrixRow = ARGBToYMatrixRow_LSX;
     }
   }
@@ -3091,7 +3133,7 @@ int ARGBToI420Alpha(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOYMATRIXROW_LASX)
   if (TestCpuFlag(kCpuHasLASX)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_LASX;
-    if (IS_ALIGNED(width, 32)) {
+    if (IS_ALIGNED(width, 16)) {
       ARGBToYMatrixRow = ARGBToYMatrixRow_LASX;
     }
   }
@@ -3200,8 +3242,14 @@ int ARGBToI420Alpha(const uint8_t* src_argb,
 #endif
 #if defined(HAS_ARGBEXTRACTALPHAROW_LSX)
   if (TestCpuFlag(kCpuHasLSX)) {
-    ARGBExtractAlphaRow = IS_ALIGNED(width, 16) ? ARGBExtractAlphaRow_LSX
-                                                : ARGBExtractAlphaRow_Any_LSX;
+    ARGBExtractAlphaRow = IS_ALIGNED(width, 8) ? ARGBExtractAlphaRow_LSX
+                                               : ARGBExtractAlphaRow_Any_LSX;
+  }
+#endif
+#if defined(HAS_ARGBEXTRACTALPHAROW_LASX)
+  if (TestCpuFlag(kCpuHasLASX)) {
+    ARGBExtractAlphaRow = IS_ALIGNED(width, 16) ? ARGBExtractAlphaRow_LASX
+                                                : ARGBExtractAlphaRow_Any_LASX;
   }
 #endif
 #if defined(HAS_ARGBEXTRACTALPHAROW_WASMSIMD)
