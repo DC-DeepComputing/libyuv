@@ -255,6 +255,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "038514ef_867963ea",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2128,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-13T22:38:13Z",
+      "side": 1,
+      "message": "Hmm... My https://crrev.com/c/8524280 is intended to be just an interim fix, and I was expecting this CL would undo the changes in my https://crrev.com/c/8524280 so that ScalePlane() and ScalePlane_16() reject src_height \u003e 32768. Is this plan okay with you?\n\nI will wait for your answer to this question before I review this CL further.",
+      "parentUuid": "9fc17bf3_3b1731c8",
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ca97204b_499747a1",
         "filename": "source/scale.cc",
         "patchSetId": 2
