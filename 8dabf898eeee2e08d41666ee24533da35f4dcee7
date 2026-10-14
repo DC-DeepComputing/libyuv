@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "df11df10_747fe48c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-14T23:09:21Z",
+      "side": 1,
+      "message": "Optional: add the following duplicate issue:\n\n```\nBug: chromium:546841026\n```",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "ea7b6741_a4828652",
@@ -65,6 +82,23 @@
       "writtenOn": "2026-10-14T22:59:39Z",
       "side": 1,
       "message": "Should we replace this line with the following?\n\n```\n      dy \u003d 1 \u003c\u003c 16;  // 1 as 16.16 fixed point\n```\n\nor\n\n```\n      dy \u003d 1 \u003c\u003c 16;  // FixedDiv(src_height, src_height)\n```",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e6781ed_772860b1",
+        "filename": "source/scale_argb.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 909,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-14T23:09:21Z",
+      "side": 1,
+      "message": "I verified that the `src_width \u003e 32768` check added here fixed [bug chromium:546841026](https://g-issues.chromium.org/issues/546841026).",
       "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
