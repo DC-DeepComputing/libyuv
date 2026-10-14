@@ -271,6 +271,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f60ba5f_4c37f780",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2128,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-14T02:10:45Z",
+      "side": 1,
+      "message": "Yes, that plan sounds good. Undid the +/-32767 height cap from https://crrev.com/c/8524280 so ScalePlane, ScalePlane_16, UVScale, and UVScale_16 allow |src_height| \u003c\u003d 32768 again. Restored the dst_height \u003d\u003d 1 \u0026\u0026 src_height \u003e\u003d 32768 check here and in ScalePlane_16, moved the \u0027When scaling down, use the center 2 rows to filter.\u0027 comment into the dst_height \u003c\u003d src_height branch, and added a comment explaining the dst_height \u003d\u003d 1 \u0026\u0026 src_height \u003e\u003d 32768 case. Also updated the unit tests in scale_plane_test.cc back to kSrcHeight \u003d 32768.",
+      "parentUuid": "038514ef_867963ea",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ca97204b_499747a1",
@@ -302,6 +321,25 @@
       "side": 1,
       "message": "Removed (dead after rebase), see above.",
       "parentUuid": "ca97204b_499747a1",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b7b3f18_874296f4",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2129,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-14T02:10:45Z",
+      "side": 1,
+      "message": "Restored the dst_height \u003d\u003d 1 \u0026\u0026 src_height \u003e\u003d 32768 branch and added the explanatory comment \u0027// Check for 1 pixel and avoid FixedDiv overflow.\u0027.",
+      "parentUuid": "8c320fad_0a4e8110",
       "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
@@ -343,6 +381,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a7a77cf_506498f4",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2246,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-14T02:10:45Z",
+      "side": 1,
+      "message": "Restored and moved the comment into the dst_height \u003c\u003d src_height branch.",
+      "parentUuid": "60c3de4a_fbaf70f3",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3927117a_8c28119b",
@@ -374,6 +431,25 @@
       "side": 1,
       "message": "Removed (dead after rebase), see above.",
       "parentUuid": "3927117a_8c28119b",
+      "isAi": true,
+      "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2029276_e99b68d6",
+        "filename": "source/scale.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2247,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-14T02:10:45Z",
+      "side": 1,
+      "message": "Restored the dst_height \u003d\u003d 1 \u0026\u0026 src_height \u003e\u003d 32768 branch and added the explanatory comment \u0027// Check for 1 pixel and avoid FixedDiv overflow.\u0027.",
+      "parentUuid": "cc2f26a6_e37b77d4",
       "isAi": true,
       "revId": "7fcaff2f76bed0446cc4350efeabf40305962007",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
