@@ -88,6 +88,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a1b23b1_63aa6354",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 947,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-15T05:00:46Z",
+      "side": 1,
+      "message": "Checked this: the 3 functions that use `max_y \u003d (uint32_t)src_height \u003c\u003c 16` are the box filter functions (`ScalePlaneBox`, `ScalePlaneBox_16`, and `ScaleUVBox`). In those functions, `iy \u003d uy \u003e\u003e 16` is the inclusive start row (computed before `uy +\u003d dy`), and after `uy +\u003d dy` and clamping to `max_y`, `uy \u003e\u003e 16` is the exclusive end row (`boxheight \u003d MIN1((int)(uy \u003e\u003e 16) - iy)`). For the last output row to include the final source row (`src_height - 1`), the exclusive upper bound `uy \u003e\u003e 16` must reach `src_height`, so `max_y` must be `src_height \u003c\u003c 16`. In all other functions (bilinear/simple), `uy` is clamped to `max_y` before extracting `yi \u003d uy \u003e\u003e 16` as a 0-based row index, so the max valid index is `src_height - 1`.",
+      "parentUuid": "4122bc4c_2330d67a",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b7ceb797_58aa9f11",
@@ -119,6 +137,24 @@
       "side": 1,
       "message": "without looking at the code, i recall it implements (x-1) / (y-1).  so yes?",
       "parentUuid": "b7ceb797_58aa9f11",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e04ab589_23eed536",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 2129,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-15T05:00:46Z",
+      "side": 1,
+      "message": "Yes, `FixedDiv(num, div)` is `(num \u003c\u003c 16) / div` (while `FixedDiv1` is `(num - 1) / (div - 1)`), so `FixedDiv(src_height, src_height)` is indeed `1 \u003c\u003c 16`. Looking closer at this `dst_height \u003d\u003d 1 \u0026\u0026 src_height \u003e\u003d 32768` case (here and in `ScaleSlope`), setting `dy \u003d 1 \u003c\u003c 16` avoids signed 32-bit overflow in `FixedDiv(32768, 1)`, but it causes `y \u003d CENTERSTART(dy, -32768)` to become `0` (row 0) instead of the center of the image (`(src_height \u003c\u003c 15) - 32768`, row 16383.5). Filed b/573815252 to clean this up and fix the `dst \u003d\u003d 1, src \u003d\u003d 32768` center calculation in a follow-up CL.",
+      "parentUuid": "28cf3e76_38346912",
       "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
