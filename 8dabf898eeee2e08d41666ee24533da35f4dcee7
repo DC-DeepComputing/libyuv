@@ -161,6 +161,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ea4edd88_fd437375",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 2129,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-15T05:56:13Z",
+      "side": 1,
+      "message": "Please add a TODO comment with the bug number `b/573815252`.",
+      "parentUuid": "e04ab589_23eed536",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c8c55c35_2a5db94b",
         "filename": "source/scale.cc",
         "patchSetId": 4
