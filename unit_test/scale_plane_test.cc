@@ -811,20 +811,61 @@ TEST_F(LibYUVScaleTest, ScalePlaneOversizeHeight) {
   const int kSrcHeight = 32768;
   uint8_t* src = new uint8_t[kSrcWidth * kSrcHeight];
   memset(src, 0, kSrcWidth * kSrcHeight);
+  memset(src + 16383 * kSrcWidth, 100, kSrcWidth);
+  memset(src + 16384 * kSrcWidth, 200, kSrcWidth);
   uint8_t dst[4 * 2] = {};
 
-  for (int dst_w : {4, 2}) {
+  for (int dst_w : {4, 2, 1}) {
     for (int dst_h : {1, 2}) {
       for (FilterMode f :
            {kFilterNone, kFilterLinear, kFilterBilinear, kFilterBox}) {
         EXPECT_EQ(0, ScalePlane(src, kSrcWidth, kSrcWidth, kSrcHeight, dst,
                                 dst_w, dst_w, dst_h, f));
+        if (dst_h == 1) {
+          const uint8_t expected =
+              (f == kFilterBilinear || (f == kFilterBox && dst_w >= 2)) ? 150
+                                                                        : 200;
+          EXPECT_EQ(expected, dst[0]);
+        }
         EXPECT_EQ(0, ScalePlane(src, kSrcWidth, kSrcWidth, -kSrcHeight, dst,
                                 dst_w, dst_w, dst_h, f));
+        if (dst_h == 1) {
+          const uint8_t expected =
+              (f == kFilterBilinear || (f == kFilterBox && dst_w >= 2)) ? 150
+                                                                        : 100;
+          EXPECT_EQ(expected, dst[0]);
+        }
       }
     }
   }
   delete[] src;
+
+  uint16_t* src16 = new uint16_t[kSrcWidth * kSrcHeight];
+  memset(src16, 0, kSrcWidth * kSrcHeight * sizeof(uint16_t));
+  for (int x = 0; x < kSrcWidth; ++x) {
+    src16[16383 * kSrcWidth + x] = 1000;
+    src16[16384 * kSrcWidth + x] = 2000;
+  }
+  uint16_t dst16[4] = {};
+  for (int dst_w : {4, 2, 1}) {
+    for (FilterMode f :
+         {kFilterNone, kFilterLinear, kFilterBilinear, kFilterBox}) {
+      EXPECT_EQ(0, ScalePlane_16(src16, kSrcWidth, kSrcWidth, kSrcHeight, dst16,
+                                 dst_w, dst_w, 1, f));
+      const uint16_t expected =
+          (f == kFilterBilinear || (f == kFilterBox && dst_w >= 2)) ? 1500
+                                                                    : 2000;
+      EXPECT_EQ(expected, dst16[0]);
+    }
+  }
+  // Test ScalePlane_16 horizontal 32768 -> 1 box filter (ScaleAddCols1_16_C).
+  for (int y = 0; y < kSrcWidth; ++y) {
+    src16[y * kSrcHeight + 16384] = 3000;
+  }
+  EXPECT_EQ(0, ScalePlane_16(src16, kSrcHeight, kSrcHeight, kSrcWidth, dst16, 1,
+                             1, 1, kFilterBox));
+  EXPECT_EQ(3000, dst16[0]);
+  delete[] src16;
 }
 
 TEST_F(LibYUVScaleTest, ScalePlaneBoxMaxSrcHeight) {

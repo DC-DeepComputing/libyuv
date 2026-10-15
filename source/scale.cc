@@ -917,6 +917,7 @@ static void ScaleAddCols1_16_C(int dst_width,
   int boxwidth = MIN1(dx >> 16);
   int scaleval = 65536 / (boxwidth * boxheight);
   int i;
+  x >>= 16;
   for (i = 0; i < dst_width; ++i) {
     *dst_ptr++ = SumPixels_16(boxwidth, src_ptr + x) * scaleval >> 16;
     x += boxwidth;
@@ -2125,25 +2126,21 @@ int ScalePlane(const uint8_t* src,
     int dy = 0;
     int y = 0;
     // Check for 1 pixel and avoid FixedDiv overflow.
-    // TODO(b/573815252): Fix center row calculation when dst_height == 1 and
-    // src_height == 32768.
     if (dst_height == 1 && src_height >= 32768) {
-      dy = FixedDiv(src_height, src_height);
-      y = CENTERSTART(dy, -32768);
+      dy = 1 << 16;
+      y = filtering ? ((src_height << 15) - 32768) : (src_height << 15);
+    } else if (filtering == kFilterNone) {
+      // Point sampling uses centered source/destination stepping, matching
+      // ScaleSlope.
+      dy = FixedDiv(src_height, dst_height);
+      y = CENTERSTART(dy, 0);
     } else if (dst_height <= src_height) {
       // When scaling down, use the center 2 rows to filter.
       dy = FixedDiv(src_height, dst_height);
       y = CENTERSTART(dy, -32768);  // Subtract 0.5 (32768) to center filter.
     } else if (src_height > 1 && dst_height > 1) {
-      // Point sampling uses centered source/destination stepping, matching
-      // ScaleSlope. Bilinear scaling maps the source endpoints.
-      if (filtering == kFilterNone) {
-        dy = FixedDiv(src_height, dst_height);
-        y = CENTERSTART(dy, 0);
-      } else {
-        // When scaling up, last row of destination uses the last 2 source rows.
-        dy = FixedDiv1(src_height, dst_height);
-      }
+      // When scaling up, last row of destination uses the last 2 source rows.
+      dy = FixedDiv1(src_height, dst_height);
     }
     // Arbitrary scale vertically, but unscaled horizontally.
     ScalePlaneVertical(src_height, dst_width, dst_height, src_stride,
@@ -2246,25 +2243,21 @@ int ScalePlane_16(const uint16_t* src,
     int dy = 0;
     int y = 0;
     // Check for 1 pixel and avoid FixedDiv overflow.
-    // TODO(b/573815252): Fix center row calculation when dst_height == 1 and
-    // src_height == 32768.
     if (dst_height == 1 && src_height >= 32768) {
-      dy = FixedDiv(src_height, src_height);
-      y = CENTERSTART(dy, -32768);
+      dy = 1 << 16;
+      y = filtering ? ((src_height << 15) - 32768) : (src_height << 15);
+    } else if (filtering == kFilterNone) {
+      // Point sampling uses centered source/destination stepping, matching
+      // ScaleSlope.
+      dy = FixedDiv(src_height, dst_height);
+      y = CENTERSTART(dy, 0);
     } else if (dst_height <= src_height) {
       // When scaling down, use the center 2 rows to filter.
       dy = FixedDiv(src_height, dst_height);
       y = CENTERSTART(dy, -32768);  // Subtract 0.5 (32768) to center filter.
     } else if (src_height > 1 && dst_height > 1) {
-      // Point sampling uses centered source/destination stepping, matching
-      // ScaleSlope. Bilinear scaling maps the source endpoints.
-      if (filtering == kFilterNone) {
-        dy = FixedDiv(src_height, dst_height);
-        y = CENTERSTART(dy, 0);
-      } else {
-        // When scaling up, last row of destination uses the last 2 source rows.
-        dy = FixedDiv1(src_height, dst_height);
-      }
+      // When scaling up, last row of destination uses the last 2 source rows.
+      dy = FixedDiv1(src_height, dst_height);
     }
     // Arbitrary scale vertically, but unscaled horizontally.
     ScalePlaneVertical_16(src_height, dst_width, dst_height, src_stride,
