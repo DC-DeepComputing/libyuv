@@ -177,6 +177,24 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ac35cbd_d4f16026",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 2129,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-15T06:01:50Z",
+      "side": 1,
+      "message": "Done. Added `TODO(b/573815252)` comments here, in `ScalePlane_16`, and in `ScaleSlope`.",
+      "parentUuid": "ea4edd88_fd437375",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c8c55c35_2a5db94b",
