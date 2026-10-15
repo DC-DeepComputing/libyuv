@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "466cc5e2_8804b5c7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-15T04:05:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "df11df10_747fe48c",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "ea7b6741_a4828652",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 4
@@ -54,6 +72,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4122bc4c_2330d67a",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 947,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-15T04:05:30Z",
+      "side": 1,
+      "message": "my quick guess would be vertical subsampling where y+1 is also used.\nif it gets flagged as a bug we should sort that out",
+      "parentUuid": "3019a141_74e1382a",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b7ceb797_58aa9f11",
         "filename": "source/scale.cc",
         "patchSetId": 4
@@ -71,6 +107,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "28cf3e76_38346912",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 2129,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-15T04:05:30Z",
+      "side": 1,
+      "message": "without looking at the code, i recall it implements (x-1) / (y-1).  so yes?",
+      "parentUuid": "b7ceb797_58aa9f11",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "c8c55c35_2a5db94b",
         "filename": "source/scale.cc",
         "patchSetId": 4
@@ -82,6 +136,24 @@
       "writtenOn": "2026-10-14T22:59:39Z",
       "side": 1,
       "message": "Should we replace this line with the following?\n\n```\n      dy \u003d 1 \u003c\u003c 16;  // 1 as 16.16 fixed point\n```\n\nor\n\n```\n      dy \u003d 1 \u003c\u003c 16;  // FixedDiv(src_height, src_height)\n```",
+      "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "980d4106_7d01077f",
+        "filename": "source/scale.cc",
+        "patchSetId": 4
+      },
+      "lineNbr": 2248,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-15T04:05:30Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "c8c55c35_2a5db94b",
       "revId": "8dabf898eeee2e08d41666ee24533da35f4dcee7",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
