@@ -531,3 +531,12 @@ if (!build_with_chromium) {
     write_file("$root_build_dir/gn_logs.txt", lines)
   }
 }
+
+if (build_with_chromium) {
+  import("//testing/libfuzzer/fuzzer_test.gni")
+  fuzzer_test("libyuv_scale_rot_fuzzer") {
+    sources = [ "util/libyuv_scale_rot_fuzzer.cc" ]
+    deps = [ ":libyuv" ]
+    include_dirs = [ "include" ]
+  }
+}
