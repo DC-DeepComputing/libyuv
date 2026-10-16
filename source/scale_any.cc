@@ -1131,6 +1131,25 @@ SBU2BLANY(ScaleUVRowUp2_Bilinear_16_Any_NEON,
 
 #undef SBU2BLANY
 
+// Scale UV columns by 3 box filter.
+#define SUVAC3ANY(NAMEANY, SIMD, C, MASK)                                 \
+  void NAMEANY(int dst_width, int scaleval, const uint16_t* src_uv,       \
+               uint8_t* dst_uv) {                                         \
+    int r = dst_width & MASK;                                             \
+    int n = dst_width & ~MASK;                                            \
+    if (n > 0) {                                                          \
+      SIMD(n, scaleval, src_uv, dst_uv);                                  \
+    }                                                                     \
+    C(r, scaleval, src_uv + (ptrdiff_t)n * 6, dst_uv + (ptrdiff_t)n * 2); \
+  }
+#ifdef HAS_SCALEUVADDCOLS3_AVX2
+SUVAC3ANY(ScaleUVAddCols3_Any_AVX2, ScaleUVAddCols3_AVX2, ScaleUVAddCols3_C, 7)
+#endif
+#ifdef HAS_SCALEUVADDCOLS3_NEON
+SUVAC3ANY(ScaleUVAddCols3_Any_NEON, ScaleUVAddCols3_NEON, ScaleUVAddCols3_C, 7)
+#endif
+#undef SUVAC3ANY
+
 #ifdef __cplusplus
 }  // extern "C"
 }  // namespace libyuv
