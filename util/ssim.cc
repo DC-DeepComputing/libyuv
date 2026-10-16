@@ -356,7 +356,11 @@ double CalcSSIM(const uint8_t* org,
 }
 
 double CalcLSSIM(double ssim) {
-  return -10.0 * log10(1.0 - ssim);
+  if (ssim >= 1.0) {
+    return 128.0;
+  }
+  double lssim = -10.0 * log10(1.0 - ssim);
+  return (lssim > 128.0) ? 128.0 : lssim;
 }
 
 #ifdef __cplusplus

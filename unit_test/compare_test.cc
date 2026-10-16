@@ -713,7 +713,7 @@ TEST_F(LibYUVCompareTest, TestSsimAnyWidth) {
   MemRandomize(src_a, kPlaneSize);
   MemRandomize(src_b, kPlaneSize);
 
-  for (int width = 9; width <= kMaxWidth; ++width) {
+  for (int width = 1; width <= kMaxWidth; ++width) {
     for (int offset = 0; offset < 2; ++offset) {
       const int size = width * kHeight;
       const uint8_t* a = src_a + kPlaneSize - size - offset;
@@ -723,6 +723,24 @@ TEST_F(LibYUVCompareTest, TestSsimAnyWidth) {
       MaskCpuFlags(benchmark_cpu_info_);
       double opt_ssim = CalcFrameSsim(a, width, b, width, width, kHeight);
       EXPECT_EQ(c_ssim, opt_ssim) << "width " << width << " offset " << offset;
+      if (width <= 8) {
+        EXPECT_EQ(0.0, opt_ssim) << "width " << width;
+      }
+    }
+  }
+
+  for (int height = 1; height <= kHeight; ++height) {
+    const int width = 16;
+    const int size = width * height;
+    const uint8_t* a = src_a + kPlaneSize - size;
+    const uint8_t* b = src_b + kPlaneSize - size;
+    MaskCpuFlags(disable_cpu_flags_);
+    double c_ssim = CalcFrameSsim(a, width, b, width, width, height);
+    MaskCpuFlags(benchmark_cpu_info_);
+    double opt_ssim = CalcFrameSsim(a, width, b, width, width, height);
+    EXPECT_EQ(c_ssim, opt_ssim) << "height " << height;
+    if (height <= 8) {
+      EXPECT_EQ(0.0, opt_ssim) << "height " << height;
     }
   }
 
@@ -752,6 +770,8 @@ TEST_F(LibYUVCompareTest, Ssim) {
 
   if (kSrcWidth > 8 && kSrcHeight > 8) {
     ASSERT_EQ(err, 1.0);
+  } else {
+    ASSERT_EQ(err, 0.0);
   }
 
   memset(src_a, 255, kSrcPlaneSize);
@@ -808,9 +828,7 @@ TEST_F(LibYUVCompareTest, Ssim) {
                           src_b + kSrcStride * b + b, kSrcStride, kSrcWidth,
                           kSrcHeight);
 
-  if (kSrcWidth > 8 && kSrcHeight > 8) {
-    ASSERT_EQ(opt_err, c_err);
-  }
+  ASSERT_EQ(opt_err, c_err);
 
   free_aligned_buffer_page_end(src_a);
   free_aligned_buffer_page_end(src_b);

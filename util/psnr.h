@@ -26,16 +26,6 @@ typedef unsigned char uint8_t;
 
 static const double kMaxPSNR = 128.0;
 
-// libyuv provides this function when linking library for jpeg support.
-// TODO(fbarchard): make psnr lib compatible subset of libyuv.
-#if !defined(HAVE_JPEG)
-// Computer Sum of Squared Error (SSE).
-// Pass this to ComputePSNR for final result.
-double ComputeSumSquareError(const uint8_t* src_a,
-                             const uint8_t* src_b,
-                             int count);
-#endif
-
 // PSNR formula: psnr = 10 * log10 (Peak Signal^2 * size / sse)
 // Returns 128.0 (kMaxPSNR) if sse is 0 (perfect match).
 double ComputePSNR(double sse, double size);

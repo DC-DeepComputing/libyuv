@@ -427,8 +427,8 @@ double CalcFrameSsim(const uint8_t* src_a,
                      int height) {
   int samples = 0;
   double ssim_total = 0;
-  if (width <= 8 || height <= 8) {
-    return ssim_total / samples;
+  if (!src_a || !src_b || width <= 8 || height <= 8) {
+    return 0.0;
   }
 
   int simd_size = 4;

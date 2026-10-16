@@ -80,9 +80,9 @@ yuvconvert: util/yuvconvert.cc libyuv.a
 yuvconstants: util/yuvconstants.c libyuv.a
 	$(CXX) $(CXXFLAGS) -Iutil/ -lm -o $@ util/yuvconstants.c libyuv.a
 
-# A standalone test utility
-psnr: util/psnr.cc
-	$(CXX) $(CXXFLAGS) -Iutil/ -o $@ util/psnr.cc util/psnr_main.cc util/ssim.cc
+# A test utility that uses libyuv comparison functions.
+psnr: util/psnr.cc util/psnr_main.cc util/ssim.cc libyuv.a
+	$(CXX) $(CXXFLAGS) -Iutil/ -o $@ util/psnr.cc util/psnr_main.cc util/ssim.cc libyuv.a
 
 # A simple conversion example.
 i444tonv12_eg: util/i444tonv12_eg.cc libyuv.a
