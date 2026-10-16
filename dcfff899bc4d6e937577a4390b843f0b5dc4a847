@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12e62e9e_22f9553d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-16T08:34:56Z",
+      "side": 1,
+      "message": "thanks for the test.  a first pass ai review points out some issues\n\n### 1. Functional \u0026 Fuzzing Flaws in util/libyuv_scale_rot_fuzzer.cc                                                                         \n                                                                                                                                               \n  • Pixel data does not affect control flow or addressing: ARGBScale, ARGBToI420, I420ToARGB, ARGBColorMatrix, and ARGBRotate are data-        \n  independent SIMD/row functions—their branching and memory indexing depend strictly on dimensions, strides, and mode enums, not on pixel      \n  values. Consuming up to 16 KB of fuzzed bytes for src_argb gives coverage-guided fuzzing (libFuzzer) no useful signal.\n  • Dimensions are capped at 1..64:\n    int src_w \u003d provider.ConsumeIntegralInRange\u003cint\u003e(1, 64);\n    int src_h \u003d provider.ConsumeIntegralInRange\u003cint\u003e(1, 64);\n  libyuv_unittest already tests small and odd dimensions thoroughly. Real bugs in scaling/rotation (fixed-point stepping overflow,             \n  kMaxInputWidth buffer limits, stride multiplication overflow) happen at large dimensions (e.g., up to 16384 or 32768), extreme aspect ratios,\n  or negative heights—none of which can be reached here.\n  • Strides are hardcoded to width * 4: It never fuzzes stride padding (stride \u003e width * 4), unaligned strides, negative strides, or negative  \n  src_height (vertical flip). Compare this with the existing internal fuzzer in third_party/libyuv/fuzz/scale_fuzzer.cc:12-43, which           \n  specifically fuzzes stride deltas, negative strides, and dimensions up to 16384.\n  • Buffer exhaustion bug in mode \u003d\u003d 2 (ARGBColorMatrix): It calls provider.ConsumeBytes\u003cuint8_t\u003e(src_argb_size) before reading matrix[16].    \n  Whenever the fuzzer input is smaller than src_w * src_h * 4 bytes, provider is exhausted by src_argb, so matrix[16] is filled with 0s.       \n  • Hardcoded rotation \u0026 wasted allocations:\n      • mode \u003d\u003d 3 hardcodes libyuv::kRotate90 instead of fuzzing RotationMode.\n      • dst_argb, y_plane, u_plane, and v_plane are allocated and zero-initialized on every run regardless of mode, even when unused.          \n  \n  \n  ### 2. Build \u0026 Repository Issues (BUILD.gn)\n  \n  • Untested in standalone libyuv: Wrapping the target in if (build_with_chromium) means libyuv\u0027s own standalone builds and trybots completely \n  ignore it, while rolling libyuv into Chromium would silently add a new top-level ClusterFuzz target (libyuv_scale_rot_fuzzer) without an     \n  associated bug or owner.\n  • Wrong directory \u0026 redundant config: util/ is for CLI utilities (yuvconvert.cc, cpuid.c, etc.), not fuzzers, and include_dirs \u003d [ \"include\" \n  ] is redundant with :libyuv\u0027s all_dependent_configs.\n  • Process / Metadata: The commit message has no Bug: or Test: lines, and the author is not listed in AUTHORS.",
+      "revId": "dcfff899bc4d6e937577a4390b843f0b5dc4a847",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
