@@ -1,0 +1,94 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "770a0cb4_4dd1e210",
+        "filename": "include/libyuv/scale_row.h",
+        "patchSetId": 13
+      },
+      "lineNbr": 855,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-16T22:33:39Z",
+      "side": 1,
+      "message": "Nit: Move `ScaleUVAddCols3_AVX2` down after `ScaleAddCols2_AVX512BW` (line 876) so the `ScaleAddRow*` declarations stay grouped together and all `Scale*AddCols*` declarations are grouped together.",
+      "isAi": true,
+      "revId": "cff8d87ca3cd3cf6c68bcefdd6a0cd4ef325699b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52b95cca_77073ee1",
+        "filename": "source/scale_gcc.cc",
+        "patchSetId": 13
+      },
+      "lineNbr": 2615,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-16T22:33:39Z",
+      "side": 1,
+      "message": "Nit: `kPermUVBox3` is `ulvec32` (32-byte aligned via `SIMD_ALIGNED(32)`), so `vmovdqa %4,%%ymm4` can be used here instead of `vmovdqu`.\n\nAlso worth noting for a follow-up: this loop issues 9 overlapping unaligned 32-byte loads (288 bytes loaded per 96 bytes of input, with 4 cache-line splits at `0x1c, 0x24, 0x38, 0x3c`) and stores 16 bytes (`%xmm0`) per iteration. We can follow up with a 16-pixel unrolled AVX2 version using 3 aligned loads (`0x00, 0x20, 0x40`) + `vpblendd` + `vpermd` + 32-byte `%ymm0` store (~1.3x-1.8x faster) as well as AVX512BW / AVX512VBMI (`vpermt2b`, ~2.1x-4.8x faster) and NEON/RVV.",
+      "isAi": true,
+      "revId": "cff8d87ca3cd3cf6c68bcefdd6a0cd4ef325699b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "251795a3_fd612186",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 13
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-16T22:33:39Z",
+      "side": 1,
+      "message": "Nit: Check `if (boxheight \u003e 85)` first and advance `src_uv +\u003d (x \u003e\u003e 16) * 2;` once to simplify the pointer arithmetic and avoid the `(ptrdiff_t)` casts:\n```cpp\n  // 255 * boxheight * 3 has to stay inside the 16 bit accumulator.\n  if (boxheight \u003e 85) {\n    ScaleUVAddCols1_C(dst_width, boxheight, x, dx, src_uv, dst_uv);\n    return;\n  }\n  int n \u003d dst_width \u0026 ~7;\n  src_uv +\u003d (x \u003e\u003e 16) * 2;\n  if (n) {\n    ScaleUVAddCols3_AVX2(n, 65536 / (3 * boxheight), src_uv, dst_uv);\n  }\n  if (n \u003c dst_width) {\n    ScaleUVAddCols1_C(dst_width - n, boxheight, 0, dx, src_uv + n * 6,\n                      dst_uv + n * 2);\n  }\n```",
+      "isAi": true,
+      "revId": "cff8d87ca3cd3cf6c68bcefdd6a0cd4ef325699b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6c1a28e6_b76a3d4a",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 13
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-16T22:33:39Z",
+      "side": 1,
+      "message": "Note: Because this checks `!(dx \u0026 0xffff) \u0026\u0026 (dx \u003e\u003e 16) \u003d\u003d 3`, it triggers when `src_width` is an exact multiple of `3 * dst_width` (e.g., 1080p -\u003e 360p where UV is `960x540 -\u003e 320x180`), but is bypassed for 720p -\u003e 240p (`1280x720 -\u003e 426x240` or `427x240`, UV `640x360 -\u003e 213x120` or `214x120`, as in `By3Rounded`) where `dx \u003d FixedDiv(640, 213) \u003d 0x30136` has a non-zero fraction and falls back to `ScaleUVAddCols2_C`. Worth noting in a comment here.",
+      "isAi": true,
+      "revId": "cff8d87ca3cd3cf6c68bcefdd6a0cd4ef325699b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eeed65d3_f6d50454",
+        "filename": "source/scale_uv.cc",
+        "patchSetId": 13
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-16T22:33:39Z",
+      "side": 1,
+      "message": "While touching `ScaleUVBox`, could you also add the missing `ScaleAddRow_AVX512BW` dispatch right after `HAS_SCALEADDROW_AVX2` (matching `ScalePlaneBox` in `source/scale.cc:902`)?\n```cpp\n#if defined(HAS_SCALEADDROW_AVX512BW)\n      if (TestCpuFlag(kCpuHasAVX512BW)) {\n        ScaleAddRow \u003d ScaleAddRow_AVX512BW;\n      }\n#endif\n```",
+      "isAi": true,
+      "revId": "cff8d87ca3cd3cf6c68bcefdd6a0cd4ef325699b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
