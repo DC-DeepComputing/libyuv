@@ -2188,11 +2188,9 @@ int ScalePlane(const uint8_t* src,
     int dy = 0;
     int y = 0;
     // Check for 1 pixel and avoid FixedDiv overflow.
-    // TODO(b/573815252): Fix center row calculation when dst_height == 1 and
-    // src_height == 32768.
     if (dst_height == 1 && src_height >= 32768) {
-      dy = FixedDiv(src_height, src_height);
-      y = CENTERSTART(dy, -32768);
+      dy = 1 << 16;
+      y = filtering ? ((src_height << 15) - 32768) : (src_height << 15);
     } else if (dst_height <= src_height) {
       // When scaling down, use the center 2 rows to filter.
       dy = FixedDiv(src_height, dst_height);
@@ -2309,11 +2307,9 @@ int ScalePlane_16(const uint16_t* src,
     int dy = 0;
     int y = 0;
     // Check for 1 pixel and avoid FixedDiv overflow.
-    // TODO(b/573815252): Fix center row calculation when dst_height == 1 and
-    // src_height == 32768.
     if (dst_height == 1 && src_height >= 32768) {
-      dy = FixedDiv(src_height, src_height);
-      y = CENTERSTART(dy, -32768);
+      dy = 1 << 16;
+      y = filtering ? ((src_height << 15) - 32768) : (src_height << 15);
     } else if (dst_height <= src_height) {
       // When scaling down, use the center 2 rows to filter.
       dy = FixedDiv(src_height, dst_height);
