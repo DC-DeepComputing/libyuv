@@ -68,6 +68,7 @@ extern "C" {
 #if !defined(LIBYUV_DISABLE_X86) &&               \
     (defined(__x86_64__) || defined(__i386__)) && \
     (defined(CLANG_HAS_AVX2) || defined(GCC_HAS_AVX2))
+#define HAS_SCALEUVADDCOLS3_AVX2
 #define HAS_SCALEUVROWDOWN2BOX_AVX2
 #define HAS_SCALEROWUP2_LINEAR_AVX2
 #define HAS_SCALEROWUP2_BILINEAR_AVX2
@@ -98,6 +99,7 @@ extern "C" {
     !defined(LIBYUV_ENABLE_ROWWIN)
 #define HAS_SCALEADDROW_AVX512BW
 #define HAS_SCALEADDCOLS_AVX512BW
+#define HAS_SCALEUVADDCOLS3_AVX512VBMI
 #define HAS_SCALEROWDOWN2_AVX512BW
 #endif
 
@@ -114,6 +116,7 @@ extern "C" {
 #define HAS_SCALEROWDOWN34_NEON
 #define HAS_SCALEROWDOWN38_NEON
 #define HAS_SCALEROWDOWN4_NEON
+#define HAS_SCALEUVADDCOLS3_NEON
 #define HAS_SCALEUVROWDOWN2_NEON
 #define HAS_SCALEUVROWDOWN2LINEAR_NEON
 #define HAS_SCALEUVROWDOWN2BOX_NEON
@@ -141,6 +144,7 @@ extern "C" {
 #define HAS_SCALEARGBROWDOWN2_SME
 #define HAS_SCALEROWDOWN2_16_SME
 #define HAS_SCALEROWDOWN2_SME
+#define HAS_SCALEUVADDCOLS3_SME
 #define HAS_SCALEUVROWDOWN2BOX_SME
 #define HAS_SCALEUVROWDOWN2LINEAR_SME
 #define HAS_SCALEUVROWDOWN2_SME
@@ -192,6 +196,7 @@ extern "C" {
 #define HAS_SCALEROWDOWN2LINEAR_RVV
 #define HAS_SCALEROWDOWN4_RVV
 #define HAS_SCALEROWDOWN4BOX_RVV
+#define HAS_SCALEUVADDCOLS3_RVV
 #define HAS_SCALEUVROWDOWN2_RVV
 #define HAS_SCALEUVROWDOWN2BOX_RVV
 #define HAS_SCALEUVROWDOWN2LINEAR_RVV
@@ -569,6 +574,10 @@ void ScaleUVFilterCols64_C(uint8_t* dst_uv,
                            int dst_width,
                            int x32,
                            int dx);
+void ScaleUVAddCols3_C(int dst_width,
+                       int scaleval,
+                       const uint16_t* src_uv,
+                       uint8_t* dst_uv);
 
 // Specialized scalers for x86.
 void ScaleRowDown2_SSSE3(const uint8_t* src_ptr,
@@ -1321,6 +1330,34 @@ void ScaleUVRowUp2_Bilinear_16_Any_NEON(const uint16_t* src_ptr,
                                         uint16_t* dst_ptr,
                                         ptrdiff_t dst_stride,
                                         int dst_width);
+void ScaleUVAddCols3_AVX2(int dst_width,
+                          int scaleval,
+                          const uint16_t* src_uv,
+                          uint8_t* dst_uv);
+void ScaleUVAddCols3_Any_AVX2(int dst_width,
+                              int scaleval,
+                              const uint16_t* src_uv,
+                              uint8_t* dst_uv);
+void ScaleUVAddCols3_AVX512VBMI(int dst_width,
+                                int scaleval,
+                                const uint16_t* src_uv,
+                                uint8_t* dst_uv);
+void ScaleUVAddCols3_NEON(int dst_width,
+                          int scaleval,
+                          const uint16_t* src_uv,
+                          uint8_t* dst_uv);
+void ScaleUVAddCols3_Any_NEON(int dst_width,
+                              int scaleval,
+                              const uint16_t* src_uv,
+                              uint8_t* dst_uv);
+void ScaleUVAddCols3_SME(int dst_width,
+                         int scaleval,
+                         const uint16_t* src_uv,
+                         uint8_t* dst_uv);
+void ScaleUVAddCols3_RVV(int dst_width,
+                         int scaleval,
+                         const uint16_t* src_uv,
+                         uint8_t* dst_uv);
 
 // ScaleRowDown2Box also used by planar functions
 // NEON/SME downscalers with interpolation.
