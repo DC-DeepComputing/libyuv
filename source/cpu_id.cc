@@ -20,8 +20,12 @@
 #endif
 
 // For ArmCpuCaps() but unittested on all platforms
-#include <stdio.h>  // For fopen()
+#include <stdio.h>   // For fopen()
+#include <stdlib.h>  // For getenv(), atoi()
 #include <string.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 #if defined(__linux__) && (defined(__aarch64__) || defined(__loongarch__))
 #include <sys/auxv.h>  // For getauxval()
@@ -519,6 +523,54 @@ int MaskCpuFlags(int enable_flags) {
 LIBYUV_API
 int InitCpuFlags(void) {
   return MaskCpuFlags(-1);
+}
+
+#if defined(_OPENMP)
+static int max_threads_ = 0;
+#endif
+
+LIBYUV_API
+int SetMaxThreads(int num_threads) {
+#if defined(_OPENMP)
+  if (num_threads <= 0) {
+    int procs = omp_get_num_procs();
+    if (procs <= 2) {
+      num_threads = 1;
+    } else if (procs <= 4) {
+      num_threads = 2;
+    } else {
+      num_threads = procs / 2;  // Avoid hyperthreads and avoid consuming host
+      if (num_threads > 8) {
+        num_threads = 8;  // Prevent memory channel saturation
+      }
+    }
+  }
+  max_threads_ = num_threads;
+  omp_set_num_threads(num_threads);
+  return num_threads;
+#else
+  (void)num_threads;
+  return 1;
+#endif
+}
+
+LIBYUV_API
+int GetMaxThreads(void) {
+#if defined(_OPENMP)
+  if (max_threads_ <= 0) {
+    const char* env_threads = getenv("LIBYUV_NUM_THREADS");
+    if (env_threads) {
+      int t = atoi(env_threads);
+      if (t > 0) {
+        return SetMaxThreads(t);
+      }
+    }
+    return SetMaxThreads(0);
+  }
+  return max_threads_;
+#else
+  return 1;
+#endif
 }
 
 #ifdef __cplusplus
