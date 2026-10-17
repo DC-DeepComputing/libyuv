@@ -930,9 +930,12 @@ int ARGBScale(const uint8_t* src_argb,
               int dst_width,
               int dst_height,
               enum FilterMode filtering) {
+  // Destination dimensions are capped the same as source dimensions (32768):
+  // uncapped dst sizes let the scalers write past the destination buffer.
   if (!src_argb || src_width == 0 || src_width > 32768 || src_width < -32768 ||
       src_height == 0 || src_height > 32768 || src_height < -32768 ||
-      !dst_argb || dst_width <= 0 || dst_height <= 0) {
+      !dst_argb || dst_width <= 0 || dst_height <= 0 || dst_width > 32768 ||
+      dst_height > 32768) {
     return -1;
   }
   return ScaleARGB(src_argb, src_stride_argb, src_width, src_height, dst_argb,
