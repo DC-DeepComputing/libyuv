@@ -583,6 +583,8 @@ void AR64ToAB64Row_C(const uint16_t* src_ar64, uint16_t* dst_ab64, int width) {
 }
 
 // TODO(fbarchard): Make shuffle compatible with SIMD versions
+// width is in units of 32 bit ARGB pixels (2 per AR64 pixel) so that
+// AR64Shuffle can share the ARGBShuffleRow SIMD kernels.
 void AR64ShuffleRow_C(const uint8_t* src_ar64,
                       uint8_t* dst_ar64,
                       const uint8_t* shuffler,

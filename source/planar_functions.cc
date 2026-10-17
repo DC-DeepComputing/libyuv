@@ -1595,7 +1595,8 @@ void MergeRGBPlane(const uint8_t* src_r,
   }
 #endif
 #if defined(HAS_MERGERGBROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
+  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL) ==
+      (kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
     MergeRGBRow = MergeRGBRow_AVX512VBMI;
   }
 #endif
@@ -1799,11 +1800,13 @@ void SplitARGBPlane(const uint8_t* src_argb,
     dst_r = dst_r + (ptrdiff_t)(height - 1) * dst_stride_r;
     dst_g = dst_g + (ptrdiff_t)(height - 1) * dst_stride_g;
     dst_b = dst_b + (ptrdiff_t)(height - 1) * dst_stride_b;
-    dst_a = dst_a + (ptrdiff_t)(height - 1) * dst_stride_a;
     dst_stride_r = -dst_stride_r;
     dst_stride_g = -dst_stride_g;
     dst_stride_b = -dst_stride_b;
-    dst_stride_a = -dst_stride_a;
+    if (dst_a) {
+      dst_a = dst_a + (ptrdiff_t)(height - 1) * dst_stride_a;
+      dst_stride_a = -dst_stride_a;
+    }
   }
 
   if (dst_a == NULL) {
@@ -2030,7 +2033,8 @@ void MergeXR30Plane(const uint16_t* src_r,
   }
 #endif
 #if defined(HAS_MERGEXR30ROW_10_AVX512BW)
-  if (depth == 10 && TestCpuFlag(kCpuHasAVX512BW | kCpuHasAVX512VL)) {
+  if (depth == 10 && TestCpuFlag(kCpuHasAVX512BW | kCpuHasAVX512VL) ==
+                         (kCpuHasAVX512BW | kCpuHasAVX512VL)) {
     MergeXR30Row = MergeXR30Row_10_AVX512BW;
   }
 #endif

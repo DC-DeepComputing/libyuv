@@ -927,6 +927,7 @@ int I422Rotate(const uint8_t* src_y,
   // Negative height means invert the image.
   if (height < 0) {
     height = -height;
+    halfheight = (height + 1) >> 1;
     src_y = src_y + (ptrdiff_t)(height - 1) * src_stride_y;
     src_u = src_u + (ptrdiff_t)(height - 1) * src_stride_u;
     src_v = src_v + (ptrdiff_t)(height - 1) * src_stride_v;
@@ -1234,9 +1235,10 @@ int I010Rotate(const uint16_t* src_y,
   // Negative height means invert the image.
   if (height < 0) {
     height = -height;
+    halfheight = (height + 1) >> 1;
     src_y = src_y + (ptrdiff_t)(height - 1) * src_stride_y;
-    src_u = src_u + (ptrdiff_t)(height - 1) * src_stride_u;
-    src_v = src_v + (ptrdiff_t)(height - 1) * src_stride_v;
+    src_u = src_u + (ptrdiff_t)(halfheight - 1) * src_stride_u;
+    src_v = src_v + (ptrdiff_t)(halfheight - 1) * src_stride_v;
     src_stride_y = -src_stride_y;
     src_stride_u = -src_stride_u;
     src_stride_v = -src_stride_v;
@@ -1305,6 +1307,7 @@ int I210Rotate(const uint16_t* src_y,
   // Negative height means invert the image.
   if (height < 0) {
     height = -height;
+    halfheight = (height + 1) >> 1;
     src_y = src_y + (ptrdiff_t)(height - 1) * src_stride_y;
     src_u = src_u + (ptrdiff_t)(height - 1) * src_stride_u;
     src_v = src_v + (ptrdiff_t)(height - 1) * src_stride_v;

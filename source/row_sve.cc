@@ -777,7 +777,7 @@ void DivideRow_16_SVE2(const uint16_t* src_y,
       "cnth   %x[vl]                                     \n"
       "dup    z0.h, %w[scale]                            \n"
       "subs   %w[width], %w[width], %w[vl], lsl #1       \n"
-      "b.le    2f                                        \n"
+      "b.lt    2f                                        \n"
 
       // Run bulk of computation with the same predicates to avoid predicate
       // generation overhead.
@@ -792,7 +792,7 @@ void DivideRow_16_SVE2(const uint16_t* src_y,
       "st1h   {z1.h}, p0, [%[dst]]                       \n"
       "st1h   {z2.h}, p0, [%[dst], #1, mul vl]           \n"
       "incb   %[dst], all, mul #2                        \n"
-      "b.gt    1b                                        \n"
+      "b.ge    1b                                        \n"
 
       "2:                                                \n"
       "adds     %w[width], %w[width], %w[vl], lsl #1     \n"
@@ -1221,7 +1221,7 @@ void CopyRow_SVE2(const uint8_t* src, uint8_t* dst, int width) {
       "st1b     {z0.b}, p0, [%[dst], #0, mul vl]        \n"
       "st1b     {z1.b}, p0, [%[dst], #1, mul vl]        \n"
       "incb     %[dst], all, mul #2                     \n"
-      "b.gt     1b                                      \n"
+      "b.ge     1b                                      \n"
 
       "2:                                               \n"
       "adds     %w[width], %w[width], %w[vl2]           \n"

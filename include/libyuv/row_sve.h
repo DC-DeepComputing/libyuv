@@ -466,7 +466,7 @@ static inline void I400ToARGBRow_SVE_SC(const uint8_t* src_y,
       "ptrue    p0.b                                    \n"
       "dup      z19.b, #255                             \n"  // Alpha
       YUVTORGB_SVE_SETUP
-      "cmp      %w[width], %w[vl]                       \n"
+      "subs     %w[width], %w[width], %w[vl]            \n"
       "mov      z1.h, #128                              \n"  // U/V
       "umullb   z6.h, z30.b, z1.b                       \n"
       "umullb   z4.h, z28.b, z1.b                       \n"  // DB
@@ -475,25 +475,28 @@ static inline void I400ToARGBRow_SVE_SC(const uint8_t* src_y,
       "sub      z4.h, z4.h, z25.h                       \n"
       "sub      z5.h, z5.h, z27.h                       \n"
       "sub      z6.h, z26.h, z6.h                       \n"
-      "b.le     2f                                      \n"
+      "b.lt     2f                                      \n"
 
       // Run bulk of computation with an all-true predicate to avoid predicate
       // generation overhead.
       "ptrue    p1.h                                    \n"
-      "sub      %w[width], %w[width], %w[vl]            \n"
       "1:                                               \n"  //
       READYUV400_SVE I400TORGB_SVE RGBTOARGB8_SVE
       "subs     %w[width], %w[width], %w[vl]            \n"
       "st2h     {z16.h, z17.h}, p1, [%[dst_argb]]       \n"
       "add      %[dst_argb], %[dst_argb], %[vl], lsl #2 \n"
-      "b.gt     1b                                      \n"
-      "add      %w[width], %w[width], %w[vl]            \n"
+      "b.ge     1b                                      \n"
+
+      "2:                                               \n"
+      "adds     %w[width], %w[width], %w[vl]            \n"
+      "b.eq     99f                                     \n"
 
       // Calculate a predicate for the final iteration to deal with the tail.
-      "2:                                               \n"
       "whilelt  p1.h, wzr, %w[width]                    \n"  //
       READYUV400_SVE I400TORGB_SVE RGBTOARGB8_SVE
       "st2h     {z16.h, z17.h}, p1, [%[dst_argb]]       \n"
+
+      "99:                                              \n"
       : [src_y] "+r"(src_y),                               // %[src_y]
         [dst_argb] "+r"(dst_argb),                         // %[dst_argb]
         [width] "+r"(width),                               // %[width]
@@ -702,7 +705,11 @@ static inline void I422ToARGB1555Row_SVE_SC(
       "whilelt  p1.b, wzr, %w[width]                    \n"  //
       READYUV422_SVE_2X I422TORGB_SVE_2X
           RGBTOARGB8_SVE_TOP_2X RGB8TOARGB1555_SVE_FROM_TOP_2X
-      "st2h     {z0.h, z1.h}, p1, [%[dst]] \n"
+      // Need to permute the data on the final iteration such that the
+      // predicates (.b) line up with the 16-bit element data.
+      "trn1     z2.b, z0.b, z1.b                        \n"
+      "trn2     z3.b, z0.b, z1.b                        \n"
+      "st2b     {z2.b, z3.b}, p1, [%[dst]]              \n"
 
       "99:                                              \n"
       : [src_y] "+r"(src_y),                               // %[src_y]
@@ -761,7 +768,11 @@ static inline void I422ToARGB4444Row_SVE_SC(
       "whilelt  p1.b, wzr, %w[width]                    \n"  //
       READYUV422_SVE_2X I422TORGB_SVE_2X
           RGBTOARGB8_SVE_TOP_2X RGB8TOARGB4444_SVE_FROM_TOP_2X
-      "st2h     {z0.h, z1.h}, p1, [%[dst]] \n"
+      // Need to permute the data on the final iteration such that the
+      // predicates (.b) line up with the 16-bit element data.
+      "trn1     z2.b, z0.b, z1.b                        \n"
+      "trn2     z3.b, z0.b, z1.b                        \n"
+      "st2b     {z2.b, z3.b}, p1, [%[dst]]              \n"
 
       "99:                                              \n"
       : [src_y] "+r"(src_y),                               // %[src_y]
@@ -788,7 +799,7 @@ static inline void I422ToRGBARow_SVE_SC(const uint8_t* src_y,
       YUVTORGB_SVE_SETUP
       "dup      z19.b, #255                             \n"  // Alpha
       "subs     %w[width], %w[width], %w[vl]            \n"
-      "b.le     2f                                      \n"
+      "b.lt     2f                                      \n"
 
       // Run bulk of computation with an all-true predicate to avoid predicate
       // generation overhead.
@@ -798,7 +809,7 @@ static inline void I422ToRGBARow_SVE_SC(const uint8_t* src_y,
       "subs     %w[width], %w[width], %w[vl]            \n"
       "st2h     {z19.h, z20.h}, p1, [%[dst_rgba]]       \n"
       "add      %[dst_rgba], %[dst_rgba], %[vl], lsl #2 \n"
-      "b.gt     1b                                      \n"
+      "b.ge     1b                                      \n"
 
       // Calculate a predicate for the final iteration to deal with the tail.
       "2:                                               \n"
@@ -836,7 +847,7 @@ static inline void I422ToAR30Row_SVE_SC(const uint8_t* src_y,
       YUVTORGB_SVE_SETUP_AR30
       "dup      z23.h, %w[limit]                        \n"
       "subs     %w[width], %w[width], %w[vl], lsl #1    \n"
-      "b.le     2f                                      \n"
+      "b.lt     2f                                      \n"
 
       // Run bulk of computation with an all-true predicate to avoid predicate
       // generation overhead.
@@ -846,7 +857,7 @@ static inline void I422ToAR30Row_SVE_SC(const uint8_t* src_y,
       "1:                                               \n"  //
       READYUV422_SVE_2X I422TORGB_SVE_2X STOREAR30_SVE_2X
       "subs     %w[width], %w[width], %w[vl], lsl #1    \n"
-      "b.gt     1b                                      \n"
+      "b.ge     1b                                      \n"
 
       // Calculate a predicate for the final iteration to deal with the tail.
       "2:                                               \n"
@@ -2120,7 +2131,7 @@ static inline void ARGBToUVMatrixRow_SVE_SC(const uint8_t* src_argb,
       "ptrue  p5.h                                   \n"
       "1:                                            \n"  //
       ARGBTOUVMATRIX_SVE
-      "b.gt     1b                                   \n"
+      "b.ge     1b                                   \n"
 
       "2:                                            \n"
       "adds    %w[width], %w[width], %w[vl], lsl #2  \n"
@@ -2197,7 +2208,7 @@ static inline void ARGBToYMatrixRow_SVE_SC(const uint8_t* src_argb,
       "ptrue    p1.s                                 \n"
       "1:                                            \n"  //
       ARGBTOYMATRIX_SVE("p1", "p1", "p1", "p1", "p0")
-      "b.gt     1b                                   \n"
+      "b.ge     1b                                   \n"
 
       "2:                                            \n"
       "adds     %w[width], %w[width], %w[vl], lsl #2 \n"
