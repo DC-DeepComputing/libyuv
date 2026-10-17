@@ -13,6 +13,9 @@
 #include <assert.h>
 #include <limits.h>
 #include <string.h>  // for memset()
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 #include "libyuv/convert_from_argb.h"  // For ArgbConstants
 #include "libyuv/cpu_id.h"
@@ -22,6 +25,28 @@
 #ifdef __cplusplus
 namespace libyuv {
 extern "C" {
+#endif
+
+#if defined(_OPENMP)
+// Reshape coalesced 1D buffer into a 2D rectangle for parallel row processing.
+static void ComputeParallelShape(int total_bytes,
+                                 int num_threads,
+                                 int* out_width,
+                                 int* out_height) {
+  const int kAlign = 64;
+  if (num_threads > 1 && total_bytes >= 1280 * 720) {
+    int total_blocks = total_bytes / kAlign;
+    int blocks_per_thread = total_blocks / num_threads;
+    if (blocks_per_thread > 0 &&
+        blocks_per_thread * num_threads == total_blocks) {
+      *out_width = blocks_per_thread * kAlign;
+      *out_height = num_threads;
+      return;
+    }
+  }
+  *out_width = total_bytes;
+  *out_height = 1;
+}
 #endif
 
 // Copy a plane of data
@@ -46,9 +71,15 @@ void CopyPlane(const uint8_t* src_y,
   // Coalesce rows.
   if (src_stride_y == width && dst_stride_y == width &&
       (ptrdiff_t)width * height <= INT_MAX) {
+#if defined(_OPENMP)
+    int num_threads = GetMaxThreads();
+    ComputeParallelShape(width * height, num_threads, &width, &height);
+    src_stride_y = dst_stride_y = (height > 1) ? width : 0;
+#else
     width *= height;
     height = 1;
     src_stride_y = dst_stride_y = 0;
+#endif
   }
   // Nothing to do.
   if (src_y == dst_y && src_stride_y == dst_stride_y) {
@@ -107,11 +138,25 @@ void CopyPlane(const uint8_t* src_y,
 #endif
 
   // Copy plane
+#if defined(_OPENMP)
+  {
+    int num_threads = GetMaxThreads();
+    int use_omp = (num_threads > 1) &&
+                  ((ptrdiff_t)width * height >= 1280 * 720) &&
+                  (height >= num_threads);
+#pragma omp parallel for schedule(static) num_threads(num_threads) if (use_omp)
+    for (y = 0; y < height; ++y) {
+      CopyRow(src_y + (ptrdiff_t)y * src_stride_y,
+              dst_y + (ptrdiff_t)y * dst_stride_y, width);
+    }
+  }
+#else
   for (y = 0; y < height; ++y) {
     CopyRow(src_y, dst_y, width);
     src_y += src_stride_y;
     dst_y += dst_stride_y;
   }
+#endif
 }
 
 LIBYUV_API

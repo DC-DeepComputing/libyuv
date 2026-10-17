@@ -442,4 +442,22 @@ TEST_F(LibYUVBaseTest, MAYBE_TestSetCpuFlags) {
   MaskCpuFlags(benchmark_cpu_info_);
 }
 
+TEST_F(LibYUVBaseTest, TestSetMaxThreads) {
+#ifdef _OPENMP
+  printf("_OPENMP %d\n", _OPENMP);
+#endif
+  int default_threads = GetMaxThreads();
+  printf("Max Threads %d\n", default_threads);
+  EXPECT_GE(default_threads, 1);
+
+  int threads_1 = SetMaxThreads(1);
+  EXPECT_EQ(1, threads_1);
+  EXPECT_EQ(1, GetMaxThreads());
+
+  int restored_threads = SetMaxThreads(0);
+  EXPECT_GE(restored_threads, 1);
+  EXPECT_LE(restored_threads, 8);
+  EXPECT_EQ(restored_threads, GetMaxThreads());
+}
+
 }  // namespace libyuv

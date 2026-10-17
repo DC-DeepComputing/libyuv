@@ -13,6 +13,9 @@
 #include <assert.h>
 #include <limits.h>
 #include <string.h>  // For memcpy.
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 #include "libyuv/convert_from_argb.h"
 #include "libyuv/cpu_id.h"
@@ -150,6 +153,23 @@ int I420ToARGBMatrix(const uint8_t* src_y,
   }
 #endif
 
+#if defined(_OPENMP)
+  {
+    int num_threads = GetMaxThreads();
+    int use_omp = (num_threads > 1) &&
+                  ((ptrdiff_t)width * height >= 1280 * 720) &&
+                  (height >= num_threads);
+#pragma omp parallel for schedule(static) num_threads(num_threads) if (use_omp)
+    for (y = 0; y < height; ++y) {
+      const uint8_t* row_src_y = src_y + (ptrdiff_t)y * src_stride_y;
+      const uint8_t* row_src_u = src_u + (ptrdiff_t)(y >> 1) * src_stride_u;
+      const uint8_t* row_src_v = src_v + (ptrdiff_t)(y >> 1) * src_stride_v;
+      uint8_t* row_dst_argb = dst_argb + (ptrdiff_t)y * dst_stride_argb;
+      I422ToARGBRow(row_src_y, row_src_u, row_src_v, row_dst_argb, yuvconstants,
+                    width);
+    }
+  }
+#else
   for (y = 0; y < height; ++y) {
     I422ToARGBRow(src_y, src_u, src_v, dst_argb, yuvconstants, width);
     dst_argb += dst_stride_argb;
@@ -159,6 +179,7 @@ int I420ToARGBMatrix(const uint8_t* src_y,
       src_v += src_stride_v;
     }
   }
+#endif
   return 0;
 }
 

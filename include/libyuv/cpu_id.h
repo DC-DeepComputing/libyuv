@@ -146,6 +146,16 @@ static __inline void SetCpuFlags(int cpu_flags) {
 LIBYUV_API
 void CpuId(int info_eax, int info_ecx, int* cpu_info);
 
+// Set maximum number of threads for OpenMP.
+// 0 = auto (default: half of logical cores, capped at 8).
+// Returns the number of threads configured.
+LIBYUV_API
+int SetMaxThreads(int num_threads);
+
+// Get maximum number of threads for OpenMP.
+LIBYUV_API
+int GetMaxThreads(void);
+
 #ifdef __cplusplus
 }  // extern "C"
 }  // namespace libyuv
