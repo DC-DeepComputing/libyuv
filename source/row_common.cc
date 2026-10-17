@@ -595,7 +595,7 @@ void AR64ShuffleRow_C(const uint8_t* src_ar64,
   int index3 = shuffler[6] / 2;
   // Shuffle a row of AR64.
   int x;
-  for (x = 0; x < width / 2; ++x) {
+  for (x = 0; x < width; ++x) {
     // To support in-place conversion.
     uint16_t b = src_ar64_16[index0];
     uint16_t g = src_ar64_16[index1];

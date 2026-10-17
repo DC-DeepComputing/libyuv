@@ -226,7 +226,7 @@ static int ScaleUVDown4Box(int src_width,
     }
   }
 #endif
-#if defined(HAS_SCALEUVROWDOWN2BOX_SME)
+#if defined(HAS_SCALEUVROWDOWN2_SME)
   if (TestCpuFlag(kCpuHasSME)) {
     ScaleUVRowDown2 = ScaleUVRowDown2Box_SME;
   }

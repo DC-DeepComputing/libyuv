@@ -7056,6 +7056,7 @@ void SplitRGBRow_AVX2(const uint8_t* src_rgb,
       "lea         0x20(%3),%3                   \n"
       "sub         $0x20,%4                      \n"
       "jg          1b                            \n"
+      "vzeroupper                                \n"
       : "+r"(src_rgb),                  // %0
         "+r"(dst_r),                    // %1
         "+r"(dst_g),                    // %2
@@ -11102,7 +11103,7 @@ void ARGBPolynomialRow_SSE2(const uint8_t* src_argb,
                "addps       %%xmm5,%%xmm4                 \n"
                "cvttps2dq   %%xmm0,%%xmm0                 \n"
                "cvttps2dq   %%xmm4,%%xmm4                 \n"
-               "packuswb    %%xmm4,%%xmm0                 \n"
+               "packssdw    %%xmm4,%%xmm0                 \n"
                "packuswb    %%xmm0,%%xmm0                 \n"
                "movq        %%xmm0,(%1)                   \n"
                "lea         0x8(%1),%1                    \n"

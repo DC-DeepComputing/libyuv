@@ -2669,7 +2669,8 @@ int AYUVToNV12(const uint8_t* src_ayuv,
   }
 #endif
 #if defined(HAS_AYUVTOYROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
+  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL) ==
+      (kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
     AYUVToUVRow = AYUVToUVRow_AVX512VBMI;
     AYUVToYRow = AYUVToYRow_AVX512VBMI;
   }
@@ -2755,7 +2756,8 @@ int AYUVToNV21(const uint8_t* src_ayuv,
   }
 #endif
 #if defined(HAS_AYUVTOYROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
+  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL) ==
+      (kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
     AYUVToVURow = AYUVToVURow_AVX512VBMI;
     AYUVToYRow = AYUVToYRow_AVX512VBMI;
   }
