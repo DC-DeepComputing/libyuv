@@ -2107,9 +2107,13 @@ int ScalePlane(const uint8_t* src,
   // Reject dimensions larger than 32768 (or smaller than -32768 for height).
   // This prevents FixedDiv signed integer overflows that can lead to division
   // by zero/overflow crashes (SIGFPE on x86) or incorrect step calculations.
+  // Destination dimensions are capped the same as source dimensions: uncapped
+  // dst sizes let the row scalers write past the destination buffer
+  // (e.g. dst_height == INT_MAX makes ScalePlaneVertical write 16 bytes/row
+  // for INT_MAX rows).
   if (!src || src_width <= 0 || src_height == 0 || src_width > 32768 ||
       src_height < -32768 || src_height > 32768 || !dst || dst_width <= 0 ||
-      dst_height <= 0) {
+      dst_height <= 0 || dst_width > 32768 || dst_height > 32768) {
     return -1;
   }
   // Simplify filtering when possible.
@@ -2228,9 +2232,13 @@ int ScalePlane_16(const uint16_t* src,
   // Reject dimensions larger than 32768 (or smaller than -32768 for height).
   // This prevents FixedDiv signed integer overflows that can lead to division
   // by zero/overflow crashes (SIGFPE on x86) or incorrect step calculations.
+  // Destination dimensions are capped the same as source dimensions: uncapped
+  // dst sizes let the row scalers write past the destination buffer
+  // (e.g. dst_height == INT_MAX makes ScalePlaneVertical write 16 bytes/row
+  // for INT_MAX rows).
   if (!src || src_width <= 0 || src_height == 0 || src_width > 32768 ||
       src_height < -32768 || src_height > 32768 || !dst || dst_width <= 0 ||
-      dst_height <= 0) {
+      dst_height <= 0 || dst_width > 32768 || dst_height > 32768) {
     return -1;
   }
   // Simplify filtering when possible.
@@ -2350,9 +2358,13 @@ int ScalePlane_12(const uint16_t* src,
   // Reject dimensions larger than 32768 (or smaller than -32768 for height).
   // This prevents FixedDiv signed integer overflows that can lead to division
   // by zero/overflow crashes (SIGFPE on x86) or incorrect step calculations.
+  // Destination dimensions are capped the same as source dimensions: uncapped
+  // dst sizes let the row scalers write past the destination buffer
+  // (e.g. dst_height == INT_MAX makes ScalePlaneVertical write 16 bytes/row
+  // for INT_MAX rows).
   if (!src || src_width <= 0 || src_height == 0 || src_width > 32768 ||
       src_height < -32768 || src_height > 32768 || !dst || dst_width <= 0 ||
-      dst_height <= 0) {
+      dst_height <= 0 || dst_width > 32768 || dst_height > 32768) {
     return -1;
   }
   // Simplify filtering when possible.
@@ -2405,9 +2417,12 @@ int I420Scale(const uint8_t* src_y,
               enum FilterMode filtering) {
   int r;
 
+  // Destination dimensions are capped the same as source dimensions (32768):
+  // uncapped dst sizes let the scalers write past the destination buffer, and
+  // SUBSAMPLE() on huge dst dims overflows before ScalePlane is reached.
   if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
       src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+      dst_height <= 0 || dst_width > 32768 || dst_height > 32768) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2450,9 +2465,11 @@ int I420Scale_16(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2495,9 +2512,11 @@ int I420Scale_12(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2543,9 +2562,11 @@ int I444Scale(const uint8_t* src_y,
               enum FilterMode filtering) {
   int r;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
 
@@ -2584,9 +2605,11 @@ int I444Scale_16(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
 
@@ -2625,9 +2648,11 @@ int I444Scale_12(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
 
@@ -2669,9 +2694,11 @@ int I422Scale(const uint8_t* src_y,
               enum FilterMode filtering) {
   int r;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2712,9 +2739,11 @@ int I422Scale_16(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2755,9 +2784,11 @@ int I422Scale_12(const uint16_t* src_y,
                  enum FilterMode filtering) {
   int r;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_u || !src_v || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_u || !dst_v || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
   int src_halfwidth = SUBSAMPLE(src_width, 1, 1);
@@ -2801,9 +2832,11 @@ static int NVScale(const uint8_t* src_y,
   int dst_uv_width;
   int dst_uv_height;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_uv || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_uv || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_uv || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
   src_uv_width = SUBSAMPLE(src_width, subsample_x, subsample_x);
@@ -2850,9 +2883,11 @@ static int PxxxScale(const uint16_t* src_y,
   size_t src_uv_bytes;
   size_t dst_uv_bytes;
 
+  // Cap dst dims like ScalePlane: SUBSAMPLE() on huge dst dims overflows
+  // before the plane scaler's own validation runs.
   if (!src_y || !src_uv || src_width <= 0 || src_height == 0 ||
-      src_height == INT_MIN || !dst_y || !dst_uv || dst_width <= 0 ||
-      dst_height <= 0) {
+      src_height == INT_MIN || !dst_y || !dst_uv || dst_width <= 0 || dst_width > 32768 ||
+      dst_height <= 0 || dst_height > 32768) {
     return -1;
   }
   // ConvertToLSBPlane_16 / SplitUVPlane_16 invert dst, not src.  Point both
