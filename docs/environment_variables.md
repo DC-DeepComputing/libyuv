@@ -66,3 +66,4 @@ You can also repeat the test a specified number of iterations, allowing benchmar
     set LIBYUV_REPEAT=999
     set LIBYUV_FLAGS=-1
     set LIBYUV_CPU_INFO=-1
+    set LIBYUV_NUM_THREADS=4

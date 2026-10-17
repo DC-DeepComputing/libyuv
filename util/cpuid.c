@@ -61,6 +61,7 @@ int main(int argc, const char* argv[]) {
     printf("Kernel Version %d.%d\n", kernelversion[0], kernelversion[1]);
   }
 #endif  // defined(__linux__)
+  printf("Max Threads %d\n", GetMaxThreads());
 
 #if defined(__arm__) || defined(__aarch64__)
   int has_arm = TestCpuFlag(kCpuHasARM);

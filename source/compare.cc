@@ -200,7 +200,7 @@ uint64_t ComputeHammingDistance(const uint8_t* src_a,
   remainder = count & (kBlockSize - 1) & ~(simd_size - 1);
 
 #ifdef _OPENMP
-#pragma omp parallel for reduction(+ : diff)
+#pragma omp parallel for reduction(+ : diff) num_threads(GetMaxThreads())
 #endif
   for (i = 0; i < (count - (kBlockSize - 1)); i += kBlockSize) {
     diff += HammingDistance(src_a + i, src_b + i, kBlockSize);
@@ -275,7 +275,7 @@ uint64_t ComputeSumSquareError(const uint8_t* src_a,
 #endif
   remainder = count & (kBlockSize - 1) & ~(simd_size - 1);
 #ifdef _OPENMP
-#pragma omp parallel for reduction(+ : sse)
+#pragma omp parallel for reduction(+ : sse) num_threads(GetMaxThreads())
 #endif
   for (i = 0; i < (count - (kBlockSize - 1)); i += kBlockSize) {
     sse += SumSquareError(src_a + i, src_b + i, kBlockSize);
@@ -540,7 +540,8 @@ double CalcFrameSsim(const uint8_t* src_a,
   const int rem_windows = num_windows & (win_simd_size - 1);
 
 #ifdef _OPENMP
-#pragma omp parallel reduction(+ : ssim_total, samples)
+#pragma omp parallel reduction(+ : ssim_total, samples) \
+    num_threads(GetMaxThreads())
 #endif
   {
     align_buffer_64(row_buf, (size_t)tile_width * 2 * sizeof(uint32_t));
