@@ -16,6 +16,23 @@
       "message": "destination generally doesnt need a cap, but for most functions it would be close to INT_MAX, not 32768?",
       "revId": "e4ba7c3a0b77736e94fd23987fe68a17761da041",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c99806b_edd9b0de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-19T12:23:37Z",
+      "side": 1,
+      "message": "in the example given, an image of about 2 billion rows by 16 wide fails?  the destination is 2*16\u003d 32 billion bytes.  This should work in 64 bit if you have 32 GB memory to test with... it easily fits 64 bit addressing.\n\nis there a bug?",
+      "revId": "e4ba7c3a0b77736e94fd23987fe68a17761da041",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
