@@ -167,14 +167,6 @@ static int NV24ToARGB(const uint8_t* src_y,
     }
   }
 #endif
-#if defined(HAS_I444TOARGBROW_AVX512BW)
-  if (TestCpuFlag(kCpuHasAVX512BW)) {
-    I444ToARGBRow = I444ToARGBRow_Any_AVX512BW;
-    if (IS_ALIGNED(width, 32)) {
-      I444ToARGBRow = I444ToARGBRow_AVX512BW;
-    }
-  }
-#endif
 #if defined(HAS_I444TOARGBROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     I444ToARGBRow = I444ToARGBRow_Any_NEON;
@@ -433,7 +425,7 @@ int ConvertToARGB(const uint8_t* sample,
       src = sample + ((ptrdiff_t)src_width * crop_y + crop_x);
       src_uv = sample +
                aligned_src_width * ((ptrdiff_t)abs_src_height + crop_y / 2) +
-               crop_x;
+               (crop_x & ~1);
       r = NV12ToARGB(src, src_width, src_uv, aligned_src_width, dst_argb,
                      dst_stride_argb, crop_width, inv_crop_height);
       break;
@@ -441,7 +433,7 @@ int ConvertToARGB(const uint8_t* sample,
       src = sample + ((ptrdiff_t)src_width * crop_y + crop_x);
       src_uv = sample +
                aligned_src_width * ((ptrdiff_t)abs_src_height + crop_y / 2) +
-               crop_x;
+               (crop_x & ~1);
       // Call NV12 but with u and v parameters swapped.
       r = NV21ToARGB(src, src_width, src_uv, aligned_src_width, dst_argb,
                      dst_stride_argb, crop_width, inv_crop_height);
@@ -508,12 +500,12 @@ int ConvertToARGB(const uint8_t* sample,
       int halfheight = (abs_src_height + 1) / 2;
       if (format == FOURCC_YV12) {
         src_v = sample + (ptrdiff_t)src_width * abs_src_height +
-                ((ptrdiff_t)halfwidth * crop_y + crop_x) / 2;
+                (ptrdiff_t)halfwidth * (crop_y / 2) + crop_x / 2;
         src_u = sample + (ptrdiff_t)src_width * abs_src_height +
                 halfwidth * ((ptrdiff_t)halfheight + crop_y / 2) + crop_x / 2;
       } else {
         src_u = sample + (ptrdiff_t)src_width * abs_src_height +
-                ((ptrdiff_t)halfwidth * crop_y + crop_x) / 2;
+                (ptrdiff_t)halfwidth * (crop_y / 2) + crop_x / 2;
         src_v = sample + (ptrdiff_t)src_width * abs_src_height +
                 halfwidth * ((ptrdiff_t)halfheight + crop_y / 2) + crop_x / 2;
       }
@@ -527,7 +519,7 @@ int ConvertToARGB(const uint8_t* sample,
       int halfheight = (abs_src_height + 1) / 2;
       const uint8_t* src_y = sample + ((ptrdiff_t)src_width * crop_y + crop_x);
       const uint8_t* src_u = sample + (ptrdiff_t)src_width * abs_src_height +
-                             ((ptrdiff_t)halfwidth * crop_y + crop_x) / 2;
+                             (ptrdiff_t)halfwidth * (crop_y / 2) + crop_x / 2;
       const uint8_t* src_v = sample + (ptrdiff_t)src_width * abs_src_height +
                              halfwidth * ((ptrdiff_t)halfheight + crop_y / 2) +
                              crop_x / 2;
@@ -541,7 +533,7 @@ int ConvertToARGB(const uint8_t* sample,
       int halfheight = (abs_src_height + 1) / 2;
       const uint8_t* src_y = sample + ((ptrdiff_t)src_width * crop_y + crop_x);
       const uint8_t* src_u = sample + (ptrdiff_t)src_width * abs_src_height +
-                             ((ptrdiff_t)halfwidth * crop_y + crop_x) / 2;
+                             (ptrdiff_t)halfwidth * (crop_y / 2) + crop_x / 2;
       const uint8_t* src_v = sample + (ptrdiff_t)src_width * abs_src_height +
                              halfwidth * ((ptrdiff_t)halfheight + crop_y / 2) +
                              crop_x / 2;
@@ -555,7 +547,7 @@ int ConvertToARGB(const uint8_t* sample,
       int halfheight = (abs_src_height + 1) / 2;
       const uint8_t* src_y = sample + ((ptrdiff_t)src_width * crop_y + crop_x);
       const uint8_t* src_u = sample + (ptrdiff_t)src_width * abs_src_height +
-                             ((ptrdiff_t)halfwidth * crop_y + crop_x) / 2;
+                             (ptrdiff_t)halfwidth * (crop_y / 2) + crop_x / 2;
       const uint8_t* src_v = sample + (ptrdiff_t)src_width * abs_src_height +
                              halfwidth * ((ptrdiff_t)halfheight + crop_y / 2) +
                              crop_x / 2;
@@ -620,7 +612,7 @@ int ConvertToARGB(const uint8_t* sample,
       const uint8_t* src_v = sample + (ptrdiff_t)src_width * abs_src_height +
                              halfwidth * ((ptrdiff_t)abs_src_height + crop_y) +
                              crop_x / 2;
-      r = H422ToARGB(src_y, src_width, src_u, halfwidth, src_v, halfwidth,
+      r = U422ToARGB(src_y, src_width, src_u, halfwidth, src_v, halfwidth,
                      dst_argb, dst_stride_argb, crop_width, inv_crop_height);
       break;
     }

@@ -427,8 +427,10 @@ double CalcFrameSsim(const uint8_t* src_a,
                      int height) {
   int samples = 0;
   double ssim_total = 0;
-  if (width <= 8 || height <= 8) {
-    return ssim_total / samples;
+  // An 8x8 window must fit. Smaller planes have no samples; return 0 rather
+  // than 0.0 / 0 (NaN) so I420Ssim on small images stays finite.
+  if (width < 8 || height < 8) {
+    return 0.0;
   }
 
   int simd_size = 4;
@@ -501,7 +503,8 @@ double CalcFrameSsim(const uint8_t* src_a,
   }
 #endif
 
-  const int num_windows = (width - 8 + 3) >> 2;
+  // Windows start every 4 pixels; the last one starts at width - 8.
+  const int num_windows = ((width - 8) >> 2) + 1;
   const int num_tiles = num_windows + 1;
   const int tile_width = num_tiles * 4;
   const int main_width = tile_width & ~(simd_size - 1);
@@ -520,7 +523,7 @@ double CalcFrameSsim(const uint8_t* src_a,
 #ifdef _OPENMP
 #pragma omp for schedule(static)
 #endif
-      for (i = 0; i < height - 8; i += 4) {
+      for (i = 0; i <= height - 8; i += 4) {
         const uint8_t* a = src_a + (ptrdiff_t)i * stride_a;
         const uint8_t* b = src_b + (ptrdiff_t)i * stride_b;
         if (prev_i + 4 != i) {
@@ -554,11 +557,11 @@ double CalcFrameSsim(const uint8_t* src_a,
 #ifdef _OPENMP
 #pragma omp for schedule(static)
 #endif
-      for (i = 0; i < height - 8; i += 4) {
+      for (i = 0; i <= height - 8; i += 4) {
         const uint8_t* a = src_a + (ptrdiff_t)i * stride_a;
         const uint8_t* b = src_b + (ptrdiff_t)i * stride_b;
         int j;
-        for (j = 0; j < width - 8; j += 4) {
+        for (j = 0; j <= width - 8; j += 4) {
           ssim_total += Ssim8x8_C(a + j, stride_a, b + j, stride_b);
           samples++;
         }

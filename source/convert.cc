@@ -1245,6 +1245,7 @@ int I422ToNV21(const uint8_t* src_y,
                  dst_y, dst_stride_y, plane_u, halfwidth, plane_v, halfwidth,
                  width, height);
   if (r != 0) {
+    free_aligned_buffer_64(plane_u);
     return r;
   }
   MergeUVPlane(plane_v, halfwidth, plane_u, halfwidth, dst_vu, dst_stride_vu,
@@ -2648,28 +2649,9 @@ int AYUVToNV12(const uint8_t* src_ayuv,
     src_stride_ayuv = -src_stride_ayuv;
   }
 // place holders for future intel code
-#if defined(HAS_AYUVTOYROW_SSE2)
-  if (TestCpuFlag(kCpuHasSSE2)) {
-    AYUVToUVRow = AYUVToUVRow_Any_SSE2;
-    AYUVToYRow = AYUVToYRow_Any_SSE2;
-    if (IS_ALIGNED(width, 16)) {
-      AYUVToUVRow = AYUVToUVRow_SSE2;
-      AYUVToYRow = AYUVToYRow_SSE2;
-    }
-  }
-#endif
-#if defined(HAS_AYUVTOYROW_AVX2)
-  if (TestCpuFlag(kCpuHasAVX2)) {
-    AYUVToUVRow = AYUVToUVRow_Any_AVX2;
-    AYUVToYRow = AYUVToYRow_Any_AVX2;
-    if (IS_ALIGNED(width, 32)) {
-      AYUVToUVRow = AYUVToUVRow_AVX2;
-      AYUVToYRow = AYUVToYRow_AVX2;
-    }
-  }
-#endif
 #if defined(HAS_AYUVTOYROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
+  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL) ==
+      (kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
     AYUVToUVRow = AYUVToUVRow_AVX512VBMI;
     AYUVToYRow = AYUVToYRow_AVX512VBMI;
   }
@@ -2734,28 +2716,9 @@ int AYUVToNV21(const uint8_t* src_ayuv,
     src_stride_ayuv = -src_stride_ayuv;
   }
 // place holders for future intel code
-#if defined(HAS_AYUVTOYROW_SSE2)
-  if (TestCpuFlag(kCpuHasSSE2)) {
-    AYUVToVURow = AYUVToVURow_Any_SSE2;
-    AYUVToYRow = AYUVToYRow_Any_SSE2;
-    if (IS_ALIGNED(width, 16)) {
-      AYUVToVURow = AYUVToVURow_SSE2;
-      AYUVToYRow = AYUVToYRow_SSE2;
-    }
-  }
-#endif
-#if defined(HAS_AYUVTOYROW_AVX2)
-  if (TestCpuFlag(kCpuHasAVX2)) {
-    AYUVToVURow = AYUVToVURow_Any_AVX2;
-    AYUVToYRow = AYUVToYRow_Any_AVX2;
-    if (IS_ALIGNED(width, 32)) {
-      AYUVToVURow = AYUVToVURow_AVX2;
-      AYUVToYRow = AYUVToYRow_AVX2;
-    }
-  }
-#endif
 #if defined(HAS_AYUVTOYROW_AVX512VBMI)
-  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
+  if (TestCpuFlag(kCpuHasAVX512VBMI | kCpuHasAVX512VL) ==
+      (kCpuHasAVX512VBMI | kCpuHasAVX512VL)) {
     AYUVToVURow = AYUVToVURow_AVX512VBMI;
     AYUVToYRow = AYUVToYRow_AVX512VBMI;
   }

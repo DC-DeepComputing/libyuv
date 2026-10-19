@@ -140,22 +140,6 @@ static void ScaleUVDown2(int src_width,
 #endif
 
 // This code is not enabled.  Only box filter is available at this time.
-#if defined(HAS_SCALEUVROWDOWN2_SSSE3)
-  if (TestCpuFlag(kCpuHasSSSE3)) {
-    ScaleUVRowDown2 =
-        filtering == kFilterNone
-            ? ScaleUVRowDown2_Any_SSSE3
-            : (filtering == kFilterLinear ? ScaleUVRowDown2Linear_Any_SSSE3
-                                          : ScaleUVRowDown2Box_Any_SSSE3);
-    if (IS_ALIGNED(dst_width, 2)) {
-      ScaleUVRowDown2 =
-          filtering == kFilterNone
-              ? ScaleUVRowDown2_SSSE3
-              : (filtering == kFilterLinear ? ScaleUVRowDown2Linear_SSSE3
-                                            : ScaleUVRowDown2Box_SSSE3);
-    }
-  }
-#endif
 
   if (filtering == kFilterLinear) {
     src_stride = 0;
@@ -226,7 +210,7 @@ static int ScaleUVDown4Box(int src_width,
     }
   }
 #endif
-#if defined(HAS_SCALEUVROWDOWN2BOX_SME)
+#if defined(HAS_SCALEUVROWDOWN2_SME)
   if (TestCpuFlag(kCpuHasSME)) {
     ScaleUVRowDown2 = ScaleUVRowDown2Box_SME;
   }
@@ -352,6 +336,11 @@ static int ScaleUVBox(int src_width,
         }
       }
 #endif
+#if defined(HAS_SCALEADDROW_AVX512BW)
+      if (TestCpuFlag(kCpuHasAVX512BW)) {
+        ScaleAddRow = ScaleAddRow_AVX512BW;
+      }
+#endif
 #if defined(HAS_SCALEADDROW_NEON)
       if (TestCpuFlag(kCpuHasNEON)) {
         ScaleAddRow = ScaleAddRow_Any_NEON;
@@ -427,16 +416,6 @@ static void ScaleUVDownEven(int src_width,
   assert(IS_ALIGNED(src_width, 2));
   assert(IS_ALIGNED(src_height, 2));
   src_uv += (y >> 16) * src_stride + (x >> 16) * 2;
-#if defined(HAS_SCALEUVROWDOWNEVEN_SSSE3)
-  if (TestCpuFlag(kCpuHasSSSE3)) {
-    ScaleUVRowDownEven = filtering ? ScaleUVRowDownEvenBox_Any_SSSE3
-                                   : ScaleUVRowDownEven_Any_SSSE3;
-    if (IS_ALIGNED(dst_width, 4)) {
-      ScaleUVRowDownEven =
-          filtering ? ScaleUVRowDownEvenBox_SSE2 : ScaleUVRowDownEven_SSSE3;
-    }
-  }
-#endif
 #if defined(HAS_SCALEUVROWDOWNEVEN_NEON)
   if (TestCpuFlag(kCpuHasNEON) && !filtering) {
     ScaleUVRowDownEven = ScaleUVRowDownEven_Any_NEON;
@@ -445,16 +424,6 @@ static void ScaleUVDownEven(int src_width,
     }
   }
 #endif  // TODO(fbarchard): Enable Box filter
-#if defined(HAS_SCALEUVROWDOWNEVENBOX_NEON)
-  if (TestCpuFlag(kCpuHasNEON)) {
-    ScaleUVRowDownEven = filtering ? ScaleUVRowDownEvenBox_Any_NEON
-                                   : ScaleUVRowDownEven_Any_NEON;
-    if (IS_ALIGNED(dst_width, 4)) {
-      ScaleUVRowDownEven =
-          filtering ? ScaleUVRowDownEvenBox_NEON : ScaleUVRowDownEven_NEON;
-    }
-  }
-#endif
 #if defined(HAS_SCALEUVROWDOWNEVEN_RVV) || defined(HAS_SCALEUVROWDOWN4_RVV)
   if (TestCpuFlag(kCpuHasRVV) && !filtering) {
 #if defined(HAS_SCALEUVROWDOWNEVEN_RVV)
@@ -574,25 +543,13 @@ static int ScaleUVBilinearDown(int src_width,
     }
   }
 #endif
-#if defined(HAS_SCALEUVFILTERCOLS_SSSE3)
-  if (TestCpuFlag(kCpuHasSSSE3) && src_width < 32768) {
-    ScaleUVFilterCols = ScaleUVFilterCols_SSSE3;
-  }
-#endif
-#if defined(HAS_SCALEUVFILTERCOLS_NEON)
-  if (TestCpuFlag(kCpuHasNEON)) {
-    ScaleUVFilterCols = ScaleUVFilterCols_Any_NEON;
-    if (IS_ALIGNED(dst_width, 4)) {
-      ScaleUVFilterCols = ScaleUVFilterCols_NEON;
-    }
-  }
-#endif
   // TODO(fbarchard): Consider not allocating row buffer for kFilterLinear.
   // Allocate a row of UV.
   {
     const uint32_t max_y = (uint32_t)(src_height - 1) << 16;
     uint32_t uy = y;
-    align_buffer_64(row, clip_src_width * 2);
+    // clip_src_width is already in bytes (2 per UV pixel).
+    align_buffer_64(row, clip_src_width);
     if (!row)
       return 1;
     if (uy > max_y) {
@@ -713,39 +670,8 @@ static int ScaleUVBilinearUp(int src_width,
   if (src_width >= 32768) {
     ScaleUVFilterCols = filtering ? ScaleUVFilterCols64_C : ScaleUVCols64_C;
   }
-#if defined(HAS_SCALEUVFILTERCOLS_SSSE3)
-  if (filtering && TestCpuFlag(kCpuHasSSSE3) && src_width < 32768) {
-    ScaleUVFilterCols = ScaleUVFilterCols_SSSE3;
-  }
-#endif
-#if defined(HAS_SCALEUVFILTERCOLS_NEON)
-  if (filtering && TestCpuFlag(kCpuHasNEON)) {
-    ScaleUVFilterCols = ScaleUVFilterCols_Any_NEON;
-    if (IS_ALIGNED(dst_width, 8)) {
-      ScaleUVFilterCols = ScaleUVFilterCols_NEON;
-    }
-  }
-#endif
-#if defined(HAS_SCALEUVCOLS_SSSE3)
-  if (!filtering && TestCpuFlag(kCpuHasSSSE3) && src_width < 32768) {
-    ScaleUVFilterCols = ScaleUVCols_SSSE3;
-  }
-#endif
-#if defined(HAS_SCALEUVCOLS_NEON)
-  if (!filtering && TestCpuFlag(kCpuHasNEON)) {
-    ScaleUVFilterCols = ScaleUVCols_Any_NEON;
-    if (IS_ALIGNED(dst_width, 16)) {
-      ScaleUVFilterCols = ScaleUVCols_NEON;
-    }
-  }
-#endif
   if (!filtering && src_width * 2 == dst_width && x < 0x8000) {
     ScaleUVFilterCols = ScaleUVColsUp2_C;
-#if defined(HAS_SCALEUVCOLSUP2_SSSE3)
-    if (TestCpuFlag(kCpuHasSSSE3) && IS_ALIGNED(dst_width, 8)) {
-      ScaleUVFilterCols = ScaleUVColsUp2_SSSE3;
-    }
-#endif
   }
 
   if (uy > max_y) {
@@ -1062,26 +988,8 @@ static void ScaleUVSimple(int src_width,
                       int x, int dx) =
       (src_width >= 32768) ? ScaleUVCols64_C : ScaleUVCols_C;
   (void)src_height;
-#if defined(HAS_SCALEUVCOLS_SSSE3)
-  if (TestCpuFlag(kCpuHasSSSE3) && src_width < 32768) {
-    ScaleUVCols = ScaleUVCols_SSSE3;
-  }
-#endif
-#if defined(HAS_SCALEUVCOLS_NEON)
-  if (TestCpuFlag(kCpuHasNEON)) {
-    ScaleUVCols = ScaleUVCols_Any_NEON;
-    if (IS_ALIGNED(dst_width, 8)) {
-      ScaleUVCols = ScaleUVCols_NEON;
-    }
-  }
-#endif
   if (src_width * 2 == dst_width && x < 0x8000) {
     ScaleUVCols = ScaleUVColsUp2_C;
-#if defined(HAS_SCALEUVCOLSUP2_SSSE3)
-    if (TestCpuFlag(kCpuHasSSSE3) && IS_ALIGNED(dst_width, 8)) {
-      ScaleUVCols = ScaleUVColsUp2_SSSE3;
-    }
-#endif
   }
 
   uint32_t uy = y;
@@ -1343,6 +1251,14 @@ int UVScale_16(const uint16_t* src_uv,
                      dst_height);
   }
 #endif
+
+  // ScaleFilterReduce reduces a 1 pixel wide source to kFilterNone, which has
+  // no 16 bit implementation other than the copy above. The Up2 kernels only
+  // read the pixels they need, so restore Linear or Bilinear for a 2x upscale
+  // so P010ToP410 and P210ToP410 work on 1 pixel wide images.
+  if (filtering == kFilterNone && src_width == 1 && dst_width <= 2) {
+    filtering = (src_height == dst_height) ? kFilterLinear : kFilterBilinear;
+  }
 
   if ((filtering == kFilterLinear) && ((dst_width + 1) / 2 == src_width)) {
     ScaleUVLinearUp2_16(src_width, src_height, dst_width, dst_height,
