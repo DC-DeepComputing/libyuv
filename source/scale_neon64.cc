@@ -1013,7 +1013,7 @@ void ScaleAddRow_NEON(const uint8_t* src_ptr,
 }
 
 #define SCALE_FILTER_COLS_STEP_ADDR                         \
-  "lsr        %[tmp_offset], %x[x], #16                 \n" \
+  "asr        %[tmp_offset], %x[x], #16                 \n" \
   "add        %[tmp_ptr], %[src_ptr], %[tmp_offset]     \n" \
   "add        %x[x], %x[x], %x[dx]                      \n"
 
@@ -1027,6 +1027,8 @@ void ScaleFilterCols_NEON(uint8_t* dst_ptr,
                           int x,
                           int dx) {
   int dx_offset[4] = {0, 1, 2, 3};
+  int64_t x64 = (int64_t)x;
+  int64_t dx64 = (int64_t)dx;
   int64_t tmp_offset;
   uint8_t* tmp_ptr;
   asm volatile(
@@ -1080,8 +1082,8 @@ void ScaleFilterCols_NEON(uint8_t* dst_ptr,
       : [src_ptr] "+r"(src_ptr),         // %[src_ptr]
         [dst_ptr] "+r"(dst_ptr),         // %[dst_ptr]
         [width] "+r"(dst_width),         // %[width]
-        [x] "+r"(x),                     // %[x]
-        [dx] "+r"(dx),                   // %[dx]
+        [x] "+r"(x64),                   // %[x]
+        [dx] "+r"(dx64),                 // %[dx]
         [tmp_offset] "=&r"(tmp_offset),  // %[tmp_offset]
         [tmp_ptr] "=&r"(tmp_ptr)         // %[tmp_ptr]
       : [dx_offset] "r"(dx_offset)       // %[dx_offset]
