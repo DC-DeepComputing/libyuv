@@ -29,17 +29,12 @@
 #if !defined(LIBYUV_DISABLE_RVV) && defined(__riscv_vector)
 #include <assert.h>
 
-// vsetvli/vsetivli write the vl and vtype CSRs. Only "vl" is declared, and
-// only for GCC; clang historically rejected it. The "vtype" register is
-// intentionally not declared, and whether it should be is unresolved.
-// TODO(fbarchard): consider adding "vtype" (and "vl" for clang) to the
-// clobber list once confirmed with compiler maintainers.
+// vsetvli/vsetivli write the vl and vtype CSRs, so every asm block that
+// executes them declares both as clobbers. Both GCC and clang (17+) accept
+// "vl" and "vtype" as clobber names. Blocks that write the fixed-point
+// rounding mode with "csrwi vxrm" additionally declare "vxrm".
 #ifndef RVV_VL_CLOBBER
-#ifdef __clang__
-#define RVV_VL_CLOBBER
-#else
-#define RVV_VL_CLOBBER "vl",
-#endif
+#define RVV_VL_CLOBBER "vl", "vtype",
 #endif
 
 #ifdef __cplusplus
@@ -187,7 +182,7 @@ void ARGBToAR64Row_RVV(const uint8_t* src_argb, uint16_t* dst_ar64, int width) {
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       : [k0101] "r"(0x0101)
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v16", "v17");
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v16", "v17");
 }
 #endif
 
@@ -219,7 +214,7 @@ void ARGBToAB64Row_RVV(const uint8_t* src_argb, uint16_t* dst_ab64, int width) {
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       : [k0101] "r"(0x0101)
-      : RVV_VL_CLOBBER "memory", "v4", "v5", "v6", "v7", "v8", "v9", "v10",
+      : "memory", RVV_VL_CLOBBER "v4", "v5", "v6", "v7", "v8", "v9", "v10",
         "v11", "v12", "v13", "v14", "v15");
 }
 #endif
@@ -245,7 +240,7 @@ void AR64ToARGBRow_RVV(const uint16_t* src_ar64, uint8_t* dst_argb, int width) {
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v16", "v17");
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v16", "v17");
 }
 #endif
 
@@ -273,7 +268,7 @@ void AR64ToAB64Row_RVV(const uint16_t* src_ar64,
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23");
 }
 #endif
@@ -301,7 +296,7 @@ void AB64ToARGBRow_RVV(const uint16_t* src_ab64, uint8_t* dst_argb, int width) {
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v4", "v5", "v6", "v7", "v8", "v9", "v10",
+      : "memory", RVV_VL_CLOBBER "v4", "v5", "v6", "v7", "v8", "v9", "v10",
         "v11", "v12", "v13", "v14", "v15");
 }
 #endif
@@ -333,7 +328,7 @@ void RAWToARGBRow_RVV(const uint8_t* src_raw, uint8_t* dst_argb, int width) {
         [vl] "=&r"(vl),             // %[vl]
         [tmp] "=&r"(tmp)            // %[tmp]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19", "v20", "v21");
 }
 #endif
@@ -365,7 +360,7 @@ void RAWToRGBARow_RVV(const uint8_t* src_raw, uint8_t* dst_rgba, int width) {
         [vl] "=&r"(vl),             // %[vl]
         [tmp] "=&r"(tmp)            // %[tmp]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19", "v20", "v21");
 }
 #endif
@@ -393,7 +388,7 @@ void RAWToRGB24Row_RVV(const uint8_t* src_raw, uint8_t* dst_rgb24, int width) {
         [vl] "=&r"(vl),               // %[vl]
         [tmp] "=&r"(tmp)              // %[tmp]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v16",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v16",
         "v17", "v18", "v19", "v20", "v21");
 }
 #endif
@@ -422,7 +417,7 @@ void ARGBToRAWRow_RVV(const uint8_t* src_argb, uint8_t* dst_raw, int width) {
         [vl] "=&r"(vl),             // %[vl]
         [tmp] "=&r"(tmp)            // %[tmp]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19", "v20", "v21");
 }
 #endif
@@ -450,7 +445,7 @@ void ARGBToRGB24Row_RVV(const uint8_t* src_argb,
         [vl] "=&r"(vl),               // %[vl]
         [tmp] "=&r"(tmp)              // %[tmp]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -477,7 +472,7 @@ void ARGBToABGRRow_RVV(const uint8_t* src_argb, uint8_t* dst_abgr, int width) {
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23");
 }
 #endif
@@ -508,7 +503,7 @@ void ARGBToBGRARow_RVV(const uint8_t* src_argb, uint8_t* dst_bgra, int width) {
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -534,7 +529,7 @@ void ARGBToRGBARow_RVV(const uint8_t* src_argb, uint8_t* dst_rgba, int width) {
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -560,7 +555,7 @@ void RGBAToARGBRow_RVV(const uint8_t* src_rgba, uint8_t* dst_argb, int width) {
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -591,7 +586,7 @@ void RGB24ToARGBRow_RVV(const uint8_t* src_rgb24,
         [vl] "=&r"(vl),               // %[vl]
         [tmp] "=&r"(tmp)              // %[tmp]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -640,7 +635,7 @@ void I444ToARGBRow_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS, "v30", "v31");
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS, "v30", "v31");
 }
 #endif
 
@@ -690,7 +685,7 @@ void I444AlphaToARGBRow_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS, "v30", "v31");
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS, "v30", "v31");
 }
 #endif
 
@@ -737,7 +732,7 @@ void I444ToRGB24Row_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS);
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS);
 }
 #endif
 
@@ -748,7 +743,7 @@ void I422ToARGBRow_RVV(const uint8_t* src_y,
                        uint8_t* dst_argb,
                        const struct YuvConstants* yuvconstants,
                        int width) {
-  size_t vl;
+  size_t vl, uv_vl;
   size_t ub, vr, ug, vg;
   size_t yg, bb, bg, br;
   size_t k0101;
@@ -764,12 +759,11 @@ void I422ToARGBRow_RVV(const uint8_t* src_y,
       RGBTORGB8                                       //
       "vsseg4e8.v  v24, (%[dst_argb])            \n"
       "add         %[src_y], %[src_y], %[vl]     \n"
-      "srli        %[k0101], %[vl], 1            \n"
-      "add         %[src_u], %[src_u], %[k0101]  \n"
-      "add         %[src_v], %[src_v], %[k0101]  \n"
+      "srli        %[uv_vl], %[vl], 1            \n"
+      "add         %[src_u], %[src_u], %[uv_vl]  \n"
+      "add         %[src_v], %[src_v], %[uv_vl]  \n"
       "slli        %[vl], %[vl], 2               \n"
       "add         %[dst_argb], %[dst_argb], %[vl]\n"
-      "li          %[k0101], 0x0101              \n"
       "bgtz        %[w], 1b                      \n"
       : [src_y] "+r"(src_y),          // %[src_y]
         [src_u] "+r"(src_u),          // %[src_u]
@@ -777,6 +771,7 @@ void I422ToARGBRow_RVV(const uint8_t* src_y,
         [dst_argb] "+r"(dst_argb),    // %[dst_argb]
         [w] "+r"(width),              // %[w]
         [vl] "=&r"(vl),               // %[vl]
+        [uv_vl] "=&r"(uv_vl),         // %[uv_vl]
         [ub] "=&r"(ub),               // %[ub]
         [vr] "=&r"(vr),               // %[vr]
         [ug] "=&r"(ug),               // %[ug]
@@ -787,7 +782,7 @@ void I422ToARGBRow_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS, "v30", "v31");
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS, "v30", "v31");
 }
 #endif
 
@@ -799,7 +794,7 @@ void I422AlphaToARGBRow_RVV(const uint8_t* src_y,
                             uint8_t* dst_argb,
                             const struct YuvConstants* yuvconstants,
                             int width) {
-  size_t vl;
+  size_t vl, uv_vl;
   size_t ub, vr, ug, vg;
   size_t yg, bb, bg, br;
   size_t k0101;
@@ -815,12 +810,11 @@ void I422AlphaToARGBRow_RVV(const uint8_t* src_y,
       "sub         %[w], %[w], %[vl]             \n"
       "add         %[src_y], %[src_y], %[vl]     \n"
       "add         %[src_a], %[src_a], %[vl]     \n"
-      "srli        %[k0101], %[vl], 1            \n"
-      "add         %[src_u], %[src_u], %[k0101]  \n"
-      "add         %[src_v], %[src_v], %[k0101]  \n"
+      "srli        %[uv_vl], %[vl], 1            \n"
+      "add         %[src_u], %[src_u], %[uv_vl]  \n"
+      "add         %[src_v], %[src_v], %[uv_vl]  \n"
       "slli        %[vl], %[vl], 2               \n"
       "add         %[dst_argb], %[dst_argb], %[vl]\n"
-      "li          %[k0101], 0x0101              \n"
       "bgtz        %[w], 1b                      \n"
       : [src_y] "+r"(src_y),          // %[src_y]
         [src_u] "+r"(src_u),          // %[src_u]
@@ -829,6 +823,7 @@ void I422AlphaToARGBRow_RVV(const uint8_t* src_y,
         [dst_argb] "+r"(dst_argb),    // %[dst_argb]
         [w] "+r"(width),              // %[w]
         [vl] "=&r"(vl),               // %[vl]
+        [uv_vl] "=&r"(uv_vl),         // %[uv_vl]
         [ub] "=&r"(ub),               // %[ub]
         [vr] "=&r"(vr),               // %[vr]
         [ug] "=&r"(ug),               // %[ug]
@@ -839,7 +834,7 @@ void I422AlphaToARGBRow_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS, "v30", "v31");
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS, "v30", "v31");
 }
 #endif
 
@@ -850,7 +845,7 @@ void I422ToRGBARow_RVV(const uint8_t* src_y,
                        uint8_t* dst_rgba,
                        const struct YuvConstants* yuvconstants,
                        int width) {
-  size_t vl;
+  size_t vl, uv_vl;
   size_t ub, vr, ug, vg;
   size_t yg, bb, bg, br;
   size_t k0101;
@@ -865,12 +860,11 @@ void I422ToRGBARow_RVV(const uint8_t* src_y,
       "vmv.v.i     v22, -1                       \n"
       "vsseg4e8.v  v22, (%[dst_rgba])            \n"
       "add         %[src_y], %[src_y], %[vl]     \n"
-      "srli        %[k0101], %[vl], 1            \n"
-      "add         %[src_u], %[src_u], %[k0101]  \n"
-      "add         %[src_v], %[src_v], %[k0101]  \n"
+      "srli        %[uv_vl], %[vl], 1            \n"
+      "add         %[src_u], %[src_u], %[uv_vl]  \n"
+      "add         %[src_v], %[src_v], %[uv_vl]  \n"
       "slli        %[vl], %[vl], 2               \n"
       "add         %[dst_rgba], %[dst_rgba], %[vl]\n"
-      "li          %[k0101], 0x0101              \n"
       "bgtz        %[w], 1b                      \n"
       : [src_y] "+r"(src_y),          // %[src_y]
         [src_u] "+r"(src_u),          // %[src_u]
@@ -878,6 +872,7 @@ void I422ToRGBARow_RVV(const uint8_t* src_y,
         [dst_rgba] "+r"(dst_rgba),    // %[dst_rgba]
         [w] "+r"(width),              // %[w]
         [vl] "=&r"(vl),               // %[vl]
+        [uv_vl] "=&r"(uv_vl),         // %[uv_vl]
         [ub] "=&r"(ub),               // %[ub]
         [vr] "=&r"(vr),               // %[vr]
         [ug] "=&r"(ug),               // %[ug]
@@ -888,7 +883,7 @@ void I422ToRGBARow_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS, "v22", "v23");
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS, "v22", "v23");
 }
 #endif
 
@@ -899,7 +894,7 @@ void I422ToRGB24Row_RVV(const uint8_t* src_y,
                         uint8_t* dst_rgb24,
                         const struct YuvConstants* yuvconstants,
                         int width) {
-  size_t vl;
+  size_t vl, uv_vl;
   size_t ub, vr, ug, vg;
   size_t yg, bb, bg, br;
   size_t k0101;
@@ -913,13 +908,12 @@ void I422ToRGB24Row_RVV(const uint8_t* src_y,
       RGBTORGB8                                       //
       "vsseg3e8.v  v24, (%[dst_rgb24])           \n"
       "add         %[src_y], %[src_y], %[vl]     \n"
-      "srli        %[k0101], %[vl], 1            \n"
-      "add         %[src_u], %[src_u], %[k0101]  \n"
-      "add         %[src_v], %[src_v], %[k0101]  \n"
+      "srli        %[uv_vl], %[vl], 1            \n"
+      "add         %[src_u], %[src_u], %[uv_vl]  \n"
+      "add         %[src_v], %[src_v], %[uv_vl]  \n"
       "add         %[dst_rgb24], %[dst_rgb24], %[vl]\n"
       "slli        %[vl], %[vl], 1               \n"
       "add         %[dst_rgb24], %[dst_rgb24], %[vl]\n"
-      "li          %[k0101], 0x0101              \n"
       "bgtz        %[w], 1b                      \n"
       : [src_y] "+r"(src_y),          // %[src_y]
         [src_u] "+r"(src_u),          // %[src_u]
@@ -927,6 +921,7 @@ void I422ToRGB24Row_RVV(const uint8_t* src_y,
         [dst_rgb24] "+r"(dst_rgb24),  // %[dst_rgb24]
         [w] "+r"(width),              // %[w]
         [vl] "=&r"(vl),               // %[vl]
+        [uv_vl] "=&r"(uv_vl),         // %[uv_vl]
         [ub] "=&r"(ub),               // %[ub]
         [vr] "=&r"(vr),               // %[vr]
         [ug] "=&r"(ug),               // %[ug]
@@ -937,7 +932,7 @@ void I422ToRGB24Row_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS);
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS);
 }
 #endif
 
@@ -948,7 +943,7 @@ void I422ToAR30Row_RVV(const uint8_t* src_y,
                        uint8_t* dst_ar30,
                        const struct YuvConstants* yuvconstants,
                        int width) {
-  size_t vl;
+  size_t vl, tmp;
   size_t ub, vr, ug, vg;
   size_t yg, bb, bg, br;
   size_t k0101;
@@ -986,15 +981,15 @@ void I422ToAR30Row_RVV(const uint8_t* src_y,
       "vsrl.vi     v0, v0, 4                     \n"
       "vsrl.vi     v12, v12, 4                   \n"
       "vsrl.vi     v8, v8, 4                     \n"
-      "li          %[k0101], 1023                \n"
-      "vminu.vx    v0, v0, %[k0101]              \n"
-      "vminu.vx    v12, v12, %[k0101]            \n"
-      "vminu.vx    v8, v8, %[k0101]              \n"
+      "li          %[tmp], 1023                  \n"
+      "vminu.vx    v0, v0, %[tmp]                \n"
+      "vminu.vx    v12, v12, %[tmp]              \n"
+      "vminu.vx    v8, v8, %[tmp]                \n"
       "vwcvtu.x.x.v v16, v0                      \n"
-      "li          %[k0101], 1024                \n"
-      "vwmaccu.vx  v16, %[k0101], v12            \n"
-      "li          %[k0101], 0x0c00              \n"
-      "vor.vx      v8, v8, %[k0101]              \n"
+      "li          %[tmp], 1024                  \n"
+      "vwmaccu.vx  v16, %[tmp], v12              \n"
+      "li          %[tmp], 0x0c00                \n"
+      "vor.vx      v8, v8, %[tmp]                \n"
       "vwcvtu.x.x.v v20, v8                      \n"
       "vsetvli     zero, zero, e32, m4, ta, ma   \n"
       "vsll.vi     v20, v20, 20                  \n"
@@ -1002,12 +997,11 @@ void I422ToAR30Row_RVV(const uint8_t* src_y,
       "vse32.v     v16, (%[dst_ar30])            \n"
       "sub         %[w], %[w], %[vl]             \n"
       "add         %[src_y], %[src_y], %[vl]     \n"
-      "srli        %[k0101], %[vl], 1            \n"
-      "add         %[src_u], %[src_u], %[k0101]  \n"
-      "add         %[src_v], %[src_v], %[k0101]  \n"
+      "srli        %[tmp], %[vl], 1              \n"
+      "add         %[src_u], %[src_u], %[tmp]    \n"
+      "add         %[src_v], %[src_v], %[tmp]    \n"
       "slli        %[vl], %[vl], 2               \n"
       "add         %[dst_ar30], %[dst_ar30], %[vl]\n"
-      "li          %[k0101], 0x0101              \n"
       "bgtz        %[w], 1b                      \n"
       : [src_y] "+r"(src_y),          // %[src_y]
         [src_u] "+r"(src_u),          // %[src_u]
@@ -1015,6 +1009,7 @@ void I422ToAR30Row_RVV(const uint8_t* src_y,
         [dst_ar30] "+r"(dst_ar30),    // %[dst_ar30]
         [w] "+r"(width),              // %[w]
         [vl] "=&r"(vl),               // %[vl]
+        [tmp] "=&r"(tmp),             // %[tmp]
         [ub] "=&r"(ub),               // %[ub]
         [vr] "=&r"(vr),               // %[vr]
         [ug] "=&r"(ug),               // %[ug]
@@ -1025,8 +1020,8 @@ void I422ToAR30Row_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", "v0", "v1", "v2", "v4", "v8", "v9", "v12",
-        "v13", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23");
+      : "memory", RVV_VL_CLOBBER "vxrm", "v0", "v1", "v2", "v4", "v8", "v9",
+        "v12", "v13", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23");
 }
 #endif
 
@@ -1077,9 +1072,9 @@ void I400ToARGBRow_RVV(const uint8_t* src_y,
           [k0101] "=&r"(k0101)        // %[k0101]
         : [yg] "r"(yg),               // %[yg]
           [yb] "r"(yb)                // %[yb]
-        : RVV_VL_CLOBBER "memory", "v0", "v1", "v8", "v9", "v10", "v11", "v12",
-          "v13", "v14", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22",
-          "v23", "v24", "v25", "v26", "v27");
+        : "memory", RVV_VL_CLOBBER "vxrm", "v0", "v1", "v8", "v9", "v10", "v11",
+          "v12", "v13", "v14", "v15", "v16", "v17", "v18", "v19", "v20", "v21",
+          "v22", "v23", "v24", "v25", "v26", "v27");
   } else {
     asm volatile(
         "csrwi       vxrm, 0                       \n"
@@ -1115,9 +1110,9 @@ void I400ToARGBRow_RVV(const uint8_t* src_y,
           [k0101] "=&r"(k0101)        // %[k0101]
         : [yg] "r"(yg),               // %[yg]
           [yb] "r"(yb)                // %[yb]
-        : RVV_VL_CLOBBER "memory", "v0", "v1", "v8", "v9", "v10", "v11", "v12",
-          "v13", "v14", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22",
-          "v23", "v24", "v25", "v26", "v27");
+        : "memory", RVV_VL_CLOBBER "vxrm", "v0", "v1", "v8", "v9", "v10", "v11",
+          "v12", "v13", "v14", "v15", "v16", "v17", "v18", "v19", "v20", "v21",
+          "v22", "v23", "v24", "v25", "v26", "v27");
   }
 }
 #endif
@@ -1145,7 +1140,7 @@ void J400ToARGBRow_RVV(const uint8_t* src_y, uint8_t* dst_argb, int width) {
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -1167,7 +1162,7 @@ void CopyRow_RVV(const uint8_t* src, uint8_t* dst, int width) {
         [w] "+r"(width),  // %[w]
         [vl] "=&r"(vl)    // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11");
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11");
 }
 #endif
 
@@ -1212,7 +1207,7 @@ void NV12ToARGBRow_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS, "v30", "v31");
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS, "v30", "v31");
 }
 #endif
 
@@ -1256,7 +1251,7 @@ void NV12ToRGB24Row_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS);
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS);
 }
 #endif
 
@@ -1301,7 +1296,7 @@ void NV21ToARGBRow_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS, "v30", "v31");
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS, "v30", "v31");
 }
 #endif
 
@@ -1345,7 +1340,7 @@ void NV21ToRGB24Row_RVV(const uint8_t* src_y,
         [br] "=&r"(br),               // %[br]
         [k0101] "=&r"(k0101)          // %[k0101]
       : [yuvconst] "r"(yuvconstants)  // %[yuvconst]
-      : RVV_VL_CLOBBER "memory", YUVTORGB_REGS);
+      : "memory", RVV_VL_CLOBBER "vxrm", YUVTORGB_REGS);
 }
 #endif
 
@@ -1379,7 +1374,7 @@ void InterpolateRow_RVV(uint8_t* dst_ptr,
           [dst_w] "+r"(dst_w),      // %[dst_w]
           [vl] "=&r"(vl)            // %[vl]
         :
-        : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11");
+        : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11");
     return;
   }
   // Blend 50 / 50.
@@ -1404,8 +1399,8 @@ void InterpolateRow_RVV(uint8_t* dst_ptr,
           [dst_w] "+r"(dst_w),        // %[dst_w]
           [vl] "=&r"(vl)              // %[vl]
         :
-        : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13",
-          "v14", "v15");
+        : "memory", RVV_VL_CLOBBER "vxrm", "v8", "v9", "v10", "v11", "v12",
+          "v13", "v14", "v15");
     return;
   }
   // General purpose row blend.
@@ -1435,7 +1430,7 @@ void InterpolateRow_RVV(uint8_t* dst_ptr,
       : [y0_fraction] "r"(y0_fraction),  // %[y0_fraction]
         [y1_fraction] "r"(y1_fraction),  // %[y1_fraction]
         [c128] "r"(128)                  // %[c128]
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17");
 }
 #endif
@@ -1470,7 +1465,7 @@ void SplitRGBRow_RVV(const uint8_t* src_rgb,
         [vl] "=&r"(vl),           // %[vl]
         [tmp] "=&r"(tmp)          // %[tmp]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13");
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13");
 }
 #endif
 
@@ -1504,7 +1499,7 @@ void MergeRGBRow_RVV(const uint8_t* src_r,
         [vl] "=&r"(vl),           // %[vl]
         [tmp] "=&r"(tmp)          // %[tmp]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13");
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13");
 }
 #endif
 
@@ -1540,7 +1535,7 @@ void SplitARGBRow_RVV(const uint8_t* src_argb,
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -1577,7 +1572,7 @@ void MergeARGBRow_RVV(const uint8_t* src_r,
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -1610,7 +1605,7 @@ void SplitXRGBRow_RVV(const uint8_t* src_argb,
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -1646,7 +1641,7 @@ void MergeXRGBRow_RVV(const uint8_t* src_r,
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -1675,7 +1670,7 @@ void SplitUVRow_RVV(const uint8_t* src_uv,
         [w] "+r"(width),        // %[w]
         [vl] "=&r"(vl)          // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -1704,7 +1699,7 @@ void MergeUVRow_RVV(const uint8_t* src_u,
         [w] "+r"(width),        // %[w]
         [vl] "=&r"(vl)          // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -1731,7 +1726,7 @@ void SwapUVRow_RVV(const uint8_t* src_uv, uint8_t* dst_vu, int width) {
         [w] "+r"(width),        // %[w]
         [vl] "=&r"(vl)          // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -1781,7 +1776,7 @@ void ARGBToYMatrixRow_RVV(const uint8_t* src_argb,
         [vl] "=&r"(vl),             // %[vl]
         [tmp] "=&r"(tmp)            // %[tmp]
       : [c] "r"(c)                  // %[c]
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24",
         "v25", "v26", "v27", "v28", "v29", "v30", "v31");
 }
@@ -1829,7 +1824,7 @@ void RGBToYMatrixRow_RVV(const uint8_t* src_rgb,
         [vl] "=&r"(vl),           // %[vl]
         [tmp] "=&r"(tmp)          // %[tmp]
       : [c] "r"(c)                // %[c]
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24",
         "v25", "v26", "v27", "v28", "v29");
 }
@@ -1899,7 +1894,7 @@ void ARGBToUV444MatrixRow_RVV(const uint8_t* src_argb,
         [vl] "=&r"(vl),             // %[vl]
         [tmp] "=&r"(tmp)            // %[tmp]
       : [c] "r"(c)                  // %[c]
-      : RVV_VL_CLOBBER "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+      : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
         "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17",
         "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26", "v27",
         "v28", "v29", "v30", "v31");
@@ -1949,48 +1944,40 @@ void ARGBToUVMatrixRow_RVV(const uint8_t* src_argb,
         "vwaddu.vv   v18, v20, v24                 \n"
         "vwaddu.wv   v18, v18, v0                  \n"
         "vwaddu.wv   v18, v18, v4                  \n"
+        "vwaddu.vv   v28, v21, v25                 \n"
+        "vwaddu.wv   v28, v28, v1                  \n"
+        "vwaddu.wv   v28, v28, v5                  \n"
+        "vwaddu.vv   v30, v22, v26                 \n"
+        "vwaddu.wv   v30, v30, v2                  \n"
+        "vwaddu.wv   v30, v30, v6                  \n"
+        "vwaddu.vv   v4, v23, v27                  \n"
+        "vwaddu.wv   v4, v4, v3                    \n"
+        "vwaddu.wv   v4, v4, v7                    \n"
         "vsetvli     zero, zero, e16, m2, ta, ma   \n"
         "vadd.vi     v18, v18, 2                   \n"
+        "vadd.vi     v28, v28, 2                   \n"
+        "vadd.vi     v30, v30, 2                   \n"
+        "vadd.vi     v4, v4, 2                     \n"
         "vsetvli     zero, zero, e8, m1, ta, ma    \n"
         "vnsrl.wi    v20, v18, 2                   \n"
-        "vwaddu.vv   v18, v21, v25                 \n"
-        "vwaddu.wv   v18, v18, v1                  \n"
-        "vwaddu.wv   v18, v18, v5                  \n"
-        "vsetvli     zero, zero, e16, m2, ta, ma   \n"
-        "vadd.vi     v18, v18, 2                   \n"
-        "vsetvli     zero, zero, e8, m1, ta, ma    \n"
-        "vnsrl.wi    v21, v18, 2                   \n"
-        "vwaddu.vv   v18, v22, v26                 \n"
-        "vwaddu.wv   v18, v18, v2                  \n"
-        "vwaddu.wv   v18, v18, v6                  \n"
-        "vsetvli     zero, zero, e16, m2, ta, ma   \n"
-        "vadd.vi     v18, v18, 2                   \n"
-        "vsetvli     zero, zero, e8, m1, ta, ma    \n"
-        "vnsrl.wi    v22, v18, 2                   \n"
-        "vwaddu.vv   v18, v23, v27                 \n"
-        "vwaddu.wv   v18, v18, v3                  \n"
-        "vwaddu.wv   v18, v18, v7                  \n"
-        "vsetvli     zero, zero, e16, m2, ta, ma   \n"
-        "vadd.vi     v18, v18, 2                   \n"
-        "vsetvli     zero, zero, e8, m1, ta, ma    \n"
-        "vnsrl.wi    v23, v18, 2                   \n"
+        "vnsrl.wi    v21, v28, 2                   \n"
+        "vnsrl.wi    v22, v30, 2                   \n"
+        "vnsrl.wi    v23, v4, 2                    \n"
         "vwmulsu.vv  v18, v10, v20                 \n"
         "vwmaccsu.vv v18, v11, v21                 \n"
         "vwmaccsu.vv v18, v12, v22                 \n"
         "vwmaccsu.vv v18, v13, v23                 \n"
+        "vwmulsu.vv  v28, v14, v20                 \n"
+        "vwmaccsu.vv v28, v15, v21                 \n"
+        "vwmaccsu.vv v28, v16, v22                 \n"
+        "vwmaccsu.vv v28, v17, v23                 \n"
         "vsetvli     zero, zero, e16, m2, ta, ma   \n"
         "vsub.vv     v18, v8, v18                  \n"
+        "vsub.vv     v28, v8, v28                  \n"
         "vsetvli     zero, zero, e8, m1, ta, ma    \n"
         "vnsrl.wi    v24, v18, 8                   \n"
+        "vnsrl.wi    v20, v28, 8                   \n"
         "vse8.v      v24, (%[dst_u])               \n"
-        "vwmulsu.vv  v18, v14, v20                 \n"
-        "vwmaccsu.vv v18, v15, v21                 \n"
-        "vwmaccsu.vv v18, v16, v22                 \n"
-        "vwmaccsu.vv v18, v17, v23                 \n"
-        "vsetvli     zero, zero, e16, m2, ta, ma   \n"
-        "vsub.vv     v18, v8, v18                  \n"
-        "vsetvli     zero, zero, e8, m1, ta, ma    \n"
-        "vnsrl.wi    v20, v18, 8                   \n"
         "vse8.v      v20, (%[dst_v])               \n"
         "sub         %[w_len], %[w_len], %[vl]     \n"
         "add         %[dst_u], %[dst_u], %[vl]     \n"
@@ -2007,10 +1994,10 @@ void ARGBToUVMatrixRow_RVV(const uint8_t* src_argb,
           [vl] "=&r"(vl),                 // %[vl]
           [tmp] "=&r"(tmp)                // %[tmp]
         : [c] "r"(c)                      // %[c]
-        : RVV_VL_CLOBBER "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v6",
+        : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v4", "v5", "v6",
           "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16",
           "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26",
-          "v27");
+          "v27", "v28", "v29", "v30", "v31");
   }
   if (width & 1) {
     uint8_t b = (src_argb_0[0] + src_argb_1[0] + 1) >> 1;
@@ -2086,7 +2073,7 @@ void RGBToUV444MatrixRow_RVV(const uint8_t* src_rgb,
         [vl] "=&r"(vl),           // %[vl]
         [tmp] "=&r"(tmp)          // %[tmp]
       : [c] "r"(c)                // %[c]
-      : RVV_VL_CLOBBER "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v8", "v9",
+      : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v4", "v5", "v8", "v9",
         "v10", "v11", "v12", "v13", "v16", "v17", "v18", "v19", "v20", "v21",
         "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29");
 }
@@ -2131,39 +2118,33 @@ void RGBToUVMatrixRow_RVV(const uint8_t* src_rgb,
         "vwaddu.vv   v18, v20, v23                 \n"
         "vwaddu.wv   v18, v18, v0                  \n"
         "vwaddu.wv   v18, v18, v3                  \n"
+        "vwaddu.vv   v28, v21, v24                 \n"
+        "vwaddu.wv   v28, v28, v1                  \n"
+        "vwaddu.wv   v28, v28, v4                  \n"
+        "vwaddu.vv   v30, v22, v25                 \n"
+        "vwaddu.wv   v30, v30, v2                  \n"
+        "vwaddu.wv   v30, v30, v5                  \n"
         "vsetvli     zero, zero, e16, m2, ta, ma   \n"
         "vadd.vi     v18, v18, 2                   \n"
+        "vadd.vi     v28, v28, 2                   \n"
+        "vadd.vi     v30, v30, 2                   \n"
         "vsetvli     zero, zero, e8, m1, ta, ma    \n"
         "vnsrl.wi    v20, v18, 2                   \n"
-        "vwaddu.vv   v18, v21, v24                 \n"
-        "vwaddu.wv   v18, v18, v1                  \n"
-        "vwaddu.wv   v18, v18, v4                  \n"
-        "vsetvli     zero, zero, e16, m2, ta, ma   \n"
-        "vadd.vi     v18, v18, 2                   \n"
-        "vsetvli     zero, zero, e8, m1, ta, ma    \n"
-        "vnsrl.wi    v21, v18, 2                   \n"
-        "vwaddu.vv   v18, v22, v25                 \n"
-        "vwaddu.wv   v18, v18, v2                  \n"
-        "vwaddu.wv   v18, v18, v5                  \n"
-        "vsetvli     zero, zero, e16, m2, ta, ma   \n"
-        "vadd.vi     v18, v18, 2                   \n"
-        "vsetvli     zero, zero, e8, m1, ta, ma    \n"
-        "vnsrl.wi    v22, v18, 2                   \n"
+        "vnsrl.wi    v21, v28, 2                   \n"
+        "vnsrl.wi    v22, v30, 2                   \n"
         "vwmulsu.vv  v18, v12, v22                 \n"
         "vwmaccsu.vv v18, v11, v21                 \n"
         "vwmaccsu.vv v18, v10, v20                 \n"
+        "vwmulsu.vv  v28, v16, v22                 \n"
+        "vwmaccsu.vv v28, v15, v21                 \n"
+        "vwmaccsu.vv v28, v14, v20                 \n"
         "vsetvli     zero, zero, e16, m2, ta, ma   \n"
         "vsub.vv     v18, v8, v18                  \n"
+        "vsub.vv     v28, v8, v28                  \n"
         "vsetvli     zero, zero, e8, m1, ta, ma    \n"
         "vnsrl.wi    v24, v18, 8                   \n"
+        "vnsrl.wi    v20, v28, 8                   \n"
         "vse8.v      v24, (%[dst_u])               \n"
-        "vwmulsu.vv  v18, v16, v22                 \n"
-        "vwmaccsu.vv v18, v15, v21                 \n"
-        "vwmaccsu.vv v18, v14, v20                 \n"
-        "vsetvli     zero, zero, e16, m2, ta, ma   \n"
-        "vsub.vv     v18, v8, v18                  \n"
-        "vsetvli     zero, zero, e8, m1, ta, ma    \n"
-        "vnsrl.wi    v20, v18, 8                   \n"
         "vse8.v      v20, (%[dst_v])               \n"
         "sub         %[w_len], %[w_len], %[vl]     \n"
         "add         %[dst_u], %[dst_u], %[vl]     \n"
@@ -2182,9 +2163,9 @@ void RGBToUVMatrixRow_RVV(const uint8_t* src_rgb,
           [vl] "=&r"(vl),               // %[vl]
           [tmp] "=&r"(tmp)              // %[tmp]
         : [c] "r"(c)                    // %[c]
-        : RVV_VL_CLOBBER "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v8",
+        : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v4", "v5", "v8",
           "v9", "v10", "v11", "v12", "v14", "v15", "v16", "v18", "v19", "v20",
-          "v21", "v22", "v23", "v24", "v25");
+          "v21", "v22", "v23", "v24", "v25", "v28", "v29", "v30", "v31");
   }
   if (width & 1) {
     uint8_t b = (src_rgb_0[0] + src_rgb_1[0] + 1) >> 1;
@@ -2239,7 +2220,7 @@ void ARGBBlendRow_RVV(const uint8_t* src_argb,
         [w] "+r"(width),              // %[w]
         [vl] "=&r"(vl)                // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24",
         "v25", "v26", "v27", "v28", "v29", "v30", "v31");
 }
@@ -2279,7 +2260,7 @@ void BlendPlaneRow_RVV(const uint8_t* src0,
         [w] "+r"(width),      // %[w]
         [vl] "=&r"(vl)        // %[vl]
       : [k255] "r"(255)
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v16", "v17", "v18",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v16", "v17", "v18",
         "v19", "v20", "v21", "v22", "v23");
 }
 #endif
@@ -2316,7 +2297,7 @@ void ARGBAttenuateRow_RVV(const uint8_t* src_argb,
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       : [k255] "r"(255)
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24",
         "v25", "v26", "v27");
 }
@@ -2350,7 +2331,7 @@ void ARGBMultiplyRow_RVV(const uint8_t* src_argb,
         [w] "+r"(w),             // %[w]
         [vl] "=&r"(vl)           // %[vl]
       : [k128] "r"(128)          // %[k128]
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15");
 }
 #endif
@@ -2378,7 +2359,7 @@ void ARGBExtractAlphaRow_RVV(const uint8_t* src_argb,
         [w] "+r"(width),            // %[w]
         [vl] "=&r"(vl)              // %[vl]
       :
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v18", "v19");
 }
 #endif
@@ -2406,7 +2387,7 @@ void ARGBCopyYToAlphaRow_RVV(const uint8_t* src, uint8_t* dst, int width) {
         [w] "+r"(width),         // %[w]
         [vl] "=&r"(vl)           // %[vl]
       : [mask] "r"(0x00ffffffu)  // %[mask]
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
         "v15", "v16", "v17", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
         "v31");
 }
@@ -2434,7 +2415,7 @@ void Convert16To8Row_RVV(const uint16_t* src_y,
         [w] "+r"(width),                                 // %[w]
         [vl] "=&r"(vl)                                   // %[vl]
       : [shift] "r"(__builtin_clz((int32_t)scale) - 15)  // %[shift]
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v16", "v17");
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v16", "v17");
 }
 #endif
 
@@ -2468,7 +2449,7 @@ void Convert8To16Row_RVV(const uint8_t* src_y,
         [w] "+r"(width),      // %[w]
         [vl] "=&r"(vl)        // %[vl]
       : [shift] "r"(16 - bits), [k0101] "r"(0x0101)
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v16", "v17");
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v16", "v17");
 }
 #endif
 
@@ -2494,7 +2475,7 @@ void MultiplyRow_16_RVV(const uint16_t* src_y,
         [w] "+r"(width),      // %[w]
         [vl] "=&r"(vl)        // %[vl]
       : [scale] "r"(scale)    // %[scale]
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11");
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11");
 }
 #endif
 
@@ -2530,8 +2511,8 @@ void HalfRow_16To8_RVV(const uint16_t* src_uv,
         [w] "+r"(width),                                 // %[w]
         [vl] "=&r"(vl)                                   // %[vl]
       : [shift] "r"(__builtin_clz((int32_t)scale) - 15)  // %[shift]
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v12", "v13", "v14",
-        "v15", "v16", "v17");
+      : "memory", RVV_VL_CLOBBER "vxrm", "v8", "v9", "v10", "v11", "v12", "v13",
+        "v14", "v15", "v16", "v17");
 }
 #endif
 
@@ -2571,7 +2552,7 @@ void HalfWidthRow_16To8_RVV(const uint16_t* src_uv,
         [vl] "=&r"(vl)                                    // %[vl]
       : [shift] "r"(__builtin_clz((int32_t)scale) - 15),  // %[shift]
         [c2] "r"(2)                                       // %[c2]
-      : RVV_VL_CLOBBER "memory", "v8", "v9", "v10", "v11", "v16", "v17", "v18",
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v16", "v17", "v18",
         "v19", "v20", "v21", "v22", "v23");
 }
 #endif
@@ -2617,11 +2598,81 @@ void ARGBMirrorRow_RVV(const uint8_t* src, uint8_t* dst, int width) {
         [vl] "=&r"(vl),           // %[vl]
         [byte_vl] "=&r"(byte_vl)  // %[byte_vl]
       :
-      : RVV_VL_CLOBBER "vtype", "memory", "v0", "v1", "v2", "v3", "v4", "v5",
-        "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16",
-        "v17", "v18", "v19", "v20", "v21", "v22", "v23");
+      : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+        "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17",
+        "v18", "v19", "v20", "v21", "v22", "v23");
 }
 #endif  // HAS_ARGBMIRRORROW_RVV
+
+#ifdef HAS_ARGBSETROW_RVV
+void ARGBSetRow_RVV(uint8_t* dst_argb, uint32_t v32, int width) {
+  size_t vl;
+  asm volatile(
+      "vsetvli     %[vl], %[w], e32, m8, ta, ma  \n"
+      "vmv.v.x     v8, %[v32]                    \n"
+      "1:                                        \n"
+      "vsetvli     %[vl], %[w], e32, m8, ta, ma  \n"
+      "vse32.v     v8, (%[dst])                  \n"
+      "sub         %[w], %[w], %[vl]             \n"
+      "slli        %[vl], %[vl], 2               \n"
+      "add         %[dst], %[dst], %[vl]         \n"
+      "bnez        %[w], 1b                      \n"
+      : [dst] "+r"(dst_argb),  // %[dst]
+        [w] "+r"(width),       // %[w]
+        [vl] "=&r"(vl)         // %[vl]
+      : [v32] "r"(v32)         // %[v32]
+      : "memory", RVV_VL_CLOBBER "v8", "v9", "v10", "v11", "v12", "v13", "v14",
+        "v15");
+}
+#endif  // HAS_ARGBSETROW_RVV
+
+#ifdef HAS_ARGBSHUFFLEROW_RVV
+// Shuffle the 4 bytes of each ARGB pixel with a 16 byte shuffler table (only
+// the first 4 entries are used, the pattern repeats every pixel), e.g.
+// {0, 1, 2, 3} is a copy and {2, 1, 0, 3} swaps R and B.
+// Byte index vector: index[i] = (i & ~3) + shuffler[i & 3], gathered with a
+// 16 bit index so any VLEN works (e8 indices would be limited to 256 bytes).
+void ARGBShuffleRow_RVV(const uint8_t* src_argb,
+                        uint8_t* dst_argb,
+                        const uint8_t* shuffler,
+                        int width) {
+  size_t vl;
+  size_t w = (size_t)width * 4;  // bytes
+  // The 4 shuffler bytes packed little endian so a 32 bit broadcast lays them
+  // out as s0 s1 s2 s3 s0 s1 s2 s3 ... in memory order.
+  uint32_t pattern = (uint32_t)shuffler[0] | ((uint32_t)shuffler[1] << 8) |
+                     ((uint32_t)shuffler[2] << 16) |
+                     ((uint32_t)shuffler[3] << 24);
+  asm volatile(
+      // v16..v23 (e16, m8): index = (i & ~3) + shuffler[i & 3].
+      "vsetvli     %[vl], %[w], e16, m8, ta, ma  \n"
+      "vid.v       v16                           \n"
+      "vand.vi     v16, v16, -4                  \n"
+      "srli        %[vl], %[vl], 2               \n"
+      "vsetvli     zero, %[vl], e32, m4, ta, ma  \n"
+      "vmv.v.x     v8, %[pattern]                \n"  // s0 s1 s2 s3 ...
+      "vsetvli     %[vl], %[w], e16, m8, ta, ma  \n"
+      "vzext.vf2   v24, v8                       \n"  // bytes -> e16
+      "vadd.vv     v16, v16, v24                 \n"
+      "1:                                        \n"
+      "vsetvli     %[vl], %[w], e8, m4, ta, ma   \n"
+      "vle8.v      v8, (%[src])                  \n"
+      "vrgatherei16.vv v0, v8, v16               \n"
+      "vse8.v      v0, (%[dst])                  \n"
+      "sub         %[w], %[w], %[vl]             \n"
+      "add         %[src], %[src], %[vl]         \n"
+      "add         %[dst], %[dst], %[vl]         \n"
+      "bnez        %[w], 1b                      \n"
+      : [src] "+r"(src_argb),   // %[src]
+        [dst] "+r"(dst_argb),   // %[dst]
+        [w] "+r"(w),            // %[w]
+        [vl] "=&r"(vl)          // %[vl]
+      : [pattern] "r"(pattern)  // %[pattern]
+      : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v8", "v9", "v10",
+        "v11", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24",
+        "v25", "v26", "v27", "v28", "v29", "v30", "v31");
+}
+#endif  // HAS_ARGBSHUFFLEROW_RVV
 
 #ifdef HAS_MIRRORUVROW_RVV
 void MirrorUVRow_RVV(const uint8_t* src_uv, uint8_t* dst_uv, int width) {
@@ -2664,9 +2715,9 @@ void MirrorUVRow_RVV(const uint8_t* src_uv, uint8_t* dst_uv, int width) {
         [vl] "=&r"(vl),           // %[vl]
         [byte_vl] "=&r"(byte_vl)  // %[byte_vl]
       :
-      : RVV_VL_CLOBBER "vtype", "memory", "v0", "v1", "v2", "v3", "v4", "v5",
-        "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16",
-        "v17", "v18", "v19", "v20", "v21", "v22", "v23");
+      : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+        "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17",
+        "v18", "v19", "v20", "v21", "v22", "v23");
 }
 #endif  // HAS_MIRRORUVROW_RVV
 
@@ -2772,7 +2823,7 @@ void Ssim4x4Row_RVV(const uint8_t* src_a,
         [tmp_b] "=&r"(tmp_b)                  // %[tmp_b]
       : [stride_a] "r"((ptrdiff_t)stride_a),  // %[stride_a]
         [stride_b] "r"((ptrdiff_t)stride_b)   // %[stride_b]
-      : RVV_VL_CLOBBER "vtype", "memory", "v0", "v1", "v2", "v3", "v4", "v5",
+      : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v4", "v5",
         "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16",
         "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26",
         "v27", "v28", "v29");

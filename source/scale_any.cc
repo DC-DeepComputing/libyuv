@@ -1018,7 +1018,7 @@ SBUH2LANY(ScaleUVRowUp2_Linear_16_Any_AVX2,
 SBUH2LANY(ScaleUVRowUp2_Linear_Any_NEON,
           ScaleUVRowUp2_Linear_NEON,
           ScaleUVRowUp2_Linear_C,
-          15,
+          7,
           uint8_t)
 #endif
 
@@ -1026,7 +1026,7 @@ SBUH2LANY(ScaleUVRowUp2_Linear_Any_NEON,
 SBUH2LANY(ScaleUVRowUp2_Linear_16_Any_NEON,
           ScaleUVRowUp2_Linear_16_NEON,
           ScaleUVRowUp2_Linear_16_C,
-          15,
+          7,
           uint16_t)
 #endif
 
