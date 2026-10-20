@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a0a653d_d7167537",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-20T16:14:41Z",
+      "side": 1,
+      "message": "I rewrote ssim into assembly so there may be a subtle an order of operations difference.  mingw also has different ABI with 2 fewer SIMD registers.\nBut a bit of tolerance is a good idea\n\nFYI I plan to apple OPENMP to SSIM to speed it up which will change order of the math some more",
+      "revId": "4487a5fc2d076c9e30f5f0b9136f8779f417920b",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
