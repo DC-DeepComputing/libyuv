@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca68d8ca_25e61c10",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-20T21:43:09Z",
+      "side": 1,
+      "message": "Delete this sentence. This change was made in https://chromium-review.googlesource.com/c/libyuv/libyuv/+/8601931.",
+      "revId": "f448265d61d0cbead0f24dcf90d5496389954d5a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81a16f04_b5d3d1c1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-20T21:43:09Z",
+      "side": 1,
+      "message": "Frank: I suggest two optional simplifications. If you make those simplifications, please update the commit message accordingly.",
+      "revId": "f448265d61d0cbead0f24dcf90d5496389954d5a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec89d386_6864cab3",
+        "filename": "source/scale.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2191,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-20T21:43:09Z",
+      "side": 1,
+      "message": "(This comment also applies to the corresponding code in `ScalePlane_16()` at line 2310.)\n\nOptional: Since the input validation at line 2166 allows `src_height \u003c\u003d 32768`, this line is equivalent to:\n\n```\n    if (dst_height \u003d\u003d 1 \u0026\u0026 src_height \u003d\u003d 32768) {\n```\n\nSo line 2193 can be further simplified by plugging in `src_height\u003d32768`. Would you like to make this simplication?",
+      "revId": "f448265d61d0cbead0f24dcf90d5496389954d5a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41fcd832_7993a7f1",
+        "filename": "source/scale_common.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 1679,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-20T21:43:09Z",
+      "side": 1,
+      "message": "Optional: Similarly, in this function, `abs_src_width \u003e\u003d 32768` is equivalent to `abs_src_width \u003d\u003d 32768`, and `src_height \u003e\u003d 32768` is equivalen to `src_height \u003d\u003d 32768`. Would you like to make these simplifications?",
+      "revId": "f448265d61d0cbead0f24dcf90d5496389954d5a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
