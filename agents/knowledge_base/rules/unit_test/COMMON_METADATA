@@ -1,0 +1,17 @@
+# Copyright 2026 The LibYuv Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS. All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+agentic_review {
+  capability_groups {
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/unit_test/guard-large-test-allocations.md"
+    rules: "agents/knowledge_base/rules/unit_test/guard-relaxed-test-warnings-with-capability-checks.md"
+    rules: "agents/knowledge_base/rules/unit_test/guard-slow-unoptimized-conversion-tests-consistently.md"
+    rules: "agents/knowledge_base/rules/unit_test/match-test-tolerances-to-operation.md"
+  }
+}

@@ -1,0 +1,187 @@
+# Copyright 2026 The LibYuv Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS. All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+agentic_review {
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/aarch64-assembly-use-subs-for-loop-counter.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*neon[^/]*\\.cc"
+    rules: "agents/knowledge_base/rules/source/aarch64-neon-ld1-register-post-index-stride.md"
+    rules: "agents/knowledge_base/rules/source/interleave-neon-compute-and-memory-instructions.md"
+    rules: "agents/knowledge_base/rules/source/match-neon-load-store-element-size-to-data-type.md"
+    rules: "agents/knowledge_base/rules/source/neon-prefer-zip-widening-over-tbl-shuffles.md"
+    rules: "agents/knowledge_base/rules/source/neon-sve-sli-sri-bitfield-packing.md"
+    rules: "agents/knowledge_base/rules/source/unroll-neon-reduction-loops-with-paired-loads-and-dual-accum.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/accumulate-in-vector-registers-across-reduction-loops.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/arm-assembly-use-cbz-cbnz-for-zero-branch.md"
+    rules: "agents/knowledge_base/rules/source/base-plus-index-addressing-for-inline-assembly-loops.md"
+    rules: "agents/knowledge_base/rules/source/cast-bit-count-intrinsic-operands.md"
+    rules: "agents/knowledge_base/rules/source/clear-upper-ymm-with-vzeroupper.md"
+    rules: "agents/knowledge_base/rules/source/dedicated-16-bit-mirroring-for-rotation.md"
+    rules: "agents/knowledge_base/rules/source/handle-negative-height-by-inverting-strides.md"
+    rules: "agents/knowledge_base/rules/source/match-assembly-loop-decrement-to-step.md"
+    rules: "agents/knowledge_base/rules/source/no-8bit-destination-as-16bit-intermediate-buffer.md"
+    rules: "agents/knowledge_base/rules/source/pass-explicit-plane-strides-not-dimensions.md"
+    rules: "agents/knowledge_base/rules/source/post-increment-pointers-in-assembly-loops.md"
+    rules: "agents/knowledge_base/rules/source/prefer-direct-multiplications-in-c-fallbacks.md"
+    rules: "agents/knowledge_base/rules/source/prefer-unit-stride-vector-loads-when-channel-order-unchanged.md"
+    rules: "agents/knowledge_base/rules/source/use-three-operand-avx-instructions-over-register-copies.md"
+    rules: "agents/knowledge_base/rules/source/validate-mandatory-plane-pointers-at-entry.md"
+    rules: "agents/knowledge_base/rules/source/validate-width-against-integer-overflow.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/avoid-tbl-deinterleave-for-nv12-uv.md"
+    rules: "agents/knowledge_base/rules/source/cast-64-bit-intrinsic-truncation.md"
+    rules: "agents/knowledge_base/rules/source/clamp-fixed-point-after-right-shift.md"
+    rules: "agents/knowledge_base/rules/source/derive-full-range-yuv-to-rgb-matrix-coefficients.md"
+    rules: "agents/knowledge_base/rules/source/fold-constant-chroma-and-bias-in-monochrome-kernels.md"
+    rules: "agents/knowledge_base/rules/source/include-rounding-bias-in-fixed-point-color-constants.md"
+  }
+  capability_groups {
+    path_expression: "source/scale[^/]*\\.cc"
+    rules: "agents/knowledge_base/rules/source/clamp-odd-height-source-pointer-in-point-downscaling.md"
+    rules: "agents/knowledge_base/rules/source/clamp-vertical-scaling-coordinate-to-max-y.md"
+    rules: "agents/knowledge_base/rules/source/use-fixeddiv-for-scale-stepping.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/convert.*"
+    path_expression: "source/convert.*"
+    rules: "agents/knowledge_base/rules/source/clamp-simd-narrowing-conversions.md"
+    rules: "agents/knowledge_base/rules/source/no-row-coalescing-in-multipass-conversion-loops.md"
+    rules: "agents/knowledge_base/rules/source/prefer-row-processing-over-multipass-plane-conversions.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/declare-all-modified-registers-in-asm-clobber-list.md"
+    rules: "agents/knowledge_base/rules/source/inline-asm-readonly-inputs.md"
+    rules: "agents/knowledge_base/rules/source/qualify-extended-inline-asm-volatile.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|h)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    rules: "agents/knowledge_base/rules/source/guard-platform-cpu-detection-with-architecture-macros.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/row\\.h"
+    path_expression: "source/row.*"
+    rules: "agents/knowledge_base/rules/source/initialize-multi-row-assembly-stride-pointer.md"
+    rules: "agents/knowledge_base/rules/source/order-2d-transform-loops-to-write-destination-rows.md"
+    rules: "agents/knowledge_base/rules/source/use-do-while-in-simd-row-kernels.md"
+    rules: "agents/knowledge_base/rules/source/use-row-vector-typedefs-for-simd-constants.md"
+  }
+  capability_groups {
+    path_expression: "source/row_any\\.cc"
+    path_expression: "source/scale_any\\.cc"
+    rules: "agents/knowledge_base/rules/source/match-any-wrapper-mask-to-vector-step.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/match-feature-macro-to-row-function.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/match-is-aligned-step-to-simd-vector-size.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/cpu_id\\.h"
+    path_expression: "source/cpu_id\\.cc"
+    rules: "agents/knowledge_base/rules/source/match-simd-feature-macro-cpu-flag-and-function-name.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*neon[^/]*\\.cc"
+    rules: "agents/knowledge_base/rules/source/neon-prefer-interleaved-stores-over-zip-st1.md"
+    rules: "agents/knowledge_base/rules/source/neon-quadword-register-syntax-for-vst2-vld2.md"
+    rules: "agents/knowledge_base/rules/source/neon-use-d-registers-for-8-byte-loads.md"
+    rules: "agents/knowledge_base/rules/source/neon-widening-instructions-over-zip-zero.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*neon64\\.cc"
+    rules: "agents/knowledge_base/rules/source/neon64-prefer-scalar-loads-and-stp-over-st4-gather.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/no-assert-on-alloc-failure-in-fallible-functions.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*_gcc\\.cc"
+    rules: "agents/knowledge_base/rules/source/omit-64bit-suffixes-in-x86-inline-asm.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/pair-align-buffer-64-with-free-aligned-buffer-64.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/prefer-arithmetic-division-over-signed-shifts.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/scale.*"
+    path_expression: "source/scale.*"
+    rules: "agents/knowledge_base/rules/source/prefer-unsigned-32-bit-scaling-coefficients.md"
+  }
+  capability_groups {
+    path_expression: "source/cpu_id\\.cc"
+    path_expression: "util/cpuid\\.c"
+    rules: "agents/knowledge_base/rules/source/query-cpu-feature-registers-over-model-strings.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*rvv[^/]*\\.cc"
+    rules: "agents/knowledge_base/rules/source/rvv-prefer-widening-multiply-accumulate.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*rvv[^/]*\\.cc"
+    rules: "agents/knowledge_base/rules/source/rvv-vsetvl-at-loop-start.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/row\\.h"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/shift-for-high-bit-depth-row-conversions.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/skip-sve-tail-when-width-is-vector-multiple.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*gcc\\.cc"
+    path_expression: "source/(?:.*/)?[^/]*win\\.cc"
+    rules: "agents/knowledge_base/rules/source/use-vmovdqa-for-avx2-constant-loads.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*_gcc\\.cc"
+    path_expression: "source/[^/]*_neon64\\.cc"
+    path_expression: "source/[^/]*_neon\\.cc"
+    path_expression: "source/[^/]*_win\\.cc"
+    rules: "agents/knowledge_base/rules/source/verify-simd-pairwise-reduction-registers.md"
+  }
+}

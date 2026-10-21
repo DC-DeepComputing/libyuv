@@ -1,0 +1,48 @@
+# Copyright 2026 The LibYuv Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS. All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+agentic_review {
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    rules: "agents/knowledge_base/rules/general/cast-dimensions-to-size-t-in-pointer-arithmetic.md"
+    rules: "agents/knowledge_base/rules/general/check-unsigned-overflow-before-addition.md"
+    rules: "agents/knowledge_base/rules/general/guard-optional-dependency-includes-with-feature-macros.md"
+    rules: "agents/knowledge_base/rules/general/measure-string-length-before-strtok.md"
+    rules: "agents/knowledge_base/rules/general/provide-fallback-return-for-enum-switch.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    rules: "agents/knowledge_base/rules/general/condition-bitness-flags-on-target-bitness-in-gn.md"
+    rules: "agents/knowledge_base/rules/general/no-defines-on-gn-group-targets.md"
+    rules: "agents/knowledge_base/rules/general/no-optimize-max-in-gn.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    rules: "agents/knowledge_base/rules/general/encode-new-instructions-as-raw-bytes-in-inline-asm.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|h)"
+    rules: "agents/knowledge_base/rules/general/match-closing-brace-comments.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
+    rules: "agents/knowledge_base/rules/general/no-sanitizer-conditional-storage-or-sync.md"
+    rules: "agents/knowledge_base/rules/general/no-unmotivated-cfi-or-sanitizer-suppressions.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    path_expression: "\\.gn"
+    rules: "agents/knowledge_base/rules/general/no-un-upstreamed-gn-imports.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/general/omit-redundant-base-architecture-macro-in-feature-guards.md"
+  }
+}

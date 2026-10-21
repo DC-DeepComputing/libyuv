@@ -1,0 +1,40 @@
+# Copyright 2026 The LibYuv Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS. All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+agentic_review {
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/define-bpp-constant-for-fourcc-format.md"
+  }
+  capability_groups {
+    path_expression: "include/.*"
+    rules: "agents/knowledge_base/rules/api/general-avoid-build-system-macros-in-header-compiler-checks.md"
+    rules: "agents/knowledge_base/rules/api/preserve-public-constant-and-flag-values.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/cpu_id\\.h"
+    path_expression: "source/cpu_id\\.cc"
+    rules: "agents/knowledge_base/rules/api/guard-architecture-headers-with-cpu-preprocessor-checks.md"
+    rules: "agents/knowledge_base/rules/api/no-implicit-init-flag-in-cpu-setters.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/guard-simd-availability-macros-with-compiler-capabilities.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/standard-dst-and-dst-stride-param-naming.md"
+  }
+}
