@@ -717,7 +717,7 @@ TEST_F(LibYUVCompareTest, TestSsimAnyWidth) {
     src_b[i] = (i * 151 + 43) & 0xff;
   }
 
-  for (int width = 9; width <= kMaxWidth; ++width) {
+  for (int width = 1; width <= kMaxWidth; ++width) {
     for (int offset = 0; offset < 2; ++offset) {
       const int size = width * kHeight;
       const uint8_t* a = src_a + kPlaneSize - size - offset;
@@ -728,6 +728,24 @@ TEST_F(LibYUVCompareTest, TestSsimAnyWidth) {
       double opt_ssim = CalcFrameSsim(a, width, b, width, width, kHeight);
       EXPECT_NEAR(c_ssim, opt_ssim, 1e-5)
           << "width " << width << " offset " << offset;
+      if (width <= 8) {
+        EXPECT_EQ(0.0, opt_ssim) << "width " << width;
+      }
+    }
+  }
+
+  for (int height = 1; height <= kHeight; ++height) {
+    const int width = 16;
+    const int size = width * height;
+    const uint8_t* a = src_a + kPlaneSize - size;
+    const uint8_t* b = src_b + kPlaneSize - size;
+    MaskCpuFlags(disable_cpu_flags_);
+    double c_ssim = CalcFrameSsim(a, width, b, width, width, height);
+    MaskCpuFlags(benchmark_cpu_info_);
+    double opt_ssim = CalcFrameSsim(a, width, b, width, width, height);
+    EXPECT_NEAR(c_ssim, opt_ssim, 1e-5) << "height " << height;
+    if (height <= 8) {
+      EXPECT_EQ(0.0, opt_ssim) << "height " << height;
     }
   }
 
@@ -758,6 +776,8 @@ TEST_F(LibYUVCompareTest, Ssim) {
 
   if (kSrcWidth > 8 && kSrcHeight > 8) {
     EXPECT_EQ(err, 1.0);
+  } else {
+    EXPECT_EQ(err, 0.0);
   }
 
   // Completely different constant images (255 vs 0): SSIM near 0.
@@ -821,6 +841,9 @@ TEST_F(LibYUVCompareTest, Ssim) {
     EXPECT_GT(opt_err, 0.9);
     EXPECT_LT(opt_err, 1.0);
     EXPECT_NEAR(c_err, opt_err, 1e-5);
+  } else {
+    EXPECT_EQ(0.0, opt_err);
+    EXPECT_EQ(c_err, opt_err);
   }
 
   free_aligned_buffer_page_end(src_a);

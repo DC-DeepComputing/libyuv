@@ -428,9 +428,9 @@ double CalcFrameSsim(const uint8_t* src_a,
                      int height) {
   int samples = 0;
   double ssim_total = 0;
-  // Return 0 rather than 0.0 / 0 (NaN) when the plane is too small for any
-  // sample windows, so I420Ssim on small images stays finite.
-  if (width <= 8 || height <= 8) {
+  // Return 0 rather than 0.0 / 0 (NaN) when the plane is null or too small for
+  // any sample windows, so I420Ssim on small images stays finite.
+  if (!src_a || !src_b || width <= 8 || height <= 8) {
     return 0.0;
   }
 

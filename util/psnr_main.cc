@@ -8,15 +8,12 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-// Get PSNR or SSIM for video sequence. Assuming RAW 4:2:0 Y:Cb:Cr format
-// To build: g++ -O3 -o psnr psnr.cc ssim.cc psnr_main.cc
-// or VisualC: cl /Ox psnr.cc ssim.cc psnr_main.cc
+// Get PSNR, SSIM, MSE, or DJB2 hash for video sequence. Assuming RAW 4:2:0
+// Y:Cb:Cr format.
+// To build: g++ -O3 -Iinclude -o psnr util/psnr.cc util/ssim.cc
+//               util/psnr_main.cc libyuv.a
 //
-// To enable OpenMP and SSE2
-// gcc: g++ -msse2 -O3 -fopenmp -o psnr psnr.cc ssim.cc psnr_main.cc
-// vc:  cl /arch:SSE2 /Ox /openmp psnr.cc ssim.cc psnr_main.cc
-//
-// Usage: psnr org_seq rec_seq -s width height [-skip skip_org skip_rec]
+// Usage: psnr [-psnr] [-ssim] [-djb2] [-s width height] org_seq rec_seq
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -32,8 +29,8 @@
 
 #include "./psnr.h"
 #include "./ssim.h"
-#ifdef HAVE_JPEG
 #include "libyuv/compare.h"
+#ifdef HAVE_JPEG
 #include "libyuv/convert.h"
 #endif
 
@@ -53,6 +50,7 @@ bool do_psnr = false;
 bool do_ssim = false;
 bool do_mse = false;
 bool do_lssim = false;
+bool do_djb2 = false;
 int image_width = 0, image_height = 0;
 int fileindex_org = 0;  // argv argument contains the source file name.
 int fileindex_rec = 0;  // argv argument contains the destination file name.
@@ -107,7 +105,24 @@ static bool ExtractResolutionFromFilename(const char* name,
 
 // MSE = Mean Square Error
 static double GetMSE(double sse, double size) {
-  return sse / size;
+  return (size > 0.0) ? (sse / size) : 0.0;
+}
+
+static uint32_t HashFrame(const uint8_t* ch,
+                          const int y_size,
+                          const int uv_size,
+                          const size_t total_size,
+                          uint32_t seed,
+                          bool swap_uv) {
+  if (!swap_uv) {
+    return libyuv::HashDjb2(ch, total_size, seed);
+  }
+  const uint8_t* const u = ch + y_size + uv_size;
+  const uint8_t* const v = ch + y_size;
+  seed = libyuv::HashDjb2(ch, y_size, seed);
+  seed = libyuv::HashDjb2(u, uv_size, seed);
+  seed = libyuv::HashDjb2(v, uv_size, seed);
+  return seed;
 }
 
 static void PrintHelp(const char* program) {
@@ -125,6 +140,7 @@ static void PrintHelp(const char* program) {
   printf(" -psnr .................. compute PSNR (default)\n");
   printf(" -ssim .................. compute SSIM\n");
   printf(" -mse ................... compute MSE\n");
+  printf(" -djb2 .................. compute DJB2 hash\n");
   printf(" -swap .................. Swap U and V plane\n");
   printf(" -skip <org> <rec> ...... Number of frame to skip of org and rec\n");
   printf(" -frames <num> .......... Number of frames to compare\n");
@@ -158,6 +174,8 @@ static void ParseOptions(int argc, const char* argv[]) {
     } else if (!strcmp(argv[c], "-lssim")) {
       do_ssim = true;
       do_lssim = true;
+    } else if (!strcmp(argv[c], "-djb2")) {
+      do_djb2 = true;
     } else if (!strcmp(argv[c], "-swap")) {
       do_swap_uv = true;
     } else if (!strcmp(argv[c], "-h") || !strcmp(argv[c], "-help")) {
@@ -242,40 +260,34 @@ static bool UpdateMetrics(uint8_t* ch_org,
   const uint8_t* const v_org = ch_org + y_size + (uv_size - uv_offset);
   const uint8_t* const v_rec = ch_rec + y_size + uv_size;
   if (compute_psnr) {
-#ifdef HAVE_JPEG
-    double y_err = static_cast<double>(
-        libyuv::ComputeSumSquareError(ch_org, ch_rec, y_size));
-    double u_err = static_cast<double>(
-        libyuv::ComputeSumSquareError(u_org, u_rec, uv_size));
-    double v_err = static_cast<double>(
-        libyuv::ComputeSumSquareError(v_org, v_rec, uv_size));
-#else
-    double y_err = ComputeSumSquareError(ch_org, ch_rec, y_size);
-    double u_err = ComputeSumSquareError(u_org, u_rec, uv_size);
-    double v_err = ComputeSumSquareError(v_org, v_rec, uv_size);
-#endif
-    const double total_err = y_err + u_err + v_err;
-    cur_distortion_psnr->global_y += y_err;
-    cur_distortion_psnr->global_u += u_err;
-    cur_distortion_psnr->global_v += v_err;
-    cur_distortion_psnr->global_all += total_err;
-    distorted_frame->y = ComputePSNR(y_err, static_cast<double>(y_size));
-    distorted_frame->u = ComputePSNR(u_err, static_cast<double>(uv_size));
-    distorted_frame->v = ComputePSNR(v_err, static_cast<double>(uv_size));
-    distorted_frame->all =
-        ComputePSNR(total_err, static_cast<double>(total_size));
-  } else {
-    distorted_frame->y = CalcSSIM(ch_org, ch_rec, image_width, image_height);
+    const uint64_t y_sse =
+        libyuv::ComputeSumSquareError(ch_org, ch_rec, y_size);
+    const uint64_t u_sse = libyuv::ComputeSumSquareError(u_org, u_rec, uv_size);
+    const uint64_t v_sse = libyuv::ComputeSumSquareError(v_org, v_rec, uv_size);
+    const uint64_t total_sse = y_sse + u_sse + v_sse;
+    cur_distortion_psnr->global_y += static_cast<double>(y_sse);
+    cur_distortion_psnr->global_u += static_cast<double>(u_sse);
+    cur_distortion_psnr->global_v += static_cast<double>(v_sse);
+    cur_distortion_psnr->global_all += static_cast<double>(total_sse);
+    distorted_frame->y =
+        libyuv::SumSquareErrorToPsnr(y_sse, static_cast<uint64_t>(y_size));
     distorted_frame->u =
-        CalcSSIM(u_org, u_rec, (image_width + 1) / 2, (image_height + 1) / 2);
+        libyuv::SumSquareErrorToPsnr(u_sse, static_cast<uint64_t>(uv_size));
     distorted_frame->v =
-        CalcSSIM(v_org, v_rec, (image_width + 1) / 2, (image_height + 1) / 2);
-    distorted_frame->all =
-        (distorted_frame->y + distorted_frame->u + distorted_frame->v) /
-        total_size;
-    distorted_frame->y /= y_size;
-    distorted_frame->u /= uv_size;
-    distorted_frame->v /= uv_size;
+        libyuv::SumSquareErrorToPsnr(v_sse, static_cast<uint64_t>(uv_size));
+    distorted_frame->all = libyuv::SumSquareErrorToPsnr(
+        total_sse, static_cast<uint64_t>(total_size));
+  } else {
+    const int half_width = (image_width + 1) >> 1;
+    const int half_height = (image_height + 1) >> 1;
+    distorted_frame->y = libyuv::CalcFrameSsim(
+        ch_org, image_width, ch_rec, image_width, image_width, image_height);
+    distorted_frame->u = libyuv::CalcFrameSsim(
+        u_org, half_width, u_rec, half_width, half_width, half_height);
+    distorted_frame->v = libyuv::CalcFrameSsim(
+        v_org, half_width, v_rec, half_width, half_width, half_height);
+    distorted_frame->all = distorted_frame->y * 0.8 +
+                           0.1 * (distorted_frame->u + distorted_frame->v);
 
     if (do_lssim) {
       distorted_frame->all = CalcLSSIM(distorted_frame->all);
@@ -310,7 +322,7 @@ static bool UpdateMetrics(uint8_t* ch_org,
 
 int main(int argc, const char* argv[]) {
   ParseOptions(argc, argv);
-  if (!do_psnr && !do_ssim) {
+  if (!do_psnr && !do_ssim && !do_mse && !do_djb2) {
     do_psnr = true;
   }
 
@@ -383,6 +395,8 @@ int main(int argc, const char* argv[]) {
 
   metric* const distortion_psnr = new metric[num_rec];
   metric* const distortion_ssim = new metric[num_rec];
+  uint32_t* const hash_org = new uint32_t[num_rec];
+  uint32_t* const hash_rec = new uint32_t[num_rec];
   for (int cur_rec = 0; cur_rec < num_rec; ++cur_rec) {
     metric* cur_distortion_psnr = &distortion_psnr[cur_rec];
     cur_distortion_psnr->y = 0.0;
@@ -398,7 +412,9 @@ int main(int argc, const char* argv[]) {
     cur_distortion_psnr->global_u = 0.0;
     cur_distortion_psnr->global_v = 0.0;
     cur_distortion_psnr->global_all = 0.0;
-    distortion_ssim[cur_rec] = cur_distortion_psnr[cur_rec];
+    distortion_ssim[cur_rec] = *cur_distortion_psnr;
+    hash_org[cur_rec] = 5381;
+    hash_rec[cur_rec] = 5381;
   }
 
   if (verbose) {
@@ -412,6 +428,9 @@ int main(int argc, const char* argv[]) {
     }
     if (do_ssim) {
       printf("\t  SSIM-Y\t  SSIM-U\t  SSIM-V\t  SSIM-All\t Frame");
+    }
+    if (do_djb2) {
+      printf("\t  DJB2-Org\t  DJB2-Rec");
     }
     if (show_name) {
       printf("\tName\n");
@@ -475,13 +494,13 @@ int main(int argc, const char* argv[]) {
       if (verbose) {
         printf("%5d", number_of_frames);
       }
-      if (do_psnr) {
+      if (do_psnr || do_mse) {
         metric distorted_frame = {};
         metric* cur_distortion_psnr = &distortion_psnr[cur_rec];
         bool ismin = UpdateMetrics(ch_org, ch_rec, y_size, uv_size, total_size,
                                    number_of_frames, cur_distortion_psnr,
                                    &distorted_frame, true);
-        if (verbose) {
+        if (verbose && do_psnr) {
           printf("\t%10.6f", distorted_frame.y);
           printf("\t%10.6f", distorted_frame.u);
           printf("\t%10.6f", distorted_frame.v);
@@ -501,6 +520,15 @@ int main(int argc, const char* argv[]) {
           printf("\t%10.6f", distorted_frame.v);
           printf("\t%10.6f", distorted_frame.all);
           printf("\t%5s", ismin ? "min" : "");
+        }
+      }
+      if (do_djb2) {
+        hash_org[cur_rec] = HashFrame(ch_org, y_size, uv_size, total_size,
+                                      hash_org[cur_rec], do_swap_uv);
+        hash_rec[cur_rec] = HashFrame(ch_rec, y_size, uv_size, total_size,
+                                      hash_rec[cur_rec], false);
+        if (verbose) {
+          printf("\t  %08x\t  %08x", hash_org[cur_rec], hash_rec[cur_rec]);
         }
       }
       if (verbose) {
@@ -529,18 +557,18 @@ int main(int argc, const char* argv[]) {
     }
 
     if (do_psnr) {
-      const double global_psnr_y =
-          ComputePSNR(cur_distortion_psnr->global_y,
-                      static_cast<double>(y_size) * number_of_frames);
-      const double global_psnr_u =
-          ComputePSNR(cur_distortion_psnr->global_u,
-                      static_cast<double>(uv_size) * number_of_frames);
-      const double global_psnr_v =
-          ComputePSNR(cur_distortion_psnr->global_v,
-                      static_cast<double>(uv_size) * number_of_frames);
-      const double global_psnr_all =
-          ComputePSNR(cur_distortion_psnr->global_all,
-                      static_cast<double>(total_size) * number_of_frames);
+      const double global_psnr_y = libyuv::SumSquareErrorToPsnr(
+          static_cast<uint64_t>(cur_distortion_psnr->global_y),
+          static_cast<uint64_t>(y_size) * number_of_frames);
+      const double global_psnr_u = libyuv::SumSquareErrorToPsnr(
+          static_cast<uint64_t>(cur_distortion_psnr->global_u),
+          static_cast<uint64_t>(uv_size) * number_of_frames);
+      const double global_psnr_v = libyuv::SumSquareErrorToPsnr(
+          static_cast<uint64_t>(cur_distortion_psnr->global_v),
+          static_cast<uint64_t>(uv_size) * number_of_frames);
+      const double global_psnr_all = libyuv::SumSquareErrorToPsnr(
+          static_cast<uint64_t>(cur_distortion_psnr->global_all),
+          static_cast<uint64_t>(total_size) * number_of_frames);
       printf("Global:\t%10.6f\t%10.6f\t%10.6f\t%10.6f\t%5d", global_psnr_y,
              global_psnr_u, global_psnr_v, global_psnr_all, number_of_frames);
       if (show_name) {
@@ -549,7 +577,7 @@ int main(int argc, const char* argv[]) {
       printf("\n");
     }
 
-    if (!quiet) {
+    if (!quiet && (do_psnr || do_ssim)) {
       printf("Avg:");
       if (do_psnr) {
         printf("\t%10.6f\t%10.6f\t%10.6f\t%10.6f\t%5d", cur_distortion_psnr->y,
@@ -566,7 +594,7 @@ int main(int argc, const char* argv[]) {
       }
       printf("\n");
     }
-    if (!quiet) {
+    if (!quiet && (do_psnr || do_ssim)) {
       printf("Min:");
       if (do_psnr) {
         printf("\t%10.6f\t%10.6f\t%10.6f\t%10.6f\t%5d",
@@ -606,11 +634,22 @@ int main(int argc, const char* argv[]) {
       }
       printf("\n");
     }
+
+    if (do_djb2) {
+      printf("DJB2:\t  %08x\t  %08x\t%5d", hash_org[cur_rec], hash_rec[cur_rec],
+             number_of_frames);
+      if (show_name) {
+        printf("\t%s", argv[fileindex_rec + cur_rec]);
+      }
+      printf("\n");
+    }
   }
   fclose(file_org);
   for (int cur_rec = 0; cur_rec < num_rec; ++cur_rec) {
     fclose(file_rec[cur_rec]);
   }
+  delete[] hash_org;
+  delete[] hash_rec;
   delete[] distortion_psnr;
   delete[] distortion_ssim;
   delete[] ch_org;
