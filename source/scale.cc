@@ -857,6 +857,7 @@ static void ScaleAddCols2_C(int dst_width,
                             int dx,
                             const uint16_t* src_ptr,
                             uint8_t* dst_ptr) {
+  uint32_t ux = x;
   int i;
   int scaletbl[2];
   int minboxwidth = dx >> 16;
@@ -864,9 +865,9 @@ static void ScaleAddCols2_C(int dst_width,
   scaletbl[0] = 65536 / (MIN1(minboxwidth) * boxheight);
   scaletbl[1] = 65536 / (MIN1(minboxwidth + 1) * boxheight);
   for (i = 0; i < dst_width; ++i) {
-    int ix = x >> 16;
-    x += dx;
-    boxwidth = MIN1((x >> 16) - ix);
+    int ix = ux >> 16;
+    ux += dx;
+    boxwidth = MIN1((int)(ux >> 16) - ix);
     int scaletbl_index = boxwidth - minboxwidth;
     assert((scaletbl_index == 0) || (scaletbl_index == 1));
     *dst_ptr++ = (uint8_t)(SumPixels(boxwidth, src_ptr + ix) *
@@ -881,6 +882,7 @@ static void ScaleAddCols2_16_C(int dst_width,
                                int dx,
                                const uint32_t* src_ptr,
                                uint16_t* dst_ptr) {
+  uint32_t ux = x;
   int i;
   int scaletbl[2];
   int minboxwidth = dx >> 16;
@@ -888,9 +890,9 @@ static void ScaleAddCols2_16_C(int dst_width,
   scaletbl[0] = 65536 / (MIN1(minboxwidth) * boxheight);
   scaletbl[1] = 65536 / (MIN1(minboxwidth + 1) * boxheight);
   for (i = 0; i < dst_width; ++i) {
-    int ix = x >> 16;
-    x += dx;
-    boxwidth = MIN1((x >> 16) - ix);
+    int ix = ux >> 16;
+    ux += dx;
+    boxwidth = MIN1((int)(ux >> 16) - ix);
     int scaletbl_index = boxwidth - minboxwidth;
     assert((scaletbl_index == 0) || (scaletbl_index == 1));
     *dst_ptr++ =
@@ -2188,11 +2190,9 @@ int ScalePlane(const uint8_t* src,
     int dy = 0;
     int y = 0;
     // Check for 1 pixel and avoid FixedDiv overflow.
-    // TODO(b/573815252): Fix center row calculation when dst_height == 1 and
-    // src_height == 32768.
-    if (dst_height == 1 && src_height >= 32768) {
-      dy = FixedDiv(src_height, src_height);
-      y = CENTERSTART(dy, -32768);
+    if (dst_height == 1 && src_height == 32768) {
+      dy = 1 << 16;
+      y = filtering ? ((32768 << 15) - 32768) : (32768 << 15);
     } else if (dst_height <= src_height) {
       // When scaling down, use the center 2 rows to filter.
       dy = FixedDiv(src_height, dst_height);
@@ -2309,11 +2309,9 @@ int ScalePlane_16(const uint16_t* src,
     int dy = 0;
     int y = 0;
     // Check for 1 pixel and avoid FixedDiv overflow.
-    // TODO(b/573815252): Fix center row calculation when dst_height == 1 and
-    // src_height == 32768.
-    if (dst_height == 1 && src_height >= 32768) {
-      dy = FixedDiv(src_height, src_height);
-      y = CENTERSTART(dy, -32768);
+    if (dst_height == 1 && src_height == 32768) {
+      dy = 1 << 16;
+      y = filtering ? ((32768 << 15) - 32768) : (32768 << 15);
     } else if (dst_height <= src_height) {
       // When scaling down, use the center 2 rows to filter.
       dy = FixedDiv(src_height, dst_height);

@@ -369,4 +369,51 @@ TEST_F(LibYUVScaleTest, UVScaleBoxAverages) {
   free_aligned_buffer_page_end(src_uv);
 }
 
+TEST_F(LibYUVScaleTest, UVScale_MaxHeightOverflow) {
+  const int kMaxSrcWidth = 8;
+  const int kMaxSrcHeight = 32768;
+  const int kMaxDstWidth = 4;
+  const int kMaxDstHeight = 32770;
+  align_buffer_page_end(src, kMaxSrcWidth * 2 * kMaxSrcHeight * 2);
+  align_buffer_page_end(dst, kMaxDstWidth * 2 * kMaxDstHeight * 2);
+  memset(src, 128, kMaxSrcWidth * 2 * kMaxSrcHeight * 2);
+  memset(dst, 0, kMaxDstWidth * 2 * kMaxDstHeight * 2);
+
+  const FilterMode kFilters[] = {kFilterNone, kFilterLinear, kFilterBilinear,
+                                 kFilterBox};
+  const int kSrcWidths[] = {2, 4, 8};
+  const int kSrcHeights[] = {32767, 32768};
+  const int kDstWidths[] = {2, 3, 4};
+  const int kDstHeights[] = {1, 2, 100, 32770};
+
+  for (FilterMode f : kFilters) {
+    for (int sh : kSrcHeights) {
+      for (int sw : kSrcWidths) {
+        for (int dw : kDstWidths) {
+          for (int dh : kDstHeights) {
+            EXPECT_EQ(0, UVScale(src, sw * 2, sw, sh, dst, dw * 2, dw, dh, f));
+            EXPECT_EQ(0, UVScale(src, sw * 2, sw, -sh, dst, dw * 2, dw, dh, f));
+          }
+        }
+      }
+      for (int dw : kDstWidths) {
+        EXPECT_EQ(0, UVScale(src, sh * 2, sh, 4, dst, dw * 2, dw, 2, f));
+      }
+    }
+  }
+  for (int sh : kSrcHeights) {
+    for (int dh : kDstHeights) {
+      EXPECT_EQ(0, UVScale_16(reinterpret_cast<const uint16_t*>(src), 4, 2, sh,
+                              reinterpret_cast<uint16_t*>(dst), 8, 4, dh,
+                              kFilterLinear));
+      EXPECT_EQ(0, UVScale_16(reinterpret_cast<const uint16_t*>(src), 4, 2, -sh,
+                              reinterpret_cast<uint16_t*>(dst), 8, 4, dh,
+                              kFilterLinear));
+    }
+  }
+
+  free_aligned_buffer_page_end(dst);
+  free_aligned_buffer_page_end(src);
+}
+
 }  // namespace libyuv

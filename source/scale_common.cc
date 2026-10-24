@@ -499,16 +499,17 @@ void ScaleCols_C(uint8_t* dst_ptr,
                  int dst_width,
                  int x,
                  int dx) {
+  uint32_t ux = x;
   int j;
   for (j = 0; j < dst_width - 1; j += 2) {
-    dst_ptr[0] = src_ptr[x >> 16];
-    x += dx;
-    dst_ptr[1] = src_ptr[x >> 16];
-    x += dx;
+    dst_ptr[0] = src_ptr[ux >> 16];
+    ux += dx;
+    dst_ptr[1] = src_ptr[ux >> 16];
+    ux += dx;
     dst_ptr += 2;
   }
   if (dst_width & 1) {
-    dst_ptr[0] = src_ptr[x >> 16];
+    dst_ptr[0] = src_ptr[ux >> 16];
   }
 }
 
@@ -517,16 +518,17 @@ void ScaleCols_16_C(uint16_t* dst_ptr,
                     int dst_width,
                     int x,
                     int dx) {
+  uint32_t ux = x;
   int j;
   for (j = 0; j < dst_width - 1; j += 2) {
-    dst_ptr[0] = src_ptr[x >> 16];
-    x += dx;
-    dst_ptr[1] = src_ptr[x >> 16];
-    x += dx;
+    dst_ptr[0] = src_ptr[ux >> 16];
+    ux += dx;
+    dst_ptr[1] = src_ptr[ux >> 16];
+    ux += dx;
     dst_ptr += 2;
   }
   if (dst_width & 1) {
-    dst_ptr[0] = src_ptr[x >> 16];
+    dst_ptr[0] = src_ptr[ux >> 16];
   }
 }
 
@@ -582,25 +584,26 @@ void ScaleFilterCols_C(uint8_t* dst_ptr,
                        int dst_width,
                        int x,
                        int dx) {
+  uint32_t ux = x;
   int j;
   for (j = 0; j < dst_width - 1; j += 2) {
-    int xi = x >> 16;
+    int xi = ux >> 16;
     int a = src_ptr[xi];
     int b = src_ptr[xi + 1];
-    dst_ptr[0] = BLENDER(a, b, x & 0xffff);
-    x += dx;
-    xi = x >> 16;
+    dst_ptr[0] = BLENDER(a, b, ux & 0xffff);
+    ux += dx;
+    xi = ux >> 16;
     a = src_ptr[xi];
     b = src_ptr[xi + 1];
-    dst_ptr[1] = BLENDER(a, b, x & 0xffff);
-    x += dx;
+    dst_ptr[1] = BLENDER(a, b, ux & 0xffff);
+    ux += dx;
     dst_ptr += 2;
   }
   if (dst_width & 1) {
-    int xi = x >> 16;
+    int xi = ux >> 16;
     int a = src_ptr[xi];
     int b = src_ptr[xi + 1];
-    dst_ptr[0] = BLENDER(a, b, x & 0xffff);
+    dst_ptr[0] = BLENDER(a, b, ux & 0xffff);
   }
 }
 
@@ -644,25 +647,26 @@ void ScaleFilterCols_16_C(uint16_t* dst_ptr,
                           int dst_width,
                           int x,
                           int dx) {
+  uint32_t ux = x;
   int j;
   for (j = 0; j < dst_width - 1; j += 2) {
-    int xi = x >> 16;
+    int xi = ux >> 16;
     int a = src_ptr[xi];
     int b = src_ptr[xi + 1];
-    dst_ptr[0] = BLENDER(a, b, x & 0xffff);
-    x += dx;
-    xi = x >> 16;
+    dst_ptr[0] = BLENDER(a, b, ux & 0xffff);
+    ux += dx;
+    xi = ux >> 16;
     a = src_ptr[xi];
     b = src_ptr[xi + 1];
-    dst_ptr[1] = BLENDER(a, b, x & 0xffff);
-    x += dx;
+    dst_ptr[1] = BLENDER(a, b, ux & 0xffff);
+    ux += dx;
     dst_ptr += 2;
   }
   if (dst_width & 1) {
-    int xi = x >> 16;
+    int xi = ux >> 16;
     int a = src_ptr[xi];
     int b = src_ptr[xi + 1];
-    dst_ptr[0] = BLENDER(a, b, x & 0xffff);
+    dst_ptr[0] = BLENDER(a, b, ux & 0xffff);
   }
 }
 
@@ -973,15 +977,16 @@ void ScaleARGBCols_C(uint8_t* dst_argb,
                      int dst_width,
                      int x,
                      int dx) {
+  uint32_t ux = x;
   int j;
   for (j = 0; j < dst_width; ++j) {
-    const uint8_t* src = src_argb + (x >> 16) * 4;
+    const uint8_t* src = src_argb + (ux >> 16) * 4;
     dst_argb[0] = src[0];
     dst_argb[1] = src[1];
     dst_argb[2] = src[2];
     dst_argb[3] = src[3];
     dst_argb += 4;
-    x += dx;
+    ux += dx;
   }
 }
 
@@ -1037,10 +1042,11 @@ void ScaleARGBFilterCols_C(uint8_t* dst_argb,
                            int dst_width,
                            int x,
                            int dx) {
+  uint32_t ux = x;
   int j;
   for (j = 0; j < dst_width; ++j) {
-    int xi = (x >> 16) * 4;
-    int xf = (x >> 9) & 0x7f;
+    int xi = (ux >> 16) * 4;
+    int xf = (ux >> 9) & 0x7f;
     const uint8_t* a = src_argb + xi;
     const uint8_t* b = a + 4;
     dst_argb[0] = (uint8_t)BLENDER1(a[0], b[0], xf);
@@ -1048,7 +1054,7 @@ void ScaleARGBFilterCols_C(uint8_t* dst_argb,
     dst_argb[2] = (uint8_t)BLENDER1(a[2], b[2], xf);
     dst_argb[3] = (uint8_t)BLENDER1(a[3], b[3], xf);
     dst_argb += 4;
-    x += dx;
+    ux += dx;
   }
 }
 
@@ -1277,13 +1283,14 @@ void ScaleUVCols_C(uint8_t* dst_uv,
                    int dst_width,
                    int x,
                    int dx) {
+  uint32_t ux = x;
   int j;
   for (j = 0; j < dst_width; ++j) {
-    const uint8_t* src = src_uv + (x >> 16) * 2;
+    const uint8_t* src = src_uv + (ux >> 16) * 2;
     dst_uv[0] = src[0];
     dst_uv[1] = src[1];
     dst_uv += 2;
-    x += dx;
+    ux += dx;
   }
 }
 
@@ -1333,16 +1340,17 @@ void ScaleUVFilterCols_C(uint8_t* dst_uv,
                          int dst_width,
                          int x,
                          int dx) {
+  uint32_t ux = x;
   int j;
   for (j = 0; j < dst_width; ++j) {
-    int xi = (x >> 16) * 2;
-    int xf = (x >> 9) & 0x7f;
+    int xi = (ux >> 16) * 2;
+    int xf = (ux >> 9) & 0x7f;
     const uint8_t* a = src_uv + xi;
     const uint8_t* b = a + 2;
     dst_uv[0] = (uint8_t)BLENDER1(a[0], b[0], xf);
     dst_uv[1] = (uint8_t)BLENDER1(a[1], b[1], xf);
     dst_uv += 2;
-    x += dx;
+    ux += dx;
   }
 }
 
@@ -1673,32 +1681,29 @@ void ScaleSlope(int src_width,
   assert(src_height != 0);
   assert(dst_width > 0);
   assert(dst_height > 0);
+  const int abs_src_width = Abs(src_width);
   // Check for 1 pixel and avoid FixedDiv overflow.
-  // TODO(b/573815252): Fix center coordinate calculation when dst == 1 and
-  // src == 32768.
-  if (dst_width == 1 && Abs(src_width) >= 32768) {
-    dst_width = Abs(src_width);
-  }
-  if (dst_height == 1 && src_height >= 32768) {
-    dst_height = src_height;
-  }
+  const int div_width =
+      (dst_width == 1 && abs_src_width == 32768) ? abs_src_width : dst_width;
+  const int div_height =
+      (dst_height == 1 && src_height == 32768) ? src_height : dst_height;
   if (filtering == kFilterBox) {
     // Scale step for point sampling duplicates all pixels equally.
-    *dx = FixedDiv(Abs(src_width), dst_width);
-    *dy = FixedDiv(src_height, dst_height);
+    *dx = FixedDiv(abs_src_width, div_width);
+    *dy = FixedDiv(src_height, div_height);
     *x = 0;
     *y = 0;
   } else if (filtering == kFilterBilinear) {
     // Scale step for bilinear sampling renders last pixel once for upsample.
-    if (dst_width <= Abs(src_width)) {
-      *dx = FixedDiv(Abs(src_width), dst_width);
+    if (dst_width <= abs_src_width) {
+      *dx = FixedDiv(abs_src_width, div_width);
       *x = CENTERSTART(*dx, -32768);  // Subtract 0.5 (32768) to center filter.
     } else if (src_width > 1 && dst_width > 1) {
-      *dx = FixedDiv1(Abs(src_width), dst_width);
+      *dx = FixedDiv1(abs_src_width, dst_width);
       *x = 0;
     }
     if (dst_height <= src_height) {
-      *dy = FixedDiv(src_height, dst_height);
+      *dy = FixedDiv(src_height, div_height);
       *y = CENTERSTART(*dy, -32768);  // Subtract 0.5 (32768) to center filter.
     } else if (src_height > 1 && dst_height > 1) {
       *dy = FixedDiv1(src_height, dst_height);
@@ -1706,21 +1711,32 @@ void ScaleSlope(int src_width,
     }
   } else if (filtering == kFilterLinear) {
     // Scale step for bilinear sampling renders last pixel once for upsample.
-    if (dst_width <= Abs(src_width)) {
-      *dx = FixedDiv(Abs(src_width), dst_width);
+    if (dst_width <= abs_src_width) {
+      *dx = FixedDiv(abs_src_width, div_width);
       *x = CENTERSTART(*dx, -32768);  // Subtract 0.5 (32768) to center filter.
     } else if (src_width > 1 && dst_width > 1) {
-      *dx = FixedDiv1(Abs(src_width), dst_width);
+      *dx = FixedDiv1(abs_src_width, dst_width);
       *x = 0;
     }
-    *dy = FixedDiv(src_height, dst_height);
+    *dy = FixedDiv(src_height, div_height);
     *y = *dy >> 1;
   } else {
     // Scale step for point sampling duplicates all pixels equally.
-    *dx = FixedDiv(Abs(src_width), dst_width);
-    *dy = FixedDiv(src_height, dst_height);
+    *dx = FixedDiv(abs_src_width, div_width);
+    *dy = FixedDiv(src_height, div_height);
     *x = CENTERSTART(*dx, 0);
     *y = CENTERSTART(*dy, 0);
+  }
+  if (dst_width == 1 && abs_src_width == 32768) {
+    *dx = (filtering == kFilterBox) ? (1 << 16) : (32768 << 15);
+    *x = (filtering == kFilterBilinear || filtering == kFilterLinear)
+             ? ((32768 << 15) - 32768)
+             : (32768 << 15);
+  }
+  if (dst_height == 1 && src_height == 32768) {
+    *dy = (filtering == kFilterBox) ? (1 << 16) : (32768 << 15);
+    *y = (filtering == kFilterBilinear) ? ((32768 << 15) - 32768)
+                                        : (32768 << 15);
   }
   // Negative src_width means horizontally mirror.
   if (src_width < 0) {

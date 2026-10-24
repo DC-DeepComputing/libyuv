@@ -811,20 +811,61 @@ TEST_F(LibYUVScaleTest, ScalePlaneOversizeHeight) {
   const int kSrcHeight = 32768;
   uint8_t* src = new uint8_t[kSrcWidth * kSrcHeight];
   memset(src, 0, kSrcWidth * kSrcHeight);
+  memset(src + 16383 * kSrcWidth, 100, kSrcWidth);
+  memset(src + 16384 * kSrcWidth, 200, kSrcWidth);
   uint8_t dst[4 * 2] = {};
 
-  for (int dst_w : {4, 2}) {
+  for (int dst_w : {4, 2, 1}) {
     for (int dst_h : {1, 2}) {
       for (FilterMode f :
            {kFilterNone, kFilterLinear, kFilterBilinear, kFilterBox}) {
         EXPECT_EQ(0, ScalePlane(src, kSrcWidth, kSrcWidth, kSrcHeight, dst,
                                 dst_w, dst_w, dst_h, f));
+        if (dst_h == 1) {
+          const uint8_t expected =
+              (f == kFilterBilinear || (f == kFilterBox && dst_w >= 2)) ? 150
+                                                                        : 200;
+          EXPECT_EQ(expected, dst[0]);
+        }
         EXPECT_EQ(0, ScalePlane(src, kSrcWidth, kSrcWidth, -kSrcHeight, dst,
                                 dst_w, dst_w, dst_h, f));
+        if (dst_h == 1) {
+          const uint8_t expected =
+              (f == kFilterBilinear || (f == kFilterBox && dst_w >= 2)) ? 150
+                                                                        : 100;
+          EXPECT_EQ(expected, dst[0]);
+        }
       }
     }
   }
   delete[] src;
+
+  uint16_t* src16 = new uint16_t[kSrcWidth * kSrcHeight];
+  memset(src16, 0, kSrcWidth * kSrcHeight * sizeof(uint16_t));
+  for (int x = 0; x < kSrcWidth; ++x) {
+    src16[16383 * kSrcWidth + x] = 1000;
+    src16[16384 * kSrcWidth + x] = 2000;
+  }
+  uint16_t dst16[4] = {};
+  for (int dst_w : {4, 2, 1}) {
+    for (FilterMode f :
+         {kFilterNone, kFilterLinear, kFilterBilinear, kFilterBox}) {
+      EXPECT_EQ(0, ScalePlane_16(src16, kSrcWidth, kSrcWidth, kSrcHeight, dst16,
+                                 dst_w, dst_w, 1, f));
+      const uint16_t expected =
+          (f == kFilterBilinear || (f == kFilterBox && dst_w >= 2)) ? 1500
+                                                                    : 2000;
+      EXPECT_EQ(expected, dst16[0]);
+    }
+  }
+  // Test ScalePlane_16 horizontal 32768 -> 1 box filter (ScaleAddCols1_16_C).
+  for (int y = 0; y < kSrcWidth; ++y) {
+    src16[y * kSrcHeight + 16384] = 3000;
+  }
+  EXPECT_EQ(0, ScalePlane_16(src16, kSrcHeight, kSrcHeight, kSrcWidth, dst16, 1,
+                             1, 1, kFilterBox));
+  EXPECT_EQ(3000, dst16[0]);
+  delete[] src16;
 }
 
 TEST_F(LibYUVScaleTest, ScalePlaneBoxMaxSrcHeight) {
@@ -869,5 +910,84 @@ TEST_F(LibYUVScaleTest, ScaleLargeImageOver2GB) {
   free(src);
 }
 #endif
+
+TEST_F(LibYUVScaleTest, ScalePlane_MaxHeightOverflow) {
+  const int kMaxSrcWidth = 8;
+  const int kMaxSrcHeight = 32768;
+  const int kMaxDstWidth = 4;
+  const int kMaxDstHeight = 32770;
+  align_buffer_page_end(src, kMaxSrcWidth * kMaxSrcHeight);
+  align_buffer_page_end(dst, kMaxDstWidth * kMaxDstHeight);
+  memset(src, 128, kMaxSrcWidth * kMaxSrcHeight);
+  memset(dst, 0, kMaxDstWidth * kMaxDstHeight);
+
+  const FilterMode kFilters[] = {kFilterNone, kFilterLinear, kFilterBilinear,
+                                 kFilterBox};
+  const int kSrcWidths[] = {2, 4, 8};
+  const int kSrcHeights[] = {32767, 32768};
+  const int kDstWidths[] = {2, 3, 4};
+  const int kDstHeights[] = {1, 2, 100, 32770};
+
+  for (FilterMode f : kFilters) {
+    for (int sh : kSrcHeights) {
+      for (int sw : kSrcWidths) {
+        for (int dw : kDstWidths) {
+          for (int dh : kDstHeights) {
+            EXPECT_EQ(0, ScalePlane(src, sw, sw, sh, dst, dw, dw, dh, f));
+            EXPECT_EQ(0, ScalePlane(src, sw, sw, -sh, dst, dw, dw, dh, f));
+          }
+        }
+      }
+      for (int dw : kDstWidths) {
+        EXPECT_EQ(0, ScalePlane(src, sh, sh, 4, dst, dw, dw, 2, f));
+      }
+    }
+  }
+
+  free_aligned_buffer_page_end(dst);
+  free_aligned_buffer_page_end(src);
+}
+
+TEST_F(LibYUVScaleTest, ScalePlane_16_MaxHeightOverflow) {
+  const int kMaxSrcWidth = 8;
+  const int kMaxSrcHeight = 32768;
+  const int kMaxDstWidth = 4;
+  const int kMaxDstHeight = 32770;
+  align_buffer_page_end(src_alloc, kMaxSrcWidth * kMaxSrcHeight * 2);
+  align_buffer_page_end(dst_alloc, kMaxDstWidth * kMaxDstHeight * 2);
+  uint16_t* src = reinterpret_cast<uint16_t*>(src_alloc);
+  uint16_t* dst = reinterpret_cast<uint16_t*>(dst_alloc);
+  memset(src_alloc, 1, kMaxSrcWidth * kMaxSrcHeight * 2);
+  memset(dst_alloc, 0, kMaxDstWidth * kMaxDstHeight * 2);
+
+  const FilterMode kFilters[] = {kFilterNone, kFilterLinear, kFilterBilinear,
+                                 kFilterBox};
+  const int kSrcWidths[] = {2, 4, 8};
+  const int kSrcHeights[] = {32767, 32768};
+  const int kDstWidths[] = {2, 3, 4};
+  const int kDstHeights[] = {1, 2, 100, 32770};
+
+  for (FilterMode f : kFilters) {
+    for (int sh : kSrcHeights) {
+      for (int sw : kSrcWidths) {
+        for (int dw : kDstWidths) {
+          for (int dh : kDstHeights) {
+            EXPECT_EQ(0, ScalePlane_16(src, sw, sw, sh, dst, dw, dw, dh, f));
+            EXPECT_EQ(0, ScalePlane_16(src, sw, sw, -sh, dst, dw, dw, dh, f));
+            EXPECT_EQ(0, ScalePlane_12(src, sw, sw, sh, dst, dw, dw, dh, f));
+            EXPECT_EQ(0, ScalePlane_12(src, sw, sw, -sh, dst, dw, dw, dh, f));
+          }
+        }
+      }
+      for (int dw : kDstWidths) {
+        EXPECT_EQ(0, ScalePlane_16(src, sh, sh, 4, dst, dw, dw, 2, f));
+        EXPECT_EQ(0, ScalePlane_12(src, sh, sh, 4, dst, dw, dw, 2, f));
+      }
+    }
+  }
+
+  free_aligned_buffer_page_end(dst_alloc);
+  free_aligned_buffer_page_end(src_alloc);
+}
 
 }  // namespace libyuv
