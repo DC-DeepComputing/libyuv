@@ -78,6 +78,7 @@ extern "C" {
 // Effects:
 #define HAS_ARGBADDROW_SSE2
 #define HAS_ARGBAFFINEROW_SSE2
+#define HAS_ARGBALPHABLENDROW_SSSE3
 #define HAS_ARGBBLENDROW_SSSE3
 #define HAS_ARGBCOLORMATRIXROW_SSSE3
 #define HAS_ARGBCOLORTABLEROW_X86
@@ -87,6 +88,7 @@ extern "C" {
 #define HAS_ARGBLUMACOLORTABLEROW_SSSE3
 #define HAS_ARGBMIRRORROW_SSE2
 #define HAS_ARGBMULTIPLYROW_SSE2
+#define HAS_ARGBORROW_SSE2
 #define HAS_ARGBPOLYNOMIALROW_SSE2
 #define HAS_ARGBQUANTIZEROW_SSE2
 #define HAS_ARGBSEPIAROW_SSSE3
@@ -180,7 +182,9 @@ extern "C" {
 
 // Effects:
 #define HAS_ARGBADDROW_AVX2
+#define HAS_ARGBALPHABLENDROW_AVX2
 #define HAS_ARGBMULTIPLYROW_AVX2
+#define HAS_ARGBORROW_AVX2
 #define HAS_ARGBSUBTRACTROW_AVX2
 #define HAS_BLENDPLANEROW_AVX2
 #endif
@@ -409,7 +413,11 @@ extern "C" {
 #define HAS_I400TOARGBROW_AVX512BW
 #define HAS_ARGBGRAYROW_AVX512BW
 #define HAS_ARGBBLENDROW_AVX512BW
+#define HAS_ARGBALPHABLENDROW_AVX512BW
+#define HAS_ARGBORROW_AVX512BW
 #endif
+#define HAS_ARGBALPHABLENDROW_AVX2
+#define HAS_ARGBORROW_AVX2
 #define HAS_ARGBTOYMATRIXROW_AVX2
 #define HAS_RGBTOYMATRIXROW_AVX2
 #define HAS_RGB565TOYMATRIXROW_AVX2
@@ -508,6 +516,8 @@ extern "C" {
 #define HAS_I400TOARGBROW_AVX512BW
 #define HAS_ARGBGRAYROW_AVX512BW
 #define HAS_ARGBBLENDROW_AVX512BW
+#define HAS_ARGBALPHABLENDROW_AVX512BW
+#define HAS_ARGBORROW_AVX512BW
 #endif
 
 // The following are available on Neon platforms:
@@ -625,6 +635,7 @@ extern "C" {
 
 // Effects:
 #define HAS_ARGBADDROW_NEON
+#define HAS_ARGBALPHABLENDROW_NEON
 #define HAS_ARGBATTENUATEROW_NEON
 #define HAS_ARGBBLENDROW_NEON
 #define HAS_BLENDPLANEROW_NEON
@@ -632,6 +643,7 @@ extern "C" {
 #define HAS_ARGBGRAYROW_NEON
 #define HAS_ARGBMIRRORROW_NEON
 #define HAS_ARGBMULTIPLYROW_NEON
+#define HAS_ARGBORROW_NEON
 #define HAS_ARGBQUANTIZEROW_NEON
 #define HAS_ARGBSEPIAROW_NEON
 #define HAS_ARGBSHADEROW_NEON
@@ -683,6 +695,8 @@ extern "C" {
 // The following are available on AArch64 SVE platforms:
 #if !defined(LIBYUV_DISABLE_SVE) && defined(__aarch64__)
 #define HAS_ARGB1555TOARGBROW_SVE2
+#define HAS_ARGBALPHABLENDROW_SVE2
+#define HAS_ARGBORROW_SVE2
 #define HAS_ARGBTORAWROW_SVE2
 #define HAS_ARGBTORGB24ROW_SVE2
 #define HAS_ARGBTORGB565DITHERROW_SVE2
@@ -748,7 +762,9 @@ extern "C" {
 // The following are available on AArch64 SME platforms:
 #if !defined(LIBYUV_DISABLE_SME) && defined(CLANG_HAS_SME) && \
     defined(__aarch64__)
+#define HAS_ARGBALPHABLENDROW_SME
 #define HAS_ARGBMULTIPLYROW_SME
+#define HAS_ARGBORROW_SME
 #define HAS_ARGBTOUVMATRIXROW_SME
 #define HAS_ARGBTOYMATRIXROW_SME
 #define HAS_CONVERT16TO8ROW_SME
@@ -807,11 +823,13 @@ extern "C" {
 #define HAS_ARGB1555TOYROW_LSX
 #define HAS_ARGB4444TOARGBROW_LSX
 #define HAS_ARGBADDROW_LSX
+#define HAS_ARGBALPHABLENDROW_LSX
 #define HAS_ARGBATTENUATEROW_LSX
 #define HAS_ARGBBLENDROW_LSX
 #define HAS_ARGBCOLORMATRIXROW_LSX
 #define HAS_ARGBEXTRACTALPHAROW_LSX
 #define HAS_ARGBGRAYROW_LSX
+#define HAS_ARGBORROW_LSX
 #define HAS_ARGBSEPIAROW_LSX
 #define HAS_ARGBSHADEROW_LSX
 #define HAS_ARGBSHUFFLEROW_LSX
@@ -881,6 +899,7 @@ extern "C" {
 #define HAS_ARGB1555TOYROW_LASX
 #define HAS_ARGB4444TOARGBROW_LASX
 #define HAS_ARGBADDROW_LASX
+#define HAS_ARGBALPHABLENDROW_LASX
 #define HAS_ARGBATTENUATEROW_LASX
 #define HAS_ARGBBLENDROW_LASX
 #define HAS_ARGBCOLORMATRIXROW_LASX
@@ -888,6 +907,7 @@ extern "C" {
 #define HAS_ARGBGRAYROW_LASX
 #define HAS_ARGBMIRRORROW_LASX
 #define HAS_ARGBMULTIPLYROW_LASX
+#define HAS_ARGBORROW_LASX
 #define HAS_ARGBQUANTIZEROW_LASX
 #define HAS_ARGBSEPIAROW_LASX
 #define HAS_ARGBSETROW_LASX
@@ -977,8 +997,10 @@ extern "C" {
 #define HAS_SWAPUVROW_RVV
 #define HAS_AB64TOARGBROW_RVV
 #define HAS_AR64TOAB64ROW_RVV
+#define HAS_ARGBALPHABLENDROW_RVV
 #define HAS_ARGBATTENUATEROW_RVV
 #define HAS_ARGBBLENDROW_RVV
+#define HAS_ARGBORROW_RVV
 #define HAS_ARGBTOAB64ROW_RVV
 #define HAS_ARGBTOABGRROW_RVV
 #define HAS_ARGBTOBGRAROW_RVV
@@ -1018,10 +1040,12 @@ extern "C" {
 #define HAS_ARGB4444TOARGBROW_WASMSIMD
 #define HAS_ARGB4444TOUVMATRIXROW_WASMSIMD
 #define HAS_ARGB4444TOYMATRIXROW_WASMSIMD
+#define HAS_ARGBALPHABLENDROW_WASMSIMD
 #define HAS_ARGBBLENDROW_WASMSIMD
 #define HAS_ARGBCOPYYTOALPHAROW_WASMSIMD
 #define HAS_ARGBEXTRACTALPHAROW_WASMSIMD
 #define HAS_ARGBMIRRORROW_WASMSIMD
+#define HAS_ARGBORROW_WASMSIMD
 #define HAS_ARGBSHUFFLEROW_WASMSIMD
 #define HAS_ARGBTOARGB1555ROW_WASMSIMD
 #define HAS_ARGBTOARGB4444ROW_WASMSIMD
@@ -1074,6 +1098,7 @@ extern "C" {
 #define HAS_ARGBEXTRACTALPHAROW_HVX
 #define HAS_ARGBMIRRORROW_HVX
 #define HAS_ARGBMULTIPLYROW_HVX
+#define HAS_ARGBORROW_HVX
 #define HAS_ARGBSETROW_HVX
 #define HAS_ARGBSUBTRACTROW_HVX
 #define HAS_ARGBTOAB64ROW_HVX
@@ -5932,6 +5957,150 @@ void ARGBSubtractRow_Any_LASX(const uint8_t* y_buf,
                               const uint8_t* uv_buf,
                               uint8_t* dst_ptr,
                               int width);
+
+// ARGB bitwise OR with 32-bit value.
+void ARGBOrRow_C(const uint8_t* src_argb,
+                 uint8_t* dst_argb,
+                 uint32_t value,
+                 int width);
+void ARGBOrRow_SSE2(const uint8_t* src_argb,
+                    uint8_t* dst_argb,
+                    uint32_t value,
+                    int width);
+void ARGBOrRow_Any_SSE2(const uint8_t* src_ptr,
+                        uint8_t* dst_ptr,
+                        uint32_t value,
+                        int width);
+void ARGBOrRow_AVX2(const uint8_t* src_argb,
+                    uint8_t* dst_argb,
+                    uint32_t value,
+                    int width);
+void ARGBOrRow_Any_AVX2(const uint8_t* src_ptr,
+                        uint8_t* dst_ptr,
+                        uint32_t value,
+                        int width);
+void ARGBOrRow_AVX512BW(const uint8_t* src_argb,
+                        uint8_t* dst_argb,
+                        uint32_t value,
+                        int width);
+void ARGBOrRow_NEON(const uint8_t* src_argb,
+                    uint8_t* dst_argb,
+                    uint32_t value,
+                    int width);
+void ARGBOrRow_Any_NEON(const uint8_t* src_ptr,
+                        uint8_t* dst_ptr,
+                        uint32_t value,
+                        int width);
+void ARGBOrRow_SVE2(const uint8_t* src_argb,
+                    uint8_t* dst_argb,
+                    uint32_t value,
+                    int width);
+void ARGBOrRow_SME(const uint8_t* src_argb,
+                   uint8_t* dst_argb,
+                   uint32_t value,
+                   int width);
+void ARGBOrRow_LSX(const uint8_t* src_argb,
+                   uint8_t* dst_argb,
+                   uint32_t value,
+                   int width);
+void ARGBOrRow_Any_LSX(const uint8_t* src_ptr,
+                       uint8_t* dst_ptr,
+                       uint32_t value,
+                       int width);
+void ARGBOrRow_LASX(const uint8_t* src_argb,
+                    uint8_t* dst_argb,
+                    uint32_t value,
+                    int width);
+void ARGBOrRow_Any_LASX(const uint8_t* src_ptr,
+                        uint8_t* dst_ptr,
+                        uint32_t value,
+                        int width);
+void ARGBOrRow_RVV(const uint8_t* src_argb,
+                   uint8_t* dst_argb,
+                   uint32_t value,
+                   int width);
+void ARGBOrRow_WASMSIMD(const uint8_t* src_argb,
+                        uint8_t* dst_argb,
+                        uint32_t value,
+                        int width);
+void ARGBOrRow_Any_WASMSIMD(const uint8_t* src_ptr,
+                            uint8_t* dst_ptr,
+                            uint32_t value,
+                            int width);
+void ARGBOrRow_HVX(const uint8_t* src_argb,
+                   uint8_t* dst_argb,
+                   uint32_t value,
+                   int width);
+
+// Unattenuated ARGB alpha blend.
+void ARGBAlphaBlendRow_C(const uint8_t* src_argb0,
+                         const uint8_t* src_argb1,
+                         uint8_t* dst_argb,
+                         int width);
+void ARGBAlphaBlendRow_SSSE3(const uint8_t* src_argb,
+                             const uint8_t* src_argb1,
+                             uint8_t* dst_argb,
+                             int width);
+void ARGBAlphaBlendRow_Any_SSSE3(const uint8_t* y_buf,
+                                 const uint8_t* uv_buf,
+                                 uint8_t* dst_ptr,
+                                 int width);
+void ARGBAlphaBlendRow_AVX2(const uint8_t* src_argb,
+                            const uint8_t* src_argb1,
+                            uint8_t* dst_argb,
+                            int width);
+void ARGBAlphaBlendRow_Any_AVX2(const uint8_t* y_buf,
+                                const uint8_t* uv_buf,
+                                uint8_t* dst_ptr,
+                                int width);
+void ARGBAlphaBlendRow_AVX512BW(const uint8_t* src_argb,
+                                const uint8_t* src_argb1,
+                                uint8_t* dst_argb,
+                                int width);
+void ARGBAlphaBlendRow_NEON(const uint8_t* src_argb,
+                            const uint8_t* src_argb1,
+                            uint8_t* dst_argb,
+                            int width);
+void ARGBAlphaBlendRow_Any_NEON(const uint8_t* y_buf,
+                                const uint8_t* uv_buf,
+                                uint8_t* dst_ptr,
+                                int width);
+void ARGBAlphaBlendRow_SVE2(const uint8_t* src_argb,
+                            const uint8_t* src_argb1,
+                            uint8_t* dst_argb,
+                            int width);
+void ARGBAlphaBlendRow_SME(const uint8_t* src_argb,
+                           const uint8_t* src_argb1,
+                           uint8_t* dst_argb,
+                           int width);
+void ARGBAlphaBlendRow_LSX(const uint8_t* src_argb0,
+                           const uint8_t* src_argb1,
+                           uint8_t* dst_argb,
+                           int width);
+void ARGBAlphaBlendRow_Any_LSX(const uint8_t* y_buf,
+                               const uint8_t* uv_buf,
+                               uint8_t* dst_ptr,
+                               int width);
+void ARGBAlphaBlendRow_LASX(const uint8_t* src_argb0,
+                            const uint8_t* src_argb1,
+                            uint8_t* dst_argb,
+                            int width);
+void ARGBAlphaBlendRow_Any_LASX(const uint8_t* y_buf,
+                                const uint8_t* uv_buf,
+                                uint8_t* dst_ptr,
+                                int width);
+void ARGBAlphaBlendRow_RVV(const uint8_t* src_argb,
+                           const uint8_t* src_argb1,
+                           uint8_t* dst_argb,
+                           int width);
+void ARGBAlphaBlendRow_WASMSIMD(const uint8_t* src_argb,
+                                const uint8_t* src_argb1,
+                                uint8_t* dst_argb,
+                                int width);
+void ARGBAlphaBlendRow_Any_WASMSIMD(const uint8_t* y_buf,
+                                    const uint8_t* uv_buf,
+                                    uint8_t* dst_ptr,
+                                    int width);
 
 void ARGBToRGB24Row_Any_SSSE3(const uint8_t* src_ptr,
                               uint8_t* dst_ptr,

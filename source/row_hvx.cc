@@ -112,6 +112,25 @@ void ARGBSetRow_HVX(uint8_t* dst_argb, uint32_t v32, int width) {
   }
 }
 
+void ARGBOrRow_HVX(const uint8_t* src_argb,
+                   uint8_t* dst_argb,
+                   uint32_t value,
+                   int width) {
+  HVX_Vector v = Q6_V_vsplat_R(value);
+  int bytes = width * 4;
+  while (bytes >= 128) {
+    HVX_Vector s = vloadu(src_argb);
+    vstoreu(dst_argb, Q6_V_vor_VV(s, v));
+    src_argb += 128;
+    dst_argb += 128;
+    bytes -= 128;
+  }
+  if (bytes > 0) {
+    HVX_Vector s = vloadu_partial_zero(src_argb, bytes);
+    vstoreu_partial(dst_argb, Q6_V_vor_VV(s, v), bytes);
+  }
+}
+
 void MirrorRow_HVX(const uint8_t* src, uint8_t* dst, int width) {
   HVX_Vector ctrl = Q6_Vb_vsplat_R(0x7F);
   src += width;
