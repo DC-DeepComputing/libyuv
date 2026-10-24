@@ -653,6 +653,34 @@ TEST_F(LibYUVScaleTest, ARGBScaleDimensionOverflow) {
                               kFilterNone));
 }
 
+TEST_F(LibYUVScaleTest, ARGBScaleOversizeWidthTo1) {
+  const int kSrcWidth = 32768;
+  const int kSrcHeight = 2;
+  uint8_t* src = new uint8_t[kSrcWidth * kSrcHeight * 4];
+  memset(src, 0, kSrcWidth * kSrcHeight * 4);
+  for (int y = 0; y < kSrcHeight; ++y) {
+    memset(src + (y * kSrcWidth + 16383) * 4, 100, 4);
+    memset(src + (y * kSrcWidth + 16384) * 4, 200, 4);
+  }
+  uint8_t dst[2 * 4] = {};
+
+  for (int sign : {1, -1}) {
+    for (int dst_h : {1, 2}) {
+      for (FilterMode f :
+           {kFilterNone, kFilterLinear, kFilterBilinear, kFilterBox}) {
+        EXPECT_EQ(0, ARGBScale(src, kSrcWidth * 4, sign * kSrcWidth, kSrcHeight,
+                               dst, 4, 1, dst_h, f));
+        if (f == kFilterNone) {
+          EXPECT_EQ(200, dst[0]);
+        } else {
+          EXPECT_NEAR(150, dst[0], 1);
+        }
+      }
+    }
+  }
+  delete[] src;
+}
+
 #if defined(__LP64__) || defined(_WIN64)
 TEST_F(LibYUVScaleTest, ARGBScaleLargeImageOver2GB) {
   const int kSrcWidth = 4;
