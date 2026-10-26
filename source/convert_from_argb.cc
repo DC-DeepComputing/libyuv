@@ -84,6 +84,14 @@ int ARGBToI444Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -166,6 +174,14 @@ int ARGBToI444Matrix(const uint8_t* src_argb,
     ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
       ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_AVX512BW;
+    }
+  }
+#endif
+#if defined(HAS_ARGBTOUV444MATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_AVX512VNNI;
     }
   }
 #endif
@@ -286,6 +302,14 @@ int ARGBToI422Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -396,6 +420,11 @@ int ARGBToI422Matrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOUVMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512BW;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512VNNI;
   }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_RVV)
@@ -495,6 +524,14 @@ int ARGBToNV12Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -605,6 +642,11 @@ int ARGBToNV12Matrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOUVMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512BW;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512VNNI;
   }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_RVV)
@@ -797,6 +839,14 @@ int ARGBToNV16Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -907,6 +957,11 @@ int ARGBToNV16Matrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOUVMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512BW;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512VNNI;
   }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_RVV)
@@ -1093,6 +1148,14 @@ int ARGBToNV24Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -1175,6 +1238,14 @@ int ARGBToNV24Matrix(const uint8_t* src_argb,
     ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
       ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_AVX512BW;
+    }
+  }
+#endif
+#if defined(HAS_ARGBTOUV444MATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_AVX512VNNI;
     }
   }
 #endif
@@ -1366,6 +1437,14 @@ int ARGBToNV21Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -1476,6 +1555,11 @@ int ARGBToNV21Matrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOUVMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512BW;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512VNNI;
   }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_RVV)
@@ -1654,6 +1738,14 @@ int ARGBToI400Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -1753,6 +1845,14 @@ int ARGBToYUY2Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -1811,6 +1911,11 @@ int ARGBToYUY2Matrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOUVMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512BW;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512VNNI;
   }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON)
@@ -1953,6 +2058,14 @@ int ARGBToUYVYMatrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -2011,6 +2124,11 @@ int ARGBToUYVYMatrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOUVMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512BW;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512VNNI;
   }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_NEON)
@@ -2182,6 +2300,14 @@ int ARGBToP010Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -2292,6 +2418,11 @@ int ARGBToP010Matrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOUVMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512BW;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512VNNI;
   }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_RVV)
@@ -2613,6 +2744,14 @@ int ARGBToP210Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -2723,6 +2862,11 @@ int ARGBToP210Matrix(const uint8_t* src_argb,
 #if defined(HAS_ARGBTOUVMATRIXROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
     ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512BW;
+  }
+#endif
+#if defined(HAS_ARGBTOUVMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUVMatrixRow = ARGBToUVMatrixRow_AVX512VNNI;
   }
 #endif
 #if defined(HAS_ARGBTOUVMATRIXROW_RVV)
@@ -3029,6 +3173,14 @@ int ARGBToP410Matrix(const uint8_t* src_argb,
     }
   }
 #endif
+#if defined(HAS_ARGBTOYMATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToYMatrixRow = ARGBToYMatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToYMatrixRow = ARGBToYMatrixRow_AVX512VNNI;
+    }
+  }
+#endif
 #if defined(HAS_ARGBTOYMATRIXROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     ARGBToYMatrixRow = ARGBToYMatrixRow_Any_NEON;
@@ -3111,6 +3263,14 @@ int ARGBToP410Matrix(const uint8_t* src_argb,
     ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_Any_AVX512BW;
     if (IS_ALIGNED(width, 64)) {
       ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_AVX512BW;
+    }
+  }
+#endif
+#if defined(HAS_ARGBTOUV444MATRIXROW_AVX512VNNI)
+  if (TestCpuFlag(kCpuHasAVX512VNNI)) {
+    ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_Any_AVX512VNNI;
+    if (IS_ALIGNED(width, 64)) {
+      ARGBToUV444MatrixRow = ARGBToUV444MatrixRow_AVX512VNNI;
     }
   }
 #endif
