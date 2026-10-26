@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cca83ee1_b5370852",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-26T18:14:58Z",
+      "side": 1,
+      "message": "These 2 functions would speed up pdfium.\n\nOR is like Copy but intended to set alpha to 0xFF.  I make the or value a parameter so it would set any field, allowing BGRA and would extend to AND, XOR etc if we need more.  But it doesnt really allow arbitrary values like 0x80 to replace the value and does not lend itself to predicates or other optimizations.\n\nAlphaBlend is a standard alpha blend with math matching the PDFium math.  Its complicated but a larger win.",
+      "revId": "bb3b8501d50f5437c4ef8b7b2ae25a655e07ace5",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
