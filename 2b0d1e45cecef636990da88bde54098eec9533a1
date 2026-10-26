@@ -16,6 +16,47 @@
       "message": "could we interleave the moves and vpdpqa\u0027s that will help with the port pressure",
       "revId": "2b0d1e45cecef636990da88bde54098eec9533a1",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e102839e_ad2a12f0",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2021,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-26T19:39:26Z",
+      "side": 1,
+      "message": "mov is not an \u0027instruction\u0027 it is a decoder register rename.  but overall this sequence of 4 instructions is basically movups + xor + vpdpbusd and could likely be tuned.  the xor or the vpdpbusd could be from memory and the vmovdqa64 does not seem necessary at all?",
+      "parentUuid": "9e7a5be5_e1fef04a",
+      "revId": "2b0d1e45cecef636990da88bde54098eec9533a1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "94b87277_78c277e8",
+        "filename": "source/row_gcc.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 2035,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-26T19:39:26Z",
+      "side": 1,
+      "message": "this sequence feels like a port bottleneck.  if saturation is not needed, we want the 2nd byte of each int32.  a perm4tb or compress with mask could isolate the 1 byte per vector.",
+      "range": {
+        "startLine": 2029,
+        "startChar": 0,
+        "endLine": 2035,
+        "endChar": 52
+      },
+      "revId": "2b0d1e45cecef636990da88bde54098eec9533a1",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
