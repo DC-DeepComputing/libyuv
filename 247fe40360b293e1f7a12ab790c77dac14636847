@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80d78e3a_9797e6bf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:01:20Z",
+      "side": 1,
+      "message": "Thanks for the feedback George!\nA long time ago, Dale asked for 10 bit, but only on x86.  This CL finally ports it to Neon.  The general goal in this CL is 100% of row functions are at least NEON.",
+      "revId": "247fe40360b293e1f7a12ab790c77dac14636847",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
