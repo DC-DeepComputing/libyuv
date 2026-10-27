@@ -1574,6 +1574,20 @@ TEST_F(LibYUVPlanarTest, TestAffine) {
     }
   }
 #endif
+#if defined(HAS_ARGBAFFINEROW_NEON)
+  SIMD_ALIGNED(uint8_t interpolate_pixels_Opt[1280][4]);
+  ARGBAffineRow_NEON(&orig_pixels_0[0][0], 0, &interpolate_pixels_Opt[0][0],
+                     uv_step, 1280);
+  ASSERT_EQ(0, memcmp(interpolate_pixels_Opt, interpolate_pixels_C, 1280 * 4));
+
+  int has_neon = TestCpuFlag(kCpuHasNEON);
+  if (has_neon) {
+    for (int i = 0; i < benchmark_pixels_div1280_; ++i) {
+      ARGBAffineRow_NEON(&orig_pixels_0[0][0], 0, &interpolate_pixels_Opt[0][0],
+                         uv_step, 1280);
+    }
+  }
+#endif
 }
 #endif  // ENABLE_ROW_TESTS
 
@@ -2417,7 +2431,7 @@ TEST_F(LibYUVPlanarTest, DISABLED_ARM(ARGBBlurSmall_Opt)) {
   ASSERT_LE(max_diff, 1);
 }
 
-TEST_F(LibYUVPlanarTest, DISABLED_ARM(TestARGBPolynomial)) {
+TEST_F(LibYUVPlanarTest, TestARGBPolynomial) {
   SIMD_ALIGNED(uint8_t orig_pixels[1280][4]);
   SIMD_ALIGNED(uint8_t dst_pixels_opt[1280][4]);
   SIMD_ALIGNED(uint8_t dst_pixels_c[1280][4]);
