@@ -24,6 +24,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "787de970_eab27fb3",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5797,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:44:20Z",
+      "side": 1,
+      "message": "Done. Removed the 3 ins instructions and used v4.h[0]..v7.h[0] directly in umull/umull2.",
+      "parentUuid": "ee5a89e6_662caf99",
+      "range": {
+        "startLine": 5795,
+        "startChar": 0,
+        "endLine": 5797,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0f5cbbbc_e47452b5",
@@ -37,6 +61,30 @@
       "writtenOn": "2026-10-27T20:42:42Z",
       "side": 1,
       "message": "use uzp2 .8h to narrow to save two instrs?",
+      "range": {
+        "startLine": 5804,
+        "startChar": 7,
+        "endLine": 5807,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac603bac_e8a27125",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5807,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:44:20Z",
+      "side": 1,
+      "message": "Done. Replaced the 4 shrn/shrn2 instructions with 2 uzp2 .8h instructions.",
+      "parentUuid": "0f5cbbbc_e47452b5",
       "range": {
         "startLine": 5804,
         "startChar": 7,
@@ -70,6 +118,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "49ab9cb2_4b4c5c4e",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5836,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:44:20Z",
+      "side": 1,
+      "message": "Done. Replaced mov + fmla with fmul + fadd in both the 4-pixel loop and 2-pixel tail.",
+      "parentUuid": "6cbc24bd_fead1b5d",
+      "range": {
+        "startLine": 5833,
+        "startChar": 0,
+        "endLine": 5836,
+        "endChar": 59
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c6a82245_94abd1e9",
@@ -83,6 +155,30 @@
       "writtenOn": "2026-10-27T20:42:42Z",
       "side": 1,
       "message": "this is possibly faster just as scalar...",
+      "range": {
+        "startLine": 5926,
+        "startChar": 3,
+        "endLine": 5933,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "800b4395_c905c3ef",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5933,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:44:20Z",
+      "side": 1,
+      "message": "Done. Converted both ARGBColorTableRow_NEON and RGBColorTableRow_NEON to use scalar GP register loads, bfi/lsr, and strh/strb.",
+      "parentUuid": "c6a82245_94abd1e9",
       "range": {
         "startLine": 5926,
         "startChar": 3,
@@ -116,6 +212,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "26df9eed_9746249e",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5980,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:44:20Z",
+      "side": 1,
+      "message": "Yes, lumacoeff packs the 4 uint8_t coefficients [bc, gc, rc, 0] for one pixel into a uint32_t, so dup v4.4s broadcasts the 4-byte pattern across all 4 pixels in v4.16b. Added a clarifying comment.",
+      "parentUuid": "017bcaac_dbda25d5",
+      "range": {
+        "startLine": 5980,
+        "startChar": 0,
+        "endLine": 5980,
+        "endChar": 66
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f4eb7572_69b09485",
@@ -129,6 +249,30 @@
       "writtenOn": "2026-10-27T20:42:42Z",
       "side": 1,
       "message": "this could be `tbl` to save two instrs",
+      "range": {
+        "startLine": 5989,
+        "startChar": 7,
+        "endLine": 5991,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "701fe42e_75143d2c",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5991,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:44:20Z",
+      "side": 1,
+      "message": "Done. Replaced shrn + zip1 + zip1 with tbl using kLumaTblIdx.",
+      "parentUuid": "f4eb7572_69b09485",
       "range": {
         "startLine": 5989,
         "startChar": 7,
@@ -162,6 +306,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d2bccf9_c0ff6cf4",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5998,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:44:20Z",
+      "side": 1,
+      "message": "Done. Used ldr b3, [%5] for the first byte load into v3 (followed by ld1 {v3.b}[...]) and merged the original alpha bytes from v0 via bit.",
+      "parentUuid": "a861e773_5905d7eb",
+      "range": {
+        "startLine": 5998,
+        "startChar": 0,
+        "endLine": 5998,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e0740c7f_699c8bc4",
@@ -185,6 +353,30 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e2c3262_a7a278ae",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 6057,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:44:20Z",
+      "side": 1,
+      "message": "Done. Replaced ldp + dup with a pair of ld1r {v2.2d} and ld1r {v6.2d}.",
+      "parentUuid": "e0740c7f_699c8bc4",
+      "range": {
+        "startLine": 6057,
+        "startChar": 0,
+        "endLine": 6057,
+        "endChar": 73
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b586ab32_03848ea3",
@@ -198,6 +390,30 @@
       "writtenOn": "2026-10-27T20:42:42Z",
       "side": 1,
       "message": "this store might be faster as a series of scalar stores? or else as a `stp d0, d1` to avoid one of the `ins` ?",
+      "range": {
+        "startLine": 6082,
+        "startChar": 0,
+        "endLine": 6083,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b64bbfd_ef3d547e",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 6083,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T21:44:20Z",
+      "side": 1,
+      "message": "Done. Replaced the vector ldr + ins + str q0 sequence with scalar GP loads and stp %w3, %w4, [%0], #8.",
+      "parentUuid": "b586ab32_03848ea3",
       "range": {
         "startLine": 6082,
         "startChar": 0,
