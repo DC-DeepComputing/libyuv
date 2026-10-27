@@ -2926,7 +2926,14 @@ void MirrorPlane_16(const uint16_t* src_y,
     src_y = src_y + (ptrdiff_t)(height - 1) * src_stride_y;
     src_stride_y = -src_stride_y;
   }
-#if defined(HAS_MIRRORUVROW_NEON)
+#if defined(HAS_MIRRORROW_16_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    MirrorRow_16 = MirrorRow_16_Any_NEON;
+    if (IS_ALIGNED(width, 16)) {
+      MirrorRow_16 = MirrorRow_16_NEON;
+    }
+  }
+#elif defined(HAS_MIRRORUVROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     MirrorRow_16 = reinterpret_cast<void (*)(const uint16_t*, uint16_t*, int)>(
         MirrorUVRow_Any_NEON);
@@ -4693,7 +4700,14 @@ int ARGBUnattenuate(const uint8_t* src_argb,
     }
   }
 #endif
-  // TODO(fbarchard): Neon version.
+#if defined(HAS_ARGBUNATTENUATEROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBUnattenuateRow = ARGBUnattenuateRow_Any_NEON;
+    if (IS_ALIGNED(width, 4)) {
+      ARGBUnattenuateRow = ARGBUnattenuateRow_NEON;
+    }
+  }
+#endif
 
   for (y = 0; y < height; ++y) {
     ARGBUnattenuateRow(src_argb, dst_argb, width);
@@ -5020,6 +5034,11 @@ int ARGBColorTable(uint8_t* dst_argb,
     ARGBColorTableRow = ARGBColorTableRow_X86;
   }
 #endif
+#if defined(HAS_ARGBCOLORTABLEROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBColorTableRow = ARGBColorTableRow_NEON;
+  }
+#endif
   for (y = 0; y < height; ++y) {
     ARGBColorTableRow(dst, table_argb, width);
     dst += dst_stride_argb;
@@ -5054,6 +5073,11 @@ int RGBColorTable(uint8_t* dst_argb,
 #if defined(HAS_RGBCOLORTABLEROW_X86)
   if (TestCpuFlag(kCpuHasX86)) {
     RGBColorTableRow = RGBColorTableRow_X86;
+  }
+#endif
+#if defined(HAS_RGBCOLORTABLEROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    RGBColorTableRow = RGBColorTableRow_NEON;
   }
 #endif
   for (y = 0; y < height; ++y) {
@@ -6224,6 +6248,14 @@ int ARGBPolynomial(const uint8_t* src_argb,
     ARGBPolynomialRow = ARGBPolynomialRow_AVX2;
   }
 #endif
+#if defined(HAS_ARGBPOLYNOMIALROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBPolynomialRow = ARGBPolynomialRow_Any_NEON;
+    if (IS_ALIGNED(width, 2)) {
+      ARGBPolynomialRow = ARGBPolynomialRow_NEON;
+    }
+  }
+#endif
 
   for (y = 0; y < height; ++y) {
     ARGBPolynomialRow(src_argb, dst_argb, poly, width);
@@ -6383,6 +6415,11 @@ int ARGBLumaColorTable(const uint8_t* src_argb,
     ARGBLumaColorTableRow = ARGBLumaColorTableRow_SSSE3;
   }
 #endif
+#if defined(HAS_ARGBLUMACOLORTABLEROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON) && IS_ALIGNED(width, 4)) {
+    ARGBLumaColorTableRow = ARGBLumaColorTableRow_NEON;
+  }
+#endif
 
   for (y = 0; y < height; ++y) {
     ARGBLumaColorTableRow(src_argb, dst_argb, width, luma, 0x00264b0f);
@@ -6420,6 +6457,14 @@ int ARGBCopyAlpha(const uint8_t* src_argb,
     height = 1;
     src_stride_argb = dst_stride_argb = 0;
   }
+#if defined(HAS_ARGBCOPYALPHAROW_NEON)
+  if (TestCpuFlag(kCpuHasNEON)) {
+    ARGBCopyAlphaRow = ARGBCopyAlphaRow_Any_NEON;
+    if (IS_ALIGNED(width, 8)) {
+      ARGBCopyAlphaRow = ARGBCopyAlphaRow_NEON;
+    }
+  }
+#endif
 #if defined(HAS_ARGBCOPYALPHAROW_SSE2)
   if (TestCpuFlag(kCpuHasSSE2)) {
     ARGBCopyAlphaRow = ARGBCopyAlphaRow_Any_SSE2;
