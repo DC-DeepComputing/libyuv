@@ -16,6 +16,24 @@
       "message": "yes this helps a little, but the other lanes are also false dependencies.\nso i think there are 3 alternatives that are better on newer cpus\nzip\nldp\ntbl\nzip1/zip2 depend on load but not each other and no false dependency.\nldp can replace dup and cleanses the register.\nldp can be used to do the transpose itself, either in simd or gpr and can use different registers to avoid the false dependency.\nBut overall I think zip behaves best, with possible exception of A520.",
       "revId": "dc630852d7e90c27003ce0c7e322f7d02baff122",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06b68666_7a6b3e37",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T19:30:30Z",
+      "side": 1,
+      "message": "well the other lanes are real dependencies, we want the values to be merged :)\n\ni also tried a version using 4x normal vector loads + trn to do the permute but this was slower on a55, so this approach was chosen instead. the big cores don\u0027t seem to mind too much beyond that we break the inter-iteration dependency.",
+      "parentUuid": "855cc898_0b4e2e44",
+      "revId": "dc630852d7e90c27003ce0c7e322f7d02baff122",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
