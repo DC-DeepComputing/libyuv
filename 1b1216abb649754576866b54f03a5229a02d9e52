@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8467960_325a6e1c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-10-27T22:35:54Z",
+      "side": 1,
+      "message": "Gemini has some thoughts, but overall lgtm",
+      "revId": "1b1216abb649754576866b54f03a5229a02d9e52",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef108627_f67f97d7",
+        "filename": "source/planar_functions.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 2936,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-10-27T22:35:54Z",
+      "side": 1,
+      "message": "Nit: Both `HAS_MIRRORROW_16_NEON` and `HAS_MIRRORUVROW_NEON` are defined unconditionally under the same `#if !defined(LIBYUV_DISABLE_NEON) \u0026\u0026 ...` block in `include/libyuv/row.h`, so this `#elif` branch is now unreachable and can be removed.",
+      "revId": "1b1216abb649754576866b54f03a5229a02d9e52",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "393b10e1_4fa315af",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 3995,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-10-27T22:35:54Z",
+      "side": 1,
+      "message": "Note: `CopyPlane_16` in `source/planar_functions.cc` delegates directly to `CopyPlane(..., width * 2, height)` (which dispatches 8-bit `CopyRow_NEON` / `CopyRow_SME`), so `CopyRow_16_NEON` and `CopyRow_16_Any_NEON` are not currently dispatched by `CopyPlane_16` (explaining the 1.00x benchmark result) or exercised by `CopyPlane_16` unit tests.",
+      "revId": "1b1216abb649754576866b54f03a5229a02d9e52",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cb6aa027_8a0f308c",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 4188,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-10-27T22:35:54Z",
+      "side": 1,
+      "message": "Nit (optional): Same as the AArch64 version, replacing `vmov` + `vmla.f32` with `vmul.f32` + `vadd.f32` here avoids the two `vmov` instructions per 2-pixel iteration.",
+      "revId": "1b1216abb649754576866b54f03a5229a02d9e52",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2aed825_a3572d3a",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 5927,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-10-27T22:35:54Z",
+      "side": 1,
+      "message": "Nit (optional): Unlike `RGBColorTableRow_NEON` (which preserves byte 3), `ARGBColorTableRow_NEON` overwrites all 4 bytes of each pixel, so you could pack `%w2`–`%w5` into a single 32-bit register and issue one post-indexed `str %w3, [%0], #4` instead of `strh` + `strb` + `strb` + `add`.",
+      "revId": "1b1216abb649754576866b54f03a5229a02d9e52",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32ca45d5_15db4360",
+        "filename": "unit_test/planar_test.cc",
+        "patchSetId": 7
+      },
+      "lineNbr": 1579,
+      "author": {
+        "id": 1001250
+      },
+      "writtenOn": "2026-10-27T22:35:54Z",
+      "side": 1,
+      "message": "Two small notes here:\n1. Like the SSE2 block above, this calls `ARGBAffineRow_NEON` unconditionally before checking `TestCpuFlag(kCpuHasNEON)` on line 1583.\n2. This only tests `width \u003d 1280` (a multiple of 4) and `src_argb_stride \u003d 0`, so the 1-3 pixel tail loop and non-zero `src_argb_stride` path in `ARGBAffineRow_NEON` aren\u0027t exercised.",
+      "revId": "1b1216abb649754576866b54f03a5229a02d9e52",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
