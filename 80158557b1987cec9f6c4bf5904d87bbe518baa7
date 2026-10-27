@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee5a89e6_662caf99",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5797,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T20:42:42Z",
+      "side": 1,
+      "message": "the `ins` here is pointless, just use `v5.h[0]` etc in the `umull` below directly?",
+      "range": {
+        "startLine": 5795,
+        "startChar": 0,
+        "endLine": 5797,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f5cbbbc_e47452b5",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5807,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T20:42:42Z",
+      "side": 1,
+      "message": "use uzp2 .8h to narrow to save two instrs?",
+      "range": {
+        "startLine": 5804,
+        "startChar": 7,
+        "endLine": 5807,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6cbc24bd_fead1b5d",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5836,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T20:42:42Z",
+      "side": 1,
+      "message": "use `fmul` instead of `fmla` then no need for these `mov`s",
+      "range": {
+        "startLine": 5833,
+        "startChar": 0,
+        "endLine": 5836,
+        "endChar": 59
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6a82245_94abd1e9",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5933,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T20:42:42Z",
+      "side": 1,
+      "message": "this is possibly faster just as scalar...",
+      "range": {
+        "startLine": 5926,
+        "startChar": 3,
+        "endLine": 5933,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "017bcaac_dbda25d5",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5980,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T20:42:42Z",
+      "side": 1,
+      "message": "is this correct? `lumacoeff` is broadcast as `.4s` but the `umull` is `.16b` ?",
+      "range": {
+        "startLine": 5980,
+        "startChar": 0,
+        "endLine": 5980,
+        "endChar": 66
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f4eb7572_69b09485",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5991,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T20:42:42Z",
+      "side": 1,
+      "message": "this could be `tbl` to save two instrs",
+      "range": {
+        "startLine": 5989,
+        "startChar": 7,
+        "endLine": 5991,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a861e773_5905d7eb",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 5998,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T20:42:42Z",
+      "side": 1,
+      "message": "use `ldr b0` to avoid the false dependency on the old value of `v0`",
+      "range": {
+        "startLine": 5998,
+        "startChar": 0,
+        "endLine": 5998,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0740c7f_699c8bc4",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 6057,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T20:42:42Z",
+      "side": 1,
+      "message": "use a pair of `ld1r` which is preferable on some cpus?",
+      "range": {
+        "startLine": 6057,
+        "startChar": 0,
+        "endLine": 6057,
+        "endChar": 73
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b586ab32_03848ea3",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 6083,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-10-27T20:42:42Z",
+      "side": 1,
+      "message": "this store might be faster as a series of scalar stores? or else as a `stp d0, d1` to avoid one of the `ins` ?",
+      "range": {
+        "startLine": 6082,
+        "startChar": 0,
+        "endLine": 6083,
+        "endChar": 52
+      },
+      "revId": "80158557b1987cec9f6c4bf5904d87bbe518baa7",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
