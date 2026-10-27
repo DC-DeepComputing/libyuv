@@ -18,6 +18,25 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7fc35d95_596c3eb9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T20:06:37Z",
+      "side": 1,
+      "message": "Done. The I422ToRGBARow SSSE3 macro fix was already landed in commit 4bc04198, so it is no longer part of this change.",
+      "parentUuid": "85576b7b_03b82f2b",
+      "isAi": true,
+      "revId": "4854b31e86b0b341990c393d6e7b9ab193647b7f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d102275c_05fe1587",
@@ -31,6 +50,25 @@
       "writtenOn": "2026-10-27T20:00:30Z",
       "side": 1,
       "message": "Delete this change from the commit message because this change is not in the CL.",
+      "revId": "4854b31e86b0b341990c393d6e7b9ab193647b7f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e2b57a7_1d8bc0a9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-27T20:06:37Z",
+      "side": 1,
+      "message": "Done, deleted.",
+      "parentUuid": "d102275c_05fe1587",
+      "isAi": true,
       "revId": "4854b31e86b0b341990c393d6e7b9ab193647b7f",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
