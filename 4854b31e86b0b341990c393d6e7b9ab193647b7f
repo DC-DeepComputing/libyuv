@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85576b7b_03b82f2b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-27T20:00:30Z",
+      "side": 1,
+      "message": "Delete \"I422ToRGBARow,\" because it is not in this CL.\n\nOr perhaps this CL is missing this change?",
+      "revId": "4854b31e86b0b341990c393d6e7b9ab193647b7f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d102275c_05fe1587",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 12
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1001562
+      },
+      "writtenOn": "2026-10-27T20:00:30Z",
+      "side": 1,
+      "message": "Delete this change from the commit message because this change is not in the CL.",
+      "revId": "4854b31e86b0b341990c393d6e7b9ab193647b7f",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
