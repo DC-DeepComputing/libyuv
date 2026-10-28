@@ -1,0 +1,80 @@
+# Copyright 2026 The LibYuv Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS. All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+agentic_review {
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/aarch64-assembly-use-subs-for-loop-counter.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*neon[^/]*\\.cc"
+    rules: "knowledge_base/rules/source/aarch64-neon-ld1-register-post-index-stride.md"
+    rules: "knowledge_base/rules/source/interleave-neon-compute-and-memory-instructions.md"
+    rules: "knowledge_base/rules/source/match-neon-load-store-element-size-to-data-type.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/accurate-pixel-format-in-assembly-comments.md"
+    rules: "knowledge_base/rules/source/base-plus-index-addressing-for-inline-assembly-loops.md"
+    rules: "knowledge_base/rules/source/clear-upper-ymm-with-vzeroupper.md"
+    rules: "knowledge_base/rules/source/handle-negative-height-by-inverting-strides.md"
+    rules: "knowledge_base/rules/source/post-increment-pointers-in-assembly-loops.md"
+    rules: "knowledge_base/rules/source/use-aligned-simd-moves-for-aligned-memory.md"
+    rules: "knowledge_base/rules/source/validate-mandatory-plane-pointers-at-entry.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/assert-parameter-preconditions-and-bounds.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/broadcast-128bit-constants-in-avx2.md"
+    rules: "knowledge_base/rules/source/skip-sve-tail-when-width-is-vector-multiple.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/convert.*"
+    path_expression: "source/convert.*"
+    rules: "knowledge_base/rules/source/clamp-simd-narrowing-conversions.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/row_[^/]*\\.h"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/factor-simd-row-conversion-macros.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/match-feature-macro-to-row-function.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/match-is-aligned-step-to-simd-vector-size.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/pair-align-buffer-64-with-free-aligned-buffer-64.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/row\\.h"
+    path_expression: "source/row.*"
+    rules: "knowledge_base/rules/source/use-row-vector-typedefs-for-simd-constants.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/scale.*"
+    path_expression: "source/scale.*"
+    rules: "knowledge_base/rules/source/use-zero-stride-for-edge-rows-in-multi-row-scaling.md"
+  }
+}

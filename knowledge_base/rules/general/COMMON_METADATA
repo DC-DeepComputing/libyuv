@@ -1,0 +1,27 @@
+# Copyright 2026 The LibYuv Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS. All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+agentic_review {
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
+    rules: "knowledge_base/rules/general/clarify-nonobvious-function-parameters.md"
+    rules: "knowledge_base/rules/general/parenthesize-macro-parameters.md"
+  }
+  capability_groups {
+    rules: "knowledge_base/rules/general/document-secondary-changes-in-commit-description.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    rules: "knowledge_base/rules/general/no-defines-on-gn-group-targets.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    rules: "knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
+    rules: "knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
+  }
+}
