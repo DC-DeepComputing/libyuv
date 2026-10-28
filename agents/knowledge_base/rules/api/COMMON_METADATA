@@ -9,9 +9,62 @@
 agentic_review {
   capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/accurately-describe-function-variants-in-doc-comments.md"
+    rules: "agents/knowledge_base/rules/api/api-return-negative-one-on-error.md"
+    rules: "agents/knowledge_base/rules/api/no-full-format-names-for-partial-planes.md"
+    rules: "agents/knowledge_base/rules/api/order-yuvconstants-before-dimensions.md"
+    rules: "agents/knowledge_base/rules/api/row-and-scale-kernel-naming.md"
+    rules: "agents/knowledge_base/rules/api/use-macro-aliases-for-symmetric-conversions.md"
+  }
+  capability_groups {
+    path_expression: "include/.*"
+    rules: "agents/knowledge_base/rules/api/avoid-redundant-architecture-guards-in-headers.md"
+    rules: "agents/knowledge_base/rules/api/document-flag-values-sentinels-and-hazards.md"
+    rules: "agents/knowledge_base/rules/api/document-or-revert-disabled-feature-macros.md"
+    rules: "agents/knowledge_base/rules/api/document-public-api-removals-in-commit-message.md"
+    rules: "agents/knowledge_base/rules/api/encapsulate-shared-state-mutation-in-setter.md"
+    rules: "agents/knowledge_base/rules/api/general-avoid-build-system-macros-in-header-compiler-checks.md"
+    rules: "agents/knowledge_base/rules/api/group-specialized-variants-with-base-declarations.md"
+    rules: "agents/knowledge_base/rules/api/match-parameter-names-between-declarations-and-definitions.md"
+    rules: "agents/knowledge_base/rules/api/no-duplicate-function-declarations.md"
+    rules: "agents/knowledge_base/rules/api/preserve-public-constant-and-flag-values.md"
+    rules: "agents/knowledge_base/rules/api/use-set-prefix-for-state-and-flag-setters.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|h)"
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/capitalize-to-in-conversion-function-names.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/define-bpp-constant-for-fourcc-format.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.cmake"
+    path_expression: "CMakeLists\\.txt"
+    path_expression: "include/.*"
+    rules: "agents/knowledge_base/rules/api/document-abi-version-coupling-in-version-header.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/document-conversion-color-space-and-range.md"
+    rules: "agents/knowledge_base/rules/api/document-conversion-matrix-memory-layout.md"
+    rules: "agents/knowledge_base/rules/api/document-format-conversion-macro-aliases.md"
     rules: "agents/knowledge_base/rules/api/document-parameter-ranges-and-bit-alignment.md"
     rules: "agents/knowledge_base/rules/api/group-conversion-matrix-constants-by-pixel-format.md"
+    rules: "agents/knowledge_base/rules/api/no-unnecessary-alignment-in-api-comments.md"
     rules: "agents/knowledge_base/rules/api/scale-api-use-filter-mode-internal-dispatch.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/cpu_id\\.h"
+    path_expression: "source/cpu_id\\.cc"
+    rules: "agents/knowledge_base/rules/api/guard-architecture-headers-with-cpu-preprocessor-checks.md"
+    rules: "agents/knowledge_base/rules/api/inline-atomic-flag-accessors.md"
+    rules: "agents/knowledge_base/rules/api/no-implicit-init-flag-in-cpu-setters.md"
   }
   capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
@@ -22,8 +75,13 @@ agentic_review {
   }
   capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
-    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
-    rules: "agents/knowledge_base/rules/api/row-and-scale-kernel-naming.md"
+    path_expression: "source/scale[^/]*\\.cc"
+    rules: "agents/knowledge_base/rules/api/no-mixed-depth-scaling-apis.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/[^/]*row[^/]*\\.h"
+    path_expression: "source/[^/]*row[^/]*\\.cc"
+    rules: "agents/knowledge_base/rules/api/row-function-width-parameter-naming.md"
   }
   capability_groups {
     path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
@@ -42,5 +100,11 @@ agentic_review {
     path_expression: "README\\.chromium"
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     rules: "agents/knowledge_base/rules/api/sync-readme-chromium-version.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/use-x-format-prefix-without-alpha-channel.md"
   }
 }
