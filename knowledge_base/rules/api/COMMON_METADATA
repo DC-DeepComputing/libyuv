@@ -10,6 +10,7 @@ agentic_review {
   capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     rules: "knowledge_base/rules/api/document-parameter-ranges-and-bit-alignment.md"
+    rules: "knowledge_base/rules/api/group-conversion-matrix-constants-by-pixel-format.md"
     rules: "knowledge_base/rules/api/scale-api-use-filter-mode-internal-dispatch.md"
   }
   capability_groups {

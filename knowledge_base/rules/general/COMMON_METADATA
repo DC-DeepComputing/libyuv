@@ -10,18 +10,26 @@ agentic_review {
   capability_groups {
     path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
     rules: "knowledge_base/rules/general/clarify-nonobvious-function-parameters.md"
+    rules: "knowledge_base/rules/general/const-for-immutable-local-variables.md"
     rules: "knowledge_base/rules/general/parenthesize-macro-parameters.md"
+    rules: "knowledge_base/rules/general/place-branch-specific-comments-inside-branch.md"
   }
   capability_groups {
     rules: "knowledge_base/rules/general/document-secondary-changes-in-commit-description.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    rules: "knowledge_base/rules/general/format-inline-assembly-operands-on-separate-lines.md"
+    rules: "knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
+    rules: "knowledge_base/rules/general/record-speculative-optimizations-in-todo.md"
+    rules: "knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
   }
   capability_groups {
     path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
     rules: "knowledge_base/rules/general/no-defines-on-gn-group-targets.md"
   }
   capability_groups {
-    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
-    rules: "knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
-    rules: "knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
+    content_patterns: "\\bOptimization\\b"
+    rules: "knowledge_base/rules/general/omit-redundant-self-explanatory-comments.md"
   }
 }

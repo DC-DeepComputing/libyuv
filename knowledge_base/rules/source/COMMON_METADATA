@@ -51,6 +51,12 @@ agentic_review {
     rules: "knowledge_base/rules/source/factor-simd-row-conversion-macros.md"
   }
   capability_groups {
+    path_expression: "include/libyuv/scale.*"
+    path_expression: "source/scale.*"
+    rules: "knowledge_base/rules/source/format-pointer-arithmetic-scaling.md"
+    rules: "knowledge_base/rules/source/use-zero-stride-for-edge-rows-in-multi-row-scaling.md"
+  }
+  capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
@@ -71,10 +77,5 @@ agentic_review {
     path_expression: "include/libyuv/row\\.h"
     path_expression: "source/row.*"
     rules: "knowledge_base/rules/source/use-row-vector-typedefs-for-simd-constants.md"
-  }
-  capability_groups {
-    path_expression: "include/libyuv/scale.*"
-    path_expression: "source/scale.*"
-    rules: "knowledge_base/rules/source/use-zero-stride-for-edge-rows-in-multi-row-scaling.md"
   }
 }

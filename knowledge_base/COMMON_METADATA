@@ -10,6 +10,7 @@ agentic_review {
   capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     rules: "knowledge_base/rules/api/document-parameter-ranges-and-bit-alignment.md"
+    rules: "knowledge_base/rules/api/group-conversion-matrix-constants-by-pixel-format.md"
     rules: "knowledge_base/rules/api/scale-api-use-filter-mode-internal-dispatch.md"
   }
   capability_groups {
@@ -47,19 +48,27 @@ agentic_review {
   capability_groups {
     path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
     rules: "knowledge_base/rules/general/clarify-nonobvious-function-parameters.md"
+    rules: "knowledge_base/rules/general/const-for-immutable-local-variables.md"
     rules: "knowledge_base/rules/general/parenthesize-macro-parameters.md"
+    rules: "knowledge_base/rules/general/place-branch-specific-comments-inside-branch.md"
   }
   capability_groups {
     rules: "knowledge_base/rules/general/document-secondary-changes-in-commit-description.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    rules: "knowledge_base/rules/general/format-inline-assembly-operands-on-separate-lines.md"
+    rules: "knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
+    rules: "knowledge_base/rules/general/record-speculative-optimizations-in-todo.md"
+    rules: "knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
   }
   capability_groups {
     path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
     rules: "knowledge_base/rules/general/no-defines-on-gn-group-targets.md"
   }
   capability_groups {
-    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
-    rules: "knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
-    rules: "knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
+    content_patterns: "\\bOptimization\\b"
+    rules: "knowledge_base/rules/general/omit-redundant-self-explanatory-comments.md"
   }
   capability_groups {
     path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
@@ -99,6 +108,12 @@ agentic_review {
     rules: "knowledge_base/rules/source/factor-simd-row-conversion-macros.md"
   }
   capability_groups {
+    path_expression: "include/libyuv/scale.*"
+    path_expression: "source/scale.*"
+    rules: "knowledge_base/rules/source/format-pointer-arithmetic-scaling.md"
+    rules: "knowledge_base/rules/source/use-zero-stride-for-edge-rows-in-multi-row-scaling.md"
+  }
+  capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
@@ -119,10 +134,5 @@ agentic_review {
     path_expression: "include/libyuv/row\\.h"
     path_expression: "source/row.*"
     rules: "knowledge_base/rules/source/use-row-vector-typedefs-for-simd-constants.md"
-  }
-  capability_groups {
-    path_expression: "include/libyuv/scale.*"
-    path_expression: "source/scale.*"
-    rules: "knowledge_base/rules/source/use-zero-stride-for-edge-rows-in-multi-row-scaling.md"
   }
 }
