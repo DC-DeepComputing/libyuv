@@ -2516,6 +2516,12 @@ int YUY2ToI420(const uint8_t* src_yuy2,
     }
   }
 #endif
+#if defined(HAS_YUY2TOYROW_AVX512BW) && defined(HAS_YUY2TOUVROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    YUY2ToUVRow = YUY2ToUVRow_AVX512BW;
+    YUY2ToYRow = YUY2ToYRow_AVX512BW;
+  }
+#endif
 #if defined(HAS_YUY2TOYROW_NEON)
   if (TestCpuFlag(kCpuHasNEON)) {
     YUY2ToYRow = YUY2ToYRow_Any_NEON;
@@ -2614,6 +2620,12 @@ int UYVYToI420(const uint8_t* src_uyvy,
       UYVYToUVRow = UYVYToUVRow_AVX2;
       UYVYToYRow = UYVYToYRow_AVX2;
     }
+  }
+#endif
+#if defined(HAS_UYVYTOYROW_AVX512BW) && defined(HAS_UYVYTOUVROW_AVX512BW)
+  if (TestCpuFlag(kCpuHasAVX512BW)) {
+    UYVYToUVRow = UYVYToUVRow_AVX512BW;
+    UYVYToYRow = UYVYToYRow_AVX512BW;
   }
 #endif
 #if defined(HAS_UYVYTOYROW_NEON)

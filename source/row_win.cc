@@ -5177,6 +5177,2258 @@ void ARGBAlphaBlendRow_AVX512BW(const uint8_t* src_argb0,
 }
 #endif  // HAS_ARGBALPHABLENDROW_AVX512BW
 
+// ===========================================================================
+// Module 6: AVX2 Row Functions (Minimum AVX2 Coverage)
+// ===========================================================================
+
+#ifdef HAS_ARGBSEPIAROW_AVX2
+LIBYUV_TARGET_AVX2
+void ARGBSepiaRow_AVX2(uint8_t* dst_argb, int width) {
+  static const int8_t kSepiaB[16] = {17, 68, 35, 0, 17, 68, 35, 0,
+                                     17, 68, 35, 0, 17, 68, 35, 0};
+  static const int8_t kSepiaG[16] = {22, 88, 45, 0, 22, 88, 45, 0,
+                                     22, 88, 45, 0, 22, 88, 45, 0};
+  static const int8_t kSepiaR[16] = {24, 98, 50, 0, 24, 98, 50, 0,
+                                     24, 98, 50, 0, 24, 98, 50, 0};
+  if (width >= 8) {
+    const __m256i vb =
+        _mm256_broadcastsi128_si256(_mm_loadu_si128((const __m128i*)kSepiaB));
+    const __m256i vg =
+        _mm256_broadcastsi128_si256(_mm_loadu_si128((const __m128i*)kSepiaG));
+    const __m256i vr =
+        _mm256_broadcastsi128_si256(_mm_loadu_si128((const __m128i*)kSepiaR));
+    while (width >= 8) {
+      __m256i v0 = _mm256_loadu_si256((const __m256i*)dst_argb);
+      __m256i b = _mm256_maddubs_epi16(v0, vb);
+      __m256i g = _mm256_maddubs_epi16(v0, vg);
+      __m256i r = _mm256_maddubs_epi16(v0, vr);
+      __m256i bg = _mm256_srli_epi16(_mm256_hadd_epi16(b, g), 7);
+      __m256i rr = _mm256_srli_epi16(_mm256_hadd_epi16(r, r), 7);
+      bg = _mm256_packus_epi16(bg, bg);
+      rr = _mm256_packus_epi16(rr, rr);
+      bg = _mm256_unpacklo_epi8(bg, _mm256_shuffle_epi32(bg, 0x01));
+      __m256i a = _mm256_srli_epi32(v0, 24);
+      a = _mm256_packus_epi16(a, a);
+      a = _mm256_packus_epi16(a, a);
+      __m256i ra = _mm256_unpacklo_epi8(rr, a);
+      __m256i out = _mm256_unpacklo_epi16(bg, ra);
+      _mm256_storeu_si256((__m256i*)dst_argb, out);
+      dst_argb += 32;
+      width -= 8;
+    }
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    ARGBSepiaRow_C(dst_argb, width);
+  }
+}
+#endif  // HAS_ARGBSEPIAROW_AVX2
+
+#ifdef HAS_ARGBCOLORMATRIXROW_AVX2
+LIBYUV_TARGET_AVX2
+void ARGBColorMatrixRow_AVX2(const uint8_t* src_argb,
+                             uint8_t* dst_argb,
+                             const int8_t* matrix_argb,
+                             int width) {
+  static const int8_t kShufTranspose4x4[16] = {0, 4, 8,  12, 1, 5, 9,  13,
+                                               2, 6, 10, 14, 3, 7, 11, 15};
+  if (width >= 8) {
+    const __m256i m = _mm256_broadcastsi128_si256(
+        _mm_loadu_si128((const __m128i*)matrix_argb));
+    const __m256i shuf = _mm256_broadcastsi128_si256(
+        _mm_loadu_si128((const __m128i*)kShufTranspose4x4));
+    const __m256i m0 = _mm256_shuffle_epi32(m, 0x00);
+    const __m256i m1 = _mm256_shuffle_epi32(m, 0x55);
+    const __m256i m2 = _mm256_shuffle_epi32(m, 0xaa);
+    const __m256i m3 = _mm256_shuffle_epi32(m, 0xff);
+    while (width >= 8) {
+      __m256i v0 = _mm256_loadu_si256((const __m256i*)src_argb);
+      src_argb += 32;
+      __m256i p01 = _mm256_hadds_epi16(_mm256_maddubs_epi16(v0, m0),
+                                       _mm256_maddubs_epi16(v0, m1));
+      __m256i p23 = _mm256_hadds_epi16(_mm256_maddubs_epi16(v0, m2),
+                                       _mm256_maddubs_epi16(v0, m3));
+      p01 = _mm256_srai_epi16(p01, 6);
+      p23 = _mm256_srai_epi16(p23, 6);
+      __m256i out = _mm256_shuffle_epi8(_mm256_packus_epi16(p01, p23), shuf);
+      _mm256_storeu_si256((__m256i*)dst_argb, out);
+      dst_argb += 32;
+      width -= 8;
+    }
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    ARGBColorMatrixRow_C(src_argb, dst_argb, matrix_argb, width);
+  }
+}
+#endif  // HAS_ARGBCOLORMATRIXROW_AVX2
+
+#ifdef HAS_ARGBQUANTIZEROW_AVX2
+LIBYUV_TARGET_AVX2
+void ARGBQuantizeRow_AVX2(uint8_t* dst_argb,
+                          int scale,
+                          int interval_size,
+                          int interval_offset,
+                          int width) {
+  if (width >= 8) {
+    const __m256i v_scale = _mm256_set1_epi16((short)scale);
+    const __m256i v_size = _mm256_set1_epi16((short)interval_size);
+    const __m256i v_off = _mm256_set1_epi16((short)interval_offset);
+    const __m256i zero = _mm256_setzero_si256();
+    const __m256i alpha_mask = _mm256_set1_epi32((int)0xff000000u);
+    while (width >= 8) {
+      __m256i v0 = _mm256_loadu_si256((const __m256i*)dst_argb);
+      __m256i a = _mm256_and_si256(v0, alpha_mask);
+      __m256i lo = _mm256_unpacklo_epi8(v0, zero);
+      __m256i hi = _mm256_unpackhi_epi8(v0, zero);
+      lo = _mm256_add_epi16(
+          _mm256_mullo_epi16(_mm256_mulhi_epu16(lo, v_scale), v_size), v_off);
+      hi = _mm256_add_epi16(
+          _mm256_mullo_epi16(_mm256_mulhi_epu16(hi, v_scale), v_size), v_off);
+      __m256i out = _mm256_or_si256(
+          _mm256_andnot_si256(alpha_mask, _mm256_packus_epi16(lo, hi)), a);
+      _mm256_storeu_si256((__m256i*)dst_argb, out);
+      dst_argb += 32;
+      width -= 8;
+    }
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    ARGBQuantizeRow_C(dst_argb, scale, interval_size, interval_offset, width);
+  }
+}
+#endif  // HAS_ARGBQUANTIZEROW_AVX2
+
+#ifdef HAS_ARGBSHADEROW_AVX2
+LIBYUV_TARGET_AVX2
+void ARGBShadeRow_AVX2(const uint8_t* src_argb,
+                       uint8_t* dst_argb,
+                       int width,
+                       uint32_t value) {
+  if (width >= 8) {
+    __m256i v_val = _mm256_set1_epi32((int)value);
+    v_val = _mm256_unpacklo_epi8(v_val, v_val);
+    while (width >= 8) {
+      __m256i v0 = _mm256_loadu_si256((const __m256i*)src_argb);
+      src_argb += 32;
+      __m256i lo = _mm256_unpacklo_epi8(v0, v0);
+      __m256i hi = _mm256_unpackhi_epi8(v0, v0);
+      lo = _mm256_srli_epi16(_mm256_mulhi_epu16(lo, v_val), 8);
+      hi = _mm256_srli_epi16(_mm256_mulhi_epu16(hi, v_val), 8);
+      _mm256_storeu_si256((__m256i*)dst_argb, _mm256_packus_epi16(lo, hi));
+      dst_argb += 32;
+      width -= 8;
+    }
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    ARGBShadeRow_C(src_argb, dst_argb, width, value);
+  }
+}
+#endif  // HAS_ARGBSHADEROW_AVX2
+
+#ifdef HAS_SOBELXROW_AVX2
+LIBYUV_TARGET_AVX2
+void SobelXRow_AVX2(const uint8_t* src_y0,
+                    const uint8_t* src_y1,
+                    const uint8_t* src_y2,
+                    uint8_t* dst_sobelx,
+                    int width) {
+  while (width > 0) {
+    __m256i a0 = _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)src_y0));
+    __m256i b0 =
+        _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)(src_y0 + 2)));
+    __m256i a1 = _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)src_y1));
+    __m256i b1 =
+        _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)(src_y1 + 2)));
+    __m256i a2 = _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)src_y2));
+    __m256i b2 =
+        _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)(src_y2 + 2)));
+    __m256i d0 = _mm256_sub_epi16(a0, b0);
+    __m256i d1 = _mm256_sub_epi16(a1, b1);
+    __m256i d2 = _mm256_sub_epi16(a2, b2);
+    __m256i sum =
+        _mm256_add_epi16(_mm256_add_epi16(d0, d2), _mm256_add_epi16(d1, d1));
+    sum = _mm256_abs_epi16(sum);
+    sum = _mm256_permute4x64_epi64(_mm256_packus_epi16(sum, sum), 0xd8);
+    _mm_storeu_si128((__m128i*)dst_sobelx, _mm256_castsi256_si128(sum));
+    src_y0 += 16;
+    src_y1 += 16;
+    src_y2 += 16;
+    dst_sobelx += 16;
+    width -= 16;
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_SOBELXROW_AVX2
+
+#ifdef HAS_SOBELYROW_AVX2
+LIBYUV_TARGET_AVX2
+void SobelYRow_AVX2(const uint8_t* src_y0,
+                    const uint8_t* src_y1,
+                    uint8_t* dst_sobely,
+                    int width) {
+  while (width > 0) {
+    __m256i a0 = _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)src_y0));
+    __m256i b0 = _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)src_y1));
+    __m256i a1 =
+        _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)(src_y0 + 1)));
+    __m256i b1 =
+        _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)(src_y1 + 1)));
+    __m256i a2 =
+        _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)(src_y0 + 2)));
+    __m256i b2 =
+        _mm256_cvtepu8_epi16(_mm_loadu_si128((const __m128i*)(src_y1 + 2)));
+    __m256i d0 = _mm256_sub_epi16(a0, b0);
+    __m256i d1 = _mm256_sub_epi16(a1, b1);
+    __m256i d2 = _mm256_sub_epi16(a2, b2);
+    __m256i sum =
+        _mm256_add_epi16(_mm256_add_epi16(d0, d2), _mm256_add_epi16(d1, d1));
+    sum = _mm256_abs_epi16(sum);
+    sum = _mm256_permute4x64_epi64(_mm256_packus_epi16(sum, sum), 0xd8);
+    _mm_storeu_si128((__m128i*)dst_sobely, _mm256_castsi256_si128(sum));
+    src_y0 += 16;
+    src_y1 += 16;
+    dst_sobely += 16;
+    width -= 16;
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_SOBELYROW_AVX2
+
+#ifdef HAS_SOBELROW_AVX2
+LIBYUV_TARGET_AVX2
+void SobelRow_AVX2(const uint8_t* src_sobelx,
+                   const uint8_t* src_sobely,
+                   uint8_t* dst_argb,
+                   int width) {
+  const __m256i v_alpha = _mm256_set1_epi32((int)0xff000000u);
+  while (width > 0) {
+    __m128i vx = _mm_loadu_si128((const __m128i*)src_sobelx);
+    __m128i vy = _mm_loadu_si128((const __m128i*)src_sobely);
+    __m256i s16 = _mm256_cvtepu8_epi16(_mm_adds_epu8(vx, vy));
+    s16 = _mm256_or_si256(s16, _mm256_slli_epi16(s16, 8));
+    s16 = _mm256_permute4x64_epi64(s16, 0xd8);
+    __m256i p0 = _mm256_or_si256(_mm256_unpacklo_epi16(s16, s16), v_alpha);
+    __m256i p1 = _mm256_or_si256(_mm256_unpackhi_epi16(s16, s16), v_alpha);
+    _mm256_storeu_si256((__m256i*)dst_argb, p0);
+    _mm256_storeu_si256((__m256i*)(dst_argb + 32), p1);
+    src_sobelx += 16;
+    src_sobely += 16;
+    dst_argb += 64;
+    width -= 16;
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_SOBELROW_AVX2
+
+#ifdef HAS_SOBELTOPLANEROW_AVX2
+LIBYUV_TARGET_AVX2
+void SobelToPlaneRow_AVX2(const uint8_t* src_sobelx,
+                          const uint8_t* src_sobely,
+                          uint8_t* dst_y,
+                          int width) {
+  while (width > 0) {
+    __m256i vx = _mm256_loadu_si256((const __m256i*)src_sobelx);
+    __m256i vy = _mm256_loadu_si256((const __m256i*)src_sobely);
+    _mm256_storeu_si256((__m256i*)dst_y, _mm256_adds_epu8(vx, vy));
+    src_sobelx += 32;
+    src_sobely += 32;
+    dst_y += 32;
+    width -= 32;
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_SOBELTOPLANEROW_AVX2
+
+#ifdef HAS_SOBELXYROW_AVX2
+LIBYUV_TARGET_AVX2
+void SobelXYRow_AVX2(const uint8_t* src_sobelx,
+                     const uint8_t* src_sobely,
+                     uint8_t* dst_argb,
+                     int width) {
+  const __m256i v_ff00 = _mm256_set1_epi16((short)0xff00u);
+  while (width > 0) {
+    __m128i vx = _mm_loadu_si128((const __m128i*)src_sobelx);
+    __m128i vy = _mm_loadu_si128((const __m128i*)src_sobely);
+    __m128i vs = _mm_adds_epu8(vx, vy);
+    __m256i bg =
+        _mm256_or_si256(_mm256_cvtepu8_epi16(vy),
+                        _mm256_slli_epi16(_mm256_cvtepu8_epi16(vs), 8));
+    __m256i ra = _mm256_or_si256(_mm256_cvtepu8_epi16(vx), v_ff00);
+    bg = _mm256_permute4x64_epi64(bg, 0xd8);
+    ra = _mm256_permute4x64_epi64(ra, 0xd8);
+    _mm256_storeu_si256((__m256i*)dst_argb, _mm256_unpacklo_epi16(bg, ra));
+    _mm256_storeu_si256((__m256i*)(dst_argb + 32),
+                        _mm256_unpackhi_epi16(bg, ra));
+    src_sobelx += 16;
+    src_sobely += 16;
+    dst_argb += 64;
+    width -= 16;
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_SOBELXYROW_AVX2
+
+#ifdef HAS_ARGBAFFINEROW_AVX2
+LIBYUV_API
+LIBYUV_TARGET_AVX2
+void ARGBAffineRow_AVX2(const uint8_t* src_argb,
+                        int src_argb_stride,
+                        uint8_t* dst_argb,
+                        const float* src_dudv,
+                        int width) {
+  static const float kRamp[8] = {0.0f, 1.0f, 2.0f, 3.0f,
+                                 4.0f, 5.0f, 6.0f, 7.0f};
+  float uv_tail[4] = {src_dudv[0], src_dudv[1], src_dudv[2], src_dudv[3]};
+  if (width >= 8) {
+    const __m256 ramp = _mm256_loadu_ps(kRamp);
+    const __m256 step8 = _mm256_set1_ps(8.0f);
+    __m256 du = _mm256_set1_ps(uv_tail[2]);
+    __m256 dv = _mm256_set1_ps(uv_tail[3]);
+    __m256 u =
+        _mm256_add_ps(_mm256_set1_ps(uv_tail[0]), _mm256_mul_ps(ramp, du));
+    __m256 v =
+        _mm256_add_ps(_mm256_set1_ps(uv_tail[1]), _mm256_mul_ps(ramp, dv));
+    du = _mm256_mul_ps(du, step8);
+    dv = _mm256_mul_ps(dv, step8);
+    const __m256i v_stride = _mm256_set1_epi32(src_argb_stride);
+    while (width >= 8) {
+      __m256i iu = _mm256_cvttps_epi32(u);
+      __m256i iv = _mm256_cvttps_epi32(v);
+      __m256i idx = _mm256_add_epi32(_mm256_slli_epi32(iu, 2),
+                                     _mm256_mullo_epi32(iv, v_stride));
+      __m256i pix = _mm256_i32gather_epi32((const int*)src_argb, idx, 1);
+      _mm256_storeu_si256((__m256i*)dst_argb, pix);
+      u = _mm256_add_ps(u, du);
+      v = _mm256_add_ps(v, dv);
+      dst_argb += 32;
+      width -= 8;
+    }
+    uv_tail[0] = _mm256_cvtss_f32(u);
+    uv_tail[1] = _mm256_cvtss_f32(v);
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    ARGBAffineRow_C(src_argb, src_argb_stride, dst_argb, uv_tail, width);
+  }
+}
+#endif  // HAS_ARGBAFFINEROW_AVX2
+
+#ifdef HAS_ARGBCOLORTABLEROW_AVX2
+LIBYUV_TARGET_AVX2
+void ARGBColorTableRow_AVX2(uint8_t* dst_argb,
+                            const uint8_t* table_argb,
+                            int width) {
+  if (width >= 8) {
+    const __m256i m0 = _mm256_set1_epi32(0x000000ff);
+    const __m256i m1 = _mm256_set1_epi32(0x0000ff00);
+    const __m256i m2 = _mm256_set1_epi32(0x00ff0000);
+    const __m256i m3 = _mm256_set1_epi32((int)0xff000000u);
+    while (width >= 8) {
+      __m256i v0 = _mm256_loadu_si256((const __m256i*)dst_argb);
+      __m256i c0 =
+          _mm256_and_si256(_mm256_i32gather_epi32((const int*)table_argb,
+                                                  _mm256_and_si256(v0, m0), 4),
+                           m0);
+      __m256i c1 = _mm256_and_si256(
+          _mm256_i32gather_epi32((const int*)table_argb,
+                                 _mm256_and_si256(_mm256_srli_epi32(v0, 8), m0),
+                                 4),
+          m1);
+      __m256i c2 = _mm256_and_si256(
+          _mm256_i32gather_epi32(
+              (const int*)table_argb,
+              _mm256_and_si256(_mm256_srli_epi32(v0, 16), m0), 4),
+          m2);
+      __m256i c3 =
+          _mm256_and_si256(_mm256_i32gather_epi32((const int*)table_argb,
+                                                  _mm256_srli_epi32(v0, 24), 4),
+                           m3);
+      __m256i out =
+          _mm256_or_si256(_mm256_or_si256(c0, c1), _mm256_or_si256(c2, c3));
+      _mm256_storeu_si256((__m256i*)dst_argb, out);
+      dst_argb += 32;
+      width -= 8;
+    }
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    ARGBColorTableRow_C(dst_argb, table_argb, width);
+  }
+}
+#endif  // HAS_ARGBCOLORTABLEROW_AVX2
+
+#ifdef HAS_RGBCOLORTABLEROW_AVX2
+LIBYUV_TARGET_AVX2
+void RGBColorTableRow_AVX2(uint8_t* dst_argb,
+                           const uint8_t* table_argb,
+                           int width) {
+  if (width >= 8) {
+    const __m256i m0 = _mm256_set1_epi32(0x000000ff);
+    const __m256i m1 = _mm256_set1_epi32(0x0000ff00);
+    const __m256i m2 = _mm256_set1_epi32(0x00ff0000);
+    const __m256i m3 = _mm256_set1_epi32((int)0xff000000u);
+    while (width >= 8) {
+      __m256i v0 = _mm256_loadu_si256((const __m256i*)dst_argb);
+      __m256i c0 =
+          _mm256_and_si256(_mm256_i32gather_epi32((const int*)table_argb,
+                                                  _mm256_and_si256(v0, m0), 4),
+                           m0);
+      __m256i c1 = _mm256_and_si256(
+          _mm256_i32gather_epi32((const int*)table_argb,
+                                 _mm256_and_si256(_mm256_srli_epi32(v0, 8), m0),
+                                 4),
+          m1);
+      __m256i c2 = _mm256_and_si256(
+          _mm256_i32gather_epi32(
+              (const int*)table_argb,
+              _mm256_and_si256(_mm256_srli_epi32(v0, 16), m0), 4),
+          m2);
+      __m256i c3 = _mm256_and_si256(v0, m3);
+      __m256i out =
+          _mm256_or_si256(_mm256_or_si256(c0, c1), _mm256_or_si256(c2, c3));
+      _mm256_storeu_si256((__m256i*)dst_argb, out);
+      dst_argb += 32;
+      width -= 8;
+    }
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    RGBColorTableRow_C(dst_argb, table_argb, width);
+  }
+}
+#endif  // HAS_RGBCOLORTABLEROW_AVX2
+
+#ifdef HAS_ARGBLUMACOLORTABLEROW_AVX2
+LIBYUV_TARGET_AVX2
+void ARGBLumaColorTableRow_AVX2(const uint8_t* src_argb,
+                                uint8_t* dst_argb,
+                                int width,
+                                const uint8_t* luma,
+                                uint32_t lumacoeff) {
+  if (width >= 8) {
+    const __m256i v_coeff = _mm256_set1_epi32((int)(lumacoeff & 0x00ffffffu));
+    const __m256i m_ff = _mm256_set1_epi32(0x000000ff);
+    const __m256i m_7f00 = _mm256_set1_epi32(0x00007f00);
+    const __m256i m_18 = _mm256_set1_epi32(0x00000018);
+    const __m256i m_alpha = _mm256_set1_epi32((int)0xff000000u);
+    while (width >= 8) {
+      __m256i v0 = _mm256_loadu_si256((const __m256i*)src_argb);
+      src_argb += 32;
+      __m256i y = _mm256_maddubs_epi16(v0, v_coeff);
+      y = _mm256_hadd_epi16(y, y);
+      y = _mm256_permute4x64_epi64(y, 0xd8);
+      y = _mm256_and_si256(_mm256_cvtepu16_epi32(_mm256_castsi256_si128(y)),
+                           m_7f00);
+
+      __m256i b_idx =
+          _mm256_srli_epi32(_mm256_or_si256(_mm256_and_si256(v0, m_ff), y), 2);
+      __m256i b_val = _mm256_i32gather_epi32((const int*)luma, b_idx, 4);
+      __m256i b_sh = _mm256_and_si256(_mm256_slli_epi32(v0, 3), m_18);
+      b_val = _mm256_and_si256(_mm256_srlv_epi32(b_val, b_sh), m_ff);
+
+      __m256i g_idx = _mm256_srli_epi32(
+          _mm256_or_si256(_mm256_and_si256(_mm256_srli_epi32(v0, 8), m_ff), y),
+          2);
+      __m256i g_val = _mm256_i32gather_epi32((const int*)luma, g_idx, 4);
+      __m256i g_sh = _mm256_and_si256(_mm256_srli_epi32(v0, 5), m_18);
+      g_val = _mm256_slli_epi32(
+          _mm256_and_si256(_mm256_srlv_epi32(g_val, g_sh), m_ff), 8);
+
+      __m256i r_idx = _mm256_srli_epi32(
+          _mm256_or_si256(_mm256_and_si256(_mm256_srli_epi32(v0, 16), m_ff), y),
+          2);
+      __m256i r_val = _mm256_i32gather_epi32((const int*)luma, r_idx, 4);
+      __m256i r_sh = _mm256_and_si256(_mm256_srli_epi32(v0, 13), m_18);
+      r_val = _mm256_slli_epi32(
+          _mm256_and_si256(_mm256_srlv_epi32(r_val, r_sh), m_ff), 16);
+
+      __m256i a_val = _mm256_and_si256(v0, m_alpha);
+      __m256i out = _mm256_or_si256(_mm256_or_si256(b_val, g_val),
+                                    _mm256_or_si256(r_val, a_val));
+      _mm256_storeu_si256((__m256i*)dst_argb, out);
+      dst_argb += 32;
+      width -= 8;
+    }
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    ARGBLumaColorTableRow_C(src_argb, dst_argb, width, luma, lumacoeff);
+  }
+}
+#endif  // HAS_ARGBLUMACOLORTABLEROW_AVX2
+
+#ifdef HAS_BYTETOFLOATROW_AVX2
+LIBYUV_TARGET_AVX2
+void ByteToFloatRow_AVX2(const uint8_t* src,
+                         float* dst,
+                         float scale,
+                         int width) {
+  const __m256 v_scale = _mm256_set1_ps(scale);
+  while (width > 0) {
+    __m256i i0 = _mm256_cvtepu8_epi32(_mm_loadl_epi64((const __m128i*)src));
+    __m256i i1 =
+        _mm256_cvtepu8_epi32(_mm_loadl_epi64((const __m128i*)(src + 8)));
+    _mm256_storeu_ps(dst, _mm256_mul_ps(_mm256_cvtepi32_ps(i0), v_scale));
+    _mm256_storeu_ps(dst + 8, _mm256_mul_ps(_mm256_cvtepi32_ps(i1), v_scale));
+    src += 16;
+    dst += 16;
+    width -= 16;
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_BYTETOFLOATROW_AVX2
+
+#ifdef HAS_GAUSSROW_AVX2
+LIBYUV_TARGET_AVX2
+void GaussRow_AVX2(const uint32_t* src, uint16_t* dst, int width) {
+  static const int8_t kShuf32To16[16] = {0,  1,  4,  5,  8,  9,  12, 13,
+                                         -1, -1, -1, -1, -1, -1, -1, -1};
+  if (width >= 8) {
+    const __m256i v_128 = _mm256_set1_epi32(128);
+    const __m256i v_shuf = _mm256_broadcastsi128_si256(
+        _mm_loadu_si128((const __m128i*)kShuf32To16));
+    while (width >= 8) {
+      __m256i s0 = _mm256_loadu_si256((const __m256i*)src);
+      __m256i s1 = _mm256_loadu_si256((const __m256i*)(src + 1));
+      __m256i s2 = _mm256_loadu_si256((const __m256i*)(src + 2));
+      __m256i s3 = _mm256_loadu_si256((const __m256i*)(src + 3));
+      __m256i s4 = _mm256_loadu_si256((const __m256i*)(src + 4));
+      src += 8;
+      __m256i sum04 = _mm256_add_epi32(s0, s4);
+      __m256i sum13 = _mm256_slli_epi32(_mm256_add_epi32(s1, s3), 2);
+      __m256i sum2 =
+          _mm256_add_epi32(_mm256_slli_epi32(s2, 2), _mm256_slli_epi32(s2, 1));
+      __m256i acc =
+          _mm256_srli_epi32(_mm256_add_epi32(_mm256_add_epi32(sum04, sum13),
+                                             _mm256_add_epi32(sum2, v_128)),
+                            8);
+      acc = _mm256_permute4x64_epi64(_mm256_shuffle_epi8(acc, v_shuf), 0xd8);
+      _mm_storeu_si128((__m128i*)dst, _mm256_castsi256_si128(acc));
+      dst += 8;
+      width -= 8;
+    }
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    GaussRow_C(src, dst, width);
+  }
+}
+#endif  // HAS_GAUSSROW_AVX2
+
+#ifdef HAS_GAUSSROW_F32_AVX2
+LIBYUV_TARGET_AVX2
+void GaussRow_F32_AVX2(const float* src, float* dst, int width) {
+  if (width >= 8) {
+    const __m256 v4 = _mm256_set1_ps(4.0f);
+    const __m256 v6 = _mm256_set1_ps(6.0f);
+    const __m256 v_scale = _mm256_set1_ps(1.0f / 256.0f);
+    while (width >= 8) {
+      __m256 acc = _mm256_loadu_ps(src);
+      acc = _mm256_add_ps(acc, _mm256_mul_ps(_mm256_loadu_ps(src + 1), v4));
+      acc = _mm256_add_ps(acc, _mm256_mul_ps(_mm256_loadu_ps(src + 2), v6));
+      acc = _mm256_add_ps(acc, _mm256_mul_ps(_mm256_loadu_ps(src + 3), v4));
+      acc = _mm256_add_ps(acc, _mm256_loadu_ps(src + 4));
+      acc = _mm256_mul_ps(acc, v_scale);
+      _mm256_storeu_ps(dst, acc);
+      src += 8;
+      dst += 8;
+      width -= 8;
+    }
+    _mm256_zeroupper();
+  }
+  if (width > 0) {
+    GaussRow_F32_C(src, dst, width);
+  }
+}
+#endif  // HAS_GAUSSROW_F32_AVX2
+
+#ifdef HAS_SETROW_AVX2
+LIBYUV_TARGET_AVX2
+void SetRow_AVX2(uint8_t* dst, uint8_t v8, int width) {
+  const __m256i v = _mm256_set1_epi8((char)v8);
+  while (width >= 64) {
+    _mm256_storeu_si256((__m256i*)dst, v);
+    _mm256_storeu_si256((__m256i*)(dst + 32), v);
+    dst += 64;
+    width -= 64;
+  }
+  if (width > 0) {
+    _mm256_storeu_si256((__m256i*)dst, v);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_SETROW_AVX2
+
+#ifdef HAS_ARGBSETROW_AVX2
+LIBYUV_TARGET_AVX2
+void ARGBSetRow_AVX2(uint8_t* dst_argb, uint32_t v32, int width) {
+  const __m256i v = _mm256_set1_epi32((int)v32);
+  while (width >= 16) {
+    _mm256_storeu_si256((__m256i*)dst_argb, v);
+    _mm256_storeu_si256((__m256i*)(dst_argb + 32), v);
+    dst_argb += 64;
+    width -= 16;
+  }
+  if (width > 0) {
+    _mm256_storeu_si256((__m256i*)dst_argb, v);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_ARGBSETROW_AVX2
+
+#ifdef HAS_COPYROW_16_AVX2
+LIBYUV_TARGET_AVX2
+void CopyRow_16_AVX2(const uint16_t* src, uint16_t* dst, int width) {
+  while (width > 0) {
+    __m256i v0 = _mm256_loadu_si256((const __m256i*)src);
+    __m256i v1 = _mm256_loadu_si256((const __m256i*)(src + 16));
+    _mm256_storeu_si256((__m256i*)dst, v0);
+    _mm256_storeu_si256((__m256i*)(dst + 16), v1);
+    src += 32;
+    dst += 32;
+    width -= 32;
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_COPYROW_16_AVX2
+
+#ifdef HAS_DETILEROW_AVX2
+LIBYUV_TARGET_AVX2
+void DetileRow_AVX2(const uint8_t* src,
+                    ptrdiff_t src_tile_stride,
+                    uint8_t* dst,
+                    int width) {
+  while (width >= 32) {
+    __m128i t0 = _mm_loadu_si128((const __m128i*)src);
+    __m128i t1 = _mm_loadu_si128((const __m128i*)(src + src_tile_stride));
+    src += 2 * src_tile_stride;
+    _mm256_storeu_si256((__m256i*)dst, _mm256_set_m128i(t1, t0));
+    dst += 32;
+    width -= 32;
+  }
+  if (width > 0) {
+    _mm_storeu_si128((__m128i*)dst, _mm_loadu_si128((const __m128i*)src));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_DETILEROW_AVX2
+
+#ifdef HAS_DETILEROW_16_AVX2
+LIBYUV_TARGET_AVX2
+void DetileRow_16_AVX2(const uint16_t* src,
+                       ptrdiff_t src_tile_stride,
+                       uint16_t* dst,
+                       int width) {
+  while (width >= 32) {
+    __m256i t0 = _mm256_loadu_si256((const __m256i*)src);
+    __m256i t1 = _mm256_loadu_si256((const __m256i*)(src + src_tile_stride));
+    src += 2 * src_tile_stride;
+    _mm256_storeu_si256((__m256i*)dst, t0);
+    _mm256_storeu_si256((__m256i*)(dst + 16), t1);
+    dst += 32;
+    width -= 32;
+  }
+  if (width > 0) {
+    _mm256_storeu_si256((__m256i*)dst, _mm256_loadu_si256((const __m256i*)src));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_DETILEROW_16_AVX2
+
+#ifdef HAS_DETILESPLITUVROW_AVX2
+LIBYUV_TARGET_AVX2
+void DetileSplitUVRow_AVX2(const uint8_t* src_uv,
+                           ptrdiff_t src_tile_stride,
+                           uint8_t* dst_u,
+                           uint8_t* dst_v,
+                           int width) {
+  static const uint8_t kDeinterlaceUV_Win[16] = {0, 2, 4, 6, 8, 10, 12, 14,
+                                                 1, 3, 5, 7, 9, 11, 13, 15};
+  const __m128i shuf128 = _mm_loadu_si128((const __m128i*)kDeinterlaceUV_Win);
+  const __m256i shuf256 = _mm256_broadcastsi128_si256(shuf128);
+  while (width >= 32) {
+    __m128i t0 = _mm_loadu_si128((const __m128i*)src_uv);
+    __m128i t1 = _mm_loadu_si128((const __m128i*)(src_uv + src_tile_stride));
+    src_uv += 2 * src_tile_stride;
+    __m256i v = _mm256_permute4x64_epi64(
+        _mm256_shuffle_epi8(_mm256_set_m128i(t1, t0), shuf256), 0xd8);
+    _mm_storeu_si128((__m128i*)dst_u, _mm256_castsi256_si128(v));
+    _mm_storeu_si128((__m128i*)dst_v, _mm256_extracti128_si256(v, 1));
+    dst_u += 16;
+    dst_v += 16;
+    width -= 32;
+  }
+  if (width > 0) {
+    __m128i v =
+        _mm_shuffle_epi8(_mm_loadu_si128((const __m128i*)src_uv), shuf128);
+    _mm_storel_epi64((__m128i*)dst_u, v);
+    _mm_storel_epi64((__m128i*)dst_v, _mm_unpackhi_epi64(v, v));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_DETILESPLITUVROW_AVX2
+
+#if defined(__x86_64__) || defined(_M_X64)
+
+#ifdef HAS_ARGB1555TOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void ARGB1555ToARGBRow_AVX512BW(const uint8_t* src_argb1555,
+                                uint8_t* dst_argb,
+                                int width) {
+  const __m512i zmm_f800 = _mm512_set1_epi16((short)0xf800);
+  const __m512i zmm_03e0 = _mm512_set1_epi16(0x03e0);
+  const __m512i zmm_ff00 = _mm512_set1_epi16((short)0xff00);
+  const __m512i zmm_0108 = _mm512_set1_epi16(0x0108);
+  const __m512i zmm_4200 = _mm512_set1_epi16(0x4200);
+  while (width >= 32) {
+    __m512i v0 = _mm512_loadu_si512((const __m512i*)src_argb1555);
+    src_argb1555 += 64;
+    __m512i r = _mm512_mulhi_epu16(
+        _mm512_and_si512(_mm512_slli_epi16(v0, 1), zmm_f800), zmm_0108);
+    __m512i b = _mm512_mulhi_epu16(_mm512_slli_epi16(v0, 11), zmm_0108);
+    __m512i rb = _mm512_or_si512(_mm512_slli_epi16(r, 8), b);
+    __m512i g = _mm512_mulhi_epu16(_mm512_and_si512(v0, zmm_03e0), zmm_4200);
+    __m512i a = _mm512_and_si512(_mm512_srai_epi16(v0, 8), zmm_ff00);
+    __m512i ga = _mm512_or_si512(g, a);
+    __m512i lo = _mm512_unpacklo_epi8(rb, ga);
+    __m512i hi = _mm512_unpackhi_epi8(rb, ga);
+    __m512i out0 = _mm512_shuffle_i64x2(lo, hi, 0x44);
+    __m512i out1 = _mm512_shuffle_i64x2(lo, hi, 0xee);
+    out0 = _mm512_shuffle_i64x2(out0, out0, 0xd8);
+    out1 = _mm512_shuffle_i64x2(out1, out1, 0xd8);
+    _mm512_storeu_si512((__m512i*)dst_argb, out0);
+    _mm512_storeu_si512((__m512i*)(dst_argb + 64), out1);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    __mmask32 k = (__mmask32)((1ULL << width) - 1ULL);
+    __m512i v0 = _mm512_maskz_loadu_epi16(k, src_argb1555);
+    __m512i r = _mm512_mulhi_epu16(
+        _mm512_and_si512(_mm512_slli_epi16(v0, 1), zmm_f800), zmm_0108);
+    __m512i b = _mm512_mulhi_epu16(_mm512_slli_epi16(v0, 11), zmm_0108);
+    __m512i rb = _mm512_or_si512(_mm512_slli_epi16(r, 8), b);
+    __m512i g = _mm512_mulhi_epu16(_mm512_and_si512(v0, zmm_03e0), zmm_4200);
+    __m512i a = _mm512_and_si512(_mm512_srai_epi16(v0, 8), zmm_ff00);
+    __m512i ga = _mm512_or_si512(g, a);
+    __m512i lo = _mm512_unpacklo_epi8(rb, ga);
+    __m512i hi = _mm512_unpackhi_epi8(rb, ga);
+    __m512i out0 = _mm512_shuffle_i64x2(lo, hi, 0x44);
+    __m512i out1 = _mm512_shuffle_i64x2(lo, hi, 0xee);
+    out0 = _mm512_shuffle_i64x2(out0, out0, 0xd8);
+    out1 = _mm512_shuffle_i64x2(out1, out1, 0xd8);
+    if (width > 16) {
+      _mm512_storeu_si512((__m512i*)dst_argb, out0);
+      _mm512_mask_storeu_epi32(dst_argb + 64, (__mmask16)(k >> 16), out1);
+    } else {
+      _mm512_mask_storeu_epi32(dst_argb, (__mmask16)k, out0);
+    }
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_ARGB1555TOARGBROW_AVX512BW
+
+#ifdef HAS_ARGBTORGB565DITHERROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void ARGBToRGB565DitherRow_AVX512BW(const uint8_t* src_argb,
+                                    uint8_t* dst_rgb,
+                                    uint32_t dither4,
+                                    int width) {
+  __m128i d128 = _mm_cvtsi32_si128((int)dither4);
+  d128 = _mm_unpacklo_epi8(d128, d128);
+  d128 = _mm_unpacklo_epi16(d128, d128);
+  const __m512i zmm_dither = _mm512_broadcast_i32x4(d128);
+  const __m512i zmm_001f = _mm512_set1_epi32(0x0000001f);
+  const __m512i zmm_07e0 = _mm512_set1_epi32(0x000007e0);
+  const __m512i zmm_f800 = _mm512_set1_epi32(0x0000f800);
+  while (width >= 16) {
+    __m512i v0 = _mm512_adds_epu8(_mm512_loadu_si512((const __m512i*)src_argb),
+                                  zmm_dither);
+    src_argb += 64;
+    __m512i b = _mm512_and_si512(_mm512_srli_epi32(v0, 3), zmm_001f);
+    __m512i g = _mm512_and_si512(_mm512_srli_epi32(v0, 5), zmm_07e0);
+    __m512i r = _mm512_and_si512(_mm512_srli_epi32(v0, 8), zmm_f800);
+    __m256i rgb16 =
+        _mm512_cvtepi32_epi16(_mm512_or_si512(_mm512_or_si512(b, g), r));
+    _mm256_storeu_si256((__m256i*)dst_rgb, rgb16);
+    dst_rgb += 32;
+    width -= 16;
+  }
+  if (width > 0) {
+    __mmask16 k = (__mmask16)((1u << width) - 1u);
+    __m512i v0 =
+        _mm512_adds_epu8(_mm512_maskz_loadu_epi32(k, src_argb), zmm_dither);
+    __m512i b = _mm512_and_si512(_mm512_srli_epi32(v0, 3), zmm_001f);
+    __m512i g = _mm512_and_si512(_mm512_srli_epi32(v0, 5), zmm_07e0);
+    __m512i r = _mm512_and_si512(_mm512_srli_epi32(v0, 8), zmm_f800);
+    __m256i rgb16 =
+        _mm512_cvtepi32_epi16(_mm512_or_si512(_mm512_or_si512(b, g), r));
+    _mm256_mask_storeu_epi16(dst_rgb, k, rgb16);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_ARGBTORGB565DITHERROW_AVX512BW
+
+#ifdef HAS_ARGBTORGB565ROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void ARGBToRGB565Row_AVX512BW(const uint8_t* src_argb,
+                              uint8_t* dst_rgb,
+                              int width) {
+  const __m512i zmm_001f = _mm512_set1_epi32(0x0000001f);
+  const __m512i zmm_07e0 = _mm512_set1_epi32(0x000007e0);
+  const __m512i zmm_f800 = _mm512_set1_epi32(0x0000f800);
+  while (width >= 16) {
+    __m512i v0 = _mm512_loadu_si512((const __m512i*)src_argb);
+    src_argb += 64;
+    __m512i b = _mm512_and_si512(_mm512_srli_epi32(v0, 3), zmm_001f);
+    __m512i g = _mm512_and_si512(_mm512_srli_epi32(v0, 5), zmm_07e0);
+    __m512i r = _mm512_and_si512(_mm512_srli_epi32(v0, 8), zmm_f800);
+    __m256i rgb16 =
+        _mm512_cvtepi32_epi16(_mm512_or_si512(_mm512_or_si512(b, g), r));
+    _mm256_storeu_si256((__m256i*)dst_rgb, rgb16);
+    dst_rgb += 32;
+    width -= 16;
+  }
+  if (width > 0) {
+    __mmask16 k = (__mmask16)((1u << width) - 1u);
+    __m512i v0 = _mm512_maskz_loadu_epi32(k, src_argb);
+    __m512i b = _mm512_and_si512(_mm512_srli_epi32(v0, 3), zmm_001f);
+    __m512i g = _mm512_and_si512(_mm512_srli_epi32(v0, 5), zmm_07e0);
+    __m512i r = _mm512_and_si512(_mm512_srli_epi32(v0, 8), zmm_f800);
+    __m256i rgb16 =
+        _mm512_cvtepi32_epi16(_mm512_or_si512(_mm512_or_si512(b, g), r));
+    _mm256_mask_storeu_epi16(dst_rgb, k, rgb16);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_ARGBTORGB565ROW_AVX512BW
+
+#ifdef HAS_MERGEUVROW_16_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void MergeUVRow_16_AVX512BW(const uint16_t* src_u,
+                            const uint16_t* src_v,
+                            uint16_t* dst_uv,
+                            int depth,
+                            int width) {
+  const __m128i sh_u = _mm_cvtsi32_si128(16 - depth);
+  const __m128i sh_v = _mm_cvtsi32_si128(32 - depth);
+  while (width >= 16) {
+    __m512i u32 =
+        _mm512_cvtepu16_epi32(_mm256_loadu_si256((const __m256i*)src_u));
+    __m512i v32 =
+        _mm512_cvtepu16_epi32(_mm256_loadu_si256((const __m256i*)src_v));
+    src_u += 16;
+    src_v += 16;
+    u32 = _mm512_sll_epi16(u32, sh_u);
+    v32 = _mm512_sll_epi32(v32, sh_v);
+    _mm512_storeu_si512((__m512i*)dst_uv, _mm512_or_si512(u32, v32));
+    dst_uv += 32;
+    width -= 16;
+  }
+  if (width > 0) {
+    __mmask16 k = (__mmask16)((1u << width) - 1u);
+    __m512i u32 = _mm512_cvtepu16_epi32(_mm256_maskz_loadu_epi16(k, src_u));
+    __m512i v32 = _mm512_cvtepu16_epi32(_mm256_maskz_loadu_epi16(k, src_v));
+    u32 = _mm512_sll_epi16(u32, sh_u);
+    v32 = _mm512_sll_epi32(v32, sh_v);
+    _mm512_mask_storeu_epi32(dst_uv, k, _mm512_or_si512(u32, v32));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_MERGEUVROW_16_AVX512BW
+
+#ifdef HAS_DIVIDEROW_16_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void DivideRow_16_AVX512BW(const uint16_t* src_y,
+                           uint16_t* dst_y,
+                           int scale,
+                           int width) {
+  const __m512i zmm_scale = _mm512_set1_epi16((short)scale);
+  while (width >= 32) {
+    __m512i v = _mm512_loadu_si512((const __m512i*)src_y);
+    src_y += 32;
+    _mm512_storeu_si512((__m512i*)dst_y, _mm512_mulhi_epu16(v, zmm_scale));
+    dst_y += 32;
+    width -= 32;
+  }
+  if (width > 0) {
+    __mmask32 k = (__mmask32)((1u << width) - 1u);
+    __m512i v = _mm512_maskz_loadu_epi16(k, src_y);
+    _mm512_mask_storeu_epi16(dst_y, k, _mm512_mulhi_epu16(v, zmm_scale));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_DIVIDEROW_16_AVX512BW
+
+#ifdef HAS_YUY2TOYROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void YUY2ToYRow_AVX512BW(const uint8_t* src_yuy2, uint8_t* dst_y, int width) {
+  while (width >= 32) {
+    __m512i v = _mm512_loadu_si512((const __m512i*)src_yuy2);
+    src_yuy2 += 64;
+    _mm256_storeu_si256((__m256i*)dst_y, _mm512_cvtepi16_epi8(v));
+    dst_y += 32;
+    width -= 32;
+  }
+  if (width > 0) {
+    __mmask32 k = (__mmask32)((1u << width) - 1u);
+    __m512i v = _mm512_maskz_loadu_epi16(k, src_yuy2);
+    _mm256_mask_storeu_epi8(dst_y, k, _mm512_cvtepi16_epi8(v));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_YUY2TOYROW_AVX512BW
+
+#ifdef HAS_YUY2TOUVROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void YUY2ToUVRow_AVX512BW(const uint8_t* src_yuy2,
+                          int stride_yuy2,
+                          uint8_t* dst_u,
+                          uint8_t* dst_v,
+                          int width) {
+  const ptrdiff_t stride = (ptrdiff_t)stride_yuy2;
+  while (width >= 32) {
+    __m512i r0 = _mm512_loadu_si512((const __m512i*)src_yuy2);
+    __m512i r1 = _mm512_loadu_si512((const __m512i*)(src_yuy2 + stride));
+    src_yuy2 += 64;
+    __m512i avg = _mm512_avg_epu8(r0, r1);
+    _mm_storeu_si128((__m128i*)dst_u,
+                     _mm512_cvtepi32_epi8(_mm512_srli_epi32(avg, 8)));
+    _mm_storeu_si128((__m128i*)dst_v,
+                     _mm512_cvtepi32_epi8(_mm512_srli_epi32(avg, 24)));
+    dst_u += 16;
+    dst_v += 16;
+    width -= 32;
+  }
+  if (width > 0) {
+    __mmask16 k = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m512i r0 = _mm512_maskz_loadu_epi32(k, src_yuy2);
+    __m512i r1 = _mm512_maskz_loadu_epi32(k, src_yuy2 + stride);
+    __m512i avg = _mm512_avg_epu8(r0, r1);
+    _mm_mask_storeu_epi8(dst_u, k,
+                         _mm512_cvtepi32_epi8(_mm512_srli_epi32(avg, 8)));
+    _mm_mask_storeu_epi8(dst_v, k,
+                         _mm512_cvtepi32_epi8(_mm512_srli_epi32(avg, 24)));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_YUY2TOUVROW_AVX512BW
+
+#ifdef HAS_UYVYTOYROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void UYVYToYRow_AVX512BW(const uint8_t* src_uyvy, uint8_t* dst_y, int width) {
+  while (width >= 32) {
+    __m512i v = _mm512_loadu_si512((const __m512i*)src_uyvy);
+    src_uyvy += 64;
+    _mm256_storeu_si256((__m256i*)dst_y,
+                        _mm512_cvtepi16_epi8(_mm512_srli_epi16(v, 8)));
+    dst_y += 32;
+    width -= 32;
+  }
+  if (width > 0) {
+    __mmask32 k = (__mmask32)((1u << width) - 1u);
+    __m512i v = _mm512_maskz_loadu_epi16(k, src_uyvy);
+    _mm256_mask_storeu_epi8(dst_y, k,
+                            _mm512_cvtepi16_epi8(_mm512_srli_epi16(v, 8)));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_UYVYTOYROW_AVX512BW
+
+#ifdef HAS_UYVYTOUVROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void UYVYToUVRow_AVX512BW(const uint8_t* src_uyvy,
+                          int stride_uyvy,
+                          uint8_t* dst_u,
+                          uint8_t* dst_v,
+                          int width) {
+  const ptrdiff_t stride = (ptrdiff_t)stride_uyvy;
+  while (width >= 32) {
+    __m512i r0 = _mm512_loadu_si512((const __m512i*)src_uyvy);
+    __m512i r1 = _mm512_loadu_si512((const __m512i*)(src_uyvy + stride));
+    src_uyvy += 64;
+    __m512i avg = _mm512_avg_epu8(r0, r1);
+    _mm_storeu_si128((__m128i*)dst_u, _mm512_cvtepi32_epi8(avg));
+    _mm_storeu_si128((__m128i*)dst_v,
+                     _mm512_cvtepi32_epi8(_mm512_srli_epi32(avg, 16)));
+    dst_u += 16;
+    dst_v += 16;
+    width -= 32;
+  }
+  if (width > 0) {
+    __mmask16 k = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m512i r0 = _mm512_maskz_loadu_epi32(k, src_uyvy);
+    __m512i r1 = _mm512_maskz_loadu_epi32(k, src_uyvy + stride);
+    __m512i avg = _mm512_avg_epu8(r0, r1);
+    _mm_mask_storeu_epi8(dst_u, k, _mm512_cvtepi32_epi8(avg));
+    _mm_mask_storeu_epi8(dst_v, k,
+                         _mm512_cvtepi32_epi8(_mm512_srli_epi32(avg, 16)));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_UYVYTOUVROW_AVX512BW
+
+#ifdef HAS_ARGBSEPIAROW_AVX512VNNI
+LIBYUV_TARGET_AVX512VNNI
+void ARGBSepiaRow_AVX512VNNI(uint8_t* dst_argb, int width) {
+  const __m512i zero = _mm512_setzero_si512();
+  const __m512i c_b = _mm512_set1_epi32(0x00234411);
+  const __m512i c_g = _mm512_set1_epi32(0x002d5816);
+  const __m512i c_r = _mm512_set1_epi32(0x00326218);
+  const __m512i max255 = _mm512_set1_epi32(255);
+  const __m512i a_mask = _mm512_set1_epi32((int)0xff000000u);
+  while (width >= 16) {
+    __m512i v0 = _mm512_loadu_si512((const __m512i*)dst_argb);
+    __m512i b = _mm512_srli_epi32(_mm512_dpbusd_epi32(zero, v0, c_b), 7);
+    __m512i g = _mm512_min_epu32(
+        _mm512_srli_epi32(_mm512_dpbusd_epi32(zero, v0, c_g), 7), max255);
+    __m512i r = _mm512_min_epu32(
+        _mm512_srli_epi32(_mm512_dpbusd_epi32(zero, v0, c_r), 7), max255);
+    __m512i a = _mm512_and_si512(v0, a_mask);
+    __m512i out = _mm512_or_si512(_mm512_or_si512(b, _mm512_slli_epi32(g, 8)),
+                                  _mm512_or_si512(_mm512_slli_epi32(r, 16), a));
+    _mm512_storeu_si512((__m512i*)dst_argb, out);
+    dst_argb += 64;
+    width -= 16;
+  }
+  if (width > 0) {
+    __mmask16 k = (__mmask16)((1u << width) - 1u);
+    __m512i v0 = _mm512_maskz_loadu_epi32(k, dst_argb);
+    __m512i b = _mm512_srli_epi32(_mm512_dpbusd_epi32(zero, v0, c_b), 7);
+    __m512i g = _mm512_min_epu32(
+        _mm512_srli_epi32(_mm512_dpbusd_epi32(zero, v0, c_g), 7), max255);
+    __m512i r = _mm512_min_epu32(
+        _mm512_srli_epi32(_mm512_dpbusd_epi32(zero, v0, c_r), 7), max255);
+    __m512i a = _mm512_and_si512(v0, a_mask);
+    __m512i out = _mm512_or_si512(_mm512_or_si512(b, _mm512_slli_epi32(g, 8)),
+                                  _mm512_or_si512(_mm512_slli_epi32(r, 16), a));
+    _mm512_mask_storeu_epi32(dst_argb, k, out);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_ARGBSEPIAROW_AVX512VNNI
+
+#ifdef HAS_ARGBCOLORMATRIXROW_AVX512VNNI
+LIBYUV_TARGET_AVX512VNNI
+void ARGBColorMatrixRow_AVX512VNNI(const uint8_t* src_argb,
+                                   uint8_t* dst_argb,
+                                   const int8_t* matrix_argb,
+                                   int width) {
+  const __m512i zero = _mm512_setzero_si512();
+  const __m512i max255 = _mm512_set1_epi32(255);
+  const __m128i m128 = _mm_loadu_si128((const __m128i*)matrix_argb);
+  const __m512i m0 = _mm512_set1_epi32(_mm_cvtsi128_si32(m128));
+  const __m512i m1 =
+      _mm512_set1_epi32(_mm_cvtsi128_si32(_mm_srli_si128(m128, 4)));
+  const __m512i m2 =
+      _mm512_set1_epi32(_mm_cvtsi128_si32(_mm_srli_si128(m128, 8)));
+  const __m512i m3 =
+      _mm512_set1_epi32(_mm_cvtsi128_si32(_mm_srli_si128(m128, 12)));
+  while (width >= 16) {
+    __m512i v0 = _mm512_loadu_si512((const __m512i*)src_argb);
+    src_argb += 64;
+    __m512i b = _mm512_min_epu32(
+        _mm512_max_epi32(
+            _mm512_srai_epi32(_mm512_dpbusd_epi32(zero, v0, m0), 6), zero),
+        max255);
+    __m512i g = _mm512_min_epu32(
+        _mm512_max_epi32(
+            _mm512_srai_epi32(_mm512_dpbusd_epi32(zero, v0, m1), 6), zero),
+        max255);
+    __m512i r = _mm512_min_epu32(
+        _mm512_max_epi32(
+            _mm512_srai_epi32(_mm512_dpbusd_epi32(zero, v0, m2), 6), zero),
+        max255);
+    __m512i a = _mm512_min_epu32(
+        _mm512_max_epi32(
+            _mm512_srai_epi32(_mm512_dpbusd_epi32(zero, v0, m3), 6), zero),
+        max255);
+    __m512i out = _mm512_or_si512(
+        _mm512_or_si512(b, _mm512_slli_epi32(g, 8)),
+        _mm512_or_si512(_mm512_slli_epi32(r, 16), _mm512_slli_epi32(a, 24)));
+    _mm512_storeu_si512((__m512i*)dst_argb, out);
+    dst_argb += 64;
+    width -= 16;
+  }
+  if (width > 0) {
+    __mmask16 k = (__mmask16)((1u << width) - 1u);
+    __m512i v0 = _mm512_maskz_loadu_epi32(k, src_argb);
+    __m512i b = _mm512_min_epu32(
+        _mm512_max_epi32(
+            _mm512_srai_epi32(_mm512_dpbusd_epi32(zero, v0, m0), 6), zero),
+        max255);
+    __m512i g = _mm512_min_epu32(
+        _mm512_max_epi32(
+            _mm512_srai_epi32(_mm512_dpbusd_epi32(zero, v0, m1), 6), zero),
+        max255);
+    __m512i r = _mm512_min_epu32(
+        _mm512_max_epi32(
+            _mm512_srai_epi32(_mm512_dpbusd_epi32(zero, v0, m2), 6), zero),
+        max255);
+    __m512i a = _mm512_min_epu32(
+        _mm512_max_epi32(
+            _mm512_srai_epi32(_mm512_dpbusd_epi32(zero, v0, m3), 6), zero),
+        max255);
+    __m512i out = _mm512_or_si512(
+        _mm512_or_si512(b, _mm512_slli_epi32(g, 8)),
+        _mm512_or_si512(_mm512_slli_epi32(r, 16), _mm512_slli_epi32(a, 24)));
+    _mm512_mask_storeu_epi32(dst_argb, k, out);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_ARGBCOLORMATRIXROW_AVX512VNNI
+
+#ifdef HAS_HALFFLOATROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void HalfFloatRow_AVX512BW(const uint16_t* src,
+                           uint16_t* dst,
+                           float scale,
+                           int width) {
+  const __m512 vscale = _mm512_set1_ps(scale);
+  const __m512 vmult = _mm512_set1_ps(1.9259299444e-34f);
+  while (width >= 16) {
+    __m512i s32 =
+        _mm512_cvtepu16_epi32(_mm256_loadu_si256((const __m256i*)src));
+    src += 16;
+    __m512 f =
+        _mm512_mul_ps(_mm512_mul_ps(_mm512_cvtepi32_ps(s32), vscale), vmult);
+    __m256i h16 =
+        _mm512_cvtepi32_epi16(_mm512_srli_epi32(_mm512_castps_si512(f), 13));
+    _mm256_storeu_si256((__m256i*)dst, h16);
+    dst += 16;
+    width -= 16;
+  }
+  if (width > 0) {
+    __mmask16 k = (__mmask16)((1u << width) - 1u);
+    __m512i s32 = _mm512_cvtepu16_epi32(_mm256_maskz_loadu_epi16(k, src));
+    __m512 f =
+        _mm512_mul_ps(_mm512_mul_ps(_mm512_cvtepi32_ps(s32), vscale), vmult);
+    __m256i h16 =
+        _mm512_cvtepi32_epi16(_mm512_srli_epi32(_mm512_castps_si512(f), 13));
+    _mm256_mask_storeu_epi16(dst, k, h16);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_HALFFLOATROW_AVX512BW
+
+#ifdef HAS_CONVERT8TO8ROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void Convert8To8Row_AVX512BW(const uint8_t* src_y,
+                             uint8_t* dst_y,
+                             int scale,
+                             int bias,
+                             int width) {
+  const __m512i zmm_scale =
+      _mm512_slli_epi16(_mm512_set1_epi16((short)scale), 8);
+  const __m512i zmm_bias = _mm512_set1_epi8((char)bias);
+  const __m512i zmm_zero = _mm512_setzero_si512();
+  while (width >= 64) {
+    __m512i y8 = _mm512_loadu_si512((const __m512i*)src_y);
+    src_y += 64;
+    __m512i y_lo =
+        _mm512_mulhi_epu16(_mm512_unpacklo_epi8(y8, zmm_zero), zmm_scale);
+    __m512i y_hi =
+        _mm512_mulhi_epu16(_mm512_unpackhi_epi8(y8, zmm_zero), zmm_scale);
+    __m512i out8 = _mm512_add_epi8(_mm512_packus_epi16(y_lo, y_hi), zmm_bias);
+    _mm512_storeu_si512((__m512i*)dst_y, out8);
+    dst_y += 64;
+    width -= 64;
+  }
+  if (width > 0) {
+    __mmask64 k = (__mmask64)((1ULL << width) - 1ULL);
+    __m512i y8 = _mm512_maskz_loadu_epi8(k, src_y);
+    __m512i y_lo =
+        _mm512_mulhi_epu16(_mm512_unpacklo_epi8(y8, zmm_zero), zmm_scale);
+    __m512i y_hi =
+        _mm512_mulhi_epu16(_mm512_unpackhi_epi8(y8, zmm_zero), zmm_scale);
+    __m512i out8 = _mm512_add_epi8(_mm512_packus_epi16(y_lo, y_hi), zmm_bias);
+    _mm512_mask_storeu_epi8(dst_y, k, out8);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_CONVERT8TO8ROW_AVX512BW
+
+// ===========================================================================
+// Extended YUV (I422, I444, YUY2, UYVY, I210, I212, I410, P210, P410)
+// to ARGB / RGBA / RGB24 / AR30 (AVX512BW / AVX512VBMI)
+// ===========================================================================
+
+static const uint16_t kSplitQuadWords_ExtWin[32] = {
+    0, 0, 1, 1, 2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
+    8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15};
+static const uint64_t kUnpermuteAVX512_ExtWin[8] = {0, 4, 1, 5, 2, 6, 3, 7};
+static const uint16_t kPermAR30_0_Win[32] = {
+    0, 32, 1, 33, 2,  34, 3,  35, 4,  36, 5,  37, 6,  38, 7,  39,
+    8, 40, 9, 41, 10, 42, 11, 43, 12, 44, 13, 45, 14, 46, 15, 47};
+static const uint16_t kPermAR30_1_Win[32] = {
+    16, 48, 17, 49, 18, 50, 19, 51, 20, 52, 21, 53, 22, 54, 23, 55,
+    24, 56, 25, 57, 26, 58, 27, 59, 28, 60, 29, 61, 30, 62, 31, 63};
+static const uint8_t kShuffleYUY2Y_Win[16] = {0, 0, 2,  2,  4,  4,  6,  6,
+                                              8, 8, 10, 10, 12, 12, 14, 14};
+static const uint8_t kShuffleYUY2UV_Win[16] = {1, 3,  1, 3,  5,  7,  5,  7,
+                                               9, 11, 9, 11, 13, 15, 13, 15};
+static const uint8_t kShuffleUYVYY_Win[16] = {1, 1, 3,  3,  5,  5,  7,  7,
+                                              9, 9, 11, 11, 13, 13, 15, 15};
+static const uint8_t kShuffleUYVYUV_Win[16] = {0, 2,  0, 2,  4,  6,  4,  6,
+                                               8, 10, 8, 10, 12, 14, 12, 14};
+
+#define YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants)                    \
+  const __m512i zmm_kUVToB = _mm512_broadcast_i32x4(                 \
+      _mm_loadu_si128((const __m128i*)(yuvconstants)->kUVToB));      \
+  const __m512i zmm_kUVToG = _mm512_broadcast_i32x4(                 \
+      _mm_loadu_si128((const __m128i*)(yuvconstants)->kUVToG));      \
+  const __m512i zmm_kUVToR = _mm512_broadcast_i32x4(                 \
+      _mm_loadu_si128((const __m128i*)(yuvconstants)->kUVToR));      \
+  const __m512i zmm_kYToRgb = _mm512_broadcast_i32x4(                \
+      _mm_loadu_si128((const __m128i*)(yuvconstants)->kYToRgb));     \
+  const __m512i zmm_kYBiasToRgb = _mm512_broadcast_i32x4(            \
+      _mm_loadu_si128((const __m128i*)(yuvconstants)->kYBiasToRgb)); \
+  const __m512i zmm_128 = _mm512_set1_epi8((char)0x80)
+
+#define YUVTORGB16_WIN_AVX512BW                                        \
+  zmm3 = _mm512_sub_epi8(zmm3, zmm_128);                               \
+  zmm4 = _mm512_add_epi16(_mm512_mulhi_epu16(zmm4, zmm_kYToRgb),       \
+                          zmm_kYBiasToRgb);                            \
+  __m512i b16 =                                                        \
+      _mm512_adds_epi16(_mm512_maddubs_epi16(zmm_kUVToB, zmm3), zmm4); \
+  __m512i g16 =                                                        \
+      _mm512_subs_epi16(zmm4, _mm512_maddubs_epi16(zmm_kUVToG, zmm3)); \
+  __m512i r16 = _mm512_adds_epi16(_mm512_maddubs_epi16(zmm_kUVToR, zmm3), zmm4)
+
+#define YUVTORGB8_WIN_AVX512BW                                         \
+  YUVTORGB16_WIN_AVX512BW;                                             \
+  __m512i zmm0 = _mm512_packus_epi16(_mm512_srai_epi16(b16, 6), zmm5); \
+  __m512i zmm1 = _mm512_packus_epi16(_mm512_srai_epi16(g16, 6), zmm5); \
+  __m512i zmm2 = _mm512_packus_epi16(_mm512_srai_epi16(r16, 6), zmm5)
+
+#define STOREARGB_WIN_AVX512BW(dst_ptr)                                      \
+  do {                                                                       \
+    __m512i bg = _mm512_permutexvar_epi64(zmm_unperm,                        \
+                                          _mm512_unpacklo_epi8(zmm0, zmm1)); \
+    __m512i ra = _mm512_permutexvar_epi64(zmm_unperm,                        \
+                                          _mm512_unpacklo_epi8(zmm2, zmm5)); \
+    _mm512_storeu_si512((__m512i*)(dst_ptr), _mm512_unpacklo_epi16(bg, ra)); \
+    _mm512_storeu_si512((__m512i*)((dst_ptr) + 64),                          \
+                        _mm512_unpackhi_epi16(bg, ra));                      \
+  } while (0)
+
+#define STOREARGB_MASK_WIN_AVX512BW(dst_ptr, m32)                            \
+  do {                                                                       \
+    __m512i bg = _mm512_permutexvar_epi64(zmm_unperm,                        \
+                                          _mm512_unpacklo_epi8(zmm0, zmm1)); \
+    __m512i ra = _mm512_permutexvar_epi64(zmm_unperm,                        \
+                                          _mm512_unpacklo_epi8(zmm2, zmm5)); \
+    _mm512_mask_storeu_epi32((dst_ptr), (__mmask16)(m32),                    \
+                             _mm512_unpacklo_epi16(bg, ra));                 \
+    _mm512_mask_storeu_epi32((dst_ptr) + 64, (__mmask16)((m32) >> 16),       \
+                             _mm512_unpackhi_epi16(bg, ra));                 \
+  } while (0)
+
+#define PACKAR30_WIN_AVX512BW(dst0, dst1)                                     \
+  b16 = _mm512_max_epi16(_mm512_min_epi16(b16, zmm_3ff0), zmm_zero);          \
+  g16 = _mm512_max_epi16(_mm512_min_epi16(g16, zmm_3ff0), zmm_zero);          \
+  r16 = _mm512_max_epi16(_mm512_min_epi16(r16, zmm_3ff0), zmm_zero);          \
+  __m512i lo16 =                                                              \
+      _mm512_or_si512(_mm512_srli_epi16(b16, 4),                              \
+                      _mm512_and_si512(_mm512_slli_epi16(g16, 6), zmm_fc00)); \
+  __m512i hi16 =                                                              \
+      _mm512_or_si512(_mm512_or_si512(_mm512_and_si512(r16, zmm_3ff0),        \
+                                      _mm512_srli_epi16(g16, 10)),            \
+                      zmm_c000);                                              \
+  __m512i dst0 = _mm512_permutex2var_epi16(lo16, zmm_perm0, hi16);            \
+  __m512i dst1 = _mm512_permutex2var_epi16(lo16, zmm_perm1, hi16)
+
+#ifdef HAS_I422TOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I422ToARGBRow_AVX512BW(const uint8_t* y_buf,
+                            const uint8_t* u_buf,
+                            const uint8_t* v_buf,
+                            uint8_t* dst_argb,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_quad =
+      _mm512_loadu_si512((const __m512i*)kSplitQuadWords_ExtWin);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m128i xu = _mm_loadu_si128((const __m128i*)u_buf);
+    __m128i xv = _mm_loadu_si128((const __m128i*)v_buf);
+    u_buf += 16;
+    v_buf += 16;
+    __m256i uv256 = _mm256_inserti128_si256(
+        _mm256_zextsi128_si256(_mm_unpacklo_epi8(xu, xv)),
+        _mm_unpackhi_epi8(xu, xv), 1);
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)y_buf));
+    y_buf += 32;
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k_uv = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m128i xu = _mm_maskz_loadu_epi8(k_uv, u_buf);
+    __m128i xv = _mm_maskz_loadu_epi8(k_uv, v_buf);
+    __m256i uv256 = _mm256_inserti128_si256(
+        _mm256_zextsi128_si256(_mm_unpacklo_epi8(xu, xv)),
+        _mm_unpackhi_epi8(xu, xv), 1);
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8((__mmask32)m32, y_buf));
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I422TOARGBROW_AVX512BW
+
+#ifdef HAS_I422TORGBAROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I422ToRGBARow_AVX512BW(const uint8_t* y_buf,
+                            const uint8_t* u_buf,
+                            const uint8_t* v_buf,
+                            uint8_t* dst_rgba,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_quad =
+      _mm512_loadu_si512((const __m512i*)kSplitQuadWords_ExtWin);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m128i xu = _mm_loadu_si128((const __m128i*)u_buf);
+    __m128i xv = _mm_loadu_si128((const __m128i*)v_buf);
+    u_buf += 16;
+    v_buf += 16;
+    __m256i uv256 = _mm256_inserti128_si256(
+        _mm256_zextsi128_si256(_mm_unpacklo_epi8(xu, xv)),
+        _mm_unpackhi_epi8(xu, xv), 1);
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)y_buf));
+    y_buf += 32;
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    YUVTORGB8_WIN_AVX512BW;
+    __m512i ab =
+        _mm512_permutexvar_epi64(zmm_unperm, _mm512_unpacklo_epi8(zmm5, zmm0));
+    __m512i gr =
+        _mm512_permutexvar_epi64(zmm_unperm, _mm512_unpacklo_epi8(zmm1, zmm2));
+    _mm512_storeu_si512((__m512i*)dst_rgba, _mm512_unpacklo_epi16(ab, gr));
+    _mm512_storeu_si512((__m512i*)(dst_rgba + 64),
+                        _mm512_unpackhi_epi16(ab, gr));
+    dst_rgba += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k_uv = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m128i xu = _mm_maskz_loadu_epi8(k_uv, u_buf);
+    __m128i xv = _mm_maskz_loadu_epi8(k_uv, v_buf);
+    __m256i uv256 = _mm256_inserti128_si256(
+        _mm256_zextsi128_si256(_mm_unpacklo_epi8(xu, xv)),
+        _mm_unpackhi_epi8(xu, xv), 1);
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8((__mmask32)m32, y_buf));
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    YUVTORGB8_WIN_AVX512BW;
+    __m512i ab =
+        _mm512_permutexvar_epi64(zmm_unperm, _mm512_unpacklo_epi8(zmm5, zmm0));
+    __m512i gr =
+        _mm512_permutexvar_epi64(zmm_unperm, _mm512_unpacklo_epi8(zmm1, zmm2));
+    _mm512_mask_storeu_epi32(dst_rgba, (__mmask16)m32,
+                             _mm512_unpacklo_epi16(ab, gr));
+    _mm512_mask_storeu_epi32(dst_rgba + 64, (__mmask16)(m32 >> 16),
+                             _mm512_unpackhi_epi16(ab, gr));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I422TORGBAROW_AVX512BW
+
+#ifdef HAS_I444TOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I444ToARGBRow_AVX512BW(const uint8_t* y_buf,
+                            const uint8_t* u_buf,
+                            const uint8_t* v_buf,
+                            uint8_t* dst_argb,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m512i u16 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)u_buf));
+    __m512i v16 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)v_buf));
+    __m512i zmm4 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)y_buf));
+    u_buf += 32;
+    v_buf += 32;
+    y_buf += 32;
+    __m512i zmm3 = _mm512_or_si512(u16, _mm512_slli_epi16(v16, 8));
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask32 k = (__mmask32)m32;
+    __m512i u16 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, u_buf));
+    __m512i v16 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, v_buf));
+    __m512i zmm4 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, y_buf));
+    __m512i zmm3 = _mm512_or_si512(u16, _mm512_slli_epi16(v16, 8));
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I444TOARGBROW_AVX512BW
+
+#ifdef HAS_I444ALPHATOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I444AlphaToARGBRow_AVX512BW(const uint8_t* y_buf,
+                                 const uint8_t* u_buf,
+                                 const uint8_t* v_buf,
+                                 const uint8_t* a_buf,
+                                 uint8_t* dst_argb,
+                                 const struct YuvConstants* yuvconstants,
+                                 int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  while (width >= 32) {
+    __m512i u16 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)u_buf));
+    __m512i v16 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)v_buf));
+    __m512i zmm4 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)y_buf));
+    __m512i a16 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)a_buf));
+    u_buf += 32;
+    v_buf += 32;
+    y_buf += 32;
+    a_buf += 32;
+    __m512i zmm3 = _mm512_or_si512(u16, _mm512_slli_epi16(v16, 8));
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    __m512i zmm5 = _mm512_packus_epi16(a16, a16);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask32 k = (__mmask32)m32;
+    __m512i u16 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, u_buf));
+    __m512i v16 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, v_buf));
+    __m512i zmm4 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, y_buf));
+    __m512i a16 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, a_buf));
+    __m512i zmm3 = _mm512_or_si512(u16, _mm512_slli_epi16(v16, 8));
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    __m512i zmm5 = _mm512_packus_epi16(a16, a16);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I444ALPHATOARGBROW_AVX512BW
+
+#ifdef HAS_I444TORGB24ROW_AVX512VBMI
+static const uint8_t kMaskBG_I444[64] = {
+    0x00, 0x40, 0x01, 0x41, 0x02, 0x42, 0x03, 0x43, 0x04, 0x44, 0x05,
+    0x45, 0x06, 0x46, 0x07, 0x47, 0x10, 0x50, 0x11, 0x51, 0x12, 0x52,
+    0x13, 0x53, 0x14, 0x54, 0x15, 0x55, 0x16, 0x56, 0x17, 0x57, 0x20,
+    0x60, 0x21, 0x61, 0x22, 0x62, 0x23, 0x63, 0x24, 0x64, 0x25, 0x65,
+    0x26, 0x66, 0x27, 0x67, 0x30, 0x70, 0x31, 0x71, 0x32, 0x72, 0x33,
+    0x73, 0x34, 0x74, 0x35, 0x75, 0x36, 0x76, 0x37, 0x77};
+static const uint8_t kMaskDST0_I444[64] = {
+    0x00, 0x01, 0x40, 0x02, 0x03, 0x41, 0x04, 0x05, 0x42, 0x06, 0x07,
+    0x43, 0x08, 0x09, 0x44, 0x0a, 0x0b, 0x45, 0x0c, 0x0d, 0x46, 0x0e,
+    0x0f, 0x47, 0x10, 0x11, 0x50, 0x12, 0x13, 0x51, 0x14, 0x15, 0x52,
+    0x16, 0x17, 0x53, 0x18, 0x19, 0x54, 0x1a, 0x1b, 0x55, 0x1c, 0x1d,
+    0x56, 0x1e, 0x1f, 0x57, 0x20, 0x21, 0x60, 0x22, 0x23, 0x61, 0x24,
+    0x25, 0x62, 0x26, 0x27, 0x63, 0x28, 0x29, 0x64, 0x2a};
+static const uint8_t kMaskDST1_I444[64] = {
+    0x2b, 0x65, 0x2c, 0x2d, 0x66, 0x2e, 0x2f, 0x67, 0x30, 0x31, 0x70,
+    0x32, 0x33, 0x71, 0x34, 0x35, 0x72, 0x36, 0x37, 0x73, 0x38, 0x39,
+    0x74, 0x3a, 0x3b, 0x75, 0x3c, 0x3d, 0x76, 0x3e, 0x3f, 0x77, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+LIBYUV_TARGET_AVX512VBMI
+void I444ToRGB24Row_AVX512VBMI(const uint8_t* y_buf,
+                               const uint8_t* u_buf,
+                               const uint8_t* v_buf,
+                               uint8_t* dst_rgb24,
+                               const struct YuvConstants* yuvconstants,
+                               int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_mask_BG = _mm512_loadu_si512((const __m512i*)kMaskBG_I444);
+  const __m512i zmm_mask_DST0 =
+      _mm512_loadu_si512((const __m512i*)kMaskDST0_I444);
+  const __m512i zmm_mask_DST1 =
+      _mm512_loadu_si512((const __m512i*)kMaskDST1_I444);
+  while (width >= 32) {
+    __m512i u16 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)u_buf));
+    __m512i v16 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)v_buf));
+    __m512i zmm4 =
+        _mm512_cvtepu8_epi16(_mm256_loadu_si256((const __m256i*)y_buf));
+    u_buf += 32;
+    v_buf += 32;
+    y_buf += 32;
+    __m512i zmm3 = _mm512_or_si512(u16, _mm512_slli_epi16(v16, 8));
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    YUVTORGB16_WIN_AVX512BW;
+    __m512i zmm0 = _mm512_srai_epi16(b16, 6);
+    __m512i zmm1 = _mm512_srai_epi16(g16, 6);
+    __m512i zmm2 = _mm512_srai_epi16(r16, 6);
+    zmm0 = _mm512_packus_epi16(zmm0, zmm0);
+    zmm1 = _mm512_packus_epi16(zmm1, zmm1);
+    zmm2 = _mm512_packus_epi16(zmm2, zmm2);
+    __m512i zmm_BG = _mm512_permutex2var_epi8(zmm0, zmm_mask_BG, zmm1);
+    __m512i zmm_dst0 = _mm512_permutex2var_epi8(zmm_BG, zmm_mask_DST0, zmm2);
+    __m512i zmm_dst1 = _mm512_permutex2var_epi8(zmm_BG, zmm_mask_DST1, zmm2);
+    _mm512_storeu_si512((__m512i*)dst_rgb24, zmm_dst0);
+    _mm256_storeu_si256((__m256i*)(dst_rgb24 + 64),
+                        _mm512_castsi512_si256(zmm_dst1));
+    dst_rgb24 += 96;
+    width -= 32;
+  }
+  if (width > 0) {
+    __mmask32 k = (__mmask32)((1u << width) - 1u);
+    __m512i u16 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, u_buf));
+    __m512i v16 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, v_buf));
+    __m512i zmm4 = _mm512_cvtepu8_epi16(_mm256_maskz_loadu_epi8(k, y_buf));
+    __m512i zmm3 = _mm512_or_si512(u16, _mm512_slli_epi16(v16, 8));
+    zmm4 = _mm512_or_si512(zmm4, _mm512_slli_epi16(zmm4, 8));
+    YUVTORGB16_WIN_AVX512BW;
+    __m512i zmm0 = _mm512_srai_epi16(b16, 6);
+    __m512i zmm1 = _mm512_srai_epi16(g16, 6);
+    __m512i zmm2 = _mm512_srai_epi16(r16, 6);
+    zmm0 = _mm512_packus_epi16(zmm0, zmm0);
+    zmm1 = _mm512_packus_epi16(zmm1, zmm1);
+    zmm2 = _mm512_packus_epi16(zmm2, zmm2);
+    __m512i zmm_BG = _mm512_permutex2var_epi8(zmm0, zmm_mask_BG, zmm1);
+    __m512i zmm_dst0 = _mm512_permutex2var_epi8(zmm_BG, zmm_mask_DST0, zmm2);
+    __m512i zmm_dst1 = _mm512_permutex2var_epi8(zmm_BG, zmm_mask_DST1, zmm2);
+    int dst_bytes = width * 3;
+    __mmask64 k0 = dst_bytes >= 64 ? ~0ull : (1ull << dst_bytes) - 1ull;
+    __mmask32 k1 = dst_bytes > 64 ? (1u << (dst_bytes - 64)) - 1u : 0u;
+    _mm512_mask_storeu_epi8(dst_rgb24, k0, zmm_dst0);
+    _mm256_mask_storeu_epi8(dst_rgb24 + 64, k1,
+                            _mm512_castsi512_si256(zmm_dst1));
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I444TORGB24ROW_AVX512VBMI
+
+#ifdef HAS_YUY2TOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void YUY2ToARGBRow_AVX512BW(const uint8_t* yuy2_buf,
+                            uint8_t* dst_argb,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm_shuf_y = _mm512_broadcast_i32x4(
+      _mm_loadu_si128((const __m128i*)kShuffleYUY2Y_Win));
+  const __m512i zmm_shuf_uv = _mm512_broadcast_i32x4(
+      _mm_loadu_si128((const __m128i*)kShuffleYUY2UV_Win));
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m512i in = _mm512_loadu_si512((const __m512i*)yuy2_buf);
+    yuy2_buf += 64;
+    __m512i zmm4 = _mm512_shuffle_epi8(in, zmm_shuf_y);
+    __m512i zmm3 = _mm512_shuffle_epi8(in, zmm_shuf_uv);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k2 = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m512i in = _mm512_maskz_loadu_epi32(k2, yuy2_buf);
+    __m512i zmm4 = _mm512_shuffle_epi8(in, zmm_shuf_y);
+    __m512i zmm3 = _mm512_shuffle_epi8(in, zmm_shuf_uv);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_YUY2TOARGBROW_AVX512BW
+
+#ifdef HAS_UYVYTOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void UYVYToARGBRow_AVX512BW(const uint8_t* uyvy_buf,
+                            uint8_t* dst_argb,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm_shuf_y = _mm512_broadcast_i32x4(
+      _mm_loadu_si128((const __m128i*)kShuffleUYVYY_Win));
+  const __m512i zmm_shuf_uv = _mm512_broadcast_i32x4(
+      _mm_loadu_si128((const __m128i*)kShuffleUYVYUV_Win));
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m512i in = _mm512_loadu_si512((const __m512i*)uyvy_buf);
+    uyvy_buf += 64;
+    __m512i zmm4 = _mm512_shuffle_epi8(in, zmm_shuf_y);
+    __m512i zmm3 = _mm512_shuffle_epi8(in, zmm_shuf_uv);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k2 = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m512i in = _mm512_maskz_loadu_epi32(k2, uyvy_buf);
+    __m512i zmm4 = _mm512_shuffle_epi8(in, zmm_shuf_y);
+    __m512i zmm3 = _mm512_shuffle_epi8(in, zmm_shuf_uv);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_UYVYTOARGBROW_AVX512BW
+
+#ifdef HAS_I210TOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I210ToARGBRow_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* u_buf,
+                            const uint16_t* v_buf,
+                            uint8_t* dst_argb,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_quad =
+      _mm512_loadu_si512((const __m512i*)kSplitQuadWords_ExtWin);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m256i u_s =
+        _mm256_srli_epi16(_mm256_loadu_si256((const __m256i*)u_buf), 2);
+    __m256i v_s =
+        _mm256_srli_epi16(_mm256_loadu_si256((const __m256i*)v_buf), 2);
+    __m512i y16 = _mm512_loadu_si512((const __m512i*)y_buf);
+    u_buf += 16;
+    v_buf += 16;
+    y_buf += 32;
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k_uv = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m256i u_s = _mm256_srli_epi16(_mm256_maskz_loadu_epi16(k_uv, u_buf), 2);
+    __m256i v_s = _mm256_srli_epi16(_mm256_maskz_loadu_epi16(k_uv, v_buf), 2);
+    __m512i y16 = _mm512_maskz_loadu_epi16((__mmask32)m32, y_buf);
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I210TOARGBROW_AVX512BW
+
+#ifdef HAS_I210TOAR30ROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I210ToAR30Row_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* u_buf,
+                            const uint16_t* v_buf,
+                            uint8_t* dst_ar30,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_quad =
+      _mm512_loadu_si512((const __m512i*)kSplitQuadWords_ExtWin);
+  const __m512i zmm_perm0 = _mm512_loadu_si512((const __m512i*)kPermAR30_0_Win);
+  const __m512i zmm_perm1 = _mm512_loadu_si512((const __m512i*)kPermAR30_1_Win);
+  const __m512i zmm_zero = _mm512_setzero_si512();
+  const __m512i zmm_3ff0 = _mm512_set1_epi16(0x3ff0);
+  const __m512i zmm_fc00 = _mm512_set1_epi16((short)0xfc00);
+  const __m512i zmm_c000 = _mm512_set1_epi16((short)0xc000);
+  while (width >= 32) {
+    __m256i u_s =
+        _mm256_srli_epi16(_mm256_loadu_si256((const __m256i*)u_buf), 2);
+    __m256i v_s =
+        _mm256_srli_epi16(_mm256_loadu_si256((const __m256i*)v_buf), 2);
+    __m512i y16 = _mm512_loadu_si512((const __m512i*)y_buf);
+    u_buf += 16;
+    v_buf += 16;
+    y_buf += 32;
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_storeu_si512((__m512i*)dst_ar30, dst0);
+    _mm512_storeu_si512((__m512i*)(dst_ar30 + 64), dst1);
+    dst_ar30 += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k_uv = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m256i u_s = _mm256_srli_epi16(_mm256_maskz_loadu_epi16(k_uv, u_buf), 2);
+    __m256i v_s = _mm256_srli_epi16(_mm256_maskz_loadu_epi16(k_uv, v_buf), 2);
+    __m512i y16 = _mm512_maskz_loadu_epi16((__mmask32)m32, y_buf);
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_mask_storeu_epi32(dst_ar30, (__mmask16)m32, dst0);
+    _mm512_mask_storeu_epi32(dst_ar30 + 64, (__mmask16)(m32 >> 16), dst1);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I210TOAR30ROW_AVX512BW
+
+#ifdef HAS_I210ALPHATOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I210AlphaToARGBRow_AVX512BW(const uint16_t* y_buf,
+                                 const uint16_t* u_buf,
+                                 const uint16_t* v_buf,
+                                 const uint16_t* a_buf,
+                                 uint8_t* dst_argb,
+                                 const struct YuvConstants* yuvconstants,
+                                 int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_quad =
+      _mm512_loadu_si512((const __m512i*)kSplitQuadWords_ExtWin);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  while (width >= 32) {
+    __m256i u_s =
+        _mm256_srli_epi16(_mm256_loadu_si256((const __m256i*)u_buf), 2);
+    __m256i v_s =
+        _mm256_srli_epi16(_mm256_loadu_si256((const __m256i*)v_buf), 2);
+    __m512i y16 = _mm512_loadu_si512((const __m512i*)y_buf);
+    __m512i a16 =
+        _mm512_srli_epi16(_mm512_loadu_si512((const __m512i*)a_buf), 2);
+    u_buf += 16;
+    v_buf += 16;
+    y_buf += 32;
+    a_buf += 32;
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    __m512i zmm5 = _mm512_packus_epi16(a16, a16);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k_uv = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m256i u_s = _mm256_srli_epi16(_mm256_maskz_loadu_epi16(k_uv, u_buf), 2);
+    __m256i v_s = _mm256_srli_epi16(_mm256_maskz_loadu_epi16(k_uv, v_buf), 2);
+    __m512i y16 = _mm512_maskz_loadu_epi16((__mmask32)m32, y_buf);
+    __m512i a16 =
+        _mm512_srli_epi16(_mm512_maskz_loadu_epi16((__mmask32)m32, a_buf), 2);
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    __m512i zmm5 = _mm512_packus_epi16(a16, a16);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I210ALPHATOARGBROW_AVX512BW
+
+#ifdef HAS_I212TOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I212ToARGBRow_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* u_buf,
+                            const uint16_t* v_buf,
+                            uint8_t* dst_argb,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_quad =
+      _mm512_loadu_si512((const __m512i*)kSplitQuadWords_ExtWin);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m256i u_s =
+        _mm256_srai_epi16(_mm256_loadu_si256((const __m256i*)u_buf), 4);
+    __m256i v_s =
+        _mm256_srai_epi16(_mm256_loadu_si256((const __m256i*)v_buf), 4);
+    __m512i y16 = _mm512_loadu_si512((const __m512i*)y_buf);
+    u_buf += 16;
+    v_buf += 16;
+    y_buf += 32;
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 4), _mm512_srli_epi16(y16, 8));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k_uv = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m256i u_s = _mm256_srai_epi16(_mm256_maskz_loadu_epi16(k_uv, u_buf), 4);
+    __m256i v_s = _mm256_srai_epi16(_mm256_maskz_loadu_epi16(k_uv, v_buf), 4);
+    __m512i y16 = _mm512_maskz_loadu_epi16((__mmask32)m32, y_buf);
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 4), _mm512_srli_epi16(y16, 8));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I212TOARGBROW_AVX512BW
+
+#ifdef HAS_I212TOAR30ROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I212ToAR30Row_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* u_buf,
+                            const uint16_t* v_buf,
+                            uint8_t* dst_ar30,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_quad =
+      _mm512_loadu_si512((const __m512i*)kSplitQuadWords_ExtWin);
+  const __m512i zmm_perm0 = _mm512_loadu_si512((const __m512i*)kPermAR30_0_Win);
+  const __m512i zmm_perm1 = _mm512_loadu_si512((const __m512i*)kPermAR30_1_Win);
+  const __m512i zmm_zero = _mm512_setzero_si512();
+  const __m512i zmm_3ff0 = _mm512_set1_epi16(0x3ff0);
+  const __m512i zmm_fc00 = _mm512_set1_epi16((short)0xfc00);
+  const __m512i zmm_c000 = _mm512_set1_epi16((short)0xc000);
+  while (width >= 32) {
+    __m256i u_s =
+        _mm256_srai_epi16(_mm256_loadu_si256((const __m256i*)u_buf), 4);
+    __m256i v_s =
+        _mm256_srai_epi16(_mm256_loadu_si256((const __m256i*)v_buf), 4);
+    __m512i y16 = _mm512_loadu_si512((const __m512i*)y_buf);
+    u_buf += 16;
+    v_buf += 16;
+    y_buf += 32;
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 4), _mm512_srli_epi16(y16, 8));
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_storeu_si512((__m512i*)dst_ar30, dst0);
+    _mm512_storeu_si512((__m512i*)(dst_ar30 + 64), dst1);
+    dst_ar30 += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k_uv = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m256i u_s = _mm256_srai_epi16(_mm256_maskz_loadu_epi16(k_uv, u_buf), 4);
+    __m256i v_s = _mm256_srai_epi16(_mm256_maskz_loadu_epi16(k_uv, v_buf), 4);
+    __m512i y16 = _mm512_maskz_loadu_epi16((__mmask32)m32, y_buf);
+    __m256i uv256 = _mm256_unpacklo_epi8(_mm256_packus_epi16(u_s, u_s),
+                                         _mm256_packus_epi16(v_s, v_s));
+    __m512i zmm3 =
+        _mm512_permutexvar_epi16(zmm_quad, _mm512_zextsi256_si512(uv256));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 4), _mm512_srli_epi16(y16, 8));
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_mask_storeu_epi32(dst_ar30, (__mmask16)m32, dst0);
+    _mm512_mask_storeu_epi32(dst_ar30 + 64, (__mmask16)(m32 >> 16), dst1);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I212TOAR30ROW_AVX512BW
+
+#ifdef HAS_I410TOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I410ToARGBRow_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* u_buf,
+                            const uint16_t* v_buf,
+                            uint8_t* dst_argb,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m512i u_s =
+        _mm512_srli_epi16(_mm512_loadu_si512((const __m512i*)u_buf), 2);
+    __m512i v_s =
+        _mm512_srli_epi16(_mm512_loadu_si512((const __m512i*)v_buf), 2);
+    __m512i y16 = _mm512_loadu_si512((const __m512i*)y_buf);
+    u_buf += 32;
+    v_buf += 32;
+    y_buf += 32;
+    __m512i zmm3 = _mm512_unpacklo_epi8(_mm512_packus_epi16(u_s, u_s),
+                                        _mm512_packus_epi16(v_s, v_s));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask32 k = (__mmask32)m32;
+    __m512i u_s = _mm512_srli_epi16(_mm512_maskz_loadu_epi16(k, u_buf), 2);
+    __m512i v_s = _mm512_srli_epi16(_mm512_maskz_loadu_epi16(k, v_buf), 2);
+    __m512i y16 = _mm512_maskz_loadu_epi16(k, y_buf);
+    __m512i zmm3 = _mm512_unpacklo_epi8(_mm512_packus_epi16(u_s, u_s),
+                                        _mm512_packus_epi16(v_s, v_s));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I410TOARGBROW_AVX512BW
+
+#ifdef HAS_I410TOAR30ROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I410ToAR30Row_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* u_buf,
+                            const uint16_t* v_buf,
+                            uint8_t* dst_ar30,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_perm0 = _mm512_loadu_si512((const __m512i*)kPermAR30_0_Win);
+  const __m512i zmm_perm1 = _mm512_loadu_si512((const __m512i*)kPermAR30_1_Win);
+  const __m512i zmm_zero = _mm512_setzero_si512();
+  const __m512i zmm_3ff0 = _mm512_set1_epi16(0x3ff0);
+  const __m512i zmm_fc00 = _mm512_set1_epi16((short)0xfc00);
+  const __m512i zmm_c000 = _mm512_set1_epi16((short)0xc000);
+  while (width >= 32) {
+    __m512i u_s =
+        _mm512_srli_epi16(_mm512_loadu_si512((const __m512i*)u_buf), 2);
+    __m512i v_s =
+        _mm512_srli_epi16(_mm512_loadu_si512((const __m512i*)v_buf), 2);
+    __m512i y16 = _mm512_loadu_si512((const __m512i*)y_buf);
+    u_buf += 32;
+    v_buf += 32;
+    y_buf += 32;
+    __m512i zmm3 = _mm512_unpacklo_epi8(_mm512_packus_epi16(u_s, u_s),
+                                        _mm512_packus_epi16(v_s, v_s));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_storeu_si512((__m512i*)dst_ar30, dst0);
+    _mm512_storeu_si512((__m512i*)(dst_ar30 + 64), dst1);
+    dst_ar30 += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask32 k = (__mmask32)m32;
+    __m512i u_s = _mm512_srli_epi16(_mm512_maskz_loadu_epi16(k, u_buf), 2);
+    __m512i v_s = _mm512_srli_epi16(_mm512_maskz_loadu_epi16(k, v_buf), 2);
+    __m512i y16 = _mm512_maskz_loadu_epi16(k, y_buf);
+    __m512i zmm3 = _mm512_unpacklo_epi8(_mm512_packus_epi16(u_s, u_s),
+                                        _mm512_packus_epi16(v_s, v_s));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_mask_storeu_epi32(dst_ar30, (__mmask16)m32, dst0);
+    _mm512_mask_storeu_epi32(dst_ar30 + 64, (__mmask16)(m32 >> 16), dst1);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I410TOAR30ROW_AVX512BW
+
+#ifdef HAS_I410ALPHATOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void I410AlphaToARGBRow_AVX512BW(const uint16_t* y_buf,
+                                 const uint16_t* u_buf,
+                                 const uint16_t* v_buf,
+                                 const uint16_t* a_buf,
+                                 uint8_t* dst_argb,
+                                 const struct YuvConstants* yuvconstants,
+                                 int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  while (width >= 32) {
+    __m512i u_s =
+        _mm512_srli_epi16(_mm512_loadu_si512((const __m512i*)u_buf), 2);
+    __m512i v_s =
+        _mm512_srli_epi16(_mm512_loadu_si512((const __m512i*)v_buf), 2);
+    __m512i y16 = _mm512_loadu_si512((const __m512i*)y_buf);
+    __m512i a16 =
+        _mm512_srli_epi16(_mm512_loadu_si512((const __m512i*)a_buf), 2);
+    u_buf += 32;
+    v_buf += 32;
+    y_buf += 32;
+    a_buf += 32;
+    __m512i zmm3 = _mm512_unpacklo_epi8(_mm512_packus_epi16(u_s, u_s),
+                                        _mm512_packus_epi16(v_s, v_s));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    __m512i zmm5 = _mm512_packus_epi16(a16, a16);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask32 k = (__mmask32)m32;
+    __m512i u_s = _mm512_srli_epi16(_mm512_maskz_loadu_epi16(k, u_buf), 2);
+    __m512i v_s = _mm512_srli_epi16(_mm512_maskz_loadu_epi16(k, v_buf), 2);
+    __m512i y16 = _mm512_maskz_loadu_epi16(k, y_buf);
+    __m512i a16 = _mm512_srli_epi16(_mm512_maskz_loadu_epi16(k, a_buf), 2);
+    __m512i zmm3 = _mm512_unpacklo_epi8(_mm512_packus_epi16(u_s, u_s),
+                                        _mm512_packus_epi16(v_s, v_s));
+    __m512i zmm4 =
+        _mm512_or_si512(_mm512_slli_epi16(y16, 6), _mm512_srli_epi16(y16, 4));
+    __m512i zmm5 = _mm512_packus_epi16(a16, a16);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_I410ALPHATOARGBROW_AVX512BW
+
+#ifdef HAS_P210TOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void P210ToARGBRow_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* uv_buf,
+                            uint8_t* dst_argb,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm_shuf_uv = _mm512_broadcast_i32x4(
+      _mm_loadu_si128((const __m128i*)kShuffleYUY2UV_Win));
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m512i zmm4 = _mm512_loadu_si512((const __m512i*)y_buf);
+    __m512i zmm3 = _mm512_shuffle_epi8(
+        _mm512_loadu_si512((const __m512i*)uv_buf), zmm_shuf_uv);
+    y_buf += 32;
+    uv_buf += 32;
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k_uv = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m512i zmm4 = _mm512_maskz_loadu_epi16((__mmask32)m32, y_buf);
+    __m512i zmm3 = _mm512_shuffle_epi8(_mm512_maskz_loadu_epi32(k_uv, uv_buf),
+                                       zmm_shuf_uv);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_P210TOARGBROW_AVX512BW
+
+#ifdef HAS_P210TOAR30ROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void P210ToAR30Row_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* uv_buf,
+                            uint8_t* dst_ar30,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_perm0 = _mm512_loadu_si512((const __m512i*)kPermAR30_0_Win);
+  const __m512i zmm_perm1 = _mm512_loadu_si512((const __m512i*)kPermAR30_1_Win);
+  const __m512i zmm_shuf_uv = _mm512_broadcast_i32x4(
+      _mm_loadu_si128((const __m128i*)kShuffleYUY2UV_Win));
+  const __m512i zmm_zero = _mm512_setzero_si512();
+  const __m512i zmm_3ff0 = _mm512_set1_epi16(0x3ff0);
+  const __m512i zmm_fc00 = _mm512_set1_epi16((short)0xfc00);
+  const __m512i zmm_c000 = _mm512_set1_epi16((short)0xc000);
+  while (width >= 32) {
+    __m512i zmm4 = _mm512_loadu_si512((const __m512i*)y_buf);
+    __m512i zmm3 = _mm512_shuffle_epi8(
+        _mm512_loadu_si512((const __m512i*)uv_buf), zmm_shuf_uv);
+    y_buf += 32;
+    uv_buf += 32;
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_storeu_si512((__m512i*)dst_ar30, dst0);
+    _mm512_storeu_si512((__m512i*)(dst_ar30 + 64), dst1);
+    dst_ar30 += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __mmask16 k_uv = (__mmask16)((1u << ((width + 1) >> 1)) - 1u);
+    __m512i zmm4 = _mm512_maskz_loadu_epi16((__mmask32)m32, y_buf);
+    __m512i zmm3 = _mm512_shuffle_epi8(_mm512_maskz_loadu_epi32(k_uv, uv_buf),
+                                       zmm_shuf_uv);
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_mask_storeu_epi32(dst_ar30, (__mmask16)m32, dst0);
+    _mm512_mask_storeu_epi32(dst_ar30 + 64, (__mmask16)(m32 >> 16), dst1);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_P210TOAR30ROW_AVX512BW
+
+#ifdef HAS_P410TOARGBROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void P410ToARGBRow_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* uv_buf,
+                            uint8_t* dst_argb,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_unperm =
+      _mm512_loadu_si512((const __m512i*)kUnpermuteAVX512_ExtWin);
+  const __m512i zmm5 = _mm512_set1_epi32(-1);
+  while (width >= 32) {
+    __m512i zmm4 = _mm512_loadu_si512((const __m512i*)y_buf);
+    __m512i uv0 = _mm512_loadu_si512((const __m512i*)uv_buf);
+    __m512i uv1 = _mm512_loadu_si512((const __m512i*)(uv_buf + 32));
+    y_buf += 32;
+    uv_buf += 64;
+    __m256i lo = _mm512_cvtepi16_epi8(_mm512_srli_epi16(uv0, 8));
+    __m256i hi = _mm512_cvtepi16_epi8(_mm512_srli_epi16(uv1, 8));
+    __m512i zmm3 = _mm512_inserti64x4(_mm512_zextsi256_si512(lo), hi, 1);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_WIN_AVX512BW(dst_argb);
+    dst_argb += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __m512i zmm4 = _mm512_maskz_loadu_epi16((__mmask32)m32, y_buf);
+    __m512i uv0 = _mm512_maskz_loadu_epi32((__mmask16)m32, uv_buf);
+    __m512i uv1 = _mm512_maskz_loadu_epi32((__mmask16)(m32 >> 16), uv_buf + 32);
+    __m256i lo = _mm512_cvtepi16_epi8(_mm512_srli_epi16(uv0, 8));
+    __m256i hi = _mm512_cvtepi16_epi8(_mm512_srli_epi16(uv1, 8));
+    __m512i zmm3 = _mm512_inserti64x4(_mm512_zextsi256_si512(lo), hi, 1);
+    YUVTORGB8_WIN_AVX512BW;
+    STOREARGB_MASK_WIN_AVX512BW(dst_argb, m32);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_P410TOARGBROW_AVX512BW
+
+#ifdef HAS_P410TOAR30ROW_AVX512BW
+LIBYUV_TARGET_AVX512BW
+void P410ToAR30Row_AVX512BW(const uint16_t* y_buf,
+                            const uint16_t* uv_buf,
+                            uint8_t* dst_ar30,
+                            const struct YuvConstants* yuvconstants,
+                            int width) {
+  YUVTORGB_SETUP_WIN_AVX512BW(yuvconstants);
+  const __m512i zmm_perm0 = _mm512_loadu_si512((const __m512i*)kPermAR30_0_Win);
+  const __m512i zmm_perm1 = _mm512_loadu_si512((const __m512i*)kPermAR30_1_Win);
+  const __m512i zmm_zero = _mm512_setzero_si512();
+  const __m512i zmm_3ff0 = _mm512_set1_epi16(0x3ff0);
+  const __m512i zmm_fc00 = _mm512_set1_epi16((short)0xfc00);
+  const __m512i zmm_c000 = _mm512_set1_epi16((short)0xc000);
+  while (width >= 32) {
+    __m512i zmm4 = _mm512_loadu_si512((const __m512i*)y_buf);
+    __m512i uv0 = _mm512_loadu_si512((const __m512i*)uv_buf);
+    __m512i uv1 = _mm512_loadu_si512((const __m512i*)(uv_buf + 32));
+    y_buf += 32;
+    uv_buf += 64;
+    __m256i lo = _mm512_cvtepi16_epi8(_mm512_srli_epi16(uv0, 8));
+    __m256i hi = _mm512_cvtepi16_epi8(_mm512_srli_epi16(uv1, 8));
+    __m512i zmm3 = _mm512_inserti64x4(_mm512_zextsi256_si512(lo), hi, 1);
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_storeu_si512((__m512i*)dst_ar30, dst0);
+    _mm512_storeu_si512((__m512i*)(dst_ar30 + 64), dst1);
+    dst_ar30 += 128;
+    width -= 32;
+  }
+  if (width > 0) {
+    uint32_t m32 = (1u << width) - 1u;
+    __m512i zmm4 = _mm512_maskz_loadu_epi16((__mmask32)m32, y_buf);
+    __m512i uv0 = _mm512_maskz_loadu_epi32((__mmask16)m32, uv_buf);
+    __m512i uv1 = _mm512_maskz_loadu_epi32((__mmask16)(m32 >> 16), uv_buf + 32);
+    __m256i lo = _mm512_cvtepi16_epi8(_mm512_srli_epi16(uv0, 8));
+    __m256i hi = _mm512_cvtepi16_epi8(_mm512_srli_epi16(uv1, 8));
+    __m512i zmm3 = _mm512_inserti64x4(_mm512_zextsi256_si512(lo), hi, 1);
+    YUVTORGB16_WIN_AVX512BW;
+    PACKAR30_WIN_AVX512BW(dst0, dst1);
+    _mm512_mask_storeu_epi32(dst_ar30, (__mmask16)m32, dst0);
+    _mm512_mask_storeu_epi32(dst_ar30 + 64, (__mmask16)(m32 >> 16), dst1);
+  }
+  _mm256_zeroupper();
+}
+#endif  // HAS_P410TOAR30ROW_AVX512BW
+
+#endif  // defined(__x86_64__) || defined(_M_X64)
+
 #ifdef __cplusplus
 }  // extern "C"
 }  // namespace libyuv

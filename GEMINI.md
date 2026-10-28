@@ -47,11 +47,29 @@ and compiler compatibility.
 
 ### Utility and Fallbacks
 
-*   **row_common.cc**: Portable C/C++ versions. This is the reference
-    implementation.
+*   **row_common.cc**: Portable C/C++ versions and multi-step `ARGB` wrapper
+    row functions. This is the reference implementation.
 *   **row_any.cc**: Handles "remainder" pixels for widths not multiples of SIMD
     register size. Used for x86, Neon, and MIPS. Not required for SVE2, SME,
     RVV, or HVX due to hardware-level masking.
+
+## Deprecated and Lower-Priority Formats
+
+The following datatypes and functions are deprecated or lower priority and are
+not always fully hand-optimized across every SIMD extension:
+
+*   **16-bit RGB formats** (deprecated): `RGB565` (`FOURCC_RGBP`,
+    `FOURCC_L565`), `ARGB1555` (`FOURCC_RGBO`, `FOURCC_L555`, `FOURCC_5551`),
+    and `ARGB4444` (`FOURCC_R444`).
+*   **Legacy fixed-matrix RGB-to-YUV row functions** (deprecated in favor of
+    `*MatrixRow` variants): `RGB565ToYRow`, `RGB565ToUVRow`, `ARGB1555ToYRow`,
+    `ARGB1555ToUVRow`, `ARGB4444ToYRow`, `ARGB4444ToUVRow`.
+*   **Row-biplanar YUV** (deprecated): `M420` (`FOURCC_M420`).
+
+When adding SIMD coverage for deprecated or less relevant formats, prefer
+two-step wrapper implementations in `source/row_common.cc` that convert to or
+from an intermediate stack-allocated `ARGB` row buffer (or delegate to existing
+`*MatrixRow` functions) rather than writing large bespoke assembly kernels.
 
 ## Coding Guidelines
 
