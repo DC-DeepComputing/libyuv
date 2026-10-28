@@ -1,0 +1,128 @@
+# Copyright 2026 The LibYuv Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS. All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+agentic_review {
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/document-parameter-ranges-and-bit-alignment.md"
+    rules: "agents/knowledge_base/rules/api/scale-api-use-filter-mode-internal-dispatch.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/guard-simd-availability-macros-with-compiler-capabilities.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/row-and-scale-kernel-naming.md"
+    rules: "agents/knowledge_base/rules/source/broadcast-128bit-constants-in-avx2.md"
+    rules: "agents/knowledge_base/rules/source/skip-sve-tail-when-width-is-vector-multiple.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/single-letter-color-space-prefix.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/standard-dst-and-dst-stride-param-naming.md"
+  }
+  capability_groups {
+    path_expression: "README\\.chromium"
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/sync-readme-chromium-version.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
+    rules: "agents/knowledge_base/rules/general/clarify-nonobvious-function-parameters.md"
+    rules: "agents/knowledge_base/rules/general/parenthesize-macro-parameters.md"
+  }
+  capability_groups {
+    rules: "agents/knowledge_base/rules/general/document-secondary-changes-in-commit-description.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    rules: "agents/knowledge_base/rules/general/no-defines-on-gn-group-targets.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    rules: "agents/knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
+    rules: "agents/knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/aarch64-assembly-use-subs-for-loop-counter.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*neon[^/]*\\.cc"
+    rules: "agents/knowledge_base/rules/source/aarch64-neon-ld1-register-post-index-stride.md"
+    rules: "agents/knowledge_base/rules/source/interleave-neon-compute-and-memory-instructions.md"
+    rules: "agents/knowledge_base/rules/source/match-neon-load-store-element-size-to-data-type.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/accurate-pixel-format-in-assembly-comments.md"
+    rules: "agents/knowledge_base/rules/source/base-plus-index-addressing-for-inline-assembly-loops.md"
+    rules: "agents/knowledge_base/rules/source/clear-upper-ymm-with-vzeroupper.md"
+    rules: "agents/knowledge_base/rules/source/handle-negative-height-by-inverting-strides.md"
+    rules: "agents/knowledge_base/rules/source/post-increment-pointers-in-assembly-loops.md"
+    rules: "agents/knowledge_base/rules/source/use-aligned-simd-moves-for-aligned-memory.md"
+    rules: "agents/knowledge_base/rules/source/validate-mandatory-plane-pointers-at-entry.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/assert-parameter-preconditions-and-bounds.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/convert.*"
+    path_expression: "source/convert.*"
+    rules: "agents/knowledge_base/rules/source/clamp-simd-narrowing-conversions.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/row_[^/]*\\.h"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/factor-simd-row-conversion-macros.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/match-feature-macro-to-row-function.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/match-is-aligned-step-to-simd-vector-size.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/source/pair-align-buffer-64-with-free-aligned-buffer-64.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/row\\.h"
+    path_expression: "source/row.*"
+    rules: "agents/knowledge_base/rules/source/use-row-vector-typedefs-for-simd-constants.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/scale.*"
+    path_expression: "source/scale.*"
+    rules: "agents/knowledge_base/rules/source/use-zero-stride-for-edge-rows-in-multi-row-scaling.md"
+  }
+}

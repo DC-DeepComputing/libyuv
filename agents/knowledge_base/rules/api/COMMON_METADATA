@@ -1,0 +1,45 @@
+# Copyright 2026 The LibYuv Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file in the root of the source
+# tree. An additional intellectual property rights grant can be found
+# in the file PATENTS. All contributing project authors may
+# be found in the AUTHORS file in the root of the source tree.
+
+agentic_review {
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/document-parameter-ranges-and-bit-alignment.md"
+    rules: "agents/knowledge_base/rules/api/scale-api-use-filter-mode-internal-dispatch.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/guard-simd-availability-macros-with-compiler-capabilities.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/row-and-scale-kernel-naming.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/single-letter-color-space-prefix.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/standard-dst-and-dst-stride-param-naming.md"
+  }
+  capability_groups {
+    path_expression: "README\\.chromium"
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "agents/knowledge_base/rules/api/sync-readme-chromium-version.md"
+  }
+}
