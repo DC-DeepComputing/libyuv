@@ -8,28 +8,178 @@
 
 agentic_review {
   capability_groups {
-    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
-    rules: "knowledge_base/rules/general/clarify-nonobvious-function-parameters.md"
-    rules: "knowledge_base/rules/general/const-for-immutable-local-variables.md"
-    rules: "knowledge_base/rules/general/parenthesize-macro-parameters.md"
-    rules: "knowledge_base/rules/general/place-branch-specific-comments-inside-branch.md"
+    path_expression: "(?:.*/)?Android\\.bp"
+    path_expression: "(?:.*/)?Android\\.mk"
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:cmake|gn|gni)"
+    path_expression: "(?:.*/)?[^/]*\\.gyp[^/]*"
+    rules: "knowledge_base/rules/general/align-build-option-names-and-polarity.md"
   }
   capability_groups {
-    rules: "knowledge_base/rules/general/document-secondary-changes-in-commit-description.md"
-  }
-  capability_groups {
-    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
-    rules: "knowledge_base/rules/general/format-inline-assembly-operands-on-separate-lines.md"
-    rules: "knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
-    rules: "knowledge_base/rules/general/record-speculative-optimizations-in-todo.md"
-    rules: "knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    rules: "knowledge_base/rules/general/array-notation-for-fixed-size-buffer-params.md"
+    rules: "knowledge_base/rules/general/avoid-ambiguous-placeholders-in-comments.md"
+    rules: "knowledge_base/rules/general/encode-new-instructions-as-raw-bytes-in-inline-asm.md"
+    rules: "knowledge_base/rules/general/group-compiler-presence-and-version-checks.md"
+    rules: "knowledge_base/rules/general/parenthesize-compound-operator-expressions.md"
+    rules: "knowledge_base/rules/general/use-standard-loongarch-macro.md"
   }
   capability_groups {
     path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    rules: "knowledge_base/rules/general/avoid-attributing-library-requirements-to-compiler-versions.md"
+    rules: "knowledge_base/rules/general/condition-bitness-flags-on-target-bitness-in-gn.md"
+    rules: "knowledge_base/rules/general/configure-vector-extensions-via-gn-args.md"
+    rules: "knowledge_base/rules/general/gn-restrict-internal-target-visibility.md"
+    rules: "knowledge_base/rules/general/manage-toolchain-flags-in-shared-configs.md"
     rules: "knowledge_base/rules/general/no-defines-on-gn-group-targets.md"
+    rules: "knowledge_base/rules/general/no-optimize-max-in-gn.md"
+    rules: "knowledge_base/rules/general/unconditional-standard-toolchain-deps-in-gn.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/general/avoid-duplicate-conditions-in-compound-boolean-expressions.md"
+  }
+  capability_groups {
+    content_patterns: "\\bGoogle\\b"
+    rules: "knowledge_base/rules/general/avoid-internal-repository-codenames-in-comments.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
+    rules: "knowledge_base/rules/general/avoid-redundant-intermediate-casts.md"
+    rules: "knowledge_base/rules/general/clarify-nonobvious-function-parameters.md"
+    rules: "knowledge_base/rules/general/const-for-immutable-local-variables.md"
+    rules: "knowledge_base/rules/general/do-not-leave-commented-out-code.md"
+    rules: "knowledge_base/rules/general/document-bounds-preventing-arithmetic-overflow.md"
+    rules: "knowledge_base/rules/general/no-sanitizer-conditional-storage-or-sync.md"
+    rules: "knowledge_base/rules/general/no-unmotivated-cfi-or-sanitizer-suppressions.md"
+    rules: "knowledge_base/rules/general/omit-redundant-parentheses-around-standalone-operands.md"
+    rules: "knowledge_base/rules/general/parenthesize-macro-parameters.md"
+    rules: "knowledge_base/rules/general/place-branch-specific-comments-inside-branch.md"
+    rules: "knowledge_base/rules/general/use-named-operands-in-inline-assembly.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/general/avoid-redundant-nested-blocks-in-functions.md"
+    rules: "knowledge_base/rules/general/delete-unused-local-variables.md"
+    rules: "knowledge_base/rules/general/document-numeric-constant-derivation.md"
+    rules: "knowledge_base/rules/general/no-redundant-parentheses-in-address-of-pointer-casts.md"
+    rules: "knowledge_base/rules/general/no-redundant-preprocessor-macro-guards.md"
+    rules: "knowledge_base/rules/general/prefer-boolean-pointer-null-checks.md"
+    rules: "knowledge_base/rules/general/prefer-positive-preprocessor-condition.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/cpu_id\\.h"
+    path_expression: "source/cpu_id\\.cc"
+    rules: "knowledge_base/rules/general/capitalize-simd-and-cpu-acronyms-in-comments.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    rules: "knowledge_base/rules/general/cast-dimensions-to-size-t-in-pointer-arithmetic.md"
+    rules: "knowledge_base/rules/general/check-unsigned-overflow-before-addition.md"
+    rules: "knowledge_base/rules/general/define-gnu-source-before-includes-not-use-gnu.md"
+    rules: "knowledge_base/rules/general/document-non-obvious-validation-limits.md"
+    rules: "knowledge_base/rules/general/document-workarounds-and-future-improvements-with-todo.md"
+    rules: "knowledge_base/rules/general/format-inline-assembly-operands-on-separate-lines.md"
+    rules: "knowledge_base/rules/general/general-no-digit-separators-in-numeric-literals.md"
+    rules: "knowledge_base/rules/general/general-use-semantic-names-over-container-abbreviations.md"
+    rules: "knowledge_base/rules/general/guard-optional-dependency-includes-with-feature-macros.md"
+    rules: "knowledge_base/rules/general/keep-format-and-color-space-acronyms-uppercase.md"
+    rules: "knowledge_base/rules/general/match-referenced-symbol-names-in-comments-to-declarations.md"
+    rules: "knowledge_base/rules/general/measure-string-length-before-strtok.md"
+    rules: "knowledge_base/rules/general/minimize-cpp-features-for-c89-compatibility.md"
+    rules: "knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
+    rules: "knowledge_base/rules/general/prefix-hex-printf-specifier-with-0x.md"
+    rules: "knowledge_base/rules/general/preserve-canonical-casing-for-architecture-names.md"
+    rules: "knowledge_base/rules/general/provide-fallback-return-for-enum-switch.md"
+    rules: "knowledge_base/rules/general/record-speculative-optimizations-in-todo.md"
+    rules: "knowledge_base/rules/general/sync-comments-with-code-changes.md"
+    rules: "knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
+    rules: "knowledge_base/rules/general/use-braces-for-conditionals-and-loops.md"
+    rules: "knowledge_base/rules/general/validate-buffer-allocation-bounds-against-size-max.md"
+  }
+  capability_groups {
+    rules: "knowledge_base/rules/general/commit-message-accurate-and-consistent-with-changes.md"
+    rules: "knowledge_base/rules/general/describe-notable-changes-in-commit-message.md"
+    rules: "knowledge_base/rules/general/document-secondary-changes-in-commit-description.md"
+    rules: "knowledge_base/rules/general/keep-commit-message-consistent-with-changes.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*neon[^/]*\\.cc"
+    rules: "knowledge_base/rules/general/distinguish-arm-from-aarch64-in-comments.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:cmake|gn|gni)"
+    path_expression: "(?:.*/)?[^/]*\\.gn[^/]*"
+    path_expression: "BUILD\\.gn"
+    rules: "knowledge_base/rules/general/document-non-obvious-build-rules-and-toolchain-overrides.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|h)"
+    path_expression: "BUILD\\.gn"
+    rules: "knowledge_base/rules/general/include-absl-headers-without-third-party-prefix.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|h)"
+    rules: "knowledge_base/rules/general/match-closing-brace-comments.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.c"
+    rules: "knowledge_base/rules/general/no-cplusplus-in-c-source.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?Android\\.bp"
+    path_expression: "(?:.*/)?Android\\.mk"
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:bzl|gn|gni)"
+    rules: "knowledge_base/rules/general/no-disabled-test-sources-in-build-files.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    path_expression: "\\.gn"
+    rules: "knowledge_base/rules/general/no-un-upstreamed-gn-imports.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/general/omit-redundant-base-architecture-macro-in-feature-guards.md"
   }
   capability_groups {
     content_patterns: "\\bOptimization\\b"
     rules: "knowledge_base/rules/general/omit-redundant-self-explanatory-comments.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp)"
+    rules: "knowledge_base/rules/general/omit-redundant-stream-flush-before-exit.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?Android\\.bp"
+    path_expression: "(?:.*/)?Android\\.mk"
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|gn|gni|h|md)"
+    path_expression: "docs/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "include/libyuv/cpu_id\\.h"
+    path_expression: "source/cpu_id\\.cc"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/general/order-cpu-features-hierarchically.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    path_expression: "BUILD\\.gn"
+    rules: "knowledge_base/rules/general/prefer-private-deps-in-gn.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?BUILD\\.bazel"
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:cmake|gni)"
+    path_expression: "(?:.*/)?[^/]*\\.gn[^/]*"
+    path_expression: "BUILD\\.bazel"
+    rules: "knowledge_base/rules/general/use-armv8-5-a-march-for-sve2-gcc-compatibility.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|cpp|h)"
+    rules: "knowledge_base/rules/general/use-nolint-for-intentional-c-casts.md"
   }
 }

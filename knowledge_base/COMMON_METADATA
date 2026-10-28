@@ -9,9 +9,71 @@
 agentic_review {
   capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/api/accurately-describe-function-variants-in-doc-comments.md"
+    rules: "knowledge_base/rules/api/api-return-negative-one-on-error.md"
+    rules: "knowledge_base/rules/api/no-full-format-names-for-partial-planes.md"
+    rules: "knowledge_base/rules/api/order-yuvconstants-before-dimensions.md"
+    rules: "knowledge_base/rules/api/row-and-scale-kernel-naming.md"
+    rules: "knowledge_base/rules/api/use-macro-aliases-for-symmetric-conversions.md"
+    rules: "knowledge_base/rules/source/avoid-asm-volatile-in-inline-assembly.md"
+    rules: "knowledge_base/rules/source/broadcast-128bit-constants-in-avx2.md"
+    rules: "knowledge_base/rules/source/reject-negative-crop-dimensions.md"
+    rules: "knowledge_base/rules/source/rotate-interleaved-planes-over-split-transpose.md"
+    rules: "knowledge_base/rules/source/skip-sve-tail-when-width-is-vector-multiple.md"
+    rules: "knowledge_base/rules/source/validate-parameters-at-entry-not-low-level-helpers.md"
+  }
+  capability_groups {
+    path_expression: "include/.*"
+    rules: "knowledge_base/rules/api/avoid-redundant-architecture-guards-in-headers.md"
+    rules: "knowledge_base/rules/api/document-flag-values-sentinels-and-hazards.md"
+    rules: "knowledge_base/rules/api/document-or-revert-disabled-feature-macros.md"
+    rules: "knowledge_base/rules/api/document-public-api-removals-in-commit-message.md"
+    rules: "knowledge_base/rules/api/encapsulate-shared-state-mutation-in-setter.md"
+    rules: "knowledge_base/rules/api/general-avoid-build-system-macros-in-header-compiler-checks.md"
+    rules: "knowledge_base/rules/api/group-specialized-variants-with-base-declarations.md"
+    rules: "knowledge_base/rules/api/match-parameter-names-between-declarations-and-definitions.md"
+    rules: "knowledge_base/rules/api/no-duplicate-function-declarations.md"
+    rules: "knowledge_base/rules/api/preserve-public-constant-and-flag-values.md"
+    rules: "knowledge_base/rules/api/use-set-prefix-for-state-and-flag-setters.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|h)"
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/api/capitalize-to-in-conversion-function-names.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/api/define-bpp-constant-for-fourcc-format.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.cmake"
+    path_expression: "CMakeLists\\.txt"
+    path_expression: "include/.*"
+    rules: "knowledge_base/rules/api/document-abi-version-coupling-in-version-header.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/api/document-conversion-color-space-and-range.md"
+    rules: "knowledge_base/rules/api/document-conversion-matrix-memory-layout.md"
+    rules: "knowledge_base/rules/api/document-format-conversion-macro-aliases.md"
     rules: "knowledge_base/rules/api/document-parameter-ranges-and-bit-alignment.md"
     rules: "knowledge_base/rules/api/group-conversion-matrix-constants-by-pixel-format.md"
+    rules: "knowledge_base/rules/api/no-unnecessary-alignment-in-api-comments.md"
     rules: "knowledge_base/rules/api/scale-api-use-filter-mode-internal-dispatch.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/cpu_id\\.h"
+    path_expression: "source/cpu_id\\.cc"
+    rules: "knowledge_base/rules/api/guard-architecture-headers-with-cpu-preprocessor-checks.md"
+    rules: "knowledge_base/rules/api/inline-atomic-flag-accessors.md"
+    rules: "knowledge_base/rules/api/no-implicit-init-flag-in-cpu-setters.md"
+    rules: "knowledge_base/rules/general/capitalize-simd-and-cpu-acronyms-in-comments.md"
+    rules: "knowledge_base/rules/source/combine-row-function-guards-and-cpu-flags.md"
+    rules: "knowledge_base/rules/source/match-simd-feature-macro-cpu-flag-and-function-name.md"
   }
   capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
@@ -22,16 +84,20 @@ agentic_review {
   }
   capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
-    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
-    rules: "knowledge_base/rules/api/row-and-scale-kernel-naming.md"
-    rules: "knowledge_base/rules/source/broadcast-128bit-constants-in-avx2.md"
-    rules: "knowledge_base/rules/source/skip-sve-tail-when-width-is-vector-multiple.md"
+    path_expression: "source/scale[^/]*\\.cc"
+    rules: "knowledge_base/rules/api/no-mixed-depth-scaling-apis.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/[^/]*row[^/]*\\.h"
+    path_expression: "source/[^/]*row[^/]*\\.cc"
+    rules: "knowledge_base/rules/api/row-function-width-parameter-naming.md"
   }
   capability_groups {
     path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     rules: "knowledge_base/rules/api/single-letter-color-space-prefix.md"
+    rules: "knowledge_base/rules/source/source-pass-power-of-two-alignment-to-is-aligned.md"
   }
   capability_groups {
     path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
@@ -46,29 +112,210 @@ agentic_review {
     rules: "knowledge_base/rules/api/sync-readme-chromium-version.md"
   }
   capability_groups {
-    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
-    rules: "knowledge_base/rules/general/clarify-nonobvious-function-parameters.md"
-    rules: "knowledge_base/rules/general/const-for-immutable-local-variables.md"
-    rules: "knowledge_base/rules/general/parenthesize-macro-parameters.md"
-    rules: "knowledge_base/rules/general/place-branch-specific-comments-inside-branch.md"
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/api/use-x-format-prefix-without-alpha-channel.md"
+    rules: "knowledge_base/rules/source/match-feature-macro-to-row-function.md"
   }
   capability_groups {
-    rules: "knowledge_base/rules/general/document-secondary-changes-in-commit-description.md"
+    path_expression: "(?:.*/)?[^/]*\\.gni"
+    path_expression: "BUILD\\.gn"
+    rules: "knowledge_base/rules/build-gn/prefix-gn-build-arguments.md"
   }
   capability_groups {
-    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
-    rules: "knowledge_base/rules/general/format-inline-assembly-operands-on-separate-lines.md"
-    rules: "knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
-    rules: "knowledge_base/rules/general/record-speculative-optimizations-in-todo.md"
-    rules: "knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
+    path_expression: "(?:.*/)?[^/]*\\.cmake"
+    path_expression: "CMakeLists\\.txt"
+    rules: "knowledge_base/rules/cmakelists-txt/consistent-cmake-target-prefix-variables.md"
+  }
+  capability_groups {
+    path_expression: "DEPS"
+    rules: "knowledge_base/rules/deps/roll-pinned-deps-alongside-revision-vars.md"
+    rules: "knowledge_base/rules/deps/use-webrtc-developer-rbe-instance-in-deps.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?Android\\.bp"
+    path_expression: "(?:.*/)?Android\\.mk"
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:cmake|gn|gni)"
+    path_expression: "(?:.*/)?[^/]*\\.gyp[^/]*"
+    rules: "knowledge_base/rules/general/align-build-option-names-and-polarity.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    rules: "knowledge_base/rules/general/array-notation-for-fixed-size-buffer-params.md"
+    rules: "knowledge_base/rules/general/avoid-ambiguous-placeholders-in-comments.md"
+    rules: "knowledge_base/rules/general/encode-new-instructions-as-raw-bytes-in-inline-asm.md"
+    rules: "knowledge_base/rules/general/group-compiler-presence-and-version-checks.md"
+    rules: "knowledge_base/rules/general/parenthesize-compound-operator-expressions.md"
+    rules: "knowledge_base/rules/general/use-standard-loongarch-macro.md"
   }
   capability_groups {
     path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    rules: "knowledge_base/rules/general/avoid-attributing-library-requirements-to-compiler-versions.md"
+    rules: "knowledge_base/rules/general/condition-bitness-flags-on-target-bitness-in-gn.md"
+    rules: "knowledge_base/rules/general/configure-vector-extensions-via-gn-args.md"
+    rules: "knowledge_base/rules/general/gn-restrict-internal-target-visibility.md"
+    rules: "knowledge_base/rules/general/manage-toolchain-flags-in-shared-configs.md"
     rules: "knowledge_base/rules/general/no-defines-on-gn-group-targets.md"
+    rules: "knowledge_base/rules/general/no-optimize-max-in-gn.md"
+    rules: "knowledge_base/rules/general/unconditional-standard-toolchain-deps-in-gn.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/general/avoid-duplicate-conditions-in-compound-boolean-expressions.md"
+  }
+  capability_groups {
+    content_patterns: "\\bGoogle\\b"
+    rules: "knowledge_base/rules/general/avoid-internal-repository-codenames-in-comments.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
+    rules: "knowledge_base/rules/general/avoid-redundant-intermediate-casts.md"
+    rules: "knowledge_base/rules/general/clarify-nonobvious-function-parameters.md"
+    rules: "knowledge_base/rules/general/const-for-immutable-local-variables.md"
+    rules: "knowledge_base/rules/general/do-not-leave-commented-out-code.md"
+    rules: "knowledge_base/rules/general/document-bounds-preventing-arithmetic-overflow.md"
+    rules: "knowledge_base/rules/general/no-sanitizer-conditional-storage-or-sync.md"
+    rules: "knowledge_base/rules/general/no-unmotivated-cfi-or-sanitizer-suppressions.md"
+    rules: "knowledge_base/rules/general/omit-redundant-parentheses-around-standalone-operands.md"
+    rules: "knowledge_base/rules/general/parenthesize-macro-parameters.md"
+    rules: "knowledge_base/rules/general/place-branch-specific-comments-inside-branch.md"
+    rules: "knowledge_base/rules/general/use-named-operands-in-inline-assembly.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/general/avoid-redundant-nested-blocks-in-functions.md"
+    rules: "knowledge_base/rules/general/delete-unused-local-variables.md"
+    rules: "knowledge_base/rules/general/document-numeric-constant-derivation.md"
+    rules: "knowledge_base/rules/general/no-redundant-parentheses-in-address-of-pointer-casts.md"
+    rules: "knowledge_base/rules/general/no-redundant-preprocessor-macro-guards.md"
+    rules: "knowledge_base/rules/general/prefer-boolean-pointer-null-checks.md"
+    rules: "knowledge_base/rules/general/prefer-positive-preprocessor-condition.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    rules: "knowledge_base/rules/general/cast-dimensions-to-size-t-in-pointer-arithmetic.md"
+    rules: "knowledge_base/rules/general/check-unsigned-overflow-before-addition.md"
+    rules: "knowledge_base/rules/general/define-gnu-source-before-includes-not-use-gnu.md"
+    rules: "knowledge_base/rules/general/document-non-obvious-validation-limits.md"
+    rules: "knowledge_base/rules/general/document-workarounds-and-future-improvements-with-todo.md"
+    rules: "knowledge_base/rules/general/format-inline-assembly-operands-on-separate-lines.md"
+    rules: "knowledge_base/rules/general/general-no-digit-separators-in-numeric-literals.md"
+    rules: "knowledge_base/rules/general/general-use-semantic-names-over-container-abbreviations.md"
+    rules: "knowledge_base/rules/general/guard-optional-dependency-includes-with-feature-macros.md"
+    rules: "knowledge_base/rules/general/keep-format-and-color-space-acronyms-uppercase.md"
+    rules: "knowledge_base/rules/general/match-referenced-symbol-names-in-comments-to-declarations.md"
+    rules: "knowledge_base/rules/general/measure-string-length-before-strtok.md"
+    rules: "knowledge_base/rules/general/minimize-cpp-features-for-c89-compatibility.md"
+    rules: "knowledge_base/rules/general/prefer-named-constants-over-magic-numbers.md"
+    rules: "knowledge_base/rules/general/prefix-hex-printf-specifier-with-0x.md"
+    rules: "knowledge_base/rules/general/preserve-canonical-casing-for-architecture-names.md"
+    rules: "knowledge_base/rules/general/provide-fallback-return-for-enum-switch.md"
+    rules: "knowledge_base/rules/general/record-speculative-optimizations-in-todo.md"
+    rules: "knowledge_base/rules/general/sync-comments-with-code-changes.md"
+    rules: "knowledge_base/rules/general/synchronize-endif-comment-with-condition.md"
+    rules: "knowledge_base/rules/general/use-braces-for-conditionals-and-loops.md"
+    rules: "knowledge_base/rules/general/validate-buffer-allocation-bounds-against-size-max.md"
+  }
+  capability_groups {
+    rules: "knowledge_base/rules/general/commit-message-accurate-and-consistent-with-changes.md"
+    rules: "knowledge_base/rules/general/describe-notable-changes-in-commit-message.md"
+    rules: "knowledge_base/rules/general/document-secondary-changes-in-commit-description.md"
+    rules: "knowledge_base/rules/general/keep-commit-message-consistent-with-changes.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*neon[^/]*\\.cc"
+    rules: "knowledge_base/rules/general/distinguish-arm-from-aarch64-in-comments.md"
+    rules: "knowledge_base/rules/source/aarch64-neon-ld1-register-post-index-stride.md"
+    rules: "knowledge_base/rules/source/interleave-neon-compute-and-memory-instructions.md"
+    rules: "knowledge_base/rules/source/load-neon-vector-constants-with-immediate-movi.md"
+    rules: "knowledge_base/rules/source/match-neon-accumulator-arrangement-specifiers.md"
+    rules: "knowledge_base/rules/source/match-neon-load-store-element-size-to-data-type.md"
+    rules: "knowledge_base/rules/source/neon-prefer-zip-widening-over-tbl-shuffles.md"
+    rules: "knowledge_base/rules/source/neon-scalar-negative-shift-for-right-shift.md"
+    rules: "knowledge_base/rules/source/neon-sve-sli-sri-bitfield-packing.md"
+    rules: "knowledge_base/rules/source/unroll-neon-reduction-loops-with-paired-loads-and-dual-accum.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:cmake|gn|gni)"
+    path_expression: "(?:.*/)?[^/]*\\.gn[^/]*"
+    path_expression: "BUILD\\.gn"
+    rules: "knowledge_base/rules/general/document-non-obvious-build-rules-and-toolchain-overrides.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|h)"
+    path_expression: "BUILD\\.gn"
+    rules: "knowledge_base/rules/general/include-absl-headers-without-third-party-prefix.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|h)"
+    rules: "knowledge_base/rules/general/match-closing-brace-comments.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.c"
+    rules: "knowledge_base/rules/general/no-cplusplus-in-c-source.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?Android\\.bp"
+    path_expression: "(?:.*/)?Android\\.mk"
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:bzl|gn|gni)"
+    rules: "knowledge_base/rules/general/no-disabled-test-sources-in-build-files.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    path_expression: "\\.gn"
+    rules: "knowledge_base/rules/general/no-un-upstreamed-gn-imports.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/general/omit-redundant-base-architecture-macro-in-feature-guards.md"
   }
   capability_groups {
     content_patterns: "\\bOptimization\\b"
     rules: "knowledge_base/rules/general/omit-redundant-self-explanatory-comments.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|cpp)"
+    rules: "knowledge_base/rules/general/omit-redundant-stream-flush-before-exit.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?Android\\.bp"
+    path_expression: "(?:.*/)?Android\\.mk"
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:c|cc|gn|gni|h|md)"
+    path_expression: "docs/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "include/libyuv/cpu_id\\.h"
+    path_expression: "source/cpu_id\\.cc"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/general/order-cpu-features-hierarchically.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:gn|gni)"
+    path_expression: "BUILD\\.gn"
+    rules: "knowledge_base/rules/general/prefer-private-deps-in-gn.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?BUILD\\.bazel"
+    path_expression: "(?:.*/)?CMakeLists\\.txt"
+    path_expression: "(?:.*/)?[^/]*\\.(?:cmake|gni)"
+    path_expression: "(?:.*/)?[^/]*\\.gn[^/]*"
+    path_expression: "BUILD\\.bazel"
+    rules: "knowledge_base/rules/general/use-armv8-5-a-march-for-sve2-gcc-compatibility.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.(?:cc|cpp|h)"
+    rules: "knowledge_base/rules/general/use-nolint-for-intentional-c-casts.md"
+  }
+  capability_groups {
+    path_expression: "(?:.*/)?[^/]*\\.star"
+    rules: "knowledge_base/rules/infra/starlark-centralize-builder-properties.md"
+    rules: "knowledge_base/rules/infra/starlark-top-level-repo-constants.md"
   }
   capability_groups {
     path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
@@ -77,20 +324,63 @@ agentic_review {
     rules: "knowledge_base/rules/source/aarch64-assembly-use-subs-for-loop-counter.md"
   }
   capability_groups {
-    path_expression: "source/(?:.*/)?[^/]*neon[^/]*\\.cc"
-    rules: "knowledge_base/rules/source/aarch64-neon-ld1-register-post-index-stride.md"
-    rules: "knowledge_base/rules/source/interleave-neon-compute-and-memory-instructions.md"
-    rules: "knowledge_base/rules/source/match-neon-load-store-element-size-to-data-type.md"
+    path_expression: "source/[^/]*neon[^/]*\\.cc"
+    rules: "knowledge_base/rules/source/aarch64-neon-prefer-ldp-stp-over-ld1-st1.md"
+    rules: "knowledge_base/rules/source/neon-prefer-interleaved-stores-over-zip-st1.md"
+    rules: "knowledge_base/rules/source/neon-quadword-register-syntax-for-vst2-vld2.md"
+    rules: "knowledge_base/rules/source/neon-use-d-registers-for-8-byte-loads.md"
+    rules: "knowledge_base/rules/source/neon-widening-instructions-over-zip-zero.md"
+    rules: "knowledge_base/rules/source/neon-widening-multiply-accumulate-over-moves.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/accumulate-in-vector-registers-across-reduction-loops.md"
+    rules: "knowledge_base/rules/source/document-multi-stage-loop-remainder-and-tail-calculations.md"
   }
   capability_groups {
     path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
     rules: "knowledge_base/rules/source/accurate-pixel-format-in-assembly-comments.md"
+    rules: "knowledge_base/rules/source/arm-assembly-use-cbz-cbnz-for-zero-branch.md"
     rules: "knowledge_base/rules/source/base-plus-index-addressing-for-inline-assembly-loops.md"
+    rules: "knowledge_base/rules/source/cast-bit-count-intrinsic-operands.md"
     rules: "knowledge_base/rules/source/clear-upper-ymm-with-vzeroupper.md"
+    rules: "knowledge_base/rules/source/dedicated-16-bit-mirroring-for-rotation.md"
+    rules: "knowledge_base/rules/source/document-simd-kernel-block-dimensions.md"
+    rules: "knowledge_base/rules/source/duplicate-bytes-with-shuffle-masks-not-unpack.md"
     rules: "knowledge_base/rules/source/handle-negative-height-by-inverting-strides.md"
+    rules: "knowledge_base/rules/source/hoist-common-image-normalization-outside-branches.md"
+    rules: "knowledge_base/rules/source/match-assembly-loop-decrement-to-step.md"
+    rules: "knowledge_base/rules/source/match-coordinate-variables-to-spatial-axis.md"
+    rules: "knowledge_base/rules/source/no-8bit-destination-as-16bit-intermediate-buffer.md"
+    rules: "knowledge_base/rules/source/omit-dead-pointer-increments-before-asm-exit.md"
+    rules: "knowledge_base/rules/source/pass-explicit-plane-strides-not-dimensions.md"
     rules: "knowledge_base/rules/source/post-increment-pointers-in-assembly-loops.md"
+    rules: "knowledge_base/rules/source/prefer-direct-multiplications-in-c-fallbacks.md"
+    rules: "knowledge_base/rules/source/prefer-simd-arithmetic-over-bitwise-tricks.md"
+    rules: "knowledge_base/rules/source/prefer-unit-stride-vector-loads-when-channel-order-unchanged.md"
+    rules: "knowledge_base/rules/source/separate-multiple-plane-loops-into-noinline-helpers.md"
+    rules: "knowledge_base/rules/source/share-vector-constants-outside-arch-ifdef.md"
+    rules: "knowledge_base/rules/source/simd-assembly-post-increment-byte-offsets.md"
     rules: "knowledge_base/rules/source/use-aligned-simd-moves-for-aligned-memory.md"
+    rules: "knowledge_base/rules/source/use-pmaddubsw-for-adjacent-sample-weighting.md"
+    rules: "knowledge_base/rules/source/use-three-operand-avx-instructions-over-register-copies.md"
+    rules: "knowledge_base/rules/source/use-w-for-simd-working-width-variable.md"
     rules: "knowledge_base/rules/source/validate-mandatory-plane-pointers-at-entry.md"
+    rules: "knowledge_base/rules/source/validate-width-against-integer-overflow.md"
+    rules: "knowledge_base/rules/source/when-implementing-16-bit-or-high-bit-depth-c-reference-funct.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/row\\.h"
+    path_expression: "source/row.*"
+    rules: "knowledge_base/rules/source/architecture-agnostic-row-dispatch.md"
+    rules: "knowledge_base/rules/source/avoid-trailing-underscores-on-row-function-pointers.md"
+    rules: "knowledge_base/rules/source/document-non-standard-row-includes.md"
+    rules: "knowledge_base/rules/source/initialize-multi-row-assembly-stride-pointer.md"
+    rules: "knowledge_base/rules/source/order-2d-transform-loops-to-write-destination-rows.md"
+    rules: "knowledge_base/rules/source/parameterize-row-kernels-with-matrix-constants.md"
+    rules: "knowledge_base/rules/source/use-do-while-in-simd-row-kernels.md"
+    rules: "knowledge_base/rules/source/use-row-vector-typedefs-for-simd-constants.md"
   }
   capability_groups {
     path_expression: "include/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
@@ -98,9 +388,79 @@ agentic_review {
     rules: "knowledge_base/rules/source/assert-parameter-preconditions-and-bounds.md"
   }
   capability_groups {
+    path_expression: "include/libyuv/row\\.h"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/avoid-loop-invariant-branches-in-simd-row-kernels.md"
+    rules: "knowledge_base/rules/source/shift-for-high-bit-depth-row-conversions.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*_common\\.cc"
+    rules: "knowledge_base/rules/source/avoid-manual-loop-unrolling-in-scalar-fallbacks.md"
+  }
+  capability_groups {
+    path_expression: "source/scale[^/]*\\.cc"
+    rules: "knowledge_base/rules/source/avoid-redundant-single-row-branches-in-bilinear-upscalers.md"
+    rules: "knowledge_base/rules/source/clamp-odd-height-source-pointer-in-point-downscaling.md"
+    rules: "knowledge_base/rules/source/clamp-vertical-scaling-coordinate-to-max-y.md"
+    rules: "knowledge_base/rules/source/sample-consistent-pixel-phase-in-downsampling-remainder.md"
+    rules: "knowledge_base/rules/source/support-arbitrary-heights-for-kfilterlinear.md"
+    rules: "knowledge_base/rules/source/use-64-bit-accumulators-for-16-16-fixed-point-scaling.md"
+    rules: "knowledge_base/rules/source/use-fixeddiv-for-scale-stepping.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*rvv[^/]*\\.cc"
+    rules: "knowledge_base/rules/source/avoid-redundant-vxrm-configuration-in-rvv-kernels.md"
+    rules: "knowledge_base/rules/source/rvv-vsetvl-at-loop-start.md"
+    rules: "knowledge_base/rules/source/use-vsetvlmax-for-rvv-constant-broadcasts.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/avoid-tbl-deinterleave-for-nv12-uv.md"
+    rules: "knowledge_base/rules/source/cast-64-bit-intrinsic-truncation.md"
+    rules: "knowledge_base/rules/source/clamp-fixed-point-after-right-shift.md"
+    rules: "knowledge_base/rules/source/derive-full-range-yuv-to-rgb-matrix-coefficients.md"
+    rules: "knowledge_base/rules/source/document-accuracy-loss-and-track-precision-improvements.md"
+    rules: "knowledge_base/rules/source/document-architecture-specific-constants-and-avoid-dummy-mac.md"
+    rules: "knowledge_base/rules/source/document-fallback-guards-and-hardware-quirks.md"
+    rules: "knowledge_base/rules/source/fold-constant-chroma-and-bias-in-monochrome-kernels.md"
+    rules: "knowledge_base/rules/source/include-rounding-bias-in-fixed-point-color-constants.md"
+    rules: "knowledge_base/rules/source/neutral-placeholders-for-generic-pixel-format-helpers.md"
+  }
+  capability_groups {
     path_expression: "include/libyuv/convert.*"
     path_expression: "source/convert.*"
     rules: "knowledge_base/rules/source/clamp-simd-narrowing-conversions.md"
+    rules: "knowledge_base/rules/source/no-row-coalescing-in-multipass-conversion-loops.md"
+    rules: "knowledge_base/rules/source/prefer-row-processing-over-multipass-plane-conversions.md"
+    rules: "knowledge_base/rules/source/process-uv-planes-before-y-in-simd-conversion.md"
+    rules: "knowledge_base/rules/source/share-conversion-matrix-constants-in-row-common.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/declare-all-modified-registers-in-asm-clobber-list.md"
+    rules: "knowledge_base/rules/source/inline-asm-readonly-inputs.md"
+    rules: "knowledge_base/rules/source/qualify-extended-inline-asm-volatile.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp)"
+    path_expression_exclusion: "(?:.*/)?[^/]*test[^/]*\\.(?:cc|cpp)"
+    path_expression_exclusion: "(?:.*/)?unit_test/.*"
+    rules: "knowledge_base/rules/source/declare-variables-at-scope-start-for-c89.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*_gcc\\.cc"
+    rules: "knowledge_base/rules/source/direct-memory-operands-in-x86-vector-asm.md"
+    rules: "knowledge_base/rules/source/omit-64bit-suffixes-in-x86-inline-asm.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/document-shuffle-table-formats-in-register-order.md"
+    rules: "knowledge_base/rules/source/match-is-aligned-step-to-simd-vector-size.md"
   }
   capability_groups {
     path_expression: "include/libyuv/row_[^/]*\\.h"
@@ -111,17 +471,43 @@ agentic_review {
     path_expression: "include/libyuv/scale.*"
     path_expression: "source/scale.*"
     rules: "knowledge_base/rules/source/format-pointer-arithmetic-scaling.md"
+    rules: "knowledge_base/rules/source/prefer-unsigned-32-bit-scaling-coefficients.md"
     rules: "knowledge_base/rules/source/use-zero-stride-for-edge-rows-in-multi-row-scaling.md"
   }
   capability_groups {
-    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
-    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
-    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
-    rules: "knowledge_base/rules/source/match-feature-macro-to-row-function.md"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|h)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:c|cc|h)"
+    rules: "knowledge_base/rules/source/guard-platform-cpu-detection-with-architecture-macros.md"
   }
   capability_groups {
+    path_expression: "source/row_any\\.cc"
+    path_expression: "source/scale_any\\.cc"
+    rules: "knowledge_base/rules/source/match-any-wrapper-mask-to-vector-step.md"
+  }
+  capability_groups {
+    path_expression: "source/cpu_id\\.cc"
+    rules: "knowledge_base/rules/source/match-cpuinfo-prefixes-with-memcmp.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/row[^/]*"
+    path_expression: "include/libyuv/scale[^/]*"
+    path_expression: "source/row[^/]*"
+    path_expression: "source/scale[^/]*"
+    rules: "knowledge_base/rules/source/name-horizontal-scaling-kernels-row-not-col.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*neon64\\.cc"
+    rules: "knowledge_base/rules/source/neon64-prefer-scalar-loads-and-stp-over-st4-gather.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*sve[^/]*\\.cc"
+    rules: "knowledge_base/rules/source/no-any-wrappers-or-alignment-checks-for-sme-sve-rvv.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
     path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h|hpp|mm)"
-    rules: "knowledge_base/rules/source/match-is-aligned-step-to-simd-vector-size.md"
+    rules: "knowledge_base/rules/source/no-assert-on-alloc-failure-in-fallible-functions.md"
   }
   capability_groups {
     path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
@@ -131,8 +517,77 @@ agentic_review {
     rules: "knowledge_base/rules/source/pair-align-buffer-64-with-free-aligned-buffer-64.md"
   }
   capability_groups {
-    path_expression: "include/libyuv/row\\.h"
-    path_expression: "source/row.*"
-    rules: "knowledge_base/rules/source/use-row-vector-typedefs-for-simd-constants.md"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "util/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/prefer-arithmetic-division-over-signed-shifts.md"
+  }
+  capability_groups {
+    path_expression: "source/cpu_id\\.cc"
+    path_expression: "util/cpuid\\.c"
+    rules: "knowledge_base/rules/source/query-cpu-feature-registers-over-model-strings.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp)"
+    rules: "knowledge_base/rules/source/reserve-16-suffix-for-16-bit-channel-depth.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*rvv[^/]*\\.cc"
+    rules: "knowledge_base/rules/source/rvv-prefer-widening-multiply-accumulate.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/scale[^/]*\\.h"
+    path_expression: "source/scale[^/]*\\.cc"
+    rules: "knowledge_base/rules/source/scale-plane-function-naming.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    rules: "knowledge_base/rules/source/segmented-load-destination-pointer-order.md"
+  }
+  capability_groups {
+    path_expression: "include/libyuv/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:c|cc|cpp|h)"
+    rules: "knowledge_base/rules/source/separate-odd-width-handling-into-odd-row-functions.md"
+  }
+  capability_groups {
+    path_expression: "source/convert_to_argb\\.cc"
+    path_expression: "source/convert_to_i420\\.cc"
+    rules: "knowledge_base/rules/source/sync-convert-to-i420-and-argb.md"
+  }
+  capability_groups {
+    path_expression: "include/(?:.*/)?[^/]*\\.(?:h|hpp)"
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/source/todo-tracking-bug-for-simd-fallback.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*gcc\\.cc"
+    path_expression: "source/(?:.*/)?[^/]*win\\.cc"
+    rules: "knowledge_base/rules/source/use-vmovdqa-for-avx2-constant-loads.md"
+  }
+  capability_groups {
+    path_expression: "source/[^/]*_gcc\\.cc"
+    path_expression: "source/[^/]*_neon64\\.cc"
+    path_expression: "source/[^/]*_neon\\.cc"
+    path_expression: "source/[^/]*_win\\.cc"
+    rules: "knowledge_base/rules/source/verify-simd-pairwise-reduction-registers.md"
+  }
+  capability_groups {
+    path_expression: "source/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/unit-test/scale-dimension-max-int16.md"
+  }
+  capability_groups {
+    path_expression: "unit_test/(?:.*/)?[^/]*\\.(?:cc|cpp|h|hpp|mm)"
+    rules: "knowledge_base/rules/unit_test/adapt-test-output-column-widths.md"
+    rules: "knowledge_base/rules/unit_test/express-strides-in-elements-for-typed-test-macros.md"
+    rules: "knowledge_base/rules/unit_test/guard-large-test-allocations.md"
+    rules: "knowledge_base/rules/unit_test/guard-relaxed-test-warnings-with-capability-checks.md"
+    rules: "knowledge_base/rules/unit_test/guard-slow-unoptimized-conversion-tests-consistently.md"
+    rules: "knowledge_base/rules/unit_test/known-answer-tests-for-color-and-range-conversions.md"
+    rules: "knowledge_base/rules/unit_test/match-test-tolerances-to-operation.md"
+    rules: "knowledge_base/rules/unit_test/parametrize-color-conversion-test-references.md"
+    rules: "knowledge_base/rules/unit_test/test-full-container-range-for-high-bit-depth.md"
+    rules: "knowledge_base/rules/unit_test/unit-tests-no-internal-row-headers.md"
   }
 }
