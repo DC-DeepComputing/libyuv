@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3e9714bb_abd5717b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-28T19:53:30Z",
+      "side": 1,
+      "message": "Cool.  Note that I landed a CL that makes arm64 100% complete neon.\nI plan to do a pass to fill in the 32 bit arm, which is important for embedded, and may do mve which is a relatively direct port\n\nThis datatype - ARGB4444 and the other 2 16 bit RGB formats, are not 100% optimized on other platforms, and I think should be considered deprecated, because they were requested/used as early display and gpu formats, but they are replaced with better display/gpu formats in the future.  10 bit formats are emerging as more important and so far AR30/AB30 for argb, and P010 for yuv.",
+      "revId": "dc30ffacee95367a0430489dac0f8b16eedc1fe6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "00861998_a28ab6ba",
+        "filename": "source/row_neon64.cc",
+        "patchSetId": 3
+      },
+      "lineNbr": 2572,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-28T19:53:30Z",
+      "side": 1,
+      "message": "pretty :-)\nso we load ARGB into AG and RB\nthe shift RB into low bits or AG to get ARGB.\n\nfor what its worth, this code can work on arm 32 bit using trickery on the load.  do 2 ld2 of 8 bytes into even and odd registers.",
+      "revId": "dc30ffacee95367a0430489dac0f8b16eedc1fe6",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
