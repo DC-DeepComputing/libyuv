@@ -978,7 +978,7 @@ void ARGBToUV444MatrixRow_AVX512VNNI(const uint8_t* src_argb,
 // Requires AVX512VNNI and AVX512VBMI.
 // U = (kAddUV - dot(kRGBToU, argb)) >> 8.  The accumulators start at
 // ~kAddUV so they hold ~(kAddUV - dot) and U is the inverse of byte 1 of each
-// int32.  The inverse is folded into the ternary logic that merges the halves.
+// int32.
 LIBYUV_TARGET_AVX512VNNIVBMI
 void ARGBToUV444MatrixRow_AVX512VNNIVBMI(const uint8_t* src_argb,
                                          uint8_t* dst_u,
@@ -992,12 +992,10 @@ void ARGBToUV444MatrixRow_AVX512VNNIVBMI(const uint8_t* src_argb,
       _mm512_broadcast_i32x4(_mm_loadu_si128((const __m128i*)c->kRGBToU));
   __m512i zmm_v =
       _mm512_broadcast_i32x4(_mm_loadu_si128((const __m128i*)c->kRGBToV));
+  const __m512i zmm_neg1 = _mm512_set1_epi32(-1);
   __m512i zmm_add = _mm512_xor_si512(
       _mm512_cvtepu16_epi32(_mm256_loadu_si256((const __m256i*)c->kAddUV)),
-      _mm512_set1_epi32(-1));  // ~kAddUV
-  // Select low 256 bits from the first operand, high 256 bits from the second.
-  __m512i zmm_sel =
-      _mm512_inserti64x4(_mm512_setzero_si512(), _mm256_set1_epi32(-1), 1);
+      zmm_neg1);  // ~kAddUV
 
   while (width > 0) {
     __m512i zmm_s0 = _mm512_loadu_si512((const __m512i*)src_argb);
@@ -1014,12 +1012,14 @@ void ARGBToUV444MatrixRow_AVX512VNNIVBMI(const uint8_t* src_argb,
     __m512i zmm6 = _mm512_dpbusd_epi32(zmm_add, zmm_s2, zmm_v);
     __m512i zmm7 = _mm512_dpbusd_epi32(zmm_add, zmm_s3, zmm_v);
 
-    zmm0 = _mm512_permutex2var_epi8(zmm0, zmm_perm, zmm1);        // ~U 0..31
-    zmm2 = _mm512_permutex2var_epi8(zmm2, zmm_perm, zmm3);        // ~U 32..63
-    zmm4 = _mm512_permutex2var_epi8(zmm4, zmm_perm, zmm5);        // ~V 0..31
-    zmm6 = _mm512_permutex2var_epi8(zmm6, zmm_perm, zmm7);        // ~V 32..63
-    zmm0 = _mm512_ternarylogic_epi32(zmm0, zmm2, zmm_sel, 0x27);  // U
-    zmm4 = _mm512_ternarylogic_epi32(zmm4, zmm6, zmm_sel, 0x27);  // V
+    zmm0 = _mm512_permutex2var_epi8(zmm0, zmm_perm, zmm1);  // ~U 0..31
+    zmm2 = _mm512_permutex2var_epi8(zmm2, zmm_perm, zmm3);  // ~U 32..63
+    zmm4 = _mm512_permutex2var_epi8(zmm4, zmm_perm, zmm5);  // ~V 0..31
+    zmm6 = _mm512_permutex2var_epi8(zmm6, zmm_perm, zmm7);  // ~V 32..63
+    zmm0 = _mm512_xor_si512(_mm512_shuffle_i64x2(zmm0, zmm2, 0x44),
+                            zmm_neg1);  // U
+    zmm4 = _mm512_xor_si512(_mm512_shuffle_i64x2(zmm4, zmm6, 0x44),
+                            zmm_neg1);  // V
 
     _mm512_storeu_si512((__m512i*)dst_u, zmm0);
     _mm512_storeu_si512((__m512i*)dst_v, zmm4);
@@ -3036,8 +3036,9 @@ void I422ToAR30Row_AVX512BW(const uint8_t* src_y,
     zmm0 = _mm512_srli_epi16(zmm0, 4);
     zmm3 = _mm512_srli_epi16(zmm1, 10);
     zmm1 = _mm512_slli_epi16(zmm1, 6);
-    zmm0 = _mm512_ternarylogic_epi32(zmm0, zmm1, zmm_fc00, 0xf8);
-    zmm2 = _mm512_ternarylogic_epi32(zmm2, zmm3, zmm_3ff0, 0xe4);
+    zmm0 = _mm512_or_si512(zmm0, _mm512_and_si512(zmm1, zmm_fc00));
+    zmm2 = _mm512_or_si512(_mm512_and_si512(zmm2, zmm_3ff0),
+                           _mm512_andnot_si512(zmm_3ff0, zmm3));
     zmm2 = _mm512_or_si512(zmm2, zmm_c000);
 
     __m512i zmm_dst0 = _mm512_permutex2var_epi16(zmm0, zmm_perm0, zmm2);
@@ -3094,8 +3095,9 @@ void I422ToAR30Row_AVX512BW(const uint8_t* src_y,
     zmm0 = _mm512_srli_epi16(zmm0, 4);
     zmm3 = _mm512_srli_epi16(zmm1, 10);
     zmm1 = _mm512_slli_epi16(zmm1, 6);
-    zmm0 = _mm512_ternarylogic_epi32(zmm0, zmm1, zmm_fc00, 0xf8);
-    zmm2 = _mm512_ternarylogic_epi32(zmm2, zmm3, zmm_3ff0, 0xe4);
+    zmm0 = _mm512_or_si512(zmm0, _mm512_and_si512(zmm1, zmm_fc00));
+    zmm2 = _mm512_or_si512(_mm512_and_si512(zmm2, zmm_3ff0),
+                           _mm512_andnot_si512(zmm_3ff0, zmm3));
     zmm2 = _mm512_or_si512(zmm2, zmm_c000);
 
     __m512i zmm_dst0 = _mm512_permutex2var_epi16(zmm0, zmm_perm0, zmm2);
@@ -5111,8 +5113,8 @@ void ARGBGrayRow_AVX512VNNI(const uint8_t* src_argb,
     src_argb += 64;
     __m512i y32 = _mm512_srli_epi32(
         _mm512_dpbusd_epi32(c_bias, c_coeff, _mm512_xor_si512(s, c_sub128)), 8);
-    __m512i out = _mm512_ternarylogic_epi32(_mm512_shuffle_epi8(y32, c_shuf), s,
-                                            c_alpha, 0xf8);
+    __m512i out = _mm512_or_si512(_mm512_shuffle_epi8(y32, c_shuf),
+                                  _mm512_and_si512(s, c_alpha));
     _mm512_storeu_si512((__m512i*)dst_argb, out);
     dst_argb += 64;
     width -= 16;
@@ -5122,8 +5124,8 @@ void ARGBGrayRow_AVX512VNNI(const uint8_t* src_argb,
     __m512i s = _mm512_maskz_loadu_epi32(k, src_argb);
     __m512i y32 = _mm512_srli_epi32(
         _mm512_dpbusd_epi32(c_bias, c_coeff, _mm512_xor_si512(s, c_sub128)), 8);
-    __m512i out = _mm512_ternarylogic_epi32(_mm512_shuffle_epi8(y32, c_shuf), s,
-                                            c_alpha, 0xf8);
+    __m512i out = _mm512_or_si512(_mm512_shuffle_epi8(y32, c_shuf),
+                                  _mm512_and_si512(s, c_alpha));
     _mm512_mask_storeu_epi32(dst_argb, k, out);
   }
   _mm256_zeroupper();

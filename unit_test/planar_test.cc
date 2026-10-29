@@ -501,6 +501,34 @@ TEST_F(LibYUVPlanarTest, TestARGBGrayTo) {
     ASSERT_EQ(i, orig_pixels[i][2]);
     ASSERT_EQ(i, orig_pixels[i][3]);
   }
+
+  // Test RGBX input with uninitialized alpha channel under MSan.
+  SIMD_ALIGNED(uint8_t gray_pixels_c[37][4]);
+  for (int i = 0; i < 37; ++i) {
+    orig_pixels[i][0] = static_cast<uint8_t>(i * 7);
+    orig_pixels[i][1] = static_cast<uint8_t>(i * 13);
+    orig_pixels[i][2] = static_cast<uint8_t>(i * 23);
+    orig_pixels[i][3] = 0u;
+  }
+  MaskCpuFlags(disable_cpu_flags_);
+  ARGBGrayTo(&orig_pixels[0][0], 0, &gray_pixels_c[0][0], 0, 37, 1);
+  MaskCpuFlags(benchmark_cpu_info_);
+  for (int i = 0; i < 37; ++i) {
+    MSAN_POISON(&orig_pixels[i][3], 1);
+  }
+  MSAN_POISON(gray_pixels, sizeof(gray_pixels));
+  ARGBGrayTo(&orig_pixels[0][0], 0, &gray_pixels[0][0], 0, 37, 1);
+  for (int i = 0; i < 37; ++i) {
+    ASSERT_EQ(gray_pixels_c[i][0], gray_pixels[i][0]);
+    ASSERT_EQ(gray_pixels_c[i][1], gray_pixels[i][1]);
+    ASSERT_EQ(gray_pixels_c[i][2], gray_pixels[i][2]);
+  }
+  ARGBGray(&orig_pixels[0][0], 0, 0, 0, 37, 1);
+  for (int i = 0; i < 37; ++i) {
+    ASSERT_EQ(gray_pixels_c[i][0], orig_pixels[i][0]);
+    ASSERT_EQ(gray_pixels_c[i][1], orig_pixels[i][1]);
+    ASSERT_EQ(gray_pixels_c[i][2], orig_pixels[i][2]);
+  }
 }
 
 TEST_F(LibYUVPlanarTest, TestARGBSepia) {
@@ -2632,8 +2660,11 @@ static int TestHalfFloatPlane(int benchmark_width,
                               int mask,
                               int invert,
                               int off) {
-  int i, j;
-  const int y_plane_size = benchmark_width * benchmark_height * 2;
+  if (benchmark_width <= 0 || benchmark_height <= 0) {
+    return 0;
+  }
+  const size_t y_plane_size = static_cast<size_t>(benchmark_width) *
+                              static_cast<size_t>(benchmark_height) * 2;
   align_buffer_page_end(orig_y, y_plane_size + off);
   align_buffer_page_end(dst_c, y_plane_size);
   align_buffer_page_end(dst_opt, y_plane_size);
@@ -2642,13 +2673,13 @@ static int TestHalfFloatPlane(int benchmark_width,
   memset(dst_c, 1, y_plane_size);
   memset(dst_opt, 2, y_plane_size);
 
-  for (i = 0; i < y_plane_size / 2; ++i) {
+  for (size_t i = 0; i < y_plane_size / 2; ++i) {
     reinterpret_cast<uint16_t*>(orig_y + off)[i] &= mask;
   }
 
   // Disable all optimizations.
   MaskCpuFlags(disable_cpu_flags);
-  for (j = 0; j < benchmark_iterations; j++) {
+  for (int j = 0; j < benchmark_iterations; j++) {
     HalfFloatPlane(reinterpret_cast<uint16_t*>(orig_y + off),
                    benchmark_width * 2, reinterpret_cast<uint16_t*>(dst_c),
                    benchmark_width * 2, scale, benchmark_width,
@@ -2657,7 +2688,7 @@ static int TestHalfFloatPlane(int benchmark_width,
 
   // Enable optimizations.
   MaskCpuFlags(benchmark_cpu_info);
-  for (j = 0; j < benchmark_iterations; j++) {
+  for (int j = 0; j < benchmark_iterations; j++) {
     HalfFloatPlane(reinterpret_cast<uint16_t*>(orig_y + off),
                    benchmark_width * 2, reinterpret_cast<uint16_t*>(dst_opt),
                    benchmark_width * 2, scale, benchmark_width,
@@ -2665,7 +2696,7 @@ static int TestHalfFloatPlane(int benchmark_width,
   }
 
   int max_diff = 0;
-  for (i = 0; i < y_plane_size / 2; ++i) {
+  for (size_t i = 0; i < y_plane_size / 2; ++i) {
     int abs_diff =
         abs(static_cast<int>(reinterpret_cast<uint16_t*>(dst_c)[i]) -
             static_cast<int>(reinterpret_cast<uint16_t*>(dst_opt)[i]));
