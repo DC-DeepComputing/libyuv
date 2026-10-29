@@ -39,11 +39,14 @@ extern "C" {
 #define HAS_HASHDJB2_AVX2
 #define HAS_SSIM4X4ROW_AVX2
 #define HAS_SSIMWINDOWROW_AVX2
+#define HAS_ARGBDETECTROW_AVX2
+#if defined(__x86_64__) || defined(_M_X64)
 #define HAS_HAMMINGDISTANCE_AVX512BW
 #define HAS_SUMSQUAREERROR_AVX512BW
 #define HAS_HASHDJB2_AVX512BW
 #define HAS_SSIM4X4ROW_AVX512BW
 #define HAS_SSIMWINDOWROW_AVX512BW
+#endif
 #endif
 
 // The following are available for 64 bit GCC and clang, as inline assembly in
@@ -63,6 +66,7 @@ extern "C" {
 #define HAS_HASHDJB2_AVX2
 #define HAS_SSIM4X4ROW_AVX2
 #define HAS_SSIMWINDOWROW_AVX2
+#define HAS_ARGBDETECTROW_AVX2
 #endif
 #if defined(CLANG_HAS_AVX512)
 #define HAS_HAMMINGDISTANCE_AVX512BW
@@ -297,6 +301,9 @@ float SsimWindowRow_SME(const uint32_t* row0,
 float SsimWindowRow_RVV(const uint32_t* row0,
                         const uint32_t* row1,
                         int num_windows);
+
+uint32_t ARGBDetectRow_C(const uint8_t* argb, int width);
+uint32_t ARGBDetectRow_AVX2(const uint8_t* argb, int width);
 
 #ifdef __cplusplus
 }  // extern "C"
