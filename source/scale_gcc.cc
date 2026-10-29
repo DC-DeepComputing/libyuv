@@ -1970,10 +1970,12 @@ void ScaleAddRow_AVX512BW(const uint8_t* src_ptr,
 }
 #endif  // HAS_SCALEADDROW_AVX512BW
 
-#ifdef HAS_SCALEADDCOLS_AVX512BW
+#if defined(HAS_SCALEADDCOLS1_AVX512BW) || defined(HAS_SCALEADDCOLS2_AVX512BW)
 static const uint8_t kSequence0_15[16] = {0, 1, 2,  3,  4,  5,  6,  7,
                                           8, 9, 10, 11, 12, 13, 14, 15};
+#endif
 
+#ifdef HAS_SCALEADDCOLS1_AVX512BW
 void ScaleAddCols1_AVX512BW(int dst_width,
                             int boxheight,
                             int x,
@@ -2223,7 +2225,9 @@ void ScaleAddCols1_AVX512BW(int dst_width,
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
         "xmm7", "k1", "k2", "k3", "k4");
 }
+#endif  // HAS_SCALEADDCOLS1_AVX512BW
 
+#ifdef HAS_SCALEADDCOLS2_AVX512BW
 void ScaleAddCols2_AVX512BW(int dst_width,
                             int boxheight,
                             int x,
@@ -2581,7 +2585,7 @@ void ScaleAddCols2_AVX512BW(int dst_width,
         "xmm17", "xmm18", "xmm19", "xmm20", "xmm21", "xmm22", "xmm23", "k1",
         "k2", "k3", "k4");
 }
-#endif  // HAS_SCALEADDCOLS_AVX512BW
+#endif  // HAS_SCALEADDCOLS2_AVX512BW
 
 static const uvec16 kFadd40 = {0x0040, 0x0040, 0x0040, 0x0040,
                                0x0040, 0x0040, 0x0040, 0x0040};
