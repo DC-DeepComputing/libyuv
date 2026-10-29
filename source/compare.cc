@@ -87,34 +87,6 @@ uint32_t HashDjb2(const uint8_t* src, uint64_t count, uint32_t seed) {
   return seed;
 }
 
-static uint32_t ARGBDetectRow_C(const uint8_t* argb, int width) {
-  int x;
-  for (x = 0; x < width - 1; x += 2) {
-    if (argb[0] != 255) {  // First byte is not Alpha of 255, so not ARGB.
-      return FOURCC_BGRA;
-    }
-    if (argb[3] != 255) {  // Fourth byte is not Alpha of 255, so not BGRA.
-      return FOURCC_ARGB;
-    }
-    if (argb[4] != 255) {  // Second pixel first byte is not Alpha of 255.
-      return FOURCC_BGRA;
-    }
-    if (argb[7] != 255) {  // Second pixel fourth byte is not Alpha of 255.
-      return FOURCC_ARGB;
-    }
-    argb += 8;
-  }
-  if (width & 1) {
-    if (argb[0] != 255) {  // First byte is not Alpha of 255, so not ARGB.
-      return FOURCC_BGRA;
-    }
-    if (argb[3] != 255) {  // 4th byte is not Alpha of 255, so not BGRA.
-      return FOURCC_ARGB;
-    }
-  }
-  return 0;
-}
-
 // Scan an opaque argb image and return fourcc based on alpha offset.
 // Returns FOURCC_ARGB, FOURCC_BGRA, or 0 if unknown.
 LIBYUV_API
@@ -122,6 +94,7 @@ uint32_t ARGBDetect(const uint8_t* argb,
                     int stride_argb,
                     int width,
                     int height) {
+  uint32_t (*ARGBDetectRow)(const uint8_t* argb, int width) = ARGBDetectRow_C;
   uint32_t fourcc = 0;
   int h;
 
@@ -134,8 +107,13 @@ uint32_t ARGBDetect(const uint8_t* argb,
     height = 1;
     stride_argb = 0;
   }
+#if defined(HAS_ARGBDETECTROW_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    ARGBDetectRow = ARGBDetectRow_AVX2;
+  }
+#endif
   for (h = 0; h < height && fourcc == 0; ++h) {
-    fourcc = ARGBDetectRow_C(argb, width);
+    fourcc = ARGBDetectRow(argb, width);
     argb += stride_argb;
   }
   return fourcc;

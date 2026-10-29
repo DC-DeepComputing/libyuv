@@ -75,11 +75,11 @@ void TransposePlane(const uint8_t* src,
     TransposeWxH = TransposeWxH_HVX;
   }
 #endif
-#if defined(HAS_TRANSPOSEWX8_SSSE3)
-  if (TestCpuFlag(kCpuHasSSSE3)) {
-    TransposeWx8 = TransposeWx8_Any_SSSE3;
+#if defined(HAS_TRANSPOSEWX8_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    TransposeWx8 = TransposeWx8_Any_AVX2;
     if (IS_ALIGNED(width, 16)) {
-      TransposeWx8 = TransposeWx8_SSSE3;
+      TransposeWx8 = TransposeWx8_AVX2;
     }
   }
 #endif
@@ -237,10 +237,7 @@ void RotatePlane180(const uint8_t* src,
 #endif
 #if defined(HAS_MIRRORROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
-    MirrorRow = MirrorRow_Any_AVX512BW;
-    if (IS_ALIGNED(width, 64)) {
-      MirrorRow = MirrorRow_AVX512BW;
-    }
+    MirrorRow = MirrorRow_AVX512BW;
   }
 #endif
 #if defined(HAS_MIRRORROW_LSX)
@@ -401,11 +398,11 @@ void SplitTransposeUV(const uint8_t* src,
     TransposeUVWxH = TransposeUVWxH_HVX;
   }
 #endif
-#if defined(HAS_TRANSPOSEUVWX8_SSE2)
-  if (TestCpuFlag(kCpuHasSSE2)) {
-    TransposeUVWx8 = TransposeUVWx8_Any_SSE2;
+#if defined(HAS_TRANSPOSEUVWX8_AVX2)
+  if (TestCpuFlag(kCpuHasAVX2)) {
+    TransposeUVWx8 = TransposeUVWx8_Any_AVX2;
     if (IS_ALIGNED(width, 8)) {
-      TransposeUVWx8 = TransposeUVWx8_SSE2;
+      TransposeUVWx8 = TransposeUVWx8_AVX2;
     }
   }
 #endif
