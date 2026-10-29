@@ -10,6 +10,7 @@
 
 #include "libyuv/compare_row.h"
 #include "libyuv/row.h"
+#include "libyuv/video_common.h"
 
 #ifdef __cplusplus
 namespace libyuv {
@@ -1369,6 +1370,40 @@ float SsimWindowRow_AVX512BW(const uint32_t* row0,
 }
 #undef SSIM_WINDOW_AVX512BW
 #endif  // HAS_SSIMWINDOWROW_AVX512BW
+
+#ifdef HAS_ARGBDETECTROW_AVX2
+uint32_t ARGBDetectRow_AVX2(const uint8_t* argb, int width) {
+  if (width >= 8) {
+    uint32_t diff;
+    asm volatile(
+        "vpcmpeqd    %%ymm1,%%ymm1,%%ymm1          \n"
+        "sub         $0x8,%[width]                 \n"
+        LABELALIGN
+        "1:                                        \n"
+        "vpcmpeqb    (%[argb]),%%ymm1,%%ymm0       \n"
+        "vpmovmskb   %%ymm0,%[diff]                \n"
+        "not         %[diff]                       \n"
+        "and         $0x99999999,%[diff]           \n"
+        "jnz         2f                            \n"
+        "add         $0x20,%[argb]                 \n"
+        "sub         $0x8,%[width]                 \n"
+        "jge         1b                            \n"
+        "add         $0x8,%[width]                 \n"
+        "2:                                        \n"
+        "vzeroupper                                \n"
+        : [argb] "+r"(argb), [width] "+r"(width), [diff] "=&r"(diff)
+        :
+        : "memory", "cc", "xmm0", "xmm1");
+    if (diff) {
+      return (__builtin_ctz(diff) & 3) == 0 ? FOURCC_BGRA : FOURCC_ARGB;
+    }
+  }
+  if (width > 0) {
+    return ARGBDetectRow_C(argb, width);
+  }
+  return 0;
+}
+#endif  // HAS_ARGBDETECTROW_AVX2
 
 #endif  // !defined(LIBYUV_DISABLE_X86) && defined(__x86_64__) &&
         // !defined(LIBYUV_ENABLE_ROWWIN)
