@@ -237,10 +237,7 @@ void RotatePlane180(const uint8_t* src,
 #endif
 #if defined(HAS_MIRRORROW_AVX512BW)
   if (TestCpuFlag(kCpuHasAVX512BW)) {
-    MirrorRow = MirrorRow_Any_AVX512BW;
-    if (IS_ALIGNED(width, 64)) {
-      MirrorRow = MirrorRow_AVX512BW;
-    }
+    MirrorRow = MirrorRow_AVX512BW;
   }
 #endif
 #if defined(HAS_MIRRORROW_LSX)

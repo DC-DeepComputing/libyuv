@@ -99,7 +99,8 @@ extern "C" {
     (defined(__x86_64__) || defined(_M_X64)) && defined(CLANG_HAS_AVX512) && \
     !defined(LIBYUV_ENABLE_ROWWIN)
 #define HAS_SCALEADDROW_AVX512BW
-#define HAS_SCALEADDCOLS_AVX512BW
+#define HAS_SCALEADDCOLS1_AVX512BW
+#define HAS_SCALEADDCOLS2_AVX512BW
 #define HAS_SCALEUVADDCOLS3_AVX512VBMI
 #define HAS_SCALEROWDOWN2_AVX512BW
 #endif
@@ -117,7 +118,8 @@ extern "C" {
 #define HAS_SCALEUVADDCOLS3_AVX2
 #if defined(__x86_64__) || defined(_M_X64)
 #define HAS_SCALEADDROW_AVX512BW
-#define HAS_SCALEADDCOLS_AVX512BW
+#define HAS_SCALEADDCOLS1_AVX512BW
+#define HAS_SCALEADDCOLS2_AVX512BW
 #define HAS_SCALEUVADDCOLS3_AVX512VBMI
 #endif
 #endif
@@ -532,24 +534,46 @@ void ScaleUVRowDown2_C(const uint8_t* src_uv,
                        ptrdiff_t src_stride,
                        uint8_t* dst_uv,
                        int dst_width);
+void ScaleUVRowDown2_16_C(const uint16_t* src_uv,
+                          ptrdiff_t src_stride,
+                          uint16_t* dst_uv,
+                          int dst_width);
 void ScaleUVRowDown2Linear_C(const uint8_t* src_uv,
                              ptrdiff_t src_stride,
                              uint8_t* dst_uv,
                              int dst_width);
+void ScaleUVRowDown2Linear_16_C(const uint16_t* src_uv,
+                                ptrdiff_t src_stride,
+                                uint16_t* dst_uv,
+                                int dst_width);
 void ScaleUVRowDown2Box_C(const uint8_t* src_uv,
                           ptrdiff_t src_stride,
                           uint8_t* dst_uv,
                           int dst_width);
+void ScaleUVRowDown2Box_16_C(const uint16_t* src_uv,
+                             ptrdiff_t src_stride,
+                             uint16_t* dst_uv,
+                             int dst_width);
 void ScaleUVRowDownEven_C(const uint8_t* src_uv,
                           ptrdiff_t src_stride,
                           int src_stepx,
                           uint8_t* dst_uv,
                           int dst_width);
+void ScaleUVRowDownEven_16_C(const uint16_t* src_uv,
+                             ptrdiff_t src_stride,
+                             int src_stepx,
+                             uint16_t* dst_uv,
+                             int dst_width);
 void ScaleUVRowDownEvenBox_C(const uint8_t* src_uv,
                              ptrdiff_t src_stride,
                              int src_stepx,
                              uint8_t* dst_uv,
                              int dst_width);
+void ScaleUVRowDownEvenBox_16_C(const uint16_t* src_uv,
+                                ptrdiff_t src_stride,
+                                int src_stepx,
+                                uint16_t* dst_uv,
+                                int dst_width);
 
 void ScaleUVRowUp2_Linear_C(const uint8_t* src_ptr,
                             uint8_t* dst_ptr,
@@ -589,30 +613,59 @@ void ScaleUVCols_C(uint8_t* dst_uv,
                    int dst_width,
                    int x,
                    int dx);
+void ScaleUVCols_16_C(uint16_t* dst_uv,
+                      const uint16_t* src_uv,
+                      int dst_width,
+                      int x,
+                      int dx);
 void ScaleUVCols64_C(uint8_t* dst_uv,
                      const uint8_t* src_uv,
                      int dst_width,
                      int x32,
                      int dx);
+void ScaleUVCols64_16_C(uint16_t* dst_uv,
+                        const uint16_t* src_uv,
+                        int dst_width,
+                        int x32,
+                        int dx);
 void ScaleUVColsUp2_C(uint8_t* dst_uv,
                       const uint8_t* src_uv,
                       int dst_width,
                       int,
                       int);
+void ScaleUVColsUp2_16_C(uint16_t* dst_uv,
+                         const uint16_t* src_uv,
+                         int dst_width,
+                         int,
+                         int);
 void ScaleUVFilterCols_C(uint8_t* dst_uv,
                          const uint8_t* src_uv,
                          int dst_width,
                          int x,
                          int dx);
+void ScaleUVFilterCols_16_C(uint16_t* dst_uv,
+                            const uint16_t* src_uv,
+                            int dst_width,
+                            int x,
+                            int dx);
 void ScaleUVFilterCols64_C(uint8_t* dst_uv,
                            const uint8_t* src_uv,
                            int dst_width,
                            int x32,
                            int dx);
+void ScaleUVFilterCols64_16_C(uint16_t* dst_uv,
+                              const uint16_t* src_uv,
+                              int dst_width,
+                              int x32,
+                              int dx);
 void ScaleUVAddCols3_C(int dst_width,
                        int scaleval,
                        const uint16_t* src_uv,
                        uint8_t* dst_uv);
+void ScaleUVAddCols3_16_C(int dst_width,
+                          int scaleval,
+                          const uint32_t* src_uv,
+                          uint16_t* dst_uv);
 
 // Specialized scalers for x86.
 void ScaleRowDown2_SSSE3(const uint8_t* src_ptr,
