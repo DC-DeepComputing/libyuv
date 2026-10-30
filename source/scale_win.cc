@@ -1544,6 +1544,17 @@ static const uint8_t kPackEvenBytes[64] = {
     78,  80,  82,  84,  86,  88,  90,  92,  94,  96,  98,  100, 102,
     104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126};
 
+// LLVM MSan models _mm512_permutex2var_epi32 (@llvm.x86.avx512.vpermi2var.d)
+// lane-by-lane, whereas _mm512_mask_permutexvar_epi32
+// (@llvm.x86.avx512.permvar.si) falls back to OR-ing input shadows.
+LIBYUV_TARGET_AVX512VBMI
+static inline __m512i MaskPermutexvarEpi32(__m512i src,
+                                           __mmask16 k,
+                                           __m512i idx,
+                                           __m512i v) {
+  return _mm512_mask_mov_epi32(src, k, _mm512_permutex2var_epi32(v, idx, v));
+}
+
 // Scale UV columns by 3 box filter using AVX512VBMI.
 // Processes 32 UV pixels (384 input bytes -> 64 output bytes) per main loop
 // iteration, followed by a 16-pixel block and a k-masked tail (1..15 pixels).
@@ -1567,12 +1578,12 @@ void ScaleUVAddCols3_AVX512VBMI(int dst_width,
     __m512i s0 = _mm512_loadu_si512((const __m512i*)src_uv);
     __m512i s1 = _mm512_loadu_si512((const __m512i*)(src_uv + 32));
     __m512i s2 = _mm512_loadu_si512((const __m512i*)(src_uv + 64));
-    __m512i a0 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s0, col0, s1), k5, col0, s2);
-    __m512i a1 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s0, col1, s1), k5, col1, s2);
-    __m512i a2 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s0, col2, s1), k6, col2, s2);
+    __m512i a0 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s0, col0, s1),
+                                      k5, col0, s2);
+    __m512i a1 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s0, col1, s1),
+                                      k5, col1, s2);
+    __m512i a2 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s0, col2, s1),
+                                      k6, col2, s2);
     __m512i sum0 = _mm512_mulhi_epu16(
         _mm512_add_epi16(_mm512_add_epi16(a0, a1), a2), vscale);
 
@@ -1580,12 +1591,12 @@ void ScaleUVAddCols3_AVX512VBMI(int dst_width,
     __m512i s4 = _mm512_loadu_si512((const __m512i*)(src_uv + 128));
     __m512i s5 = _mm512_loadu_si512((const __m512i*)(src_uv + 160));
     src_uv += 192;
-    __m512i b0 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s3, col0, s4), k5, col0, s5);
-    __m512i b1 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s3, col1, s4), k5, col1, s5);
-    __m512i b2 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s3, col2, s4), k6, col2, s5);
+    __m512i b0 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s3, col0, s4),
+                                      k5, col0, s5);
+    __m512i b1 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s3, col1, s4),
+                                      k5, col1, s5);
+    __m512i b2 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s3, col2, s4),
+                                      k6, col2, s5);
     __m512i sum1 = _mm512_mulhi_epu16(
         _mm512_add_epi16(_mm512_add_epi16(b0, b1), b2), vscale);
 
@@ -1599,12 +1610,12 @@ void ScaleUVAddCols3_AVX512VBMI(int dst_width,
     __m512i s1 = _mm512_loadu_si512((const __m512i*)(src_uv + 32));
     __m512i s2 = _mm512_loadu_si512((const __m512i*)(src_uv + 64));
     src_uv += 96;
-    __m512i a0 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s0, col0, s1), k5, col0, s2);
-    __m512i a1 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s0, col1, s1), k5, col1, s2);
-    __m512i a2 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s0, col2, s1), k6, col2, s2);
+    __m512i a0 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s0, col0, s1),
+                                      k5, col0, s2);
+    __m512i a1 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s0, col1, s1),
+                                      k5, col1, s2);
+    __m512i a2 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s0, col2, s1),
+                                      k6, col2, s2);
     __m512i sum0 = _mm512_mulhi_epu16(
         _mm512_add_epi16(_mm512_add_epi16(a0, a1), a2), vscale);
     _mm256_storeu_si256((__m256i*)dst_uv, _mm512_cvtepi16_epi8(sum0));
@@ -1620,12 +1631,12 @@ void ScaleUVAddCols3_AVX512VBMI(int dst_width,
     __m512i s0 = _mm512_maskz_loadu_epi32(k1, src_uv);
     __m512i s1 = _mm512_maskz_loadu_epi32(k2, src_uv + 32);
     __m512i s2 = _mm512_maskz_loadu_epi32(k3, src_uv + 64);
-    __m512i a0 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s0, col0, s1), k5, col0, s2);
-    __m512i a1 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s0, col1, s1), k5, col1, s2);
-    __m512i a2 = _mm512_mask_permutexvar_epi32(
-        _mm512_permutex2var_epi32(s0, col2, s1), k6, col2, s2);
+    __m512i a0 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s0, col0, s1),
+                                      k5, col0, s2);
+    __m512i a1 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s0, col1, s1),
+                                      k5, col1, s2);
+    __m512i a2 = MaskPermutexvarEpi32(_mm512_permutex2var_epi32(s0, col2, s1),
+                                      k6, col2, s2);
     __m512i sum0 = _mm512_mulhi_epu16(
         _mm512_add_epi16(_mm512_add_epi16(a0, a1), a2), vscale);
     _mm256_mask_storeu_epi16(dst_uv, k4, _mm512_cvtepi16_epi8(sum0));
