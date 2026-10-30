@@ -16,6 +16,24 @@
       "message": "This is a big CL to review. Would it be possible to split by areas (e.g. on CL for SIMD correctness, one for sanitizer, etc..)?",
       "revId": "52d9900d3c41c9faab6d5632b464812c7607e3a8",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d5b12ee_c324d42f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-30T19:33:39Z",
+      "side": 1,
+      "message": "yes with ai i can easily break it into as many cl as you want, but for critical bug fixes i think it would be best to land them all asap.  they block the roll and are actual crashes for memory exceptions.   i\u0027ve deferred improvements",
+      "parentUuid": "569a326f_872a7ca1",
+      "revId": "52d9900d3c41c9faab6d5632b464812c7607e3a8",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
