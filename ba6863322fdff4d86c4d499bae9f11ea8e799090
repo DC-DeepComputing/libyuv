@@ -24,6 +24,31 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "64700383_22732d9b",
+        "filename": "BUILD.gn",
+        "patchSetId": 2
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-30T09:50:40Z",
+      "side": 1,
+      "message": "Done. Added \u0026\u0026 is_msan to the config and all target guards in BUILD.gn.",
+      "parentUuid": "075a946f_44c99d5d",
+      "range": {
+        "startLine": 443,
+        "startChar": 4,
+        "endLine": 445,
+        "endChar": 5
+      },
+      "isAi": true,
+      "revId": "ba6863322fdff4d86c4d499bae9f11ea8e799090",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "008d3e36_544167c6",
@@ -43,6 +68,31 @@
         "endLine": 59,
         "endChar": 61
       },
+      "revId": "ba6863322fdff4d86c4d499bae9f11ea8e799090",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93d3329b_d6b44288",
+        "filename": "source/row_win.cc",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-30T09:50:40Z",
+      "side": 1,
+      "message": "Done. Updated PermutexvarEpi*, MaskPermutexvarEpi*, and CvttpsEpi32 to use portable lane-by-lane C loops under #if defined(LIBYUV_MSAN) (relying only on standard C memory/array semantics) and the native AVX-512 intrinsics otherwise.",
+      "parentUuid": "008d3e36_544167c6",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 61
+      },
+      "isAi": true,
       "revId": "ba6863322fdff4d86c4d499bae9f11ea8e799090",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
