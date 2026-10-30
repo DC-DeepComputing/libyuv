@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8bd1e0c_8509d95b",
+        "filename": "source/scale_neon64.cc",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-10-30T17:59:40Z",
+      "side": 1,
+      "message": "zip/unzip are good.  I\u0027m finding its a good replacement for:\nlengthen/narrow\nlanes\nld2/ld4\nthe same is true on RVV for SiFive x280 where vlseg4 is microcoded.",
+      "revId": "1dff51c0a26c36a475569b8a5a88f635ee84e95a",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
