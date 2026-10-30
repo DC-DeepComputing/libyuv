@@ -165,13 +165,6 @@ extern "C" {
 #define HAS_SCALEUVADDCOLS3_LSX
 #endif
 
-#if !defined(LIBYUV_DISABLE_RVV) &&                          \
-    ((defined(__riscv_vector) && defined(__riscv_zve64x)) || \
-     (defined(LIBYUV_RVV) &&                                 \
-      (!defined(__riscv_vector) || defined(__riscv_zve64x))))
-#define HAS_SCALEUVROWDOWN4_RVV
-#endif
-
 #if !defined(LIBYUV_DISABLE_RVV) && \
     (defined(__riscv_vector) || defined(LIBYUV_RVV))
 #define HAS_SCALEARGBROWDOWN2_RVV
@@ -202,6 +195,7 @@ extern "C" {
 #define HAS_SCALEUVROWDOWN2_RVV
 #define HAS_SCALEUVROWDOWN2BOX_RVV
 #define HAS_SCALEUVROWDOWN2LINEAR_RVV
+#define HAS_SCALEUVROWDOWN4_RVV
 #define HAS_SCALEARGBFILTERCOLS_RVV
 #endif
 
