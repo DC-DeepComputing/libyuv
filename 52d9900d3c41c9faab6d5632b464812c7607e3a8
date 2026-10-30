@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "569a326f_872a7ca1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1178490
+      },
+      "writtenOn": "2026-10-30T12:11:22Z",
+      "side": 1,
+      "message": "This is a big CL to review. Would it be possible to split by areas (e.g. on CL for SIMD correctness, one for sanitizer, etc..)?",
+      "revId": "52d9900d3c41c9faab6d5632b464812c7607e3a8",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
