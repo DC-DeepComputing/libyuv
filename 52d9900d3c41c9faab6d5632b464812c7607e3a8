@@ -34,6 +34,23 @@
       "parentUuid": "569a326f_872a7ca1",
       "revId": "52d9900d3c41c9faab6d5632b464812c7607e3a8",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "584518be_649b2539",
+        "filename": "source/row_neon.cc",
+        "patchSetId": 12
+      },
+      "lineNbr": 3824,
+      "author": {
+        "id": 1002030
+      },
+      "writtenOn": "2026-10-30T21:06:04Z",
+      "side": 1,
+      "message": "since scale is an int it would be 0x00010000 is this what we are looking for?",
+      "revId": "52d9900d3c41c9faab6d5632b464812c7607e3a8",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
   ]
 }
