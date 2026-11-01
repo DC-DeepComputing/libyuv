@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2d9a27e4_1aa71429",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002325
+      },
+      "writtenOn": "2026-11-01T09:46:58Z",
+      "side": 1,
+      "message": "This change broke compilation with GCC 15:\n\nsource/compare_gcc.cc: In function ‘uint32_t libyuv::HammingDistance_AVX512VNNI(const uint8_t*, const uint8_t*, int)’:\nsource/compare_gcc.cc:466:3: error: the register ‘k1’ cannot be clobbered in ‘asm’ for the current target\n  466 |   asm volatile(\n      |   ^~~",
+      "revId": "79ca9187e540faaaca47b34622e110d07f335d05",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
