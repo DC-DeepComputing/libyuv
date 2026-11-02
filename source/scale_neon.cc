@@ -268,7 +268,7 @@ void ScaleRowDown34_1_Box_NEON(const uint8_t* src_ptr,
         "+r"(dst_width),  // %2
         "+r"(src_stride)  // %3
       :
-      : "r4", "q0", "q1", "q2", "q3", "d24", "memory", "cc");
+      : "memory", "cc", "q0", "q1", "q2", "q3", "d24");
 }
 
 #define HAS_SCALEROWDOWN38_NEON

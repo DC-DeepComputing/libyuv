@@ -37,8 +37,8 @@ __arm_locally_streaming void ScaleRowDown2_SME(const uint8_t* src_ptr,
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
       "b.lt     2f                                           \n"
 
-      "1:                                                    \n"
       "ptrue    p0.b                                         \n"
+      "1:                                                    \n"
       "ld2b     {z0.b, z1.b}, p0/z, [%[src_ptr]]             \n"
       "incb     %[src_ptr], all, mul #2                      \n"
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
@@ -75,8 +75,8 @@ __arm_locally_streaming void ScaleRowDown2_16_SME(const uint16_t* src_ptr,
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
       "b.lt     2f                                           \n"
 
-      "1:                                                    \n"
       "ptrue    p0.h                                         \n"
+      "1:                                                    \n"
       "ld2h     {z0.h, z1.h}, p0/z, [%[src_ptr]]             \n"
       "incb     %[src_ptr], all, mul #2                      \n"
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
@@ -113,8 +113,8 @@ __arm_locally_streaming void ScaleRowDown2Linear_SME(const uint8_t* src_ptr,
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
       "b.lt     2f                                           \n"
 
-      "1:                                                    \n"
       "ptrue    p0.b                                         \n"
+      "1:                                                    \n"
       "ld2b     {z0.b, z1.b}, p0/z, [%[src_ptr]]             \n"
       "incb     %[src_ptr], all, mul #2                      \n"
       "urhadd   z0.b, p0/m, z0.b, z1.b                       \n"
@@ -153,8 +153,8 @@ __arm_locally_streaming void ScaleRowDown2Linear_16_SME(const uint16_t* src_ptr,
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
       "b.lt     2f                                           \n"
 
-      "1:                                                    \n"
       "ptrue    p0.h                                         \n"
+      "1:                                                    \n"
       "ld2h     {z0.h, z1.h}, p0/z, [%[src_ptr]]             \n"
       "incb     %[src_ptr], all, mul #2                      \n"
       "urhadd   z0.h, p0/m, z0.h, z1.h                       \n"
@@ -232,6 +232,19 @@ __arm_locally_streaming void ScaleRowDown2Box_SME(const uint8_t* src_ptr,
       : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0");
 }
 
+void ScaleRowDown2Box_Odd_SME(const uint8_t* src_ptr,
+                              ptrdiff_t src_stride,
+                              uint8_t* dst,
+                              int dst_width) {
+  dst_width -= 1;
+  if (dst_width > 0) {
+    ScaleRowDown2Box_SME(src_ptr, src_stride, dst, dst_width);
+  }
+  const uint8_t* s = src_ptr + dst_width * 2;
+  const uint8_t* t = s + src_stride;
+  dst[dst_width] = (s[0] + t[0] + 1) >> 1;
+}
+
 #undef SCALEROWDOWN2BOX_SVE
 
 #define SCALEROWDOWN2BOX_16_SVE                              \
@@ -299,8 +312,8 @@ __arm_locally_streaming void ScaleUVRowDown2_SME(const uint8_t* src_uv,
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
       "b.lt     2f                                           \n"
 
+      "ptrue    p0.h                                         \n"
       "1:                                                    \n"
-      "ptrue    p0.b                                         \n"
       "ld2h     {z0.h, z1.h}, p0/z, [%[src_uv]]              \n"
       "incb     %[src_uv], all, mul #2                       \n"
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
@@ -391,7 +404,6 @@ __arm_locally_streaming void ScaleUVRowDown2Box_SME(const uint8_t* src_uv,
   int vl;
   asm volatile(
       "cnth     %x[vl]                                       \n"
-      "ptrue    p1.b                                         \n"
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
       "b.lt     2f                                           \n"
 
@@ -415,8 +427,7 @@ __arm_locally_streaming void ScaleUVRowDown2Box_SME(const uint8_t* src_uv,
         [dst_width] "+r"(dst_width),  // %[dst_width]
         [vl] "=r"(vl)                 // %[vl]
       :
-      : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0",
-        "p1");
+      : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0");
 }
 
 #undef SCALEUVROWDOWN2BOX_SVE
@@ -433,8 +444,8 @@ __arm_locally_streaming void ScaleARGBRowDown2_SME(const uint8_t* src_argb,
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
       "b.lt     2f                                           \n"
 
+      "ptrue    p0.s                                         \n"
       "1:                                                    \n"
-      "ptrue    p0.b                                         \n"
       "ld2w     {z0.s, z1.s}, p0/z, [%[src_argb]]            \n"
       "incb     %[src_argb], all, mul #2                     \n"
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
@@ -526,7 +537,6 @@ __arm_locally_streaming void ScaleARGBRowDown2Box_SME(const uint8_t* src_argb,
   int vl;
   asm volatile(
       "cntw     %x[vl]                                       \n"
-      "ptrue    p1.b                                         \n"
       "subs     %w[dst_width], %w[dst_width], %w[vl]         \n"
       "b.lt     2f                                           \n"
 
@@ -550,8 +560,7 @@ __arm_locally_streaming void ScaleARGBRowDown2Box_SME(const uint8_t* src_argb,
         [dst_width] "+r"(dst_width),  // %[dst_width]
         [vl] "=r"(vl)                 // %[vl]
       :
-      : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0",
-        "p1");
+      : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0");
 }
 
 // Scale UV columns by 3 box filter using Streaming SVE.

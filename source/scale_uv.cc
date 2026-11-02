@@ -454,7 +454,7 @@ static int ScaleUVBox(int src_width,
         }
 #endif
 #if defined(HAS_SCALEUVADDCOLS3_WASMSIMD)
-        if (TestCpuFlag(kCpuHasWASM)) {
+        if (TestCpuFlag(kCpuHasWASMSIMD)) {
           ScaleUVAddCols3 = ScaleUVAddCols3_Any_WASMSIMD;
           if (IS_ALIGNED(dst_width, 8)) {
             ScaleUVAddCols3 = ScaleUVAddCols3_WASMSIMD;
@@ -515,7 +515,7 @@ static int ScaleUVBox(int src_width,
       }
 #endif
 #if defined(HAS_SCALEADDROW_WASMSIMD)
-      if (TestCpuFlag(kCpuHasWASM)) {
+      if (TestCpuFlag(kCpuHasWASMSIMD)) {
         ScaleAddRow = ScaleAddRow_Any_WASMSIMD;
         if (IS_ALIGNED(row_samples, 16)) {
           ScaleAddRow = ScaleAddRow_WASMSIMD;
@@ -1073,7 +1073,7 @@ static int ScaleUVBilinearUp(int src_width,
 #if defined(HAS_INTERPOLATEROW_LSX)
   if (TestCpuFlag(kCpuHasLSX)) {
     InterpolateRow = InterpolateRow_Any_LSX;
-    if (IS_ALIGNED(dst_width, 16)) {
+    if (IS_ALIGNED(dst_width, 8)) {
       InterpolateRow = InterpolateRow_LSX;
     }
   }
@@ -1081,7 +1081,7 @@ static int ScaleUVBilinearUp(int src_width,
 #if defined(HAS_INTERPOLATEROW_LASX)
   if (TestCpuFlag(kCpuHasLASX)) {
     InterpolateRow = InterpolateRow_Any_LASX;
-    if (IS_ALIGNED(dst_width, 32)) {
+    if (IS_ALIGNED(dst_width, 16)) {
       InterpolateRow = InterpolateRow_LASX;
     }
   }

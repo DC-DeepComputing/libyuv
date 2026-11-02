@@ -105,6 +105,7 @@ static const uvec16 kScaleAb2 = {65536 / 3, 65536 / 3, 65536 / 2, 65536 / 3,
 // Generated using gcc disassembly on Visual C object file:
 // objdump -D yuvscaler.obj >yuvscaler.txt
 
+#ifdef HAS_SCALEROWDOWN2_SSSE3
 void ScaleRowDown2_SSSE3(const uint8_t* src_ptr,
                          ptrdiff_t src_stride,
                          uint8_t* dst_ptr,
@@ -200,6 +201,7 @@ void ScaleRowDown2Box_SSSE3(const uint8_t* src_ptr,
       : "r"(src_stride)  // %3
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
 }
+#endif  // HAS_SCALEROWDOWN2_SSSE3
 
 #ifdef HAS_SCALEROWDOWN2_AVX2
 void ScaleRowDown2_AVX2(const uint8_t* src_ptr,
@@ -569,6 +571,7 @@ void ScaleRowDown2Box_Odd_AVX512BW(const uint8_t* src_ptr,
 }
 #endif  // HAS_SCALEROWDOWN2_AVX512BW
 
+#ifdef HAS_SCALEROWDOWN4_SSSE3
 void ScaleRowDown4_SSSE3(const uint8_t* src_ptr,
                          ptrdiff_t src_stride,
                          uint8_t* dst_ptr,
@@ -652,6 +655,7 @@ void ScaleRowDown4Box_SSSE3(const uint8_t* src_ptr,
       : "r"(src_stride)   // %4
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
 }
+#endif  // HAS_SCALEROWDOWN4_SSSE3
 
 #ifdef HAS_SCALEROWDOWN4_AVX2
 void ScaleRowDown4_AVX2(const uint8_t* src_ptr,
@@ -1959,43 +1963,65 @@ void ScaleRowUp2_Bilinear_12_AVX2(const uint16_t* src_ptr,
       LABELALIGN
       "1:          \n"
 
-      "vmovdqu     (%0),%%xmm0                   \n"  // 01234567 (16b)
-      "vmovdqu     2(%0),%%xmm1                  \n"  // 12345678 (16b)
-      "vpermq      $0b11011000,%%ymm0,%%ymm0     \n"  // 0123000045670000
-      "vpermq      $0b11011000,%%ymm1,%%ymm1     \n"  // 1234000056780000
+      "vmovdqu     (%0),%%ymm0                   \n"  // 0123456789ABCDEF (16b)
+      "vmovdqu     2(%0),%%ymm1                  \n"  // 123456789ABCDEF0 (16b)
+      "vpermq      $0b11011000,%%ymm0,%%ymm0     \n"  // 012389AB4567CDEF
+      "vpermq      $0b11011000,%%ymm1,%%ymm1     \n"  // 12349ABC5678DEF0
+      "vpunpckhwd  %%ymm1,%%ymm0,%%ymm2          \n"  // 899AABBCCDDEEFF0 (near)
       "vpunpcklwd  %%ymm1,%%ymm0,%%ymm0          \n"  // 0112233445566778 (near)
+      "vpshufb     %%ymm5,%%ymm2,%%ymm3          \n"  // 98A9BACBDCEDFE0F (far)
       "vpshufb     %%ymm5,%%ymm0,%%ymm1          \n"  // 1021324354657687 (far)
-      "vpaddw      %%ymm0,%%ymm1,%%ymm1          \n"  // near+far
-      "vpaddw      %%ymm0,%%ymm0,%%ymm0          \n"  // 2*near
-      "vpaddw      %%ymm0,%%ymm1,%%ymm2          \n"  // 3*near+far (1)
+      "vpaddw      %%ymm0,%%ymm1,%%ymm1          \n"  // near+far (lo)
+      "vpaddw      %%ymm2,%%ymm3,%%ymm3          \n"  // near+far (hi)
+      "vpaddw      %%ymm0,%%ymm0,%%ymm0          \n"  // 2*near (lo)
+      "vpaddw      %%ymm2,%%ymm2,%%ymm2          \n"  // 2*near (hi)
+      "vpaddw      %%ymm0,%%ymm1,%%ymm6          \n"  // 3*near+far (1, lo)
+      "vpaddw      %%ymm2,%%ymm3,%%ymm7          \n"  // 3*near+far (1, hi)
 
-      "vmovdqu     (%0,%3,2),%%xmm0              \n"  // 01234567 (16b)
-      "vmovdqu     2(%0,%3,2),%%xmm1             \n"  // 12345678 (16b)
-      "vpermq      $0b11011000,%%ymm0,%%ymm0     \n"  // 0123000045670000
-      "vpermq      $0b11011000,%%ymm1,%%ymm1     \n"  // 1234000056780000
+      "vmovdqu     (%0,%3,2),%%ymm0              \n"  // 0123456789ABCDEF (16b)
+      "vmovdqu     2(%0,%3,2),%%ymm1             \n"  // 123456789ABCDEF0 (16b)
+      "vpermq      $0b11011000,%%ymm0,%%ymm0     \n"  // 012389AB4567CDEF
+      "vpermq      $0b11011000,%%ymm1,%%ymm1     \n"  // 12349ABC5678DEF0
+      "vpunpckhwd  %%ymm1,%%ymm0,%%ymm2          \n"  // 899AABBCCDDEEFF0 (near)
       "vpunpcklwd  %%ymm1,%%ymm0,%%ymm0          \n"  // 0112233445566778 (near)
+      "vpshufb     %%ymm5,%%ymm2,%%ymm3          \n"  // 98A9BACBDCEDFE0F (far)
       "vpshufb     %%ymm5,%%ymm0,%%ymm1          \n"  // 1021324354657687 (far)
-      "vpaddw      %%ymm0,%%ymm1,%%ymm1          \n"  // near+far
-      "vpaddw      %%ymm0,%%ymm0,%%ymm0          \n"  // 2*near
-      "vpaddw      %%ymm0,%%ymm1,%%ymm3          \n"  // 3*near+far (2)
+      "vpaddw      %%ymm0,%%ymm1,%%ymm1          \n"  // near+far (lo)
+      "vpaddw      %%ymm2,%%ymm3,%%ymm3          \n"  // near+far (hi)
+      "vpaddw      %%ymm0,%%ymm0,%%ymm0          \n"  // 2*near (lo)
+      "vpaddw      %%ymm2,%%ymm2,%%ymm2          \n"  // 2*near (hi)
+      "vpaddw      %%ymm2,%%ymm3,%%ymm3          \n"  // 3*near+far (2, hi)
+      "vpaddw      %%ymm0,%%ymm1,%%ymm2          \n"  // 3*near+far (2, lo)
 
-      "vpaddw      %%ymm2,%%ymm2,%%ymm0          \n"  // 6*near+2*far (1)
-      "vpaddw      %%ymm4,%%ymm3,%%ymm1          \n"  // 3*near+far+8 (2)
-      "vpaddw      %%ymm0,%%ymm2,%%ymm0          \n"  // 9*near+3*far (1)
-      "vpaddw      %%ymm0,%%ymm1,%%ymm0          \n"  // 9 3 3 1 + 8 (1)
+      "vpaddw      %%ymm6,%%ymm6,%%ymm0          \n"  // 6*near+2*far (1, lo)
+      "vpaddw      %%ymm7,%%ymm7,%%ymm1          \n"  // 6*near+2*far (1, hi)
+      "vpaddw      %%ymm6,%%ymm0,%%ymm0          \n"  // 9*near+3*far (1, lo)
+      "vpaddw      %%ymm7,%%ymm1,%%ymm1          \n"  // 9*near+3*far (1, hi)
+      "vpaddw      %%ymm4,%%ymm0,%%ymm0          \n"  // 9*near+3*far+8 (1, lo)
+      "vpaddw      %%ymm4,%%ymm1,%%ymm1          \n"  // 9*near+3*far+8 (1, hi)
+      "vpaddw      %%ymm2,%%ymm0,%%ymm0          \n"  // 9 3 3 1 + 8 (1, lo)
+      "vpaddw      %%ymm3,%%ymm1,%%ymm1          \n"  // 9 3 3 1 + 8 (1, hi)
       "vpsrlw      $4,%%ymm0,%%ymm0              \n"  // ^ div by 16
-      "vmovdqu     %%ymm0,(%1)                   \n"  // store above
+      "vpsrlw      $4,%%ymm1,%%ymm1              \n"  // ^ div by 16
+      "vmovdqu     %%ymm0,(%1)                   \n"  // store above (lo)
+      "vmovdqu     %%ymm1,32(%1)                 \n"  // store above (hi)
 
-      "vpaddw      %%ymm3,%%ymm3,%%ymm0          \n"  // 6*near+2*far (2)
-      "vpaddw      %%ymm4,%%ymm2,%%ymm1          \n"  // 3*near+far+8 (1)
-      "vpaddw      %%ymm0,%%ymm3,%%ymm0          \n"  // 9*near+3*far (2)
-      "vpaddw      %%ymm0,%%ymm1,%%ymm0          \n"  // 9 3 3 1 + 8 (2)
+      "vpaddw      %%ymm2,%%ymm2,%%ymm0          \n"  // 6*near+2*far (2, lo)
+      "vpaddw      %%ymm3,%%ymm3,%%ymm1          \n"  // 6*near+2*far (2, hi)
+      "vpaddw      %%ymm2,%%ymm0,%%ymm0          \n"  // 9*near+3*far (2, lo)
+      "vpaddw      %%ymm3,%%ymm1,%%ymm1          \n"  // 9*near+3*far (2, hi)
+      "vpaddw      %%ymm4,%%ymm0,%%ymm0          \n"  // 9*near+3*far+8 (2, lo)
+      "vpaddw      %%ymm4,%%ymm1,%%ymm1          \n"  // 9*near+3*far+8 (2, hi)
+      "vpaddw      %%ymm6,%%ymm0,%%ymm0          \n"  // 9 3 3 1 + 8 (2, lo)
+      "vpaddw      %%ymm7,%%ymm1,%%ymm1          \n"  // 9 3 3 1 + 8 (2, hi)
       "vpsrlw      $4,%%ymm0,%%ymm0              \n"  // ^ div by 16
-      "vmovdqu     %%ymm0,(%1,%4,2)              \n"  // store below
+      "vpsrlw      $4,%%ymm1,%%ymm1              \n"  // ^ div by 16
+      "vmovdqu     %%ymm0,(%1,%4,2)              \n"  // store below (lo)
+      "vmovdqu     %%ymm1,32(%1,%4,2)            \n"  // store below (hi)
 
-      "lea         0x10(%0),%0                   \n"
-      "lea         0x20(%1),%1                   \n"  // 8 sample to 16 sample
-      "sub         $0x10,%2                      \n"
+      "lea         0x20(%0),%0                   \n"
+      "lea         0x40(%1),%1                   \n"  // 16 sample to 32 sample
+      "sub         $0x20,%2                      \n"
       "jg          1b                            \n"
       "vzeroupper  \n"
       : "+r"(src_ptr),          // %0
@@ -2004,7 +2030,8 @@ void ScaleRowUp2_Bilinear_12_AVX2(const uint16_t* src_ptr,
       : "r"(src_stride),        // %3
         "r"(dst_stride),        // %4
         "m"(kLinearShuffleFar)  // %5
-      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5");
+      : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
+        "xmm7");
 }
 #endif
 
@@ -2141,6 +2168,7 @@ void ScaleRowUp2_Bilinear_16_AVX2(const uint16_t* src_ptr,
 }
 #endif
 
+#ifdef HAS_SCALEADDROW_SSE2
 // Reads 16xN bytes and produces 16 shorts at a time.
 void ScaleAddRow_SSE2(const uint8_t* src_ptr,
                       uint16_t* dst_ptr,
@@ -2170,6 +2198,7 @@ void ScaleAddRow_SSE2(const uint8_t* src_ptr,
                :
                : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm5");
 }
+#endif  // HAS_SCALEADDROW_SSE2
 
 #ifdef HAS_SCALEADDROW_AVX2
 // Reads 32 bytes and accumulates to 32 shorts at a time.
@@ -3350,6 +3379,7 @@ void ScaleARGBFilterCols_AVX2(uint8_t* dst_argb,
 }
 #endif  // HAS_SCALEARGBFILTERCOLS_AVX2
 
+#ifdef HAS_FIXEDDIV_X86
 // Divide num by div and return as 16.16 fixed point result.
 int FixedDiv_X86(int num, int div) {
   asm volatile(
@@ -3360,7 +3390,7 @@ int FixedDiv_X86(int num, int div) {
       "mov         %0, %%eax                     \n"
       : "+a"(num)  // %0
       : "c"(div)   // %1
-      : "memory", "cc", "edx");
+      : "cc", "edx");
   return num;
 }
 
@@ -3378,9 +3408,10 @@ int FixedDiv1_X86(int num, int div) {
       : "+a"(num),  // %0
         "+c"(div)   // %1
       :
-      : "memory", "cc", "edx");
+      : "cc", "edx");
   return num;
 }
+#endif  // HAS_FIXEDDIV_X86
 
 #ifdef HAS_SCALEUVROWDOWN2_AVX2
 void ScaleUVRowDown2_AVX2(const uint8_t* src_uv,

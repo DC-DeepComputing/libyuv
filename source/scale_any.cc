@@ -167,6 +167,23 @@ SDODD(ScaleRowDown2Box_Odd_NEON,
       1,
       15)
 #endif
+#ifdef HAS_SCALEROWDOWN2_16_NEON
+SDANY16(ScaleRowDown2_16_Any_NEON,
+        ScaleRowDown2_16_NEON,
+        ScaleRowDown2_16_C,
+        2,
+        15)
+SDANY16(ScaleRowDown2Linear_16_Any_NEON,
+        ScaleRowDown2Linear_16_NEON,
+        ScaleRowDown2Linear_16_C,
+        2,
+        15)
+SDANY16(ScaleRowDown2Box_16_Any_NEON,
+        ScaleRowDown2Box_16_NEON,
+        ScaleRowDown2Box_16_C,
+        2,
+        15)
+#endif
 #ifdef HAS_SCALEUVROWDOWN2_NEON
 SDANY(ScaleUVRowDown2_Any_NEON,
       ScaleUVRowDown2_NEON,
@@ -202,6 +219,12 @@ SDANY(ScaleRowDown2Linear_Any_LSX,
 SDANY(ScaleRowDown2Box_Any_LSX,
       ScaleRowDown2Box_LSX,
       ScaleRowDown2Box_C,
+      2,
+      1,
+      15)
+SDODD(ScaleRowDown2Box_Odd_LSX,
+      ScaleRowDown2Box_LSX,
+      ScaleRowDown2Box_Odd_C,
       2,
       1,
       15)
@@ -966,7 +989,7 @@ SU2BLANY(ScaleRowUp2_Bilinear_Any_AVX2,
 SU2BLANY(ScaleRowUp2_Bilinear_12_Any_AVX2,
          ScaleRowUp2_Bilinear_12_AVX2,
          ScaleRowUp2_Bilinear_16_C,
-         15,
+         31,
          uint16_t)
 #endif
 

@@ -253,13 +253,19 @@ void TransposeWx4_32_NEON(const uint8_t* src,
 
       // Main loop transpose 4x4. Read a column, write a row.
       "1:                                          \n"
-      "ldp         s0, s1, [%0]                    \n"
-      "ldp         s2, s3, [%0, #8]                \n"
-      "add         %0, %0, %9                      \n"
-      "ld4         {v0.s, v1.s, v2.s, v3.s}[1], [%1], %9 \n"
-      "ld4         {v0.s, v1.s, v2.s, v3.s}[2], [%2], %9 \n"
-      "ld4         {v0.s, v1.s, v2.s, v3.s}[3], [%3], %9 \n"
+      "ld1         {v0.4s}, [%0], %9               \n"
+      "ld1         {v1.4s}, [%1], %9               \n"
+      "ld1         {v2.4s}, [%2], %9               \n"
+      "ld1         {v3.4s}, [%3], %9               \n"
       "subs        %w8, %w8, #4                    \n"
+      "trn1        v4.4s, v0.4s, v1.4s             \n"
+      "trn2        v5.4s, v0.4s, v1.4s             \n"
+      "trn1        v6.4s, v2.4s, v3.4s             \n"
+      "trn2        v7.4s, v2.4s, v3.4s             \n"
+      "trn1        v0.2d, v4.2d, v6.2d             \n"
+      "trn1        v1.2d, v5.2d, v7.2d             \n"
+      "trn2        v2.2d, v4.2d, v6.2d             \n"
+      "trn2        v3.2d, v5.2d, v7.2d             \n"
       "st1         {v0.4s}, [%4], 16               \n"
       "st1         {v1.4s}, [%5], 16               \n"
       "st1         {v2.4s}, [%6], 16               \n"
@@ -310,7 +316,7 @@ void TransposeWx4_32_NEON(const uint8_t* src,
         "+r"(dst3),  // %7
         "+r"(width)  // %8
       : "r"(s * 4)   // %9
-      : "memory", "cc", "v0", "v1", "v2", "v3");
+      : "memory", "cc", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7");
 }
 
 void TransposeWxH_32_NEON(const uint8_t* src,

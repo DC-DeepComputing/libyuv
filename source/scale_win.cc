@@ -1807,41 +1807,58 @@ void ScaleRowUp2_Bilinear_12_AVX2(const uint16_t* src_ptr,
   const __m256i round8 = _mm256_set1_epi16(8);
   while (dst_width > 0) {
     __m256i a0 = _mm256_permute4x64_epi64(
-        _mm256_zextsi128_si256(_mm_loadu_si128((const __m128i*)src_ptr)), 0xd8);
+        _mm256_loadu_si256((const __m256i*)src_ptr), 0xd8);
     __m256i a1 = _mm256_permute4x64_epi64(
-        _mm256_zextsi128_si256(_mm_loadu_si128((const __m128i*)(src_ptr + 1))),
-        0xd8);
-    __m256i near0 = _mm256_unpacklo_epi16(a0, a1);
-    __m256i far0 = _mm256_shuffle_epi8(near0, shuf_far);
-    __m256i r0 = _mm256_add_epi16(_mm256_add_epi16(near0, near0),
-                                  _mm256_add_epi16(near0, far0));
+        _mm256_loadu_si256((const __m256i*)(src_ptr + 1)), 0xd8);
+    __m256i near0_lo = _mm256_unpacklo_epi16(a0, a1);
+    __m256i near0_hi = _mm256_unpackhi_epi16(a0, a1);
+    __m256i far0_lo = _mm256_shuffle_epi8(near0_lo, shuf_far);
+    __m256i far0_hi = _mm256_shuffle_epi8(near0_hi, shuf_far);
+    __m256i r0_lo = _mm256_add_epi16(_mm256_add_epi16(near0_lo, near0_lo),
+                                     _mm256_add_epi16(near0_lo, far0_lo));
+    __m256i r0_hi = _mm256_add_epi16(_mm256_add_epi16(near0_hi, near0_hi),
+                                     _mm256_add_epi16(near0_hi, far0_hi));
 
     __m256i b0 = _mm256_permute4x64_epi64(
-        _mm256_zextsi128_si256(
-            _mm_loadu_si128((const __m128i*)(src_ptr + src_stride))),
-        0xd8);
+        _mm256_loadu_si256((const __m256i*)(src_ptr + src_stride)), 0xd8);
     __m256i b1 = _mm256_permute4x64_epi64(
-        _mm256_zextsi128_si256(
-            _mm_loadu_si128((const __m128i*)(src_ptr + src_stride + 1))),
-        0xd8);
-    src_ptr += 8;
-    __m256i near1 = _mm256_unpacklo_epi16(b0, b1);
-    __m256i far1 = _mm256_shuffle_epi8(near1, shuf_far);
-    __m256i r1 = _mm256_add_epi16(_mm256_add_epi16(near1, near1),
-                                  _mm256_add_epi16(near1, far1));
+        _mm256_loadu_si256((const __m256i*)(src_ptr + src_stride + 1)), 0xd8);
+    src_ptr += 16;
+    __m256i near1_lo = _mm256_unpacklo_epi16(b0, b1);
+    __m256i near1_hi = _mm256_unpackhi_epi16(b0, b1);
+    __m256i far1_lo = _mm256_shuffle_epi8(near1_lo, shuf_far);
+    __m256i far1_hi = _mm256_shuffle_epi8(near1_hi, shuf_far);
+    __m256i r1_lo = _mm256_add_epi16(_mm256_add_epi16(near1_lo, near1_lo),
+                                     _mm256_add_epi16(near1_lo, far1_lo));
+    __m256i r1_hi = _mm256_add_epi16(_mm256_add_epi16(near1_hi, near1_hi),
+                                     _mm256_add_epi16(near1_hi, far1_hi));
 
-    __m256i d0 = _mm256_srli_epi16(
-        _mm256_add_epi16(_mm256_add_epi16(_mm256_add_epi16(r0, r0), r0),
-                         _mm256_add_epi16(r1, round8)),
+    __m256i d0_lo = _mm256_srli_epi16(
+        _mm256_add_epi16(
+            _mm256_add_epi16(_mm256_add_epi16(r0_lo, r0_lo), r0_lo),
+            _mm256_add_epi16(r1_lo, round8)),
         4);
-    __m256i d1 = _mm256_srli_epi16(
-        _mm256_add_epi16(_mm256_add_epi16(_mm256_add_epi16(r1, r1), r1),
-                         _mm256_add_epi16(r0, round8)),
+    __m256i d0_hi = _mm256_srli_epi16(
+        _mm256_add_epi16(
+            _mm256_add_epi16(_mm256_add_epi16(r0_hi, r0_hi), r0_hi),
+            _mm256_add_epi16(r1_hi, round8)),
         4);
-    _mm256_storeu_si256((__m256i*)dst_ptr, d0);
-    _mm256_storeu_si256((__m256i*)(dst_ptr + dst_stride), d1);
-    dst_ptr += 16;
-    dst_width -= 16;
+    __m256i d1_lo = _mm256_srli_epi16(
+        _mm256_add_epi16(
+            _mm256_add_epi16(_mm256_add_epi16(r1_lo, r1_lo), r1_lo),
+            _mm256_add_epi16(r0_lo, round8)),
+        4);
+    __m256i d1_hi = _mm256_srli_epi16(
+        _mm256_add_epi16(
+            _mm256_add_epi16(_mm256_add_epi16(r1_hi, r1_hi), r1_hi),
+            _mm256_add_epi16(r0_hi, round8)),
+        4);
+    _mm256_storeu_si256((__m256i*)dst_ptr, d0_lo);
+    _mm256_storeu_si256((__m256i*)(dst_ptr + 16), d0_hi);
+    _mm256_storeu_si256((__m256i*)(dst_ptr + dst_stride), d1_lo);
+    _mm256_storeu_si256((__m256i*)(dst_ptr + dst_stride + 16), d1_hi);
+    dst_ptr += 32;
+    dst_width -= 32;
   }
 }
 #endif  // HAS_SCALEROWUP2_BILINEAR_12_AVX2

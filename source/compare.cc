@@ -72,6 +72,7 @@ uint32_t HashDjb2(const uint8_t* src, uint64_t count, uint32_t seed) {
 #if defined(HAS_HASHDJB2_LASX)
   if (TestCpuFlag(kCpuHasLASX)) {
     HashDjb2_SSE = HashDjb2_LASX;
+    simd_size = 32;
   }
 #endif
 #if defined(HAS_HASHDJB2_WASMSIMD)

@@ -1352,7 +1352,7 @@ void ScaleARGBFilterCols_NEON(uint8_t* dst_argb,
       : [kIndices] "r"(&kScaleARGBFilterColsShuffleIndices),  // %[kIndices]
         [kOffsets] "r"(dx_offset)                             // %[kOffsets]
       : "memory", "cc", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v16",
-        "v17", "v18", "v19");
+        "v17", "v18");
 }
 
 #undef SCALE_ARGB_FILTER_COLS_STEP_ADDR
@@ -1398,7 +1398,7 @@ void ScaleRowDown2_16_NEON(const uint16_t* src_ptr,
         [dst_ptr] "+r"(dst),         // %[dst_ptr]
         [dst_width] "+r"(dst_width)  // %[dst_width]
       :
-      : "cc", "memory", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7");
+      : "memory", "cc", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7");
 }
 
 void ScaleRowDown2Linear_16_NEON(const uint16_t* src_ptr,
@@ -1535,11 +1535,11 @@ void ScaleUVRowDownEven_NEON(const uint8_t* src_ptr,
   asm volatile(
       "1:          \n"
       "ld1         {v0.h}[0], [%0], %6           \n"
-      "ld1         {v1.h}[0], [%1], %6           \n"
-      "ld1         {v2.h}[0], [%2], %6           \n"
-      "ld1         {v3.h}[0], [%3], %6           \n"
+      "ld1         {v0.h}[1], [%1], %6           \n"
+      "ld1         {v0.h}[2], [%2], %6           \n"
+      "ld1         {v0.h}[3], [%3], %6           \n"
       "subs        %w5, %w5, #4                  \n"  // 4 pixels per loop.
-      "st4         {v0.h, v1.h, v2.h, v3.h}[0], [%4], #8 \n"
+      "str         d0, [%4], #8                  \n"
       "b.gt        1b                            \n"
       : "+r"(src_ptr),                 // %0
         "+r"(src1_ptr),                // %1
@@ -1548,7 +1548,7 @@ void ScaleUVRowDownEven_NEON(const uint8_t* src_ptr,
         "+r"(dst_ptr),                 // %4
         "+r"(dst_width)                // %5
       : "r"((int64_t)(src_stepx * 8))  // %6
-      : "memory", "cc", "v0", "v1", "v2", "v3");
+      : "memory", "cc", "v0");
 }
 
 // Scale UV columns by 3 box filter.
