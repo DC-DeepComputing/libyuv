@@ -123,8 +123,7 @@ static void TransposeWx8_Byte_AVX2(const uint8_t* src,
       "vzeroupper  \n"
       : [src] "+r"(src), [dst_a] "+r"(dst_a), [dst_b] "+r"(dst_b),
         [width] "+rm"(byte_width), [temp] "=&r"(temp)
-      : [src_stride] "r"((ptrdiff_t)src_stride),
-        [dst_stride_a] "rm"(d_a),
+      : [src_stride] "r"((ptrdiff_t)src_stride), [dst_stride_a] "rm"(d_a),
         [dst_stride_b] "rm"(d_b)
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
         "xmm7");
@@ -396,6 +395,223 @@ void TransposeUVWx16_AVX512BW(const uint8_t* src,
                               dst_stride_b, width * 2);
 }
 #endif  // defined(HAS_TRANSPOSEUVWX16_AVX512BW)
+
+#if defined(HAS_TRANSPOSEWXH_ACEV1) || defined(HAS_TRANSPOSEUVWXH_ACEV1) || \
+    defined(HAS_TRANSPOSEWXH_16_ACEV1) || defined(HAS_TRANSPOSEWXH_32_ACEV1)
+// Palette 2 tile configuration: 8 tiles of 16 rows x 64 bytes (16 dwords).
+alignas(64) static const uint8_t kTileCfgPalette2[64] = {2};
+#endif
+
+#if defined(HAS_TRANSPOSEWXH_ACEV1)
+LIBYUV_TARGET_ACEV1
+void TransposeWxH_ACEV1(const uint8_t* src,
+                        int src_stride,
+                        uint8_t* dst,
+                        int dst_stride,
+                        int width,
+                        int height) {
+  const uint8_t* src2;
+  const uint8_t* src3;
+  uint8_t* dst2;
+  int w;
+  int cnt;
+  asm volatile(
+      "ldtilecfg %[tilecfg]                             \n"
+
+      // Process up to 16 rows per iteration of the outer loop.
+      "1:                                               \n"
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[height]                        \n"
+      "cmovlel   %k[height], %k[cnt]                    \n"
+      "movl      $-1, %%eax                             \n"
+      "bzhil     %k[cnt], %%eax, %%eax                  \n"
+      "kmovw     %%eax, %%k2                            \n"
+      "movq      %[src], %[src2]                        \n"
+      "movq      %[dst], %[dst2]                        \n"
+      "movl      %[width], %k[w]                        \n"
+
+      // Process up to 16 columns per iteration of the inner loop.
+      "2:                                               \n"
+      "movl      $16, %%eax                             \n"
+      "cmpl      $16, %k[w]                             \n"
+      "cmovlel   %k[w], %%eax                           \n"
+      "movl      $-1, %k[cnt]                           \n"
+      "bzhil     %%eax, %k[cnt], %k[cnt]                \n"
+      "kmovw     %k[cnt], %%k1                          \n"
+      "movq      %[src2], %[src3]                       \n"
+
+      // Load H <= 16 rows into TMM0 columns.
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[height]                        \n"
+      "cmovlel   %k[height], %k[cnt]                    \n"
+      "xorl      %%eax, %%eax                           \n"
+      "3:                                               \n"
+      "vpmovzxbd (%[src3]), %%zmm0%{%%k1%}%{z%}         \n"
+      // tilemovcol %eax, %zmm0, %tmm0
+      ".byte     0x62, 0xf2, 0xfd, 0x48, 0x4b, 0xc0     \n"
+      "addq      %[src_stride], %[src3]                 \n"
+      "incl      %%eax                                  \n"
+      "cmpl      %k[cnt], %%eax                         \n"
+      "jne       3b                                     \n"
+
+      // Store W <= 16 rows from TMM0 rows.
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[w]                             \n"
+      "cmovlel   %k[w], %k[cnt]                         \n"
+      "xorl      %%eax, %%eax                           \n"
+      "4:                                               \n"
+      // tilemovrow %eax, %tmm0, %zmm0
+      ".byte     0x62, 0xf2, 0x7d, 0x48, 0x4a, 0xc0     \n"
+      "vpmovdb   %%zmm0, (%[dst2])%{%%k2%}              \n"
+      "addq      %[dst_stride], %[dst2]                 \n"
+      "incl      %%eax                                  \n"
+      "cmpl      %k[cnt], %%eax                         \n"
+      "jne       4b                                     \n"
+
+      "addq      $16, %[src2]                           \n"
+      "subl      $16, %k[w]                             \n"
+      "jg        2b                                     \n"
+
+      "movq      %[src_stride], %%rax                   \n"
+      "salq      $4, %%rax                              \n"
+      "addq      %%rax, %[src]                          \n"
+      "addq      $16, %[dst]                            \n"
+      "subl      $16, %k[height]                        \n"
+      "jg        1b                                     \n"
+
+      "tilerelease                                      \n"
+      "vzeroupper                                       \n"
+      : [src] "+r"(src),                          // %[src]
+        [dst] "+r"(dst),                          // %[dst]
+        [height] "+r"(height),                    // %[height]
+        [src2] "=&r"(src2),                       // %[src2]
+        [src3] "=&r"(src3),                       // %[src3]
+        [dst2] "=&r"(dst2),                       // %[dst2]
+        [w] "=&r"(w),                             // %[w]
+        [cnt] "=&r"(cnt)                          // %[cnt]
+      : [src_stride] "r"((ptrdiff_t)src_stride),  // %[src_stride]
+        [dst_stride] "r"((ptrdiff_t)dst_stride),  // %[dst_stride]
+        [width] "rm"(width),                      // %[width]
+        [tilecfg] "m"(kTileCfgPalette2)           // %[tilecfg]
+      : "memory", "cc", "rax", "k1", "k2", "xmm0"
+#if defined(__clang__)
+        ,
+        "tmm0"
+#endif
+  );
+}
+#endif  // defined(HAS_TRANSPOSEWXH_ACEV1)
+
+#if defined(HAS_TRANSPOSEUVWXH_ACEV1)
+LIBYUV_TARGET_ACEV1
+void TransposeUVWxH_ACEV1(const uint8_t* src,
+                          int src_stride,
+                          uint8_t* dst_a,
+                          int dst_stride_a,
+                          uint8_t* dst_b,
+                          int dst_stride_b,
+                          int width,
+                          int height) {
+  const uint8_t* src2;
+  const uint8_t* src3;
+  uint8_t* dst2_a;
+  uint8_t* dst2_b;
+  int w;
+  int cnt;
+  asm volatile(
+      "ldtilecfg %[tilecfg]                             \n"
+
+      // Process up to 16 rows per iteration of the outer loop.
+      "1:                                               \n"
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[height]                        \n"
+      "cmovlel   %k[height], %k[cnt]                    \n"
+      "movl      $-1, %%eax                             \n"
+      "bzhil     %k[cnt], %%eax, %%eax                  \n"
+      "kmovw     %%eax, %%k2                            \n"
+      "movq      %[src], %[src2]                        \n"
+      "movq      %[dst_a], %[dst2_a]                    \n"
+      "movq      %[dst_b], %[dst2_b]                    \n"
+      "movl      %[width], %k[w]                        \n"
+
+      // Process up to 16 UV pairs per iteration of the inner loop.
+      "2:                                               \n"
+      "movl      $16, %%eax                             \n"
+      "cmpl      $16, %k[w]                             \n"
+      "cmovlel   %k[w], %%eax                           \n"
+      "movl      $-1, %k[cnt]                           \n"
+      "bzhil     %%eax, %k[cnt], %k[cnt]                \n"
+      "kmovw     %k[cnt], %%k1                          \n"
+      "movq      %[src2], %[src3]                       \n"
+
+      // Load H <= 16 rows of UV pairs into TMM0 columns.
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[height]                        \n"
+      "cmovlel   %k[height], %k[cnt]                    \n"
+      "xorl      %%eax, %%eax                           \n"
+      "3:                                               \n"
+      "vpmovzxwd (%[src3]), %%zmm0%{%%k1%}%{z%}         \n"
+      // tilemovcol %eax, %zmm0, %tmm0
+      ".byte     0x62, 0xf2, 0xfd, 0x48, 0x4b, 0xc0     \n"
+      "addq      %[src_stride], %[src3]                 \n"
+      "incl      %%eax                                  \n"
+      "cmpl      %k[cnt], %%eax                         \n"
+      "jne       3b                                     \n"
+
+      // Store W <= 16 U and V rows from TMM0 rows.
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[w]                             \n"
+      "cmovlel   %k[w], %k[cnt]                         \n"
+      "xorl      %%eax, %%eax                           \n"
+      "4:                                               \n"
+      // tilemovrow %eax, %tmm0, %zmm0
+      ".byte     0x62, 0xf2, 0x7d, 0x48, 0x4a, 0xc0     \n"
+      "vpmovdb   %%zmm0, (%[dst2_a])%{%%k2%}            \n"
+      "vpsrld    $8, %%zmm0, %%zmm0                     \n"
+      "vpmovdb   %%zmm0, (%[dst2_b])%{%%k2%}            \n"
+      "addq      %[dst_stride_a], %[dst2_a]             \n"
+      "addq      %[dst_stride_b], %[dst2_b]             \n"
+      "incl      %%eax                                  \n"
+      "cmpl      %k[cnt], %%eax                         \n"
+      "jne       4b                                     \n"
+
+      "addq      $32, %[src2]                           \n"
+      "subl      $16, %k[w]                             \n"
+      "jg        2b                                     \n"
+
+      "movq      %[src_stride], %%rax                   \n"
+      "salq      $4, %%rax                              \n"
+      "addq      %%rax, %[src]                          \n"
+      "addq      $16, %[dst_a]                          \n"
+      "addq      $16, %[dst_b]                          \n"
+      "subl      $16, %k[height]                        \n"
+      "jg        1b                                     \n"
+
+      "tilerelease                                      \n"
+      "vzeroupper                                       \n"
+      : [src] "+m"(src),                              // %[src]
+        [dst_a] "+m"(dst_a),                          // %[dst_a]
+        [dst_b] "+m"(dst_b),                          // %[dst_b]
+        [height] "+r"(height),                        // %[height]
+        [src2] "=&r"(src2),                           // %[src2]
+        [src3] "=&r"(src3),                           // %[src3]
+        [dst2_a] "=&r"(dst2_a),                       // %[dst2_a]
+        [dst2_b] "=&r"(dst2_b),                       // %[dst2_b]
+        [w] "=&r"(w),                                 // %[w]
+        [cnt] "=&r"(cnt)                              // %[cnt]
+      : [src_stride] "r"((ptrdiff_t)src_stride),      // %[src_stride]
+        [dst_stride_a] "r"((ptrdiff_t)dst_stride_a),  // %[dst_stride_a]
+        [dst_stride_b] "r"((ptrdiff_t)dst_stride_b),  // %[dst_stride_b]
+        [width] "m"(width),                           // %[width]
+        [tilecfg] "m"(kTileCfgPalette2)               // %[tilecfg]
+      : "memory", "cc", "rax", "k1", "k2", "xmm0"
+#if defined(__clang__)
+        ,
+        "tmm0"
+#endif
+  );
+}
+#endif  // defined(HAS_TRANSPOSEUVWXH_ACEV1)
 
 #if defined(__x86_64__)
 #if defined(HAS_TRANSPOSEWX16_AVX2) || defined(HAS_TRANSPOSEUVWX16_AVX2)
@@ -719,16 +935,14 @@ void TransposeWx8_16_AVX2(const uint16_t* src,
       "subl         $0x8,%[w]                      \n"
       "jg           1b                             \n"
       "vzeroupper                                  \n"
-      : [src] "+r"(src_b),
-        [dst] "+r"(dst_b),
+      : [src] "+r"(src_b), [dst] "+r"(dst_b),
 #if defined(__i386__)
         [w] "+m"(width),
 #else
         [w] "+rm"(width),
 #endif
         [temp] "=&r"(temp)
-      : [s] "r"(s),
-        [d] "r"(d)
+      : [s] "r"(s), [d] "r"(d)
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
         "xmm7");
 }
@@ -1020,6 +1234,106 @@ void TransposeWx32_16_AVX512BW(const uint16_t* src,
 }
 #endif  // defined(HAS_TRANSPOSEWX32_16_AVX512BW)
 
+#if defined(HAS_TRANSPOSEWXH_16_ACEV1)
+LIBYUV_TARGET_ACEV1
+void TransposeWxH_16_ACEV1(const uint16_t* src,
+                           int src_stride,
+                           uint16_t* dst,
+                           int dst_stride,
+                           int width,
+                           int height) {
+  const uint16_t* src2;
+  const uint16_t* src3;
+  uint16_t* dst2;
+  int w;
+  int cnt;
+  asm volatile(
+      "ldtilecfg %[tilecfg]                             \n"
+
+      // Process up to 16 16-bit rows per iteration of the outer loop.
+      "1:                                               \n"
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[height]                        \n"
+      "cmovlel   %k[height], %k[cnt]                    \n"
+      "movl      $-1, %%eax                             \n"
+      "bzhil     %k[cnt], %%eax, %%eax                  \n"
+      "kmovw     %%eax, %%k2                            \n"
+      "movq      %[src], %[src2]                        \n"
+      "movq      %[dst], %[dst2]                        \n"
+      "movl      %[width], %k[w]                        \n"
+
+      // Process up to 16 16-bit columns per iteration of the inner loop.
+      "2:                                               \n"
+      "movl      $16, %%eax                             \n"
+      "cmpl      $16, %k[w]                             \n"
+      "cmovlel   %k[w], %%eax                           \n"
+      "movl      $-1, %k[cnt]                           \n"
+      "bzhil     %%eax, %k[cnt], %k[cnt]                \n"
+      "kmovw     %k[cnt], %%k1                          \n"
+      "movq      %[src2], %[src3]                       \n"
+
+      // Load H <= 16 rows into TMM0 columns.
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[height]                        \n"
+      "cmovlel   %k[height], %k[cnt]                    \n"
+      "xorl      %%eax, %%eax                           \n"
+      "3:                                               \n"
+      "vpmovzxwd (%[src3]), %%zmm0%{%%k1%}%{z%}         \n"
+      // tilemovcol %eax, %zmm0, %tmm0
+      ".byte     0x62, 0xf2, 0xfd, 0x48, 0x4b, 0xc0     \n"
+      "addq      %[src_stride], %[src3]                 \n"
+      "incl      %%eax                                  \n"
+      "cmpl      %k[cnt], %%eax                         \n"
+      "jne       3b                                     \n"
+
+      // Store W <= 16 rows from TMM0 rows.
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[w]                             \n"
+      "cmovlel   %k[w], %k[cnt]                         \n"
+      "xorl      %%eax, %%eax                           \n"
+      "4:                                               \n"
+      // tilemovrow %eax, %tmm0, %zmm0
+      ".byte     0x62, 0xf2, 0x7d, 0x48, 0x4a, 0xc0     \n"
+      "vpmovdw   %%zmm0, (%[dst2])%{%%k2%}              \n"
+      "addq      %[dst_stride], %[dst2]                 \n"
+      "incl      %%eax                                  \n"
+      "cmpl      %k[cnt], %%eax                         \n"
+      "jne       4b                                     \n"
+
+      "addq      $32, %[src2]                           \n"
+      "subl      $16, %k[w]                             \n"
+      "jg        2b                                     \n"
+
+      "movq      %[src_stride], %%rax                   \n"
+      "salq      $4, %%rax                              \n"
+      "addq      %%rax, %[src]                          \n"
+      "addq      $32, %[dst]                            \n"
+      "subl      $16, %k[height]                        \n"
+      "jg        1b                                     \n"
+
+      "tilerelease                                      \n"
+      "vzeroupper                                       \n"
+      : [src] "+r"(src),                              // %[src]
+        [dst] "+r"(dst),                              // %[dst]
+        [height] "+r"(height),                        // %[height]
+        [src2] "=&r"(src2),                           // %[src2]
+        [src3] "=&r"(src3),                           // %[src3]
+        [dst2] "=&r"(dst2),                           // %[dst2]
+        [w] "=&r"(w),                                 // %[w]
+        [cnt] "=&r"(cnt)                              // %[cnt]
+      : [src_stride] "r"((ptrdiff_t)src_stride * 2),  // %[src_stride]
+        [dst_stride] "r"((ptrdiff_t)dst_stride * 2),  // %[dst_stride]
+        [width] "rm"(width),                          // %[width]
+        [tilecfg] "m"(kTileCfgPalette2)               // %[tilecfg]
+      : "memory", "cc", "rax", "k1", "k2", "xmm0"
+#if defined(__clang__)
+        ,
+        "tmm0"
+#endif
+  );
+}
+#endif  // defined(HAS_TRANSPOSEWXH_16_ACEV1)
+
 #if defined(HAS_TRANSPOSEWX4_32_AVX2)
 // Transpose 32 bit values (ARGB). Read a column of 4 pixels across 8 rows per
 // AVX2 iteration (with a 4-row VEX 128-bit tail) and write 4 destination rows.
@@ -1262,10 +1576,7 @@ static void TransposeRemWx8_32_AVX2(const uint8_t* src,
       "4:                                          \n"
       "vzeroupper                                  \n"
       : [temp] "=&r"(temp)
-      : [src] "r"(src),
-        [s] "r"(s),
-        [dst] "r"(dst),
-        [d] "r"(d),
+      : [src] "r"(src), [s] "r"(s), [dst] "r"(dst), [d] "r"(d),
         [rem_w] "rm"(rem_w)
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
         "xmm7");
@@ -1329,10 +1640,7 @@ static void TransposeRemWx4_32_AVX2(const uint8_t* src,
       "vmovdqu      %%xmm6,(%[dst],%[d],2)         \n"
       "4:                                          \n"
       : [temp] "=&r"(temp)
-      : [src] "r"(src),
-        [s] "r"(s),
-        [dst] "r"(dst),
-        [d] "r"(d),
+      : [src] "r"(src), [s] "r"(s), [dst] "r"(dst), [d] "r"(d),
         [rem_w] "rm"(rem_w)
       : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
         "xmm7");
@@ -1407,12 +1715,9 @@ void TransposeWxH_32_AVX2(const uint8_t* src,
           "subl         $0x8,%[cnt]                    \n"
           "jg           1b                             \n"
           "vzeroupper                                  \n"
-          : [src] "+r"(src_p),
-            [dst] "+r"(dst_p),
-            [cnt] "+rm"(cnt),
+          : [src] "+r"(src_p), [dst] "+r"(dst_p), [cnt] "+rm"(cnt),
             [temp] "=&r"(temp)
-          : [s] "r"(s),
-            [d] "r"(d)
+          : [s] "r"(s), [d] "r"(d)
           : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
             "xmm6", "xmm7");
     }
@@ -1443,10 +1748,7 @@ void TransposeWxH_32_AVX2(const uint8_t* src,
           "vmovdqu      %%xmm2,(%[temp])               \n"
           "vmovdqu      %%xmm3,(%[temp],%[d])          \n"
           : [temp] "=&r"(temp)
-          : [src] "r"(src_p),
-            [dst] "r"(dst_p),
-            [s] "r"(s),
-            [d] "r"(d)
+          : [src] "r"(src_p), [dst] "r"(dst_p), [s] "r"(s), [d] "r"(d)
           : "memory", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6",
             "xmm7");
     }
@@ -1478,9 +1780,7 @@ void TransposeWxH_32_AVX2(const uint8_t* src,
             "lea          (%[dst],%[d],2),%[dst]         \n"
             "sub          $0x4,%[cnt]                    \n"
             "jg           1b                             \n"
-            : [src] "+r"(src_p),
-              [dst] "+r"(dst_p),
-              [cnt] "+r"(cnt)
+            : [src] "+r"(src_p), [dst] "+r"(dst_p), [cnt] "+r"(cnt)
             : [d] "r"(d)
             : "memory", "cc", "xmm0");
       } else if (height == 2) {
@@ -1499,11 +1799,8 @@ void TransposeWxH_32_AVX2(const uint8_t* src,
             "lea          (%[dst],%[d],2),%[dst]         \n"
             "sub          $0x4,%[cnt]                    \n"
             "jg           1b                             \n"
-            : [src] "+r"(src_p),
-              [dst] "+r"(dst_p),
-              [cnt] "+r"(cnt)
-            : [s] "r"(s),
-              [d] "r"(d)
+            : [src] "+r"(src_p), [dst] "+r"(dst_p), [cnt] "+r"(cnt)
+            : [s] "r"(s), [d] "r"(d)
             : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3");
       } else {
         asm volatile(
@@ -1533,11 +1830,8 @@ void TransposeWxH_32_AVX2(const uint8_t* src,
             "lea          (%[dst],%[d],2),%[dst]         \n"
             "sub          $0x4,%[cnt]                    \n"
             "jg           1b                             \n"
-            : [src] "+r"(src_p),
-              [dst] "+r"(dst_p),
-              [cnt] "+r"(cnt)
-            : [s] "r"(s),
-              [d] "r"(d)
+            : [src] "+r"(src_p), [dst] "+r"(dst_p), [cnt] "+r"(cnt)
+            : [s] "r"(s), [d] "r"(d)
             : "memory", "cc", "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5",
               "xmm6", "xmm7");
       }
@@ -1704,6 +1998,106 @@ void TransposeWx16_32_AVX512BW(const uint8_t* src,
   asm volatile("vzeroupper \n");
 }
 #endif  // defined(HAS_TRANSPOSEWX16_32_AVX512BW)
+
+#if defined(HAS_TRANSPOSEWXH_32_ACEV1)
+LIBYUV_TARGET_ACEV1
+void TransposeWxH_32_ACEV1(const uint8_t* src,
+                           int src_stride,
+                           uint8_t* dst,
+                           int dst_stride,
+                           int width,
+                           int height) {
+  const uint8_t* src2;
+  const uint8_t* src3;
+  uint8_t* dst2;
+  int w;
+  int cnt;
+  asm volatile(
+      "ldtilecfg %[tilecfg]                             \n"
+
+      // Process up to 16 32-bit rows per iteration of the outer loop.
+      "1:                                               \n"
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[height]                        \n"
+      "cmovlel   %k[height], %k[cnt]                    \n"
+      "movl      $-1, %%eax                             \n"
+      "bzhil     %k[cnt], %%eax, %%eax                  \n"
+      "kmovw     %%eax, %%k2                            \n"
+      "movq      %[src], %[src2]                        \n"
+      "movq      %[dst], %[dst2]                        \n"
+      "movl      %[width], %k[w]                        \n"
+
+      // Process up to 16 32-bit columns per iteration of the inner loop.
+      "2:                                               \n"
+      "movl      $16, %%eax                             \n"
+      "cmpl      $16, %k[w]                             \n"
+      "cmovlel   %k[w], %%eax                           \n"
+      "movl      $-1, %k[cnt]                           \n"
+      "bzhil     %%eax, %k[cnt], %k[cnt]                \n"
+      "kmovw     %k[cnt], %%k1                          \n"
+      "movq      %[src2], %[src3]                       \n"
+
+      // Load H <= 16 rows into TMM0 columns.
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[height]                        \n"
+      "cmovlel   %k[height], %k[cnt]                    \n"
+      "xorl      %%eax, %%eax                           \n"
+      "3:                                               \n"
+      "vmovdqu32 (%[src3]), %%zmm0%{%%k1%}%{z%}         \n"
+      // tilemovcol %eax, %zmm0, %tmm0
+      ".byte     0x62, 0xf2, 0xfd, 0x48, 0x4b, 0xc0     \n"
+      "addq      %[src_stride], %[src3]                 \n"
+      "incl      %%eax                                  \n"
+      "cmpl      %k[cnt], %%eax                         \n"
+      "jne       3b                                     \n"
+
+      // Store W <= 16 rows from TMM0 rows.
+      "movl      $16, %k[cnt]                           \n"
+      "cmpl      $16, %k[w]                             \n"
+      "cmovlel   %k[w], %k[cnt]                         \n"
+      "xorl      %%eax, %%eax                           \n"
+      "4:                                               \n"
+      // tilemovrow %eax, %tmm0, %zmm0
+      ".byte     0x62, 0xf2, 0x7d, 0x48, 0x4a, 0xc0     \n"
+      "vmovdqu32 %%zmm0, (%[dst2])%{%%k2%}              \n"
+      "addq      %[dst_stride], %[dst2]                 \n"
+      "incl      %%eax                                  \n"
+      "cmpl      %k[cnt], %%eax                         \n"
+      "jne       4b                                     \n"
+
+      "addq      $64, %[src2]                           \n"
+      "subl      $16, %k[w]                             \n"
+      "jg        2b                                     \n"
+
+      "movq      %[src_stride], %%rax                   \n"
+      "salq      $4, %%rax                              \n"
+      "addq      %%rax, %[src]                          \n"
+      "addq      $64, %[dst]                            \n"
+      "subl      $16, %k[height]                        \n"
+      "jg        1b                                     \n"
+
+      "tilerelease                                      \n"
+      "vzeroupper                                       \n"
+      : [src] "+r"(src),                          // %[src]
+        [dst] "+r"(dst),                          // %[dst]
+        [height] "+r"(height),                    // %[height]
+        [src2] "=&r"(src2),                       // %[src2]
+        [src3] "=&r"(src3),                       // %[src3]
+        [dst2] "=&r"(dst2),                       // %[dst2]
+        [w] "=&r"(w),                             // %[w]
+        [cnt] "=&r"(cnt)                          // %[cnt]
+      : [src_stride] "r"((ptrdiff_t)src_stride),  // %[src_stride]
+        [dst_stride] "r"((ptrdiff_t)dst_stride),  // %[dst_stride]
+        [width] "rm"(width),                      // %[width]
+        [tilecfg] "m"(kTileCfgPalette2)           // %[tilecfg]
+      : "memory", "cc", "rax", "k1", "k2", "xmm0"
+#if defined(__clang__)
+        ,
+        "tmm0"
+#endif
+  );
+}
+#endif  // defined(HAS_TRANSPOSEWXH_32_ACEV1)
 
 #endif  // !defined(LIBYUV_DISABLE_X86) && (defined(__x86_64__) ||
         // defined(__i386__)) && !defined(LIBYUV_ENABLE_ROWWIN)
