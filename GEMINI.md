@@ -43,7 +43,8 @@ and compiler compatibility.
     for SiFive X280.
 *   **row_hvx.cc**: Qualcomm Hexagon Vector Extensions (HVX). Implemented using
     intrinsics.
-*   **row_lsx.cc / row_lasx.cc**: Loongarch MIPS-like extensions.
+*   **row_loong.cc**: LoongArch LSX and LASX extensions (written in inline
+    assembly).
 
 ### Utility and Fallbacks
 

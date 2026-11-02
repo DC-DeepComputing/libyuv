@@ -30,6 +30,7 @@ LOCAL_SRC_FILES := \
     source/rotate_common.cc     \
     source/rotate_gcc.cc        \
     source/rotate_hvx.cc        \
+    source/rotate_loong.cc      \
     source/rotate_neon.cc       \
     source/rotate_neon64.cc     \
     source/rotate_rvv.cc        \
@@ -38,6 +39,7 @@ LOCAL_SRC_FILES := \
     source/row_common.cc        \
     source/row_gcc.cc           \
     source/row_hvx.cc           \
+    source/row_loong.cc         \
     source/row_neon.cc          \
     source/row_neon64.cc        \
     source/row_rvv.cc           \
@@ -48,6 +50,7 @@ LOCAL_SRC_FILES := \
     source/scale_common.cc      \
     source/scale_gcc.cc         \
     source/scale_hvx.cc         \
+    source/scale_loong.cc       \
     source/scale_neon.cc        \
     source/scale_neon64.cc      \
     source/scale_rgb.cc         \
