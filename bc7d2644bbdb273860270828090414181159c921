@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f52b6f1_49953d4e",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-11-02T10:52:50Z",
+      "side": 1,
+      "message": "could we use `ld2h` here? same for the other 2x functions?",
+      "range": {
+        "startLine": 257,
+        "startChar": 3,
+        "endLine": 258,
+        "endChar": 62
+      },
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f9a1a29_aa20a882",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 477,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-11-02T10:52:50Z",
+      "side": 1,
+      "message": "formatting is broken here?",
+      "range": {
+        "startLine": 477,
+        "startChar": 0,
+        "endLine": 477,
+        "endChar": 70
+      },
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1b404f5b_6a0c8834",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1115,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-11-02T10:52:50Z",
+      "side": 1,
+      "message": "it\u0027s unfortunate that the unrolled versions go back to needing st4 (or the zips for st2) since that is quite a performance penalty...\n\ni wonder if it\u0027s possible to rewrite these so that the vectors are processed consecutively rather than interleaved? even if it takes more load instrs (due to needing widening loads) it might still be worthwhile?",
+      "range": {
+        "startLine": 1115,
+        "startChar": 0,
+        "endLine": 1115,
+        "endChar": 33
+      },
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c7b6e4c8_121147d8",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2473,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-11-02T10:52:50Z",
+      "side": 1,
+      "message": "ld4 seems unnecessary here, do `ld1`s and `add`s as normal and then only need to permute z{0,1,2,3} instead of 16 vectors.",
+      "range": {
+        "startLine": 2454,
+        "startChar": 2,
+        "endLine": 2473,
+        "endChar": 31
+      },
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70bebf37_c1a1a67b",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2594,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-11-02T10:52:50Z",
+      "side": 1,
+      "message": "formatting is broken here",
+      "range": {
+        "startLine": 2594,
+        "startChar": 0,
+        "endLine": 2594,
+        "endChar": 67
+      },
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "852e11f3_1696e748",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2672,
+      "author": {
+        "id": 1571352
+      },
+      "writtenOn": "2026-11-02T10:52:50Z",
+      "side": 1,
+      "message": "formatting is broken here",
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    }
+  ]
+}
