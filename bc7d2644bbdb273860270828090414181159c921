@@ -24,6 +24,31 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0f1bd05_d9607d4b",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-11-02T18:23:18Z",
+      "side": 1,
+      "message": "Done. Rewrote READI410_SVE_2X and the other 2x read macros to process the two vectors consecutively rather than interleaved (per your suggestion on line 1115), using consecutive ld1h / widening ld1b/ld1h/ld1w loads ([%[src]] with p1/z and [%[src], #1, mul vl] with p2/z) + in-lane trn1/trn2 instead of de-interleaving with ld2h or uzp1/uzp2. On I410ToARGB_Opt / I410ToAR30_Opt / I410AlphaToARGB_Opt, this improves performance vs Patch Set 1 by +11.4% to +15.3% on Cortex-A510 (SVE2), +12.3% to +14.6% on Oryon V3 (SME2), +1.7% to +14.1% on Apple M6 (SME2), and 3.40x-4.47x on Lumex C2-Ultra (SME2).",
+      "parentUuid": "0f52b6f1_49953d4e",
+      "range": {
+        "startLine": 257,
+        "startChar": 3,
+        "endLine": 258,
+        "endChar": 62
+      },
+      "isAi": true,
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2f9a1a29_aa20a882",
@@ -43,6 +68,31 @@
         "endLine": 477,
         "endChar": 70
       },
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "216063ed_fe9abc48",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 477,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-11-02T18:23:18Z",
+      "side": 1,
+      "message": "Done. Added // clang-format off / // clang-format on around macros that use preprocessor stringification (#bt, #bt_u, #bt_v, #dst, #zU0) so clang-format keeps each assembly instruction on a single line.",
+      "parentUuid": "2f9a1a29_aa20a882",
+      "range": {
+        "startLine": 477,
+        "startChar": 0,
+        "endLine": 477,
+        "endChar": 70
+      },
+      "isAi": true,
       "revId": "bc7d2644bbdb273860270828090414181159c921",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -70,6 +120,31 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf8957a8_11efa1b3",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1115,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-11-02T18:23:18Z",
+      "side": 1,
+      "message": "Done. Rewrote all 2x YUV-to-RGB kernels (READYUV444_SVE_2X, READYUV400_SVE_2X, READYUV422_SVE_2X, READI210_SVE_2X, READP210_SVE_2X, READI410_SVE_2X, READI212_SVE_2X, READNV_SVE_2X, READYUY2_SVE_2X, READUYVY_SVE_2X, I4XXTORGB_SVE_2X, NVTORGB_SVE_2X, RGBTOARGB8_SVE_2X, RGBATOARGB8_SVE_2X, RGBTORGBA8_SVE_2X, STOREARGB8_SVE_2X, STOREAR30_SVE_2X, and the RGB565/ARGB1555/ARGB4444 2x loops) to process the low and high vector halves consecutively using p1 (0..vl-1) and p2 (vl..2*vl-1) with widening loads + in-lane trn1/trn2 and two contiguous st2h stores ([%[dst]] and [%[dst], #2, mul vl]), removing both st4b and cross-lane zip1/zip2/uzp1/uzp2 permutes.\n\nAcross the 27 affected kernels (1280x720, 1000 iterations), this improves overall performance on Cortex-A510 (SVE2) by 1.22x vs pre-CL (90279 ms -\u003e 74152 ms) and +2.2% vs Patch Set 1 (with +16.9% on I422ToRGB565, +9.0% on I420ToARGB1555, +8.8% on I420ToARGB4444, and +11.4% to +15.3% on I410*), +17.3% vs Patch Set 1 on Cortex-A520 (SVE2), +26.1% (1.35x) vs Patch Set 1 on Lumex C2-Ultra (SME2), and +19.2% (1.24x) vs Patch Set 1 on Lumex C1-Pro (SME2).",
+      "parentUuid": "1b404f5b_6a0c8834",
+      "range": {
+        "startLine": 1115,
+        "startChar": 0,
+        "endLine": 1115,
+        "endChar": 33
+      },
+      "isAi": true,
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c7b6e4c8_121147d8",
@@ -89,6 +164,31 @@
         "endLine": 2473,
         "endChar": 31
       },
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12282f56_ab8a7d7e",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2473,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-11-02T18:23:18Z",
+      "side": 1,
+      "message": "Done. Replaced the four ld4w loads in SSIMWINDOW_SVE with contiguous ld1w (#0..#3, mul vl) + vertical adds across row0, row0_next, row1, and row1_next before permuting only z0..z3 with uzp1/uzp2. On BenchmarkSsim_Opt (1280x720, 1000 iterations), this improves performance vs Patch Set 1 by +15.2% on Lumex C2-Ultra (SME2, 256 ms -\u003e 217 ms), +11.6% on Oryon V3-L (SME2, 147 ms -\u003e 130 ms), +9.9% on Apple M6 (SME2, 151 ms -\u003e 136 ms), and +2.3% on Cortex-A510 (SVE2, 1551 ms -\u003e 1516 ms; 1.12x vs pre-CL 1695 ms).",
+      "parentUuid": "c7b6e4c8_121147d8",
+      "range": {
+        "startLine": 2454,
+        "startChar": 2,
+        "endLine": 2473,
+        "endChar": 31
+      },
+      "isAi": true,
       "revId": "bc7d2644bbdb273860270828090414181159c921",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
@@ -116,6 +216,31 @@
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e65fbcfe_d31bb5ac",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2594,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-11-02T18:23:18Z",
+      "side": 1,
+      "message": "Done. Formatted all inline assembly instructions to one instruction per line.",
+      "parentUuid": "70bebf37_c1a1a67b",
+      "range": {
+        "startLine": 2594,
+        "startChar": 0,
+        "endLine": 2594,
+        "endChar": 67
+      },
+      "isAi": true,
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "852e11f3_1696e748",
@@ -129,6 +254,25 @@
       "writtenOn": "2026-11-02T10:52:50Z",
       "side": 1,
       "message": "formatting is broken here",
+      "revId": "bc7d2644bbdb273860270828090414181159c921",
+      "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5d5dc19a_aa83d417",
+        "filename": "include/libyuv/row_sve.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 2672,
+      "author": {
+        "id": 1115898
+      },
+      "writtenOn": "2026-11-02T18:23:18Z",
+      "side": 1,
+      "message": "Done. Formatted all inline assembly instructions to one instruction per line.",
+      "parentUuid": "852e11f3_1696e748",
+      "isAi": true,
       "revId": "bc7d2644bbdb273860270828090414181159c921",
       "serverId": "3ce6091f-6c88-37e8-8c75-72f92ae8dfba"
     }
