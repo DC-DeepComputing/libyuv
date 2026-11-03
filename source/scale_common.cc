@@ -1767,6 +1767,22 @@ void ScalePlaneVertical_16(int src_height,
     }
   }
 #endif
+#if defined(HAS_INTERPOLATEROW_16_LSX)
+  if (TestCpuFlag(kCpuHasLSX)) {
+    InterpolateRow = InterpolateRow_16_Any_LSX;
+    if (IS_ALIGNED(dst_width_words, 8)) {
+      InterpolateRow = InterpolateRow_16_LSX;
+    }
+  }
+#endif
+#if defined(HAS_INTERPOLATEROW_16_LASX)
+  if (TestCpuFlag(kCpuHasLASX)) {
+    InterpolateRow = InterpolateRow_16_Any_LASX;
+    if (IS_ALIGNED(dst_width_words, 16)) {
+      InterpolateRow = InterpolateRow_16_LASX;
+    }
+  }
+#endif
   for (j = 0; j < dst_height; ++j) {
     int yi;
     int yf;
