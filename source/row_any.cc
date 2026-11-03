@@ -881,6 +881,12 @@ ANY21HMS(HalfMergeUVRow_Any_AVX2, HalfMergeUVRow_AVX2, 31)
 #ifdef HAS_HALFMERGEUVROW_NEON
 ANY21HMS(HalfMergeUVRow_Any_NEON, HalfMergeUVRow_NEON, 15)
 #endif
+#ifdef HAS_HALFMERGEUVROW_LSX
+ANY21HMS(HalfMergeUVRow_Any_LSX, HalfMergeUVRow_LSX, 15)
+#endif
+#ifdef HAS_HALFMERGEUVROW_LASX
+ANY21HMS(HalfMergeUVRow_Any_LASX, HalfMergeUVRow_LASX, 31)
+#endif
 #undef ANY21HMS
 
 // Any 2 planes to 1 with yuvconstants
@@ -1054,7 +1060,7 @@ ANY21CT(P410ToARGBRow_Any_NEON, P410ToARGBRow_NEON, 0, 0, uint16_t, 2, 4, 7)
     SIMD_ALIGNED(T vin[16 * 2]);                                     \
     static_assert((MASK + 1) * BPP <= sizeof(vin) / 2,               \
                   "vin buffer too small");                           \
-    SIMD_ALIGNED(T vout[16]);                                        \
+    SIMD_ALIGNED(T vout[16 * 2]);                                    \
     static_assert((MASK + 1) * BPP * 2 <= sizeof(vout),              \
                   "vout buffer too small");                          \
     MSAN_MEMSET(vin, 0, sizeof(vin));   /* for msan */               \
@@ -1076,6 +1082,12 @@ ANY21PT(MergeUVRow_16_Any_AVX2, MergeUVRow_16_AVX2, uint16_t, 2, 7)
 #endif
 #ifdef HAS_MERGEUVROW_16_NEON
 ANY21PT(MergeUVRow_16_Any_NEON, MergeUVRow_16_NEON, uint16_t, 2, 7)
+#endif
+#ifdef HAS_MERGEUVROW_16_LSX
+ANY21PT(MergeUVRow_16_Any_LSX, MergeUVRow_16_LSX, uint16_t, 2, 7)
+#endif
+#ifdef HAS_MERGEUVROW_16_LASX
+ANY21PT(MergeUVRow_16_Any_LASX, MergeUVRow_16_LASX, uint16_t, 2, 15)
 #endif
 
 #undef ANY21CT
@@ -1328,6 +1340,12 @@ ANY11(SwapUVRow_Any_AVX2, SwapUVRow_AVX2, 0, 2, 2, 31)
 #ifdef HAS_SWAPUVROW_NEON
 ANY11(SwapUVRow_Any_NEON, SwapUVRow_NEON, 0, 2, 2, 15)
 #endif
+#ifdef HAS_SWAPUVROW_LSX
+ANY11(SwapUVRow_Any_LSX, SwapUVRow_LSX, 0, 2, 2, 15)
+#endif
+#ifdef HAS_SWAPUVROW_LASX
+ANY11(SwapUVRow_Any_LASX, SwapUVRow_LASX, 0, 2, 2, 31)
+#endif
 #ifdef HAS_RGB24TOARGBROW_NEON
 ANY11(RGB24ToARGBRow_Any_NEON, RGB24ToARGBRow_NEON, 0, 3, 4, 7)
 #endif
@@ -1506,6 +1524,12 @@ ANY11B(ARGBCopyYToAlphaRow_Any_SSE2, ARGBCopyYToAlphaRow_SSE2, 0, 1, 4, 7)
 #endif
 #ifdef HAS_ARGBCOPYYTOALPHAROW_NEON
 ANY11B(ARGBCopyYToAlphaRow_Any_NEON, ARGBCopyYToAlphaRow_NEON, 0, 1, 4, 15)
+#endif
+#ifdef HAS_ARGBCOPYYTOALPHAROW_LSX
+ANY11B(ARGBCopyYToAlphaRow_Any_LSX, ARGBCopyYToAlphaRow_LSX, 0, 1, 4, 7)
+#endif
+#ifdef HAS_ARGBCOPYYTOALPHAROW_LASX
+ANY11B(ARGBCopyYToAlphaRow_Any_LASX, ARGBCopyYToAlphaRow_LASX, 0, 1, 4, 15)
 #endif
 #ifdef HAS_ARGBCOPYYTOALPHAROW_WASMSIMD
 ANY11B(ARGBCopyYToAlphaRow_Any_WASMSIMD,
@@ -1945,6 +1969,24 @@ ANY11C(Convert16To8Row_Any_NEON,
        uint8_t,
        15)
 #endif
+#ifdef HAS_CONVERT16TO8ROW_LSX
+ANY11C(Convert16To8Row_Any_LSX,
+       Convert16To8Row_LSX,
+       2,
+       1,
+       uint16_t,
+       uint8_t,
+       15)
+#endif
+#ifdef HAS_CONVERT16TO8ROW_LASX
+ANY11C(Convert16To8Row_Any_LASX,
+       Convert16To8Row_LASX,
+       2,
+       1,
+       uint16_t,
+       uint8_t,
+       31)
+#endif
 #ifdef HAS_CONVERT8TO16ROW_SSE2
 ANY11C(Convert8To16Row_Any_SSE2,
        Convert8To16Row_SSE2,
@@ -1972,6 +2014,24 @@ ANY11C(Convert8To16Row_Any_NEON,
        uint16_t,
        15)
 #endif
+#ifdef HAS_CONVERT8TO16ROW_LSX
+ANY11C(Convert8To16Row_Any_LSX,
+       Convert8To16Row_LSX,
+       1,
+       2,
+       uint8_t,
+       uint16_t,
+       15)
+#endif
+#ifdef HAS_CONVERT8TO16ROW_LASX
+ANY11C(Convert8To16Row_Any_LASX,
+       Convert8To16Row_LASX,
+       1,
+       2,
+       uint8_t,
+       uint16_t,
+       31)
+#endif
 #ifdef HAS_MULTIPLYROW_16_AVX2
 ANY11C(MultiplyRow_16_Any_AVX2,
        MultiplyRow_16_AVX2,
@@ -1990,11 +2050,35 @@ ANY11C(MultiplyRow_16_Any_NEON,
        uint16_t,
        15)
 #endif
+#ifdef HAS_MULTIPLYROW_16_LSX
+ANY11C(MultiplyRow_16_Any_LSX,
+       MultiplyRow_16_LSX,
+       2,
+       2,
+       uint16_t,
+       uint16_t,
+       15)
+#endif
+#ifdef HAS_MULTIPLYROW_16_LASX
+ANY11C(MultiplyRow_16_Any_LASX,
+       MultiplyRow_16_LASX,
+       2,
+       2,
+       uint16_t,
+       uint16_t,
+       31)
+#endif
 #ifdef HAS_DIVIDEROW_16_AVX2
 ANY11C(DivideRow_16_Any_AVX2, DivideRow_16_AVX2, 2, 2, uint16_t, uint16_t, 31)
 #endif
 #ifdef HAS_DIVIDEROW_16_NEON
 ANY11C(DivideRow_16_Any_NEON, DivideRow_16_NEON, 2, 2, uint16_t, uint16_t, 15)
+#endif
+#ifdef HAS_DIVIDEROW_16_LSX
+ANY11C(DivideRow_16_Any_LSX, DivideRow_16_LSX, 2, 2, uint16_t, uint16_t, 15)
+#endif
+#ifdef HAS_DIVIDEROW_16_LASX
+ANY11C(DivideRow_16_Any_LASX, DivideRow_16_LASX, 2, 2, uint16_t, uint16_t, 31)
 #endif
 #ifdef HAS_CONVERT8TO16ROW_WASMSIMD
 ANY11C(Convert8To16Row_Any_WASMSIMD,
@@ -2654,6 +2738,12 @@ ANY12PT(SplitUVRow_16_Any_AVX2, SplitUVRow_16_AVX2, uint16_t, 2, 15)
 
 #ifdef HAS_SPLITUVROW_16_NEON
 ANY12PT(SplitUVRow_16_Any_NEON, SplitUVRow_16_NEON, uint16_t, 2, 7)
+#endif
+#ifdef HAS_SPLITUVROW_16_LSX
+ANY12PT(SplitUVRow_16_Any_LSX, SplitUVRow_16_LSX, uint16_t, 2, 7)
+#endif
+#ifdef HAS_SPLITUVROW_16_LASX
+ANY12PT(SplitUVRow_16_Any_LASX, SplitUVRow_16_LASX, uint16_t, 2, 15)
 #endif
 
 #undef ANY21CT

@@ -6,6 +6,19 @@ cmake_minimum_required( VERSION 3.16 )
 project ( YUV C CXX )	# "C" is required even for C++ projects
 option( UNIT_TEST "Built unit tests" OFF )
 option( LIBYUV_DISABLE_JPEG "Disable JPEG support" OFF )
+option( LIBYUV_DISABLE_ASM "Disable inline assembly" OFF )
+option( LIBYUV_DISABLE_LSX "Disable LoongArch LSX" OFF )
+option( LIBYUV_DISABLE_LASX "Disable LoongArch LASX" OFF )
+
+if(LIBYUV_DISABLE_ASM)
+  add_definitions(-DLIBYUV_DISABLE_ASM)
+endif()
+if(LIBYUV_DISABLE_LSX)
+  add_definitions(-DLIBYUV_DISABLE_LSX)
+endif()
+if(LIBYUV_DISABLE_LASX)
+  add_definitions(-DLIBYUV_DISABLE_LASX)
+endif()
 
 include(CheckCSourceCompiles)
 
@@ -25,6 +38,7 @@ set ( ly_common_source_files
   ${ly_src_dir}/compare_common.cc
   ${ly_src_dir}/compare_gcc.cc
   ${ly_src_dir}/compare_hvx.cc
+  ${ly_src_dir}/compare_la.cc
   ${ly_src_dir}/compare_wasm.cc
   ${ly_src_dir}/compare_win.cc
   ${ly_src_dir}/convert.cc
@@ -44,6 +58,7 @@ set ( ly_common_source_files
   ${ly_src_dir}/rotate_common.cc
   ${ly_src_dir}/rotate_gcc.cc
   ${ly_src_dir}/rotate_hvx.cc
+  ${ly_src_dir}/rotate_la.cc
   ${ly_src_dir}/rotate_rvv.cc
   ${ly_src_dir}/rotate_wasm.cc
   ${ly_src_dir}/rotate_win.cc
@@ -51,6 +66,7 @@ set ( ly_common_source_files
   ${ly_src_dir}/row_common.cc
   ${ly_src_dir}/row_gcc.cc
   ${ly_src_dir}/row_hvx.cc
+  ${ly_src_dir}/row_la.cc
   ${ly_src_dir}/row_rvv.cc
   ${ly_src_dir}/row_wasm.cc
   ${ly_src_dir}/row_win.cc
@@ -60,6 +76,7 @@ set ( ly_common_source_files
   ${ly_src_dir}/scale_common.cc
   ${ly_src_dir}/scale_gcc.cc
   ${ly_src_dir}/scale_hvx.cc
+  ${ly_src_dir}/scale_la.cc
   ${ly_src_dir}/scale_rgb.cc
   ${ly_src_dir}/scale_rvv.cc
   ${ly_src_dir}/scale_uv.cc
@@ -85,7 +102,7 @@ add_library( ${ly_lib_name}_common_objects OBJECT ${ly_common_source_files} )
 set(ly_lib_parts $<TARGET_OBJECTS:${ly_lib_name}_common_objects>)
 
 string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" SYSPROC)
-set(LOONGARCH64_ALIASES loongarch64)
+set(LOONGARCH64_ALIASES loongarch64 loong64)
 list(FIND LOONGARCH64_ALIASES "${SYSPROC}" LOONGARCH64MATCH)
 
 if(LOONGARCH64MATCH GREATER "-1")
@@ -198,7 +215,6 @@ endif()
 
 if(LOONGARCH64)
   include(CheckCXXSourceCompiles)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-narrowing")
   check_cxx_source_compiles("
     int main(int argc, char **argv) {
       __asm__ volatile (
@@ -213,23 +229,11 @@ if(LOONGARCH64)
       );
     return 0; }" SUPPORTS_LASX)
 
-  if(SUPPORTS_LSX)
-    # These kernels use only LSX (128-bit) instructions and must not be
-    # compiled with -mlasx, which would let the compiler emit 256-bit LASX
-    # code (e.g. for stack-array copies) and crash on LSX-only CPUs.
-    add_library(${ly_lib_name}_lsx OBJECT
-      ${ly_src_dir}/rotate_lsx.cc
-      ${ly_src_dir}/row_lsx.cc
-      ${ly_src_dir}/scale_lsx.cc)
-    target_compile_options(${ly_lib_name}_lsx PRIVATE -mlsx)
-    list(APPEND ly_lib_parts $<TARGET_OBJECTS:${ly_lib_name}_lsx>)
+  if(NOT SUPPORTS_LSX)
+    add_definitions(-DLIBYUV_DISABLE_LSX)
   endif()
-  if(SUPPORTS_LASX)
-    add_library(${ly_lib_name}_lasx OBJECT
-      ${ly_src_dir}/rotate_lasx.cc
-      ${ly_src_dir}/row_lasx.cc)
-    target_compile_options(${ly_lib_name}_lasx PRIVATE -mlasx)
-    list(APPEND ly_lib_parts $<TARGET_OBJECTS:${ly_lib_name}_lasx>)
+  if(NOT SUPPORTS_LASX)
+    add_definitions(-DLIBYUV_DISABLE_LASX)
   endif()
 endif()
 

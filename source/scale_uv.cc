@@ -453,6 +453,14 @@ static int ScaleUVBox(int src_width,
           }
         }
 #endif
+#if defined(HAS_SCALEUVADDCOLS3_LASX)
+        if (TestCpuFlag(kCpuHasLASX)) {
+          ScaleUVAddCols3 = ScaleUVAddCols3_Any_LASX;
+          if (IS_ALIGNED(dst_width, 8)) {
+            ScaleUVAddCols3 = ScaleUVAddCols3_LASX;
+          }
+        }
+#endif
 #if defined(HAS_SCALEUVADDCOLS3_WASMSIMD)
         if (TestCpuFlag(kCpuHasWASMSIMD)) {
           ScaleUVAddCols3 = ScaleUVAddCols3_Any_WASMSIMD;
@@ -501,6 +509,14 @@ static int ScaleUVBox(int src_width,
         ScaleAddRow = ScaleAddRow_Any_LSX;
         if (IS_ALIGNED(row_samples, 16)) {
           ScaleAddRow = ScaleAddRow_LSX;
+        }
+      }
+#endif
+#if defined(HAS_SCALEADDROW_LASX)
+      if (TestCpuFlag(kCpuHasLASX)) {
+        ScaleAddRow = ScaleAddRow_Any_LASX;
+        if (IS_ALIGNED(row_samples, 32)) {
+          ScaleAddRow = ScaleAddRow_LASX;
         }
       }
 #endif
