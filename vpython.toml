@@ -35,7 +35,7 @@ dependencies = [
   'mozlog==7.1.0',
   'mozprocess==1.2.1',
   'urllib3==1.26.6',
-  'brotli==1.0.9',
+  'brotli==1.2.1',
   'blessings==1.7',
   'mozfile==2.0.0',
   'mozterm==1.0.0',
