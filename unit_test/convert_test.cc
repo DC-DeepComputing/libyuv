@@ -3326,6 +3326,238 @@ TEST_F(LibYUVConvertTest, I422ToNV21Widths) {
   }
 }
 
+TEST_F(LibYUVConvertTest, Android420ToARGBGeneralBitExact) {
+  for (int pixel_stride_uv : {2, 3, 4}) {
+    for (int height : {1, 2, 3, 4, 5, -1, -2, -3, -4}) {
+      const int abs_h = height < 0 ? -height : height;
+      const int halfheight = (abs_h + 1) >> 1;
+      for (int width : {1,  2,  3,  4,  7,  8,   9,   15,  16,  17, 31,
+                        32, 33, 63, 64, 65, 127, 128, 129, 257, 258}) {
+        const int halfwidth = (width + 1) >> 1;
+        const int stride_u = halfwidth * pixel_stride_uv + 3;
+        const int stride_v = halfwidth * pixel_stride_uv + 7;
+        align_buffer_page_end(src_y, width * abs_h);
+        align_buffer_page_end(src_u, stride_u * halfheight);
+        align_buffer_page_end(src_v, stride_v * halfheight);
+        align_buffer_page_end(plane_uv_ref, halfwidth * 2 * halfheight);
+        align_buffer_page_end(dst_ref, width * 4 * abs_h);
+        align_buffer_page_end(dst_c, width * 4 * abs_h);
+        align_buffer_page_end(dst_opt, width * 4 * abs_h);
+        MemRandomize(src_y, width * abs_h);
+        MemRandomize(src_u, stride_u * halfheight);
+        MemRandomize(src_v, stride_v * halfheight);
+
+        for (int y = 0; y < halfheight; ++y) {
+          for (int x = 0; x < halfwidth; ++x) {
+            plane_uv_ref[y * halfwidth * 2 + x * 2 + 0] =
+                src_u[y * stride_u + x * pixel_stride_uv];
+            plane_uv_ref[y * halfwidth * 2 + x * 2 + 1] =
+                src_v[y * stride_v + x * pixel_stride_uv];
+          }
+        }
+
+        MaskCpuFlags(benchmark_cpu_info_);
+        EXPECT_EQ(0, NV12ToARGBMatrix(src_y, width, plane_uv_ref, halfwidth * 2,
+                                      dst_ref, width * 4, &kYuvI601Constants,
+                                      width, height));
+        EXPECT_EQ(0, Android420ToARGBMatrix(src_y, width, src_u, stride_u,
+                                            src_v, stride_v, pixel_stride_uv,
+                                            dst_opt, width * 4,
+                                            &kYuvI601Constants, width, height));
+        EXPECT_EQ(0, memcmp(dst_ref, dst_opt, width * 4 * abs_h));
+
+        MaskCpuFlags(disable_cpu_flags_);
+        EXPECT_EQ(0, Android420ToARGBMatrix(src_y, width, src_u, stride_u,
+                                            src_v, stride_v, pixel_stride_uv,
+                                            dst_c, width * 4,
+                                            &kYuvI601Constants, width, height));
+        EXPECT_EQ(0, memcmp(dst_ref, dst_c, width * 4 * abs_h));
+        MaskCpuFlags(benchmark_cpu_info_);
+
+        free_aligned_buffer_page_end(src_y);
+        free_aligned_buffer_page_end(src_u);
+        free_aligned_buffer_page_end(src_v);
+        free_aligned_buffer_page_end(plane_uv_ref);
+        free_aligned_buffer_page_end(dst_ref);
+        free_aligned_buffer_page_end(dst_c);
+        free_aligned_buffer_page_end(dst_opt);
+      }
+    }
+  }
+}
+
+TEST_F(LibYUVConvertTest, ConvertFromI420NV24AndP210P410BitExact) {
+  for (int height : {1, 2, 3, 4, 5, -1, -2, -3, -4}) {
+    const int abs_h = height < 0 ? -height : height;
+    const int halfheight = (abs_h + 1) >> 1;
+    for (int width : {1,  2,  3,  4,  5,  7,  8,   9,   15,  16,  17,
+                      31, 32, 33, 63, 64, 65, 127, 128, 129, 257, 258}) {
+      const int halfwidth = (width + 1) >> 1;
+      align_buffer_page_end(src_y, width * abs_h);
+      align_buffer_page_end(src_u, halfwidth * halfheight);
+      align_buffer_page_end(src_v, halfwidth * halfheight);
+      MemRandomize(src_y, width * abs_h);
+      MemRandomize(src_u, halfwidth * halfheight);
+      MemRandomize(src_v, halfwidth * halfheight);
+
+      // 1. FOURCC_NV24 vs (I420ToI444 + MergeUVPlane)
+      {
+        const size_t nv24_size = (size_t)width * abs_h * 3;
+        align_buffer_page_end(temp_u, width * abs_h);
+        align_buffer_page_end(temp_v, width * abs_h);
+        align_buffer_page_end(nv24_ref, nv24_size);
+        align_buffer_page_end(nv24_c, nv24_size);
+        align_buffer_page_end(nv24_opt, nv24_size);
+
+        MaskCpuFlags(benchmark_cpu_info_);
+        EXPECT_EQ(0, I420ToI444(src_y, width, src_u, halfwidth, src_v,
+                                halfwidth, nv24_ref, width, temp_u, width,
+                                temp_v, width, width, height));
+        MergeUVPlane(temp_u, width, temp_v, width, nv24_ref + width * abs_h,
+                     width * 2, width, abs_h);
+
+        EXPECT_EQ(
+            0, ConvertFromI420(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                               nv24_opt, 0, width, height, FOURCC_NV24));
+        EXPECT_EQ(0, memcmp(nv24_ref, nv24_opt, nv24_size));
+
+        MaskCpuFlags(disable_cpu_flags_);
+        EXPECT_EQ(
+            0, ConvertFromI420(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                               nv24_c, 0, width, height, FOURCC_NV24));
+        EXPECT_EQ(0, memcmp(nv24_ref, nv24_c, nv24_size));
+        MaskCpuFlags(benchmark_cpu_info_);
+
+        free_aligned_buffer_page_end(temp_u);
+        free_aligned_buffer_page_end(temp_v);
+        free_aligned_buffer_page_end(nv24_ref);
+        free_aligned_buffer_page_end(nv24_c);
+        free_aligned_buffer_page_end(nv24_opt);
+      }
+
+      // 2. I420ToP210 vs (I420ToI422 + I422ToP210)
+      {
+        const size_t y_bytes = (size_t)width * abs_h * sizeof(uint16_t);
+        const size_t uv_bytes =
+            (size_t)halfwidth * 2 * abs_h * sizeof(uint16_t);
+        align_buffer_page_end(temp_u, halfwidth * abs_h);
+        align_buffer_page_end(temp_v, halfwidth * abs_h);
+        align_buffer_page_end(y_ref, y_bytes);
+        align_buffer_page_end(uv_ref, uv_bytes);
+        align_buffer_page_end(y_c, y_bytes);
+        align_buffer_page_end(uv_c, uv_bytes);
+        align_buffer_page_end(y_opt, y_bytes);
+        align_buffer_page_end(uv_opt, uv_bytes);
+
+        const uint8_t* sy = src_y;
+        const uint8_t* su = src_u;
+        const uint8_t* sv = src_v;
+        int sy_str = width;
+        int suv_str = halfwidth;
+        if (height < 0) {
+          sy = src_y + (ptrdiff_t)(abs_h - 1) * width;
+          su = src_u + (ptrdiff_t)(halfheight - 1) * halfwidth;
+          sv = src_v + (ptrdiff_t)(halfheight - 1) * halfwidth;
+          sy_str = -width;
+          suv_str = -halfwidth;
+        }
+        MaskCpuFlags(benchmark_cpu_info_);
+        EXPECT_EQ(0,
+                  I420ToI422(NULL, 0, su, suv_str, sv, suv_str, NULL, 0, temp_u,
+                             halfwidth, temp_v, halfwidth, width, abs_h));
+        EXPECT_EQ(0,
+                  I422ToP210(sy, sy_str, temp_u, halfwidth, temp_v, halfwidth,
+                             (uint16_t*)y_ref, width, (uint16_t*)uv_ref,
+                             halfwidth * 2, width, abs_h));
+
+        EXPECT_EQ(0,
+                  I420ToP210(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                             (uint16_t*)y_opt, width, (uint16_t*)uv_opt,
+                             halfwidth * 2, width, height));
+        EXPECT_EQ(0, memcmp(y_ref, y_opt, y_bytes));
+        EXPECT_EQ(0, memcmp(uv_ref, uv_opt, uv_bytes));
+
+        MaskCpuFlags(disable_cpu_flags_);
+        EXPECT_EQ(0, I420ToP210(src_y, width, src_u, halfwidth, src_v,
+                                halfwidth, (uint16_t*)y_c, width,
+                                (uint16_t*)uv_c, halfwidth * 2, width, height));
+        EXPECT_EQ(0, memcmp(y_ref, y_c, y_bytes));
+        EXPECT_EQ(0, memcmp(uv_ref, uv_c, uv_bytes));
+        MaskCpuFlags(benchmark_cpu_info_);
+
+        free_aligned_buffer_page_end(temp_u);
+        free_aligned_buffer_page_end(temp_v);
+        free_aligned_buffer_page_end(y_ref);
+        free_aligned_buffer_page_end(uv_ref);
+        free_aligned_buffer_page_end(y_c);
+        free_aligned_buffer_page_end(uv_c);
+        free_aligned_buffer_page_end(y_opt);
+        free_aligned_buffer_page_end(uv_opt);
+      }
+
+      // 3. I420ToP410 vs (I420ToI444 + I444ToP410)
+      {
+        const size_t y_bytes = (size_t)width * abs_h * sizeof(uint16_t);
+        const size_t uv_bytes = (size_t)width * 2 * abs_h * sizeof(uint16_t);
+        align_buffer_page_end(temp_u, width * abs_h);
+        align_buffer_page_end(temp_v, width * abs_h);
+        align_buffer_page_end(y_ref, y_bytes);
+        align_buffer_page_end(uv_ref, uv_bytes);
+        align_buffer_page_end(y_c, y_bytes);
+        align_buffer_page_end(uv_c, uv_bytes);
+        align_buffer_page_end(y_opt, y_bytes);
+        align_buffer_page_end(uv_opt, uv_bytes);
+
+        const uint8_t* sy = src_y;
+        const uint8_t* su = src_u;
+        const uint8_t* sv = src_v;
+        int sy_str = width;
+        int suv_str = halfwidth;
+        if (height < 0) {
+          sy = src_y + (ptrdiff_t)(abs_h - 1) * width;
+          su = src_u + (ptrdiff_t)(halfheight - 1) * halfwidth;
+          sv = src_v + (ptrdiff_t)(halfheight - 1) * halfwidth;
+          sy_str = -width;
+          suv_str = -halfwidth;
+        }
+        MaskCpuFlags(benchmark_cpu_info_);
+        EXPECT_EQ(0, I420ToI444(NULL, 0, su, suv_str, sv, suv_str, NULL, 0,
+                                temp_u, width, temp_v, width, width, abs_h));
+        EXPECT_EQ(0, I444ToP410(sy, sy_str, temp_u, width, temp_v, width,
+                                (uint16_t*)y_ref, width, (uint16_t*)uv_ref,
+                                width * 2, width, abs_h));
+
+        EXPECT_EQ(0, I420ToP410(src_y, width, src_u, halfwidth, src_v,
+                                halfwidth, (uint16_t*)y_opt, width,
+                                (uint16_t*)uv_opt, width * 2, width, height));
+        EXPECT_EQ(0, memcmp(y_ref, y_opt, y_bytes));
+        EXPECT_EQ(0, memcmp(uv_ref, uv_opt, uv_bytes));
+
+        MaskCpuFlags(disable_cpu_flags_);
+        EXPECT_EQ(0, I420ToP410(src_y, width, src_u, halfwidth, src_v,
+                                halfwidth, (uint16_t*)y_c, width,
+                                (uint16_t*)uv_c, width * 2, width, height));
+        EXPECT_EQ(0, memcmp(y_ref, y_c, y_bytes));
+        EXPECT_EQ(0, memcmp(uv_ref, uv_c, uv_bytes));
+        MaskCpuFlags(benchmark_cpu_info_);
+
+        free_aligned_buffer_page_end(temp_u);
+        free_aligned_buffer_page_end(temp_v);
+        free_aligned_buffer_page_end(y_ref);
+        free_aligned_buffer_page_end(uv_ref);
+        free_aligned_buffer_page_end(y_c);
+        free_aligned_buffer_page_end(uv_c);
+        free_aligned_buffer_page_end(y_opt);
+        free_aligned_buffer_page_end(uv_opt);
+      }
+
+      free_aligned_buffer_page_end(src_y);
+      free_aligned_buffer_page_end(src_u);
+      free_aligned_buffer_page_end(src_v);
+    }
+  }
+}
+
 #endif  // !defined(LEAN_TESTS)
 
 }  // namespace libyuv
