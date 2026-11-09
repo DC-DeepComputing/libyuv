@@ -5346,6 +5346,29 @@ void HalfMergeUVRow_NEON(const uint8_t* src_u,
       : "cc", "memory", "v0", "v1", "v2", "v3");
 }
 
+void HalfRow_NEON(const uint8_t* src_uv,
+                  ptrdiff_t src_uv_stride,
+                  uint8_t* dst_uv,
+                  int width) {
+  const uint8_t* src_uv1 = src_uv + src_uv_stride;
+  asm volatile(
+      "1:                                        \n"
+      "ld1         {v0.16b}, [%0], #16           \n"
+      "ld1         {v1.16b}, [%1], #16           \n"
+      "subs        %w3, %w3, #16                 \n"
+      "prfm        pldl1keep, [%0, 448]          \n"
+      "urhadd      v0.16b, v0.16b, v1.16b        \n"
+      "prfm        pldl1keep, [%1, 448]          \n"
+      "st1         {v0.16b}, [%2], #16           \n"
+      "b.gt        1b                            \n"
+      : "+r"(src_uv),   // %0
+        "+r"(src_uv1),  // %1
+        "+r"(dst_uv),   // %2
+        "+r"(width)     // %3
+      :
+      : "memory", "cc", "v0", "v1");
+}
+
 void HalfUVRow_NEON(const uint8_t* src_u,
                     int src_stride_u,
                     const uint8_t* src_v,
