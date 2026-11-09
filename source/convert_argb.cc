@@ -6219,10 +6219,8 @@ int Android420ToARGBMatrix(const uint8_t* src_y,
                            int width,
                            int height) {
   int y;
-  uint8_t* dst_uv;
   const ptrdiff_t vu_off = src_v - src_u;
   int halfwidth = (width + 1) >> 1;
-  int halfheight = (height + 1) >> 1;
   assert(yuvconstants);
   if (!src_y || !src_u || !src_v || !dst_argb || width <= 0 || height == 0 ||
       height == INT_MIN) {
@@ -6231,7 +6229,6 @@ int Android420ToARGBMatrix(const uint8_t* src_y,
   // Negative height means invert the image.
   if (height < 0) {
     height = -height;
-    halfheight = (height + 1) >> 1;
     dst_argb = dst_argb + (ptrdiff_t)(height - 1) * dst_stride_argb;
     dst_stride_argb = -dst_stride_argb;
   }
@@ -6254,23 +6251,92 @@ int Android420ToARGBMatrix(const uint8_t* src_y,
                             dst_stride_argb, yuvconstants, width, height);
   }
 
-  // General case fallback creates NV12
-  const uint64_t uv_size = (uint64_t)halfwidth * 2 * halfheight;
-  if (uv_size > SIZE_MAX)
-    return 1;
-  align_buffer_64(plane_uv, (size_t)uv_size);
-  if (!plane_uv)
-    return 1;
-  dst_uv = plane_uv;
-  for (y = 0; y < halfheight; ++y) {
-    WeavePixels(src_u, src_v, src_pixel_stride_uv, dst_uv, halfwidth);
-    src_u += src_stride_u;
-    src_v += src_stride_v;
-    dst_uv += halfwidth * 2;
+  // Fast planar chroma extraction in L1-sized row tiles for stride 2 and 4.
+  const int kTileUvRows = 2;
+  if ((src_pixel_stride_uv == 2 || src_pixel_stride_uv == 4) && halfwidth > 1) {
+    const int extract_w = halfwidth - 1;
+    const size_t plane_stride = ((size_t)halfwidth + 63u) & ~63u;
+    if (plane_stride > (size_t)INT_MAX / 2u ||
+        plane_stride > SIZE_MAX / (4u * kTileUvRows)) {
+      return 1;
+    }
+    align_buffer_64(row_buf, plane_stride * 4u * kTileUvRows);
+    if (!row_buf) {
+      return 1;
+    }
+    uint8_t* row_u = row_buf;
+    uint8_t* row_v = row_u + plane_stride * kTileUvRows;
+    uint8_t* row_uv = row_v + plane_stride * kTileUvRows;
+    for (y = 0; y < height; y += kTileUvRows * 2) {
+      const int y_rows =
+          (height - y < kTileUvRows * 2) ? (height - y) : (kTileUvRows * 2);
+      const int uv_rows = (y_rows + 1) >> 1;
+      int r;
+      if (src_pixel_stride_uv == 2) {
+        SplitUVPlane(src_u, src_stride_u, row_u, (int)plane_stride, row_uv,
+                     (int)plane_stride, extract_w, uv_rows);
+        SplitUVPlane(src_v, src_stride_v, row_v, (int)plane_stride, row_uv,
+                     (int)plane_stride, extract_w, uv_rows);
+        for (r = 0; r < uv_rows; ++r) {
+          row_u[(size_t)r * plane_stride + extract_w] =
+              src_u[(ptrdiff_t)r * src_stride_u + (ptrdiff_t)extract_w * 2];
+          row_v[(size_t)r * plane_stride + extract_w] =
+              src_v[(ptrdiff_t)r * src_stride_v + (ptrdiff_t)extract_w * 2];
+        }
+        MergeUVPlane(row_u, (int)plane_stride, row_v, (int)plane_stride, row_uv,
+                     halfwidth * 2, halfwidth, uv_rows);
+      } else {
+        for (r = 0; r < uv_rows; ++r) {
+          row_uv[(size_t)r * halfwidth * 2] =
+              src_u[(ptrdiff_t)r * src_stride_u];
+          row_uv[(size_t)r * halfwidth * 2 + 1] =
+              src_v[(ptrdiff_t)r * src_stride_v];
+        }
+        ARGBExtractAlpha(src_u + 1, src_stride_u, row_u, (int)plane_stride,
+                         extract_w, uv_rows);
+        ARGBExtractAlpha(src_v + 1, src_stride_v, row_v, (int)plane_stride,
+                         extract_w, uv_rows);
+        MergeUVPlane(row_u, (int)plane_stride, row_v, (int)plane_stride,
+                     row_uv + 2, halfwidth * 2, extract_w, uv_rows);
+      }
+      NV12ToARGBMatrix(src_y, src_stride_y, row_uv, halfwidth * 2, dst_argb,
+                       dst_stride_argb, yuvconstants, width, y_rows);
+      src_y += (ptrdiff_t)src_stride_y * (kTileUvRows * 2);
+      src_u += (ptrdiff_t)src_stride_u * kTileUvRows;
+      src_v += (ptrdiff_t)src_stride_v * kTileUvRows;
+      dst_argb += (ptrdiff_t)dst_stride_argb * (kTileUvRows * 2);
+    }
+    free_aligned_buffer_64(row_buf);
+    return 0;
   }
-  NV12ToARGBMatrix(src_y, src_stride_y, plane_uv, halfwidth * 2, dst_argb,
-                   dst_stride_argb, yuvconstants, width, height);
-  free_aligned_buffer_64(plane_uv);
+
+  // General case fallback weaves L1-sized UV row tiles.
+  if ((size_t)halfwidth > (size_t)INT_MAX / 2u ||
+      (size_t)halfwidth > SIZE_MAX / (2u * kTileUvRows)) {
+    return 1;
+  }
+  align_buffer_64(row_uv, (size_t)halfwidth * 2u * kTileUvRows);
+  if (!row_uv) {
+    return 1;
+  }
+  for (y = 0; y < height; y += kTileUvRows * 2) {
+    const int y_rows =
+        (height - y < kTileUvRows * 2) ? (height - y) : (kTileUvRows * 2);
+    const int uv_rows = (y_rows + 1) >> 1;
+    int r;
+    for (r = 0; r < uv_rows; ++r) {
+      WeavePixels(src_u + (ptrdiff_t)r * src_stride_u,
+                  src_v + (ptrdiff_t)r * src_stride_v, src_pixel_stride_uv,
+                  row_uv + (size_t)r * halfwidth * 2, halfwidth);
+    }
+    NV12ToARGBMatrix(src_y, src_stride_y, row_uv, halfwidth * 2, dst_argb,
+                     dst_stride_argb, yuvconstants, width, y_rows);
+    src_y += (ptrdiff_t)src_stride_y * (kTileUvRows * 2);
+    src_u += (ptrdiff_t)src_stride_u * kTileUvRows;
+    src_v += (ptrdiff_t)src_stride_v * kTileUvRows;
+    dst_argb += (ptrdiff_t)dst_stride_argb * (kTileUvRows * 2);
+  }
+  free_aligned_buffer_64(row_uv);
   return 0;
 }
 
