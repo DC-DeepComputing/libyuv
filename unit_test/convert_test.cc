@@ -3280,7 +3280,14 @@ TEST_F(LibYUVConvertTest, YUY2ToNV12Overflow) {
 }
 
 TEST_F(LibYUVConvertTest, I422ToNV21Widths) {
-  for (int height : {1, 2, 3, 4, -3, -4}) {
+  const int cpu_masks[] = {
+      benchmark_cpu_info_,
+      benchmark_cpu_info_ & ~kCpuHasAVX512BW,
+      benchmark_cpu_info_ & ~kCpuHasSME,
+      benchmark_cpu_info_ & ~(kCpuHasSME | kCpuHasSVE2),
+      benchmark_cpu_info_ & ~kCpuHasLASX,
+  };
+  for (int height : {1, 2, 3, 4, -1, -3, -4}) {
     const int abs_h = height < 0 ? -height : height;
     const int halfheight = (abs_h + 1) >> 1;
     for (int width :
@@ -3302,12 +3309,17 @@ TEST_F(LibYUVConvertTest, I422ToNV21Widths) {
       EXPECT_EQ(0, I422ToNV21(src_y, width, src_u, halfwidth, src_v, halfwidth,
                               dst_y_c, width, dst_vu_c, halfwidth * 2, width,
                               height));
+      for (int cpu_mask : cpu_masks) {
+        MaskCpuFlags(cpu_mask);
+        memset(dst_y_opt, 0, width * abs_h);
+        memset(dst_vu_opt, 0, halfwidth * 2 * halfheight);
+        EXPECT_EQ(0, I422ToNV21(src_y, width, src_u, halfwidth, src_v,
+                                halfwidth, dst_y_opt, width, dst_vu_opt,
+                                halfwidth * 2, width, height));
+        EXPECT_EQ(0, memcmp(dst_y_c, dst_y_opt, width * abs_h));
+        EXPECT_EQ(0, memcmp(dst_vu_c, dst_vu_opt, halfwidth * 2 * halfheight));
+      }
       MaskCpuFlags(benchmark_cpu_info_);
-      EXPECT_EQ(0, I422ToNV21(src_y, width, src_u, halfwidth, src_v, halfwidth,
-                              dst_y_opt, width, dst_vu_opt, halfwidth * 2,
-                              width, height));
-      EXPECT_EQ(0, memcmp(dst_y_c, dst_y_opt, width * abs_h));
-      EXPECT_EQ(0, memcmp(dst_vu_c, dst_vu_opt, halfwidth * 2 * halfheight));
 
       // Also test NULL dst_y (UV-only conversion).
       memset(dst_vu_opt, 0, halfwidth * 2 * halfheight);
@@ -3327,7 +3339,14 @@ TEST_F(LibYUVConvertTest, I422ToNV21Widths) {
 }
 
 TEST_F(LibYUVConvertTest, I422ToI420Widths) {
-  for (int height : {1, 2, 3, 4, -3, -4}) {
+  const int cpu_masks[] = {
+      benchmark_cpu_info_,
+      benchmark_cpu_info_ & ~kCpuHasAVX512BW,
+      benchmark_cpu_info_ & ~kCpuHasSME,
+      benchmark_cpu_info_ & ~(kCpuHasSME | kCpuHasSVE2),
+      benchmark_cpu_info_ & ~kCpuHasLASX,
+  };
+  for (int height : {1, 2, 3, 4, -1, -3, -4}) {
     const int abs_h = height < 0 ? -height : height;
     const int halfheight = (abs_h + 1) >> 1;
     for (int width :
@@ -3351,27 +3370,20 @@ TEST_F(LibYUVConvertTest, I422ToI420Widths) {
       EXPECT_EQ(0, I422ToI420(src_y, width, src_u, halfwidth, src_v, halfwidth,
                               dst_y_c, width, dst_u_c, halfwidth, dst_v_c,
                               halfwidth, width, height));
-      MaskCpuFlags(benchmark_cpu_info_);
-      EXPECT_EQ(0, I422ToI420(src_y, width, src_u, halfwidth, src_v, halfwidth,
-                              dst_y_opt, width, dst_u_opt, halfwidth, dst_v_opt,
-                              halfwidth, width, height));
-      EXPECT_EQ(0, memcmp(dst_y_c, dst_y_opt, width * abs_h));
-      EXPECT_EQ(0, memcmp(dst_u_c, dst_u_opt, halfwidth * halfheight));
-      EXPECT_EQ(0, memcmp(dst_v_c, dst_v_opt, halfwidth * halfheight));
-
-      // Also test AVX2 fallback when AVX512BW is present.
-      if (benchmark_cpu_info_ & kCpuHasAVX512BW) {
+      for (int cpu_mask : cpu_masks) {
+        MaskCpuFlags(cpu_mask);
+        memset(dst_y_opt, 0, width * abs_h);
         memset(dst_u_opt, 0, halfwidth * halfheight);
         memset(dst_v_opt, 0, halfwidth * halfheight);
-        MaskCpuFlags(benchmark_cpu_info_ & ~kCpuHasAVX512BW);
         EXPECT_EQ(0,
                   I422ToI420(src_y, width, src_u, halfwidth, src_v, halfwidth,
                              dst_y_opt, width, dst_u_opt, halfwidth, dst_v_opt,
                              halfwidth, width, height));
+        EXPECT_EQ(0, memcmp(dst_y_c, dst_y_opt, width * abs_h));
         EXPECT_EQ(0, memcmp(dst_u_c, dst_u_opt, halfwidth * halfheight));
         EXPECT_EQ(0, memcmp(dst_v_c, dst_v_opt, halfwidth * halfheight));
-        MaskCpuFlags(benchmark_cpu_info_);
       }
+      MaskCpuFlags(benchmark_cpu_info_);
 
       // Also test NULL dst_y (UV-only conversion).
       memset(dst_u_opt, 0, halfwidth * halfheight);
@@ -3393,6 +3405,84 @@ TEST_F(LibYUVConvertTest, I422ToI420Widths) {
       free_aligned_buffer_page_end(dst_v_opt);
     }
   }
+}
+
+TEST_F(LibYUVConvertTest, I422OverflowGuards) {
+  const int width = 64;
+  const int halfwidth = 32;
+  align_buffer_page_end(src_y, width);
+  align_buffer_page_end(src_u, halfwidth);
+  align_buffer_page_end(src_v, halfwidth);
+  align_buffer_page_end(dst_y, width);
+  align_buffer_page_end(dst_u, halfwidth);
+  align_buffer_page_end(dst_v, halfwidth);
+  align_buffer_page_end(dst_vu, halfwidth * 2);
+  align_buffer_page_end(dst_u_ref, halfwidth);
+  align_buffer_page_end(dst_v_ref, halfwidth);
+  align_buffer_page_end(dst_vu_ref, halfwidth * 2);
+  MemRandomize(src_y, width);
+  MemRandomize(src_u, halfwidth);
+  MemRandomize(src_v, halfwidth);
+
+  // Invalid dimensions including INT_MAX width and INT_MIN height must not
+  // trigger signed integer overflow before returning -1.
+  EXPECT_EQ(-1, I422ToNV21(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                           dst_y, width, dst_vu, width, 0, 2));
+  EXPECT_EQ(-1, I422ToNV21(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                           dst_y, width, dst_vu, width, -2, 2));
+  EXPECT_EQ(-1, I422ToNV21(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                           dst_y, width, dst_vu, width, INT_MIN, 2));
+  EXPECT_EQ(-1, I422ToNV21(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                           dst_y, width, dst_vu, width, INT_MAX, 0));
+  EXPECT_EQ(-1, I422ToNV21(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                           dst_y, width, NULL, width, INT_MAX, 2));
+  EXPECT_EQ(-1, I422ToNV21(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                           dst_y, width, dst_vu, width, width, INT_MIN));
+
+  EXPECT_EQ(-1,
+            I422ToI420(src_y, width, src_u, halfwidth, src_v, halfwidth, dst_y,
+                       width, dst_u, halfwidth, dst_v, halfwidth, 0, 2));
+  EXPECT_EQ(-1,
+            I422ToI420(src_y, width, src_u, halfwidth, src_v, halfwidth, dst_y,
+                       width, dst_u, halfwidth, dst_v, halfwidth, -2, 2));
+  EXPECT_EQ(-1,
+            I422ToI420(src_y, width, src_u, halfwidth, src_v, halfwidth, dst_y,
+                       width, dst_u, halfwidth, dst_v, halfwidth, INT_MIN, 2));
+  EXPECT_EQ(-1,
+            I422ToI420(src_y, width, src_u, halfwidth, src_v, halfwidth, dst_y,
+                       width, dst_u, halfwidth, dst_v, halfwidth, INT_MAX, 0));
+  EXPECT_EQ(-1,
+            I422ToI420(src_y, width, src_u, halfwidth, src_v, halfwidth, dst_y,
+                       width, NULL, halfwidth, dst_v, halfwidth, INT_MAX, 2));
+  EXPECT_EQ(-1, I422ToI420(src_y, width, src_u, halfwidth, src_v, halfwidth,
+                           dst_y, width, dst_u, halfwidth, dst_v, halfwidth,
+                           width, INT_MIN));
+
+  // Negative height with INT_MIN source strides must not overflow signed int.
+  EXPECT_EQ(0, I422ToNV21(NULL, 0, src_u, halfwidth, src_v, halfwidth, NULL, 0,
+                          dst_vu_ref, width, width, 1));
+  EXPECT_EQ(0, I422ToNV21(NULL, INT_MIN, src_u, INT_MIN, src_v, INT_MIN, NULL,
+                          0, dst_vu, width, width, -1));
+  EXPECT_EQ(0, memcmp(dst_vu_ref, dst_vu, width));
+
+  EXPECT_EQ(0,
+            I422ToI420(NULL, 0, src_u, halfwidth, src_v, halfwidth, NULL, 0,
+                       dst_u_ref, halfwidth, dst_v_ref, halfwidth, width, 1));
+  EXPECT_EQ(0, I422ToI420(NULL, INT_MIN, src_u, INT_MIN, src_v, INT_MIN, NULL,
+                          0, dst_u, halfwidth, dst_v, halfwidth, width, -1));
+  EXPECT_EQ(0, memcmp(dst_u_ref, dst_u, halfwidth));
+  EXPECT_EQ(0, memcmp(dst_v_ref, dst_v, halfwidth));
+
+  free_aligned_buffer_page_end(src_y);
+  free_aligned_buffer_page_end(src_u);
+  free_aligned_buffer_page_end(src_v);
+  free_aligned_buffer_page_end(dst_y);
+  free_aligned_buffer_page_end(dst_u);
+  free_aligned_buffer_page_end(dst_v);
+  free_aligned_buffer_page_end(dst_vu);
+  free_aligned_buffer_page_end(dst_u_ref);
+  free_aligned_buffer_page_end(dst_v_ref);
+  free_aligned_buffer_page_end(dst_vu_ref);
 }
 
 #endif  // !defined(LEAN_TESTS)
