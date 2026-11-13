@@ -291,6 +291,14 @@ extern "C" {
 #define HAS_HALFROW_16_AVX2
 #define HAS_HALFROW_16TO8_AVX2
 #define HAS_HALFROW_AVX2
+#define HAS_HALFWIDTHROW_AVX2
+#define HAS_HALFWIDTHROW_16_AVX2
+#define HAS_HALFWIDTHUVROW_AVX2
+#define HAS_HALFWIDTHUVROW_16_AVX2
+#define HAS_HALFBOXROW_AVX2
+#define HAS_HALFBOXROW_16_AVX2
+#define HAS_HALFBOXUVROW_AVX2
+#define HAS_HALFBOXUVROW_16_AVX2
 #define HAS_HALFWIDTHROW_16TO8_AVX2
 #define HAS_HALFWIDTHROW_16TO8_ODD_AVX2
 #define HAS_I210TOAR30ROW_AVX2
@@ -435,6 +443,14 @@ extern "C" {
 #define HAS_HALFROW_16_AVX2
 #define HAS_HALFROW_16TO8_AVX2
 #define HAS_HALFROW_AVX2
+#define HAS_HALFWIDTHROW_AVX2
+#define HAS_HALFWIDTHROW_16_AVX2
+#define HAS_HALFWIDTHUVROW_AVX2
+#define HAS_HALFWIDTHUVROW_16_AVX2
+#define HAS_HALFBOXROW_AVX2
+#define HAS_HALFBOXROW_16_AVX2
+#define HAS_HALFBOXUVROW_AVX2
+#define HAS_HALFBOXUVROW_16_AVX2
 #define HAS_HALFWIDTHROW_16TO8_AVX2
 #define HAS_HALFWIDTHROW_16TO8_ODD_AVX2
 #define HAS_I422TOUYVYROW_AVX2
@@ -570,6 +586,15 @@ extern "C" {
 #define HAS_CONVERT8TO16ROW_AVX512BW
 #define HAS_COPYROW_AVX512BW
 #define HAS_HALFROW_AVX512BW
+#define HAS_HALFROW_16_AVX512BW
+#define HAS_HALFWIDTHROW_AVX512BW
+#define HAS_HALFWIDTHROW_16_AVX512BW
+#define HAS_HALFWIDTHUVROW_AVX512BW
+#define HAS_HALFWIDTHUVROW_16_AVX512BW
+#define HAS_HALFBOXROW_AVX512BW
+#define HAS_HALFBOXROW_16_AVX512BW
+#define HAS_HALFBOXUVROW_AVX512BW
+#define HAS_HALFBOXUVROW_16_AVX512BW
 #define HAS_HALFROW_16TO8_AVX512BW
 #define HAS_HALFWIDTHROW_16TO8_AVX512BW
 #define HAS_J400TOARGBROW_AVX512BW
@@ -598,6 +623,15 @@ extern "C" {
 #define HAS_CONVERT16TO8ROW_AVX512BW
 #define HAS_CONVERT8TO16ROW_AVX512BW
 #define HAS_HALFROW_AVX512BW
+#define HAS_HALFROW_16_AVX512BW
+#define HAS_HALFWIDTHROW_AVX512BW
+#define HAS_HALFWIDTHROW_16_AVX512BW
+#define HAS_HALFWIDTHUVROW_AVX512BW
+#define HAS_HALFWIDTHUVROW_16_AVX512BW
+#define HAS_HALFBOXROW_AVX512BW
+#define HAS_HALFBOXROW_16_AVX512BW
+#define HAS_HALFBOXUVROW_AVX512BW
+#define HAS_HALFBOXUVROW_16_AVX512BW
 #define HAS_HALFROW_16TO8_AVX512BW
 #define HAS_HALFWIDTHROW_16TO8_AVX512BW
 #define HAS_MULTIPLYROW_16_AVX512BW
@@ -757,6 +791,15 @@ extern "C" {
 #define HAS_HALFMERGEUVROW_NEON
 #define HAS_HALFUVROW_NEON
 #define HAS_HALFROW_NEON
+#define HAS_HALFROW_16_NEON
+#define HAS_HALFWIDTHROW_NEON
+#define HAS_HALFWIDTHROW_16_NEON
+#define HAS_HALFWIDTHUVROW_NEON
+#define HAS_HALFWIDTHUVROW_16_NEON
+#define HAS_HALFBOXROW_NEON
+#define HAS_HALFBOXROW_16_NEON
+#define HAS_HALFBOXUVROW_NEON
+#define HAS_HALFBOXUVROW_16_NEON
 #define HAS_HALFROW_16TO8_NEON
 #define HAS_HALFWIDTHROW_16TO8_NEON
 #define HAS_I400TOARGBROW_NEON
@@ -909,6 +952,15 @@ extern "C" {
 // #define HAS_HALFROW_16TO8_SVE2
 // Disabled: NEON version is faster for 128 bit vectors.
 // #define HAS_HALFWIDTHROW_16TO8_SVE2
+// Disabled: NEON version is faster for 128 bit vectors.
+// #define HAS_HALFWIDTHROW_SVE2
+// #define HAS_HALFWIDTHROW_16_SVE2
+// #define HAS_HALFWIDTHUVROW_SVE2
+// #define HAS_HALFWIDTHUVROW_16_SVE2
+// #define HAS_HALFBOXROW_SVE2
+// #define HAS_HALFBOXROW_16_SVE2
+// #define HAS_HALFBOXUVROW_SVE2
+// #define HAS_HALFBOXUVROW_16_SVE2
 #define HAS_I210ALPHATOARGBROW_SVE2
 #define HAS_I210TOAR30ROW_SVE2
 #define HAS_I210TOARGBROW_SVE2
@@ -979,6 +1031,14 @@ extern "C" {
 #define HAS_HALFROW_16TO8_SME
 #define HAS_HALFROW_SME
 #define HAS_HALFUVROW_SME
+#define HAS_HALFWIDTHROW_SME
+#define HAS_HALFWIDTHROW_16_SME
+#define HAS_HALFWIDTHUVROW_SME
+#define HAS_HALFWIDTHUVROW_16_SME
+#define HAS_HALFBOXROW_SME
+#define HAS_HALFBOXROW_16_SME
+#define HAS_HALFBOXUVROW_SME
+#define HAS_HALFBOXUVROW_16_SME
 #define HAS_HALFWIDTHROW_16TO8_SME
 #define HAS_I210ALPHATOARGBROW_SME
 #define HAS_I210TOAR30ROW_SME
@@ -1210,6 +1270,14 @@ extern "C" {
 #define HAS_HALFROW_16_LASX
 #define HAS_HALFROW_16TO8_LASX
 #define HAS_HALFROW_LASX
+#define HAS_HALFWIDTHROW_LASX
+#define HAS_HALFWIDTHROW_16_LASX
+#define HAS_HALFWIDTHUVROW_LASX
+#define HAS_HALFWIDTHUVROW_16_LASX
+#define HAS_HALFBOXROW_LASX
+#define HAS_HALFBOXROW_16_LASX
+#define HAS_HALFBOXUVROW_LASX
+#define HAS_HALFBOXUVROW_16_LASX
 #define HAS_I400TOARGBROW_LASX
 #define HAS_I422ALPHATOARGBROW_LASX
 #define HAS_I422TOARGB1555ROW_LASX
@@ -1285,6 +1353,15 @@ extern "C" {
 #define HAS_CONVERT8TO16ROW_RVV
 #define HAS_COPYROW_RVV
 #define HAS_HALFROW_RVV
+#define HAS_HALFROW_16_RVV
+#define HAS_HALFWIDTHROW_RVV
+#define HAS_HALFWIDTHROW_16_RVV
+#define HAS_HALFWIDTHUVROW_RVV
+#define HAS_HALFWIDTHUVROW_16_RVV
+#define HAS_HALFBOXROW_RVV
+#define HAS_HALFBOXROW_16_RVV
+#define HAS_HALFBOXUVROW_RVV
+#define HAS_HALFBOXUVROW_16_RVV
 #define HAS_HALFROW_16TO8_RVV
 #define HAS_HALFUVROW_RVV
 #define HAS_HALFWIDTHROW_16TO8_RVV
@@ -1407,6 +1484,14 @@ extern "C" {
 #define HAS_HALFROW_16_WASMSIMD
 #define HAS_HALFROW_16TO8_WASMSIMD
 #define HAS_HALFROW_WASMSIMD
+#define HAS_HALFWIDTHROW_WASMSIMD
+#define HAS_HALFWIDTHROW_16_WASMSIMD
+#define HAS_HALFWIDTHUVROW_WASMSIMD
+#define HAS_HALFWIDTHUVROW_16_WASMSIMD
+#define HAS_HALFBOXROW_WASMSIMD
+#define HAS_HALFBOXROW_16_WASMSIMD
+#define HAS_HALFBOXUVROW_WASMSIMD
+#define HAS_HALFBOXUVROW_16_WASMSIMD
 #define HAS_HALFWIDTHROW_16TO8_WASMSIMD
 #define HAS_I210ALPHATOARGBROW_WASMSIMD
 #define HAS_I210TOAR30ROW_WASMSIMD
@@ -1547,6 +1632,15 @@ extern "C" {
 #define HAS_COPYROW_HVX
 #define HAS_DIVIDEROW_16_HVX
 #define HAS_HALFROW_HVX
+#define HAS_HALFROW_16_HVX
+#define HAS_HALFWIDTHROW_HVX
+#define HAS_HALFWIDTHROW_16_HVX
+#define HAS_HALFWIDTHUVROW_HVX
+#define HAS_HALFWIDTHUVROW_16_HVX
+#define HAS_HALFBOXROW_HVX
+#define HAS_HALFBOXROW_16_HVX
+#define HAS_HALFBOXUVROW_HVX
+#define HAS_HALFBOXUVROW_16_HVX
 #define HAS_HALFROW_16TO8_HVX
 #define HAS_HALFUVROW_HVX
 #define HAS_I400TOARGBROW_HVX
@@ -4792,6 +4886,18 @@ void HalfRow_16_Any_AVX2(const uint16_t* src_ptr,
                          ptrdiff_t src_stride,
                          uint16_t* dst_ptr,
                          int width);
+void HalfRow_16_AVX512BW(const uint16_t* src_uv,
+                         ptrdiff_t src_uv_stride,
+                         uint16_t* dst_uv,
+                         int width);
+void HalfRow_16_NEON(const uint16_t* src_uv,
+                     ptrdiff_t src_uv_stride,
+                     uint16_t* dst_uv,
+                     int width);
+void HalfRow_16_Any_NEON(const uint16_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint16_t* dst_ptr,
+                         int width);
 void HalfRow_16_SME(const uint16_t* src_uv,
                     ptrdiff_t src_uv_stride,
                     uint16_t* dst_uv,
@@ -4816,6 +4922,418 @@ void HalfRow_16_Any_LASX(const uint16_t* src_ptr,
                          ptrdiff_t src_stride,
                          uint16_t* dst_ptr,
                          int width);
+void HalfRow_16_RVV(const uint16_t* src_uv,
+                    ptrdiff_t src_uv_stride,
+                    uint16_t* dst_uv,
+                    int width);
+
+void HalfWidthRow_C(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Odd_C(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_AVX2(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Any_AVX2(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Odd_AVX2(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_AVX512BW(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Odd_AVX512BW(const uint8_t* src_ptr,
+                               uint8_t* dst_ptr,
+                               int width);
+void HalfWidthRow_NEON(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Any_NEON(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Odd_NEON(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_SME(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Odd_SME(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_LASX(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Any_LASX(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Odd_LASX(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_RVV(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Odd_RVV(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+
+void HalfWidthRow_16_C(const uint16_t* src_ptr, uint16_t* dst_ptr, int width);
+void HalfWidthRow_16_Odd_C(const uint16_t* src_ptr,
+                           uint16_t* dst_ptr,
+                           int width);
+void HalfWidthRow_16_AVX2(const uint16_t* src_ptr,
+                          uint16_t* dst_ptr,
+                          int width);
+void HalfWidthRow_16_Any_AVX2(const uint16_t* src_ptr,
+                              uint16_t* dst_ptr,
+                              int width);
+void HalfWidthRow_16_Odd_AVX2(const uint16_t* src_ptr,
+                              uint16_t* dst_ptr,
+                              int width);
+void HalfWidthRow_16_AVX512BW(const uint16_t* src_ptr,
+                              uint16_t* dst_ptr,
+                              int width);
+void HalfWidthRow_16_Odd_AVX512BW(const uint16_t* src_ptr,
+                                  uint16_t* dst_ptr,
+                                  int width);
+void HalfWidthRow_16_NEON(const uint16_t* src_ptr,
+                          uint16_t* dst_ptr,
+                          int width);
+void HalfWidthRow_16_Any_NEON(const uint16_t* src_ptr,
+                              uint16_t* dst_ptr,
+                              int width);
+void HalfWidthRow_16_Odd_NEON(const uint16_t* src_ptr,
+                              uint16_t* dst_ptr,
+                              int width);
+void HalfWidthRow_16_SME(const uint16_t* src_ptr, uint16_t* dst_ptr, int width);
+void HalfWidthRow_16_Odd_SME(const uint16_t* src_ptr,
+                             uint16_t* dst_ptr,
+                             int width);
+void HalfWidthRow_16_LASX(const uint16_t* src_ptr,
+                          uint16_t* dst_ptr,
+                          int width);
+void HalfWidthRow_16_Any_LASX(const uint16_t* src_ptr,
+                              uint16_t* dst_ptr,
+                              int width);
+void HalfWidthRow_16_Odd_LASX(const uint16_t* src_ptr,
+                              uint16_t* dst_ptr,
+                              int width);
+void HalfWidthRow_16_RVV(const uint16_t* src_ptr, uint16_t* dst_ptr, int width);
+void HalfWidthRow_16_Odd_RVV(const uint16_t* src_ptr,
+                             uint16_t* dst_ptr,
+                             int width);
+
+void HalfWidthUVRow_C(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Odd_C(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_AVX2(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Any_AVX2(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Odd_AVX2(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_AVX512BW(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Odd_AVX512BW(const uint8_t* src_uv,
+                                 uint8_t* dst_uv,
+                                 int width);
+void HalfWidthUVRow_NEON(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Any_NEON(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Odd_NEON(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_SME(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Odd_SME(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_LASX(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Any_LASX(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Odd_LASX(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_RVV(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Odd_RVV(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+
+void HalfWidthUVRow_16_C(const uint16_t* src_uv, uint16_t* dst_uv, int width);
+void HalfWidthUVRow_16_Odd_C(const uint16_t* src_uv,
+                             uint16_t* dst_uv,
+                             int width);
+void HalfWidthUVRow_16_AVX2(const uint16_t* src_uv,
+                            uint16_t* dst_uv,
+                            int width);
+void HalfWidthUVRow_16_Any_AVX2(const uint16_t* src_uv,
+                                uint16_t* dst_uv,
+                                int width);
+void HalfWidthUVRow_16_Odd_AVX2(const uint16_t* src_uv,
+                                uint16_t* dst_uv,
+                                int width);
+void HalfWidthUVRow_16_AVX512BW(const uint16_t* src_uv,
+                                uint16_t* dst_uv,
+                                int width);
+void HalfWidthUVRow_16_Odd_AVX512BW(const uint16_t* src_uv,
+                                    uint16_t* dst_uv,
+                                    int width);
+void HalfWidthUVRow_16_NEON(const uint16_t* src_uv,
+                            uint16_t* dst_uv,
+                            int width);
+void HalfWidthUVRow_16_Any_NEON(const uint16_t* src_uv,
+                                uint16_t* dst_uv,
+                                int width);
+void HalfWidthUVRow_16_Odd_NEON(const uint16_t* src_uv,
+                                uint16_t* dst_uv,
+                                int width);
+void HalfWidthUVRow_16_SME(const uint16_t* src_uv, uint16_t* dst_uv, int width);
+void HalfWidthUVRow_16_Odd_SME(const uint16_t* src_uv,
+                               uint16_t* dst_uv,
+                               int width);
+void HalfWidthUVRow_16_LASX(const uint16_t* src_uv,
+                            uint16_t* dst_uv,
+                            int width);
+void HalfWidthUVRow_16_Any_LASX(const uint16_t* src_uv,
+                                uint16_t* dst_uv,
+                                int width);
+void HalfWidthUVRow_16_Odd_LASX(const uint16_t* src_uv,
+                                uint16_t* dst_uv,
+                                int width);
+void HalfWidthUVRow_16_RVV(const uint16_t* src_uv, uint16_t* dst_uv, int width);
+void HalfWidthUVRow_16_Odd_RVV(const uint16_t* src_uv,
+                               uint16_t* dst_uv,
+                               int width);
+
+void HalfBoxRow_C(const uint8_t* src_ptr,
+                  ptrdiff_t src_stride,
+                  uint8_t* dst_ptr,
+                  int width);
+void HalfBoxRow_Odd_C(const uint8_t* src_ptr,
+                      ptrdiff_t src_stride,
+                      uint8_t* dst_ptr,
+                      int width);
+void HalfBoxRow_AVX2(const uint8_t* src_ptr,
+                     ptrdiff_t src_stride,
+                     uint8_t* dst_ptr,
+                     int width);
+void HalfBoxRow_Any_AVX2(const uint8_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint8_t* dst_ptr,
+                         int width);
+void HalfBoxRow_Odd_AVX2(const uint8_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint8_t* dst_ptr,
+                         int width);
+void HalfBoxRow_AVX512BW(const uint8_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint8_t* dst_ptr,
+                         int width);
+void HalfBoxRow_Odd_AVX512BW(const uint8_t* src_ptr,
+                             ptrdiff_t src_stride,
+                             uint8_t* dst_ptr,
+                             int width);
+void HalfBoxRow_NEON(const uint8_t* src_ptr,
+                     ptrdiff_t src_stride,
+                     uint8_t* dst_ptr,
+                     int width);
+void HalfBoxRow_Any_NEON(const uint8_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint8_t* dst_ptr,
+                         int width);
+void HalfBoxRow_Odd_NEON(const uint8_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint8_t* dst_ptr,
+                         int width);
+void HalfBoxRow_SME(const uint8_t* src_ptr,
+                    ptrdiff_t src_stride,
+                    uint8_t* dst_ptr,
+                    int width);
+void HalfBoxRow_Odd_SME(const uint8_t* src_ptr,
+                        ptrdiff_t src_stride,
+                        uint8_t* dst_ptr,
+                        int width);
+void HalfBoxRow_LASX(const uint8_t* src_ptr,
+                     ptrdiff_t src_stride,
+                     uint8_t* dst_ptr,
+                     int width);
+void HalfBoxRow_Any_LASX(const uint8_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint8_t* dst_ptr,
+                         int width);
+void HalfBoxRow_Odd_LASX(const uint8_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint8_t* dst_ptr,
+                         int width);
+void HalfBoxRow_RVV(const uint8_t* src_ptr,
+                    ptrdiff_t src_stride,
+                    uint8_t* dst_ptr,
+                    int width);
+void HalfBoxRow_Odd_RVV(const uint8_t* src_ptr,
+                        ptrdiff_t src_stride,
+                        uint8_t* dst_ptr,
+                        int width);
+
+void HalfBoxRow_16_C(const uint16_t* src_ptr,
+                     ptrdiff_t src_stride,
+                     uint16_t* dst_ptr,
+                     int width);
+void HalfBoxRow_16_Odd_C(const uint16_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint16_t* dst_ptr,
+                         int width);
+void HalfBoxRow_16_AVX2(const uint16_t* src_ptr,
+                        ptrdiff_t src_stride,
+                        uint16_t* dst_ptr,
+                        int width);
+void HalfBoxRow_16_Any_AVX2(const uint16_t* src_ptr,
+                            ptrdiff_t src_stride,
+                            uint16_t* dst_ptr,
+                            int width);
+void HalfBoxRow_16_Odd_AVX2(const uint16_t* src_ptr,
+                            ptrdiff_t src_stride,
+                            uint16_t* dst_ptr,
+                            int width);
+void HalfBoxRow_16_AVX512BW(const uint16_t* src_ptr,
+                            ptrdiff_t src_stride,
+                            uint16_t* dst_ptr,
+                            int width);
+void HalfBoxRow_16_Odd_AVX512BW(const uint16_t* src_ptr,
+                                ptrdiff_t src_stride,
+                                uint16_t* dst_ptr,
+                                int width);
+void HalfBoxRow_16_NEON(const uint16_t* src_ptr,
+                        ptrdiff_t src_stride,
+                        uint16_t* dst_ptr,
+                        int width);
+void HalfBoxRow_16_Any_NEON(const uint16_t* src_ptr,
+                            ptrdiff_t src_stride,
+                            uint16_t* dst_ptr,
+                            int width);
+void HalfBoxRow_16_Odd_NEON(const uint16_t* src_ptr,
+                            ptrdiff_t src_stride,
+                            uint16_t* dst_ptr,
+                            int width);
+void HalfBoxRow_16_SME(const uint16_t* src_ptr,
+                       ptrdiff_t src_stride,
+                       uint16_t* dst_ptr,
+                       int width);
+void HalfBoxRow_16_Odd_SME(const uint16_t* src_ptr,
+                           ptrdiff_t src_stride,
+                           uint16_t* dst_ptr,
+                           int width);
+void HalfBoxRow_16_LASX(const uint16_t* src_ptr,
+                        ptrdiff_t src_stride,
+                        uint16_t* dst_ptr,
+                        int width);
+void HalfBoxRow_16_Any_LASX(const uint16_t* src_ptr,
+                            ptrdiff_t src_stride,
+                            uint16_t* dst_ptr,
+                            int width);
+void HalfBoxRow_16_Odd_LASX(const uint16_t* src_ptr,
+                            ptrdiff_t src_stride,
+                            uint16_t* dst_ptr,
+                            int width);
+void HalfBoxRow_16_RVV(const uint16_t* src_ptr,
+                       ptrdiff_t src_stride,
+                       uint16_t* dst_ptr,
+                       int width);
+void HalfBoxRow_16_Odd_RVV(const uint16_t* src_ptr,
+                           ptrdiff_t src_stride,
+                           uint16_t* dst_ptr,
+                           int width);
+
+void HalfBoxUVRow_C(const uint8_t* src_uv,
+                    ptrdiff_t src_stride_uv,
+                    uint8_t* dst_uv,
+                    int width);
+void HalfBoxUVRow_Odd_C(const uint8_t* src_uv,
+                        ptrdiff_t src_stride_uv,
+                        uint8_t* dst_uv,
+                        int width);
+void HalfBoxUVRow_AVX2(const uint8_t* src_uv,
+                       ptrdiff_t src_stride_uv,
+                       uint8_t* dst_uv,
+                       int width);
+void HalfBoxUVRow_Any_AVX2(const uint8_t* src_uv,
+                           ptrdiff_t src_stride_uv,
+                           uint8_t* dst_uv,
+                           int width);
+void HalfBoxUVRow_Odd_AVX2(const uint8_t* src_uv,
+                           ptrdiff_t src_stride_uv,
+                           uint8_t* dst_uv,
+                           int width);
+void HalfBoxUVRow_AVX512BW(const uint8_t* src_uv,
+                           ptrdiff_t src_stride_uv,
+                           uint8_t* dst_uv,
+                           int width);
+void HalfBoxUVRow_Odd_AVX512BW(const uint8_t* src_uv,
+                               ptrdiff_t src_stride_uv,
+                               uint8_t* dst_uv,
+                               int width);
+void HalfBoxUVRow_NEON(const uint8_t* src_uv,
+                       ptrdiff_t src_stride_uv,
+                       uint8_t* dst_uv,
+                       int width);
+void HalfBoxUVRow_Any_NEON(const uint8_t* src_uv,
+                           ptrdiff_t src_stride_uv,
+                           uint8_t* dst_uv,
+                           int width);
+void HalfBoxUVRow_Odd_NEON(const uint8_t* src_uv,
+                           ptrdiff_t src_stride_uv,
+                           uint8_t* dst_uv,
+                           int width);
+void HalfBoxUVRow_SME(const uint8_t* src_uv,
+                      ptrdiff_t src_stride_uv,
+                      uint8_t* dst_uv,
+                      int width);
+void HalfBoxUVRow_Odd_SME(const uint8_t* src_uv,
+                          ptrdiff_t src_stride_uv,
+                          uint8_t* dst_uv,
+                          int width);
+void HalfBoxUVRow_LASX(const uint8_t* src_uv,
+                       ptrdiff_t src_stride_uv,
+                       uint8_t* dst_uv,
+                       int width);
+void HalfBoxUVRow_Any_LASX(const uint8_t* src_uv,
+                           ptrdiff_t src_stride_uv,
+                           uint8_t* dst_uv,
+                           int width);
+void HalfBoxUVRow_Odd_LASX(const uint8_t* src_uv,
+                           ptrdiff_t src_stride_uv,
+                           uint8_t* dst_uv,
+                           int width);
+void HalfBoxUVRow_RVV(const uint8_t* src_uv,
+                      ptrdiff_t src_stride_uv,
+                      uint8_t* dst_uv,
+                      int width);
+void HalfBoxUVRow_Odd_RVV(const uint8_t* src_uv,
+                          ptrdiff_t src_stride_uv,
+                          uint8_t* dst_uv,
+                          int width);
+
+void HalfBoxUVRow_16_C(const uint16_t* src_uv,
+                       ptrdiff_t src_stride_uv,
+                       uint16_t* dst_uv,
+                       int width);
+void HalfBoxUVRow_16_Odd_C(const uint16_t* src_uv,
+                           ptrdiff_t src_stride_uv,
+                           uint16_t* dst_uv,
+                           int width);
+void HalfBoxUVRow_16_AVX2(const uint16_t* src_uv,
+                          ptrdiff_t src_stride_uv,
+                          uint16_t* dst_uv,
+                          int width);
+void HalfBoxUVRow_16_Any_AVX2(const uint16_t* src_uv,
+                              ptrdiff_t src_stride_uv,
+                              uint16_t* dst_uv,
+                              int width);
+void HalfBoxUVRow_16_Odd_AVX2(const uint16_t* src_uv,
+                              ptrdiff_t src_stride_uv,
+                              uint16_t* dst_uv,
+                              int width);
+void HalfBoxUVRow_16_AVX512BW(const uint16_t* src_uv,
+                              ptrdiff_t src_stride_uv,
+                              uint16_t* dst_uv,
+                              int width);
+void HalfBoxUVRow_16_Odd_AVX512BW(const uint16_t* src_uv,
+                                  ptrdiff_t src_stride_uv,
+                                  uint16_t* dst_uv,
+                                  int width);
+void HalfBoxUVRow_16_NEON(const uint16_t* src_uv,
+                          ptrdiff_t src_stride_uv,
+                          uint16_t* dst_uv,
+                          int width);
+void HalfBoxUVRow_16_Any_NEON(const uint16_t* src_uv,
+                              ptrdiff_t src_stride_uv,
+                              uint16_t* dst_uv,
+                              int width);
+void HalfBoxUVRow_16_Odd_NEON(const uint16_t* src_uv,
+                              ptrdiff_t src_stride_uv,
+                              uint16_t* dst_uv,
+                              int width);
+void HalfBoxUVRow_16_SME(const uint16_t* src_uv,
+                         ptrdiff_t src_stride_uv,
+                         uint16_t* dst_uv,
+                         int width);
+void HalfBoxUVRow_16_Odd_SME(const uint16_t* src_uv,
+                             ptrdiff_t src_stride_uv,
+                             uint16_t* dst_uv,
+                             int width);
+void HalfBoxUVRow_16_LASX(const uint16_t* src_uv,
+                          ptrdiff_t src_stride_uv,
+                          uint16_t* dst_uv,
+                          int width);
+void HalfBoxUVRow_16_Any_LASX(const uint16_t* src_uv,
+                              ptrdiff_t src_stride_uv,
+                              uint16_t* dst_uv,
+                              int width);
+void HalfBoxUVRow_16_Odd_LASX(const uint16_t* src_uv,
+                              ptrdiff_t src_stride_uv,
+                              uint16_t* dst_uv,
+                              int width);
+void HalfBoxUVRow_16_RVV(const uint16_t* src_uv,
+                         ptrdiff_t src_stride_uv,
+                         uint16_t* dst_uv,
+                         int width);
+void HalfBoxUVRow_16_Odd_RVV(const uint16_t* src_uv,
+                             ptrdiff_t src_stride_uv,
+                             uint16_t* dst_uv,
+                             int width);
 
 void HalfRow_16To8_C(const uint16_t* src_uv,
                      ptrdiff_t src_uv_stride,
@@ -9635,6 +10153,86 @@ void HalfWidthRow_16To8_Any_WASMSIMD(const uint16_t* src_uv,
                                      uint8_t* dst_uv,
                                      int scale,
                                      int width);
+void HalfWidthRow_WASMSIMD(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Any_WASMSIMD(const uint8_t* src_ptr,
+                               uint8_t* dst_ptr,
+                               int width);
+void HalfWidthRow_Odd_WASMSIMD(const uint8_t* src_ptr,
+                               uint8_t* dst_ptr,
+                               int width);
+void HalfWidthRow_16_WASMSIMD(const uint16_t* src_ptr,
+                              uint16_t* dst_ptr,
+                              int width);
+void HalfWidthRow_16_Any_WASMSIMD(const uint16_t* src_ptr,
+                                  uint16_t* dst_ptr,
+                                  int width);
+void HalfWidthRow_16_Odd_WASMSIMD(const uint16_t* src_ptr,
+                                  uint16_t* dst_ptr,
+                                  int width);
+void HalfWidthUVRow_WASMSIMD(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Any_WASMSIMD(const uint8_t* src_uv,
+                                 uint8_t* dst_uv,
+                                 int width);
+void HalfWidthUVRow_Odd_WASMSIMD(const uint8_t* src_uv,
+                                 uint8_t* dst_uv,
+                                 int width);
+void HalfWidthUVRow_16_WASMSIMD(const uint16_t* src_uv,
+                                uint16_t* dst_uv,
+                                int width);
+void HalfWidthUVRow_16_Any_WASMSIMD(const uint16_t* src_uv,
+                                    uint16_t* dst_uv,
+                                    int width);
+void HalfWidthUVRow_16_Odd_WASMSIMD(const uint16_t* src_uv,
+                                    uint16_t* dst_uv,
+                                    int width);
+void HalfBoxRow_WASMSIMD(const uint8_t* src_ptr,
+                         ptrdiff_t src_stride,
+                         uint8_t* dst_ptr,
+                         int width);
+void HalfBoxRow_Any_WASMSIMD(const uint8_t* src_ptr,
+                             ptrdiff_t src_stride,
+                             uint8_t* dst_ptr,
+                             int width);
+void HalfBoxRow_Odd_WASMSIMD(const uint8_t* src_ptr,
+                             ptrdiff_t src_stride,
+                             uint8_t* dst_ptr,
+                             int width);
+void HalfBoxRow_16_WASMSIMD(const uint16_t* src_ptr,
+                            ptrdiff_t src_stride,
+                            uint16_t* dst_ptr,
+                            int width);
+void HalfBoxRow_16_Any_WASMSIMD(const uint16_t* src_ptr,
+                                ptrdiff_t src_stride,
+                                uint16_t* dst_ptr,
+                                int width);
+void HalfBoxRow_16_Odd_WASMSIMD(const uint16_t* src_ptr,
+                                ptrdiff_t src_stride,
+                                uint16_t* dst_ptr,
+                                int width);
+void HalfBoxUVRow_WASMSIMD(const uint8_t* src_uv,
+                           ptrdiff_t src_stride_uv,
+                           uint8_t* dst_uv,
+                           int width);
+void HalfBoxUVRow_Any_WASMSIMD(const uint8_t* src_uv,
+                               ptrdiff_t src_stride_uv,
+                               uint8_t* dst_uv,
+                               int width);
+void HalfBoxUVRow_Odd_WASMSIMD(const uint8_t* src_uv,
+                               ptrdiff_t src_stride_uv,
+                               uint8_t* dst_uv,
+                               int width);
+void HalfBoxUVRow_16_WASMSIMD(const uint16_t* src_uv,
+                              ptrdiff_t src_stride_uv,
+                              uint16_t* dst_uv,
+                              int width);
+void HalfBoxUVRow_16_Any_WASMSIMD(const uint16_t* src_uv,
+                                  ptrdiff_t src_stride_uv,
+                                  uint16_t* dst_uv,
+                                  int width);
+void HalfBoxUVRow_16_Odd_WASMSIMD(const uint16_t* src_uv,
+                                  ptrdiff_t src_stride_uv,
+                                  uint16_t* dst_uv,
+                                  int width);
 void DivideRow_16_WASMSIMD(const uint16_t* src_y,
                            uint16_t* dst_y,
                            int scale,
@@ -10455,6 +11053,54 @@ void HalfRow_HVX(const uint8_t* src_uv,
                  ptrdiff_t src_uv_stride,
                  uint8_t* dst_uv,
                  int width);
+void HalfRow_16_HVX(const uint16_t* src_uv,
+                    ptrdiff_t src_uv_stride,
+                    uint16_t* dst_uv,
+                    int width);
+void HalfWidthRow_HVX(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_Odd_HVX(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
+void HalfWidthRow_16_HVX(const uint16_t* src_ptr, uint16_t* dst_ptr, int width);
+void HalfWidthRow_16_Odd_HVX(const uint16_t* src_ptr,
+                             uint16_t* dst_ptr,
+                             int width);
+void HalfWidthUVRow_HVX(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_Odd_HVX(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void HalfWidthUVRow_16_HVX(const uint16_t* src_uv, uint16_t* dst_uv, int width);
+void HalfWidthUVRow_16_Odd_HVX(const uint16_t* src_uv,
+                               uint16_t* dst_uv,
+                               int width);
+void HalfBoxRow_HVX(const uint8_t* src_ptr,
+                    ptrdiff_t src_stride,
+                    uint8_t* dst_ptr,
+                    int width);
+void HalfBoxRow_Odd_HVX(const uint8_t* src_ptr,
+                        ptrdiff_t src_stride,
+                        uint8_t* dst_ptr,
+                        int width);
+void HalfBoxRow_16_HVX(const uint16_t* src_ptr,
+                       ptrdiff_t src_stride,
+                       uint16_t* dst_ptr,
+                       int width);
+void HalfBoxRow_16_Odd_HVX(const uint16_t* src_ptr,
+                           ptrdiff_t src_stride,
+                           uint16_t* dst_ptr,
+                           int width);
+void HalfBoxUVRow_HVX(const uint8_t* src_uv,
+                      ptrdiff_t src_stride_uv,
+                      uint8_t* dst_uv,
+                      int width);
+void HalfBoxUVRow_Odd_HVX(const uint8_t* src_uv,
+                          ptrdiff_t src_stride_uv,
+                          uint8_t* dst_uv,
+                          int width);
+void HalfBoxUVRow_16_HVX(const uint16_t* src_uv,
+                         ptrdiff_t src_stride_uv,
+                         uint16_t* dst_uv,
+                         int width);
+void HalfBoxUVRow_16_Odd_HVX(const uint16_t* src_uv,
+                             ptrdiff_t src_stride_uv,
+                             uint16_t* dst_uv,
+                             int width);
 void HalfUVRow_HVX(const uint8_t* src_u,
                    ptrdiff_t src_stride_u,
                    const uint8_t* src_v,

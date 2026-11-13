@@ -205,6 +205,106 @@ void HalfMergeUVPlane(const uint8_t* src_u,
                       int width,
                       int height);
 
+// Scale plane vertically to half height by averaging pairs of rows (1x2).
+// width is elements per row; height is source height, allowing odd sizes.
+LIBYUV_API
+void HalfPlane(const uint8_t* src_y,
+               int src_stride_y,
+               uint8_t* dst_y,
+               int dst_stride_y,
+               int width,
+               int height);
+
+// Scale 16-bit plane vertically to half height by averaging pairs of rows.
+// Strides are in uint16_t elements; height is source height.
+LIBYUV_API
+void HalfPlane_16(const uint16_t* src_y,
+                  int src_stride_y,
+                  uint16_t* dst_y,
+                  int dst_stride_y,
+                  int width,
+                  int height);
+
+// Scale plane horizontally to half width by averaging pairs of columns (2x1).
+// width is source width, allowing odd sizes.
+LIBYUV_API
+void HalfWidthPlane(const uint8_t* src_y,
+                    int src_stride_y,
+                    uint8_t* dst_y,
+                    int dst_stride_y,
+                    int width,
+                    int height);
+
+// Scale 16-bit plane horizontally to half width by averaging pairs of columns.
+// Strides are in uint16_t elements; width is source width.
+LIBYUV_API
+void HalfWidthPlane_16(const uint16_t* src_y,
+                       int src_stride_y,
+                       uint16_t* dst_y,
+                       int dst_stride_y,
+                       int width,
+                       int height);
+
+// Scale interleaved UV plane horizontally to half width (2x1 per channel).
+// width is source pixel width (src has width UV pairs; dst has (width+1)/2).
+LIBYUV_API
+void HalfWidthUVPlane(const uint8_t* src_uv,
+                      int src_stride_uv,
+                      uint8_t* dst_uv,
+                      int dst_stride_uv,
+                      int width,
+                      int height);
+
+// Scale 16-bit interleaved UV plane horizontally to half width.
+// Strides are in uint16_t elements; width is source pixel width.
+LIBYUV_API
+void HalfWidthUVPlane_16(const uint16_t* src_uv,
+                         int src_stride_uv,
+                         uint16_t* dst_uv,
+                         int dst_stride_uv,
+                         int width,
+                         int height);
+
+// Scale plane to half width and half height by 2x2 box averaging.
+// width and height are source size, allowing odd sizes.
+LIBYUV_API
+void HalfBoxPlane(const uint8_t* src_y,
+                  int src_stride_y,
+                  uint8_t* dst_y,
+                  int dst_stride_y,
+                  int width,
+                  int height);
+
+// Scale 16-bit plane to half width and half height by 2x2 box averaging.
+// Strides are in uint16_t elements; width and height are source size.
+LIBYUV_API
+void HalfBoxPlane_16(const uint16_t* src_y,
+                     int src_stride_y,
+                     uint16_t* dst_y,
+                     int dst_stride_y,
+                     int width,
+                     int height);
+
+// Scale interleaved UV plane to half width and half height by 2x2 box average.
+// width and height are source pixel size, allowing odd sizes.
+LIBYUV_API
+void HalfBoxUVPlane(const uint8_t* src_uv,
+                    int src_stride_uv,
+                    uint8_t* dst_uv,
+                    int dst_stride_uv,
+                    int width,
+                    int height);
+
+// Scale 16-bit interleaved UV plane to half width and height by 2x2 box avg.
+// Strides are in uint16_t elements; width and height are source pixel size.
+LIBYUV_API
+void HalfBoxUVPlane_16(const uint16_t* src_uv,
+                       int src_stride_uv,
+                       uint16_t* dst_uv,
+                       int dst_stride_uv,
+                       int width,
+                       int height);
+
 // Swap U and V channels in interleaved UV plane.
 LIBYUV_API
 void SwapUVPlane(const uint8_t* src_uv,

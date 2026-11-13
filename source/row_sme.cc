@@ -977,6 +977,563 @@ __arm_locally_streaming void ARGBAlphaBlendRow_SME(const uint8_t* src_argb0,
 }
 #endif  // HAS_ARGBALPHABLENDROW_SME
 
+#define HALFWIDTHROW_SME                                  \
+  "ld1b        {z0.b}, p1/z, [%[src]]                 \n" \
+  "ld1b        {z1.b}, p2/z, [%[src], #1, mul vl]     \n" \
+  "incb        %[src], all, mul #2                    \n" \
+  "uzp1        z2.b, z0.b, z1.b                       \n" \
+  "uzp2        z3.b, z0.b, z1.b                       \n" \
+  "urhadd      z2.b, p0/m, z2.b, z3.b                 \n" \
+  "subs        %w[width], %w[width], %w[vl]           \n" \
+  "st1b        {z2.b}, p0, [%[dst]]                   \n" \
+  "incb        %[dst]                                 \n"
+
+__arm_locally_streaming void HalfWidthRow_SME(const uint8_t* src_ptr,
+                                              uint8_t* dst_ptr,
+                                              int width) {
+  int vl;
+  int src_cnt;
+  asm volatile(
+      "cntb        %x[vl]                                 \n"
+      "subs        %w[width], %w[width], %w[vl]           \n"
+      "b.lt        2f                                     \n"
+
+      "ptrue       p0.b                                   \n"
+      "ptrue       p1.b                                   \n"
+      "ptrue       p2.b                                   \n"
+      "1:                                                 \n"  //
+      HALFWIDTHROW_SME
+      "b.ge        1b                                     \n"
+
+      "2:                                                 \n"
+      "adds        %w[width], %w[width], %w[vl]           \n"
+      "b.eq        99f                                    \n"
+
+      "add         %w[src_cnt], %w[width], %w[width]      \n"
+      "whilelt     p0.b, wzr, %w[width]                   \n"
+      "whilelt     p1.b, wzr, %w[src_cnt]                 \n"
+      "whilelt     p2.b, %w[vl], %w[src_cnt]              \n"  //
+      HALFWIDTHROW_SME
+
+      "99:                                                \n"
+      : [src] "+r"(src_ptr),      // %[src]
+        [dst] "+r"(dst_ptr),      // %[dst]
+        [width] "+r"(width),      // %[width]
+        [vl] "=&r"(vl),           // %[vl]
+        [src_cnt] "=&r"(src_cnt)  // %[src_cnt]
+      :
+      : "memory", "cc", "z0", "z1", "z2", "z3", "p0", "p1", "p2");
+}
+#undef HALFWIDTHROW_SME
+
+void HalfWidthRow_Odd_SME(const uint8_t* src_ptr, uint8_t* dst_ptr, int width) {
+  width -= 1;
+  if (width > 0) {
+    HalfWidthRow_SME(src_ptr, dst_ptr, width);
+    src_ptr += (ptrdiff_t)width * 2;
+    dst_ptr += width;
+  }
+  dst_ptr[0] = src_ptr[0];
+}
+
+#define HALFWIDTHROW_16_SME                               \
+  "ld1h        {z0.h}, p1/z, [%[src]]                 \n" \
+  "ld1h        {z1.h}, p2/z, [%[src], #1, mul vl]     \n" \
+  "incb        %[src], all, mul #2                    \n" \
+  "uzp1        z2.h, z0.h, z1.h                       \n" \
+  "uzp2        z3.h, z0.h, z1.h                       \n" \
+  "urhadd      z2.h, p0/m, z2.h, z3.h                 \n" \
+  "subs        %w[width], %w[width], %w[vl]           \n" \
+  "st1h        {z2.h}, p0, [%[dst]]                   \n" \
+  "incb        %[dst]                                 \n"
+
+__arm_locally_streaming void HalfWidthRow_16_SME(const uint16_t* src_ptr,
+                                                 uint16_t* dst_ptr,
+                                                 int width) {
+  int vl;
+  int src_cnt;
+  asm volatile(
+      "cnth        %x[vl]                                 \n"
+      "subs        %w[width], %w[width], %w[vl]           \n"
+      "b.lt        2f                                     \n"
+
+      "ptrue       p0.h                                   \n"
+      "ptrue       p1.h                                   \n"
+      "ptrue       p2.h                                   \n"
+      "1:                                                 \n"  //
+      HALFWIDTHROW_16_SME
+      "b.ge        1b                                     \n"
+
+      "2:                                                 \n"
+      "adds        %w[width], %w[width], %w[vl]           \n"
+      "b.eq        99f                                    \n"
+
+      "add         %w[src_cnt], %w[width], %w[width]      \n"
+      "whilelt     p0.h, wzr, %w[width]                   \n"
+      "whilelt     p1.h, wzr, %w[src_cnt]                 \n"
+      "whilelt     p2.h, %w[vl], %w[src_cnt]              \n"  //
+      HALFWIDTHROW_16_SME
+
+      "99:                                                \n"
+      : [src] "+r"(src_ptr),      // %[src]
+        [dst] "+r"(dst_ptr),      // %[dst]
+        [width] "+r"(width),      // %[width]
+        [vl] "=&r"(vl),           // %[vl]
+        [src_cnt] "=&r"(src_cnt)  // %[src_cnt]
+      :
+      : "memory", "cc", "z0", "z1", "z2", "z3", "p0", "p1", "p2");
+}
+#undef HALFWIDTHROW_16_SME
+
+void HalfWidthRow_16_Odd_SME(const uint16_t* src_ptr,
+                             uint16_t* dst_ptr,
+                             int width) {
+  width -= 1;
+  if (width > 0) {
+    HalfWidthRow_16_SME(src_ptr, dst_ptr, width);
+    src_ptr += (ptrdiff_t)width * 2;
+    dst_ptr += width;
+  }
+  dst_ptr[0] = src_ptr[0];
+}
+
+#define HALFWIDTHUVROW_SME                                \
+  "ld1h        {z0.h}, p1/z, [%[src]]                 \n" \
+  "ld1h        {z1.h}, p2/z, [%[src], #1, mul vl]     \n" \
+  "incb        %[src], all, mul #2                    \n" \
+  "uzp1        z2.h, z0.h, z1.h                       \n" \
+  "uzp2        z3.h, z0.h, z1.h                       \n" \
+  "urhadd      z2.b, p3/m, z2.b, z3.b                 \n" \
+  "subs        %w[width], %w[width], %w[vl]           \n" \
+  "st1h        {z2.h}, p0, [%[dst]]                   \n" \
+  "incb        %[dst]                                 \n"
+
+__arm_locally_streaming void HalfWidthUVRow_SME(const uint8_t* src_uv,
+                                                uint8_t* dst_uv,
+                                                int width) {
+  int vl;
+  int src_cnt;
+  asm volatile(
+      "cnth        %x[vl]                                 \n"
+      "ptrue       p3.b                                   \n"
+      "subs        %w[width], %w[width], %w[vl]           \n"
+      "b.lt        2f                                     \n"
+
+      "ptrue       p0.h                                   \n"
+      "ptrue       p1.h                                   \n"
+      "ptrue       p2.h                                   \n"
+      "1:                                                 \n"  //
+      HALFWIDTHUVROW_SME
+      "b.ge        1b                                     \n"
+
+      "2:                                                 \n"
+      "adds        %w[width], %w[width], %w[vl]           \n"
+      "b.eq        99f                                    \n"
+
+      "add         %w[src_cnt], %w[width], %w[width]      \n"
+      "whilelt     p0.h, wzr, %w[width]                   \n"
+      "whilelt     p1.h, wzr, %w[src_cnt]                 \n"
+      "whilelt     p2.h, %w[vl], %w[src_cnt]              \n"  //
+      HALFWIDTHUVROW_SME
+
+      "99:                                                \n"
+      : [src] "+r"(src_uv),       // %[src]
+        [dst] "+r"(dst_uv),       // %[dst]
+        [width] "+r"(width),      // %[width]
+        [vl] "=&r"(vl),           // %[vl]
+        [src_cnt] "=&r"(src_cnt)  // %[src_cnt]
+      :
+      : "memory", "cc", "z0", "z1", "z2", "z3", "p0", "p1", "p2", "p3");
+}
+#undef HALFWIDTHUVROW_SME
+
+void HalfWidthUVRow_Odd_SME(const uint8_t* src_uv, uint8_t* dst_uv, int width) {
+  width -= 1;
+  if (width > 0) {
+    HalfWidthUVRow_SME(src_uv, dst_uv, width);
+    src_uv += (ptrdiff_t)width * 4;
+    dst_uv += (ptrdiff_t)width * 2;
+  }
+  dst_uv[0] = src_uv[0];
+  dst_uv[1] = src_uv[1];
+}
+
+#define HALFWIDTHUVROW_16_SME                             \
+  "ld1w        {z0.s}, p1/z, [%[src]]                 \n" \
+  "ld1w        {z1.s}, p2/z, [%[src], #1, mul vl]     \n" \
+  "incb        %[src], all, mul #2                    \n" \
+  "uzp1        z2.s, z0.s, z1.s                       \n" \
+  "uzp2        z3.s, z0.s, z1.s                       \n" \
+  "urhadd      z2.h, p3/m, z2.h, z3.h                 \n" \
+  "subs        %w[width], %w[width], %w[vl]           \n" \
+  "st1w        {z2.s}, p0, [%[dst]]                   \n" \
+  "incb        %[dst]                                 \n"
+
+__arm_locally_streaming void HalfWidthUVRow_16_SME(const uint16_t* src_uv,
+                                                   uint16_t* dst_uv,
+                                                   int width) {
+  int vl;
+  int src_cnt;
+  asm volatile(
+      "cntw        %x[vl]                                 \n"
+      "ptrue       p3.h                                   \n"
+      "subs        %w[width], %w[width], %w[vl]           \n"
+      "b.lt        2f                                     \n"
+
+      "ptrue       p0.s                                   \n"
+      "ptrue       p1.s                                   \n"
+      "ptrue       p2.s                                   \n"
+      "1:                                                 \n"  //
+      HALFWIDTHUVROW_16_SME
+      "b.ge        1b                                     \n"
+
+      "2:                                                 \n"
+      "adds        %w[width], %w[width], %w[vl]           \n"
+      "b.eq        99f                                    \n"
+
+      "add         %w[src_cnt], %w[width], %w[width]      \n"
+      "whilelt     p0.s, wzr, %w[width]                   \n"
+      "whilelt     p1.s, wzr, %w[src_cnt]                 \n"
+      "whilelt     p2.s, %w[vl], %w[src_cnt]              \n"  //
+      HALFWIDTHUVROW_16_SME
+
+      "99:                                                \n"
+      : [src] "+r"(src_uv),       // %[src]
+        [dst] "+r"(dst_uv),       // %[dst]
+        [width] "+r"(width),      // %[width]
+        [vl] "=&r"(vl),           // %[vl]
+        [src_cnt] "=&r"(src_cnt)  // %[src_cnt]
+      :
+      : "memory", "cc", "z0", "z1", "z2", "z3", "p0", "p1", "p2", "p3");
+}
+#undef HALFWIDTHUVROW_16_SME
+
+void HalfWidthUVRow_16_Odd_SME(const uint16_t* src_uv,
+                               uint16_t* dst_uv,
+                               int width) {
+  width -= 1;
+  if (width > 0) {
+    HalfWidthUVRow_16_SME(src_uv, dst_uv, width);
+    src_uv += (ptrdiff_t)width * 4;
+    dst_uv += (ptrdiff_t)width * 2;
+  }
+  dst_uv[0] = src_uv[0];
+  dst_uv[1] = src_uv[1];
+}
+
+#define HALFBOXROW_SME                                    \
+  "ld1b        {z0.b}, p1/z, [%[src0]]                \n" \
+  "ld1b        {z1.b}, p2/z, [%[src0], #1, mul vl]    \n" \
+  "ld1b        {z2.b}, p1/z, [%[src1]]                \n" \
+  "ld1b        {z3.b}, p2/z, [%[src1], #1, mul vl]    \n" \
+  "incb        %[src0], all, mul #2                   \n" \
+  "incb        %[src1], all, mul #2                   \n" \
+  "uaddlb      z4.h, z0.b, z2.b                       \n" \
+  "uaddlt      z5.h, z0.b, z2.b                       \n" \
+  "uaddlb      z6.h, z1.b, z3.b                       \n" \
+  "uaddlt      z7.h, z1.b, z3.b                       \n" \
+  "add         z4.h, z4.h, z5.h                       \n" \
+  "add         z6.h, z6.h, z7.h                       \n" \
+  "rshrnb      z4.b, z4.h, #2                         \n" \
+  "rshrnb      z6.b, z6.h, #2                         \n" \
+  "uzp1        z0.b, z4.b, z6.b                       \n" \
+  "subs        %w[width], %w[width], %w[vl]           \n" \
+  "st1b        {z0.b}, p0, [%[dst]]                   \n" \
+  "incb        %[dst]                                 \n"
+
+__arm_locally_streaming void HalfBoxRow_SME(const uint8_t* src_ptr,
+                                            ptrdiff_t src_stride,
+                                            uint8_t* dst_ptr,
+                                            int width) {
+  const uint8_t* src_ptr1 = src_ptr + src_stride;
+  int vl;
+  int src_cnt;
+  asm volatile(
+      "cntb        %x[vl]                                 \n"
+      "subs        %w[width], %w[width], %w[vl]           \n"
+      "b.lt        2f                                     \n"
+
+      "ptrue       p0.b                                   \n"
+      "ptrue       p1.b                                   \n"
+      "ptrue       p2.b                                   \n"
+      "1:                                                 \n"  //
+      HALFBOXROW_SME
+      "b.ge        1b                                     \n"
+
+      "2:                                                 \n"
+      "adds        %w[width], %w[width], %w[vl]           \n"
+      "b.eq        99f                                    \n"
+
+      "add         %w[src_cnt], %w[width], %w[width]      \n"
+      "whilelt     p0.b, wzr, %w[width]                   \n"
+      "whilelt     p1.b, wzr, %w[src_cnt]                 \n"
+      "whilelt     p2.b, %w[vl], %w[src_cnt]              \n"  //
+      HALFBOXROW_SME
+
+      "99:                                                \n"
+      : [src0] "+r"(src_ptr),     // %[src0]
+        [src1] "+r"(src_ptr1),    // %[src1]
+        [dst] "+r"(dst_ptr),      // %[dst]
+        [width] "+r"(width),      // %[width]
+        [vl] "=&r"(vl),           // %[vl]
+        [src_cnt] "=&r"(src_cnt)  // %[src_cnt]
+      :
+      : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0",
+        "p1", "p2");
+}
+#undef HALFBOXROW_SME
+
+void HalfBoxRow_Odd_SME(const uint8_t* src_ptr,
+                        ptrdiff_t src_stride,
+                        uint8_t* dst_ptr,
+                        int width) {
+  width -= 1;
+  if (width > 0) {
+    HalfBoxRow_SME(src_ptr, src_stride, dst_ptr, width);
+    src_ptr += (ptrdiff_t)width * 2;
+    dst_ptr += width;
+  }
+  dst_ptr[0] = (src_ptr[0] + src_ptr[src_stride] + 1) >> 1;
+}
+
+#define HALFBOXROW_16_SME                                 \
+  "ld1h        {z0.h}, p1/z, [%[src0]]                \n" \
+  "ld1h        {z1.h}, p2/z, [%[src0], #1, mul vl]    \n" \
+  "ld1h        {z2.h}, p1/z, [%[src1]]                \n" \
+  "ld1h        {z3.h}, p2/z, [%[src1], #1, mul vl]    \n" \
+  "incb        %[src0], all, mul #2                   \n" \
+  "incb        %[src1], all, mul #2                   \n" \
+  "uaddlb      z4.s, z0.h, z2.h                       \n" \
+  "uaddlt      z5.s, z0.h, z2.h                       \n" \
+  "uaddlb      z6.s, z1.h, z3.h                       \n" \
+  "uaddlt      z7.s, z1.h, z3.h                       \n" \
+  "add         z4.s, z4.s, z5.s                       \n" \
+  "add         z6.s, z6.s, z7.s                       \n" \
+  "rshrnb      z4.h, z4.s, #2                         \n" \
+  "rshrnb      z6.h, z6.s, #2                         \n" \
+  "uzp1        z0.h, z4.h, z6.h                       \n" \
+  "subs        %w[width], %w[width], %w[vl]           \n" \
+  "st1h        {z0.h}, p0, [%[dst]]                   \n" \
+  "incb        %[dst]                                 \n"
+
+__arm_locally_streaming void HalfBoxRow_16_SME(const uint16_t* src_ptr,
+                                               ptrdiff_t src_stride,
+                                               uint16_t* dst_ptr,
+                                               int width) {
+  const uint16_t* src_ptr1 = src_ptr + src_stride;
+  int vl;
+  int src_cnt;
+  asm volatile(
+      "cnth        %x[vl]                                 \n"
+      "subs        %w[width], %w[width], %w[vl]           \n"
+      "b.lt        2f                                     \n"
+
+      "ptrue       p0.h                                   \n"
+      "ptrue       p1.h                                   \n"
+      "ptrue       p2.h                                   \n"
+      "1:                                                 \n"  //
+      HALFBOXROW_16_SME
+      "b.ge        1b                                     \n"
+
+      "2:                                                 \n"
+      "adds        %w[width], %w[width], %w[vl]           \n"
+      "b.eq        99f                                    \n"
+
+      "add         %w[src_cnt], %w[width], %w[width]      \n"
+      "whilelt     p0.h, wzr, %w[width]                   \n"
+      "whilelt     p1.h, wzr, %w[src_cnt]                 \n"
+      "whilelt     p2.h, %w[vl], %w[src_cnt]              \n"  //
+      HALFBOXROW_16_SME
+
+      "99:                                                \n"
+      : [src0] "+r"(src_ptr),     // %[src0]
+        [src1] "+r"(src_ptr1),    // %[src1]
+        [dst] "+r"(dst_ptr),      // %[dst]
+        [width] "+r"(width),      // %[width]
+        [vl] "=&r"(vl),           // %[vl]
+        [src_cnt] "=&r"(src_cnt)  // %[src_cnt]
+      :
+      : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0",
+        "p1", "p2");
+}
+#undef HALFBOXROW_16_SME
+
+void HalfBoxRow_16_Odd_SME(const uint16_t* src_ptr,
+                           ptrdiff_t src_stride,
+                           uint16_t* dst_ptr,
+                           int width) {
+  width -= 1;
+  if (width > 0) {
+    HalfBoxRow_16_SME(src_ptr, src_stride, dst_ptr, width);
+    src_ptr += (ptrdiff_t)width * 2;
+    dst_ptr += width;
+  }
+  dst_ptr[0] =
+      (uint16_t)(((uint32_t)src_ptr[0] + src_ptr[src_stride] + 1u) >> 1);
+}
+
+#define HALFBOXUVROW_SME                                  \
+  "ld1h        {z0.h}, p1/z, [%[src0]]                \n" \
+  "ld1h        {z1.h}, p2/z, [%[src0], #1, mul vl]    \n" \
+  "ld1h        {z2.h}, p1/z, [%[src1]]                \n" \
+  "ld1h        {z3.h}, p2/z, [%[src1], #1, mul vl]    \n" \
+  "incb        %[src0], all, mul #2                   \n" \
+  "incb        %[src1], all, mul #2                   \n" \
+  "uzp1        z4.h, z0.h, z1.h                       \n" \
+  "uzp2        z5.h, z0.h, z1.h                       \n" \
+  "uzp1        z6.h, z2.h, z3.h                       \n" \
+  "uzp2        z7.h, z2.h, z3.h                       \n" \
+  "uaddlb      z0.h, z4.b, z5.b                       \n" \
+  "uaddlt      z1.h, z4.b, z5.b                       \n" \
+  "uaddlb      z2.h, z6.b, z7.b                       \n" \
+  "uaddlt      z3.h, z6.b, z7.b                       \n" \
+  "add         z0.h, z0.h, z2.h                       \n" \
+  "add         z1.h, z1.h, z3.h                       \n" \
+  "rshrnb      z0.b, z0.h, #2                         \n" \
+  "rshrnb      z1.b, z1.h, #2                         \n" \
+  "trn1        z0.b, z0.b, z1.b                       \n" \
+  "subs        %w[width], %w[width], %w[vl]           \n" \
+  "st1h        {z0.h}, p0, [%[dst]]                   \n" \
+  "incb        %[dst]                                 \n"
+
+__arm_locally_streaming void HalfBoxUVRow_SME(const uint8_t* src_uv,
+                                              ptrdiff_t src_stride_uv,
+                                              uint8_t* dst_uv,
+                                              int width) {
+  const uint8_t* src_uv1 = src_uv + src_stride_uv;
+  int vl;
+  int src_cnt;
+  asm volatile(
+      "cnth        %x[vl]                                 \n"
+      "subs        %w[width], %w[width], %w[vl]           \n"
+      "b.lt        2f                                     \n"
+
+      "ptrue       p0.h                                   \n"
+      "ptrue       p1.h                                   \n"
+      "ptrue       p2.h                                   \n"
+      "1:                                                 \n"  //
+      HALFBOXUVROW_SME
+      "b.ge        1b                                     \n"
+
+      "2:                                                 \n"
+      "adds        %w[width], %w[width], %w[vl]           \n"
+      "b.eq        99f                                    \n"
+
+      "add         %w[src_cnt], %w[width], %w[width]      \n"
+      "whilelt     p0.h, wzr, %w[width]                   \n"
+      "whilelt     p1.h, wzr, %w[src_cnt]                 \n"
+      "whilelt     p2.h, %w[vl], %w[src_cnt]              \n"  //
+      HALFBOXUVROW_SME
+
+      "99:                                                \n"
+      : [src0] "+r"(src_uv),      // %[src0]
+        [src1] "+r"(src_uv1),     // %[src1]
+        [dst] "+r"(dst_uv),       // %[dst]
+        [width] "+r"(width),      // %[width]
+        [vl] "=&r"(vl),           // %[vl]
+        [src_cnt] "=&r"(src_cnt)  // %[src_cnt]
+      :
+      : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0",
+        "p1", "p2");
+}
+#undef HALFBOXUVROW_SME
+
+void HalfBoxUVRow_Odd_SME(const uint8_t* src_uv,
+                          ptrdiff_t src_stride_uv,
+                          uint8_t* dst_uv,
+                          int width) {
+  width -= 1;
+  if (width > 0) {
+    HalfBoxUVRow_SME(src_uv, src_stride_uv, dst_uv, width);
+    src_uv += (ptrdiff_t)width * 4;
+    dst_uv += (ptrdiff_t)width * 2;
+  }
+  dst_uv[0] = (src_uv[0] + src_uv[src_stride_uv] + 1) >> 1;
+  dst_uv[1] = (src_uv[1] + src_uv[src_stride_uv + 1] + 1) >> 1;
+}
+
+#define HALFBOXUVROW_16_SME                               \
+  "ld1w        {z0.s}, p1/z, [%[src0]]                \n" \
+  "ld1w        {z1.s}, p2/z, [%[src0], #1, mul vl]    \n" \
+  "ld1w        {z2.s}, p1/z, [%[src1]]                \n" \
+  "ld1w        {z3.s}, p2/z, [%[src1], #1, mul vl]    \n" \
+  "incb        %[src0], all, mul #2                   \n" \
+  "incb        %[src1], all, mul #2                   \n" \
+  "uzp1        z4.s, z0.s, z1.s                       \n" \
+  "uzp2        z5.s, z0.s, z1.s                       \n" \
+  "uzp1        z6.s, z2.s, z3.s                       \n" \
+  "uzp2        z7.s, z2.s, z3.s                       \n" \
+  "uaddlb      z0.s, z4.h, z5.h                       \n" \
+  "uaddlt      z1.s, z4.h, z5.h                       \n" \
+  "uaddlb      z2.s, z6.h, z7.h                       \n" \
+  "uaddlt      z3.s, z6.h, z7.h                       \n" \
+  "add         z0.s, z0.s, z2.s                       \n" \
+  "add         z1.s, z1.s, z3.s                       \n" \
+  "rshrnb      z0.h, z0.s, #2                         \n" \
+  "rshrnb      z1.h, z1.s, #2                         \n" \
+  "trn1        z0.h, z0.h, z1.h                       \n" \
+  "subs        %w[width], %w[width], %w[vl]           \n" \
+  "st1w        {z0.s}, p0, [%[dst]]                   \n" \
+  "incb        %[dst]                                 \n"
+
+__arm_locally_streaming void HalfBoxUVRow_16_SME(const uint16_t* src_uv,
+                                                 ptrdiff_t src_stride_uv,
+                                                 uint16_t* dst_uv,
+                                                 int width) {
+  const uint16_t* src_uv1 = src_uv + src_stride_uv;
+  int vl;
+  int src_cnt;
+  asm volatile(
+      "cntw        %x[vl]                                 \n"
+      "subs        %w[width], %w[width], %w[vl]           \n"
+      "b.lt        2f                                     \n"
+
+      "ptrue       p0.s                                   \n"
+      "ptrue       p1.s                                   \n"
+      "ptrue       p2.s                                   \n"
+      "1:                                                 \n"  //
+      HALFBOXUVROW_16_SME
+      "b.ge        1b                                     \n"
+
+      "2:                                                 \n"
+      "adds        %w[width], %w[width], %w[vl]           \n"
+      "b.eq        99f                                    \n"
+
+      "add         %w[src_cnt], %w[width], %w[width]      \n"
+      "whilelt     p0.s, wzr, %w[width]                   \n"
+      "whilelt     p1.s, wzr, %w[src_cnt]                 \n"
+      "whilelt     p2.s, %w[vl], %w[src_cnt]              \n"  //
+      HALFBOXUVROW_16_SME
+
+      "99:                                                \n"
+      : [src0] "+r"(src_uv),      // %[src0]
+        [src1] "+r"(src_uv1),     // %[src1]
+        [dst] "+r"(dst_uv),       // %[dst]
+        [width] "+r"(width),      // %[width]
+        [vl] "=&r"(vl),           // %[vl]
+        [src_cnt] "=&r"(src_cnt)  // %[src_cnt]
+      :
+      : "memory", "cc", "z0", "z1", "z2", "z3", "z4", "z5", "z6", "z7", "p0",
+        "p1", "p2");
+}
+#undef HALFBOXUVROW_16_SME
+
+void HalfBoxUVRow_16_Odd_SME(const uint16_t* src_uv,
+                             ptrdiff_t src_stride_uv,
+                             uint16_t* dst_uv,
+                             int width) {
+  width -= 1;
+  if (width > 0) {
+    HalfBoxUVRow_16_SME(src_uv, src_stride_uv, dst_uv, width);
+    src_uv += (ptrdiff_t)width * 4;
+    dst_uv += (ptrdiff_t)width * 2;
+  }
+  dst_uv[0] =
+      (uint16_t)(((uint32_t)src_uv[0] + src_uv[src_stride_uv] + 1u) >> 1);
+  dst_uv[1] =
+      (uint16_t)(((uint32_t)src_uv[1] + src_uv[src_stride_uv + 1] + 1u) >> 1);
+}
+
 #if defined(__clang__)
 #pragma clang attribute pop
 #elif defined(__GNUC__)
