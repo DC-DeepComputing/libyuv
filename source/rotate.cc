@@ -315,7 +315,7 @@ void RotatePlane180(const uint8_t* src,
 #endif
 #if defined(HAS_MIRRORROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
-    MirrorRow = MirrorRow_RVV;
+    MirrorRow = MirrorRow_HB;
   }
 #endif
 #if defined(HAS_COPYROW_SSE2)

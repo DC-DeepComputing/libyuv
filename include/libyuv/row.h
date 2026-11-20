@@ -3535,6 +3535,7 @@ void MirrorRow_SME(const uint8_t* src, uint8_t* dst, int width);
 void MirrorRow_LSX(const uint8_t* src, uint8_t* dst, int width);
 void MirrorRow_LASX(const uint8_t* src, uint8_t* dst, int width);
 void MirrorRow_RVV(const uint8_t* src, uint8_t* dst, int width);
+void MirrorRow_HB(const uint8_t* src, uint8_t* dst, int width);
 void MirrorRow_C(const uint8_t* src, uint8_t* dst, int width);
 void MirrorRow_Any_AVX2(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
 void MirrorRow_Any_SSSE3(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
@@ -3550,6 +3551,7 @@ void MirrorUVRow_SME(const uint8_t* src_uv, uint8_t* dst_uv, int width);
 void MirrorUVRow_LSX(const uint8_t* src_uv, uint8_t* dst_uv, int width);
 void MirrorUVRow_LASX(const uint8_t* src_uv, uint8_t* dst_uv, int width);
 void MirrorUVRow_RVV(const uint8_t* src_uv, uint8_t* dst_uv, int width);
+void MirrorUVRow_HB(const uint8_t* src_uv, uint8_t* dst_uv, int width);
 void MirrorUVRow_C(const uint8_t* src_uv, uint8_t* dst_uv, int width);
 void MirrorUVRow_Any_AVX2(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
 void MirrorUVRow_Any_SSSE3(const uint8_t* src_ptr, uint8_t* dst_ptr, int width);
@@ -4359,6 +4361,12 @@ void SplitARGBRow_NEON(const uint8_t* src_rgba,
                        uint8_t* dst_a,
                        int width);
 void SplitARGBRow_RVV(const uint8_t* src_rgba,
+                      uint8_t* dst_r,
+                      uint8_t* dst_g,
+                      uint8_t* dst_b,
+                      uint8_t* dst_a,
+                      int width);
+void SplitARGBRow_HB(const uint8_t* src_rgba,
                       uint8_t* dst_r,
                       uint8_t* dst_g,
                       uint8_t* dst_b,
@@ -6221,6 +6229,7 @@ void ARGBSetRow_C(uint8_t* dst_argb, uint32_t v32, int width);
 void ARGBSetRow_AVX2(uint8_t* dst_argb, uint32_t v32, int width);
 void ARGBSetRow_NEON(uint8_t* dst, uint32_t v32, int width);
 void ARGBSetRow_RVV(uint8_t* dst_argb, uint32_t v32, int width);
+void ARGBSetRow_HB(uint8_t* dst_argb, uint32_t v32, int width);
 void ARGBSetRow_Any_AVX2(uint8_t* dst_ptr, uint32_t v32, int width);
 void ARGBSetRow_Any_NEON(uint8_t* dst_ptr, uint32_t v32, int width);
 void ARGBSetRow_LSX(uint8_t* dst_argb, uint32_t v32, int width);
@@ -12084,6 +12093,7 @@ void Convert8To8Row_RVV(const uint8_t* src_y,
 void CopyRow_16_RVV(const uint16_t* src, uint16_t* dst, int count);
 void ARGBCopyAlphaRow_RVV(const uint8_t* src, uint8_t* dst, int width);
 void SetRow_RVV(uint8_t* dst, uint8_t v8, int width);
+void SetRow_HB(uint8_t* dst, uint8_t v8, int width);
 void YUY2ToYRow_RVV(const uint8_t* src_yuy2, uint8_t* dst_y, int width);
 void YUY2ToUVRow_RVV(const uint8_t* src_yuy2,
                      int src_stride_yuy2,

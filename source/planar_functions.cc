@@ -2188,7 +2188,7 @@ static void SplitARGBPlaneAlpha(const uint8_t* src_argb,
 #endif
 #if defined(HAS_SPLITARGBROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
-    SplitARGBRow = SplitARGBRow_RVV;
+    SplitARGBRow = SplitARGBRow_HB;
   }
 #endif
 #if defined(HAS_SPLITARGBROW_LSX)
@@ -3780,7 +3780,7 @@ void MirrorPlane(const uint8_t* src_y,
 #endif
 #if defined(HAS_MIRRORROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
-    MirrorRow = MirrorRow_RVV;
+    MirrorRow = MirrorRow_HB;
   }
 #endif
 
@@ -4000,7 +4000,7 @@ void MirrorUVPlane(const uint8_t* src_uv,
 #endif
 #if defined(HAS_MIRRORUVROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
-    MirrorUVRow = MirrorUVRow_RVV;
+    MirrorUVRow = MirrorUVRow_HB;
   }
 #endif
 #if defined(HAS_MIRRORUVROW_WASMSIMD)
@@ -5517,7 +5517,7 @@ void SetPlane(uint8_t* dst_y,
 #endif
 #if defined(HAS_SETROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
-    SetRow = SetRow_RVV;
+    SetRow = SetRow_HB;
   }
 #endif
 #if defined(HAS_SETROW_WASMSIMD)
@@ -5637,7 +5637,7 @@ int ARGBRect(uint8_t* dst_argb,
 #endif
 #if defined(HAS_ARGBSETROW_RVV)
   if (TestCpuFlag(kCpuHasRVV)) {
-    ARGBSetRow = ARGBSetRow_RVV;
+    ARGBSetRow = ARGBSetRow_HB;
   }
 #endif
 #if defined(HAS_ARGBSETROW_WASMSIMD)

@@ -3251,7 +3251,7 @@ void RGBToUVMatrixRow_RVV(const uint8_t* src_rgb,
   if (w > 0) {
     size_t w_len = (size_t)w;
     size_t vl, tmp;
-#if defined(LIBYUV_USE_VLSEG)
+
     asm volatile(
         "csrwi       vxrm, 0                       \n"
         "vsetvli     zero, %[w_len], e16, m2, ta, ma\n"
@@ -3321,95 +3321,7 @@ void RGBToUVMatrixRow_RVV(const uint8_t* src_rgb,
         : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v4", "v5", "v8",
           "v9", "v10", "v11", "v12", "v14", "v15", "v16", "v18", "v19", "v20",
           "v21", "v22", "v23", "v24", "v25");
-#else
-    size_t max_vl;
-    asm volatile(
-        "csrwi       vxrm, 0                       \n"
-        "vsetvli     %[max_vl], zero, e8, m1, ta, ma\n"
-        "divu        %[max_vl], %[max_vl], %[c6]   \n"
-        "vsetvli     zero, %[max_vl], e16, m2, ta, ma\n"
-        "vmv.v.x     v8, %[add_uv]                 \n"
-        "vid.v       v20                           \n"
-        "vmul.vx     v20, v20, %[c6]               \n"
-        "vadd.vi     v22, v20, 1                   \n"
-        "vadd.vi     v24, v20, 2                   \n"
-        "vadd.vi     v26, v20, 3                   \n"
-        "vadd.vi     v28, v20, 4                   \n"
-        "vadd.vi     v30, v20, 5                   \n"
-        "vsetvli     zero, %[max_vl], e8, m1, ta, ma\n"
-        "lb          %[vl], 16(%[c])               \n"
-        "lb          %[tmp], 17(%[c])              \n"
-        "vmv.v.x     v10, %[vl]                    \n"
-        "vmv.v.x     v11, %[tmp]                   \n"
-        "lb          %[vl], 18(%[c])               \n"
-        "vmv.v.x     v12, %[vl]                    \n"
-        "lb          %[vl], 32(%[c])               \n"
-        "lb          %[tmp], 33(%[c])              \n"
-        "vmv.v.x     v14, %[vl]                    \n"
-        "vmv.v.x     v15, %[tmp]                   \n"
-        "lb          %[vl], 34(%[c])               \n"
-        "vmv.v.x     v16, %[vl]                    \n"
 
-        "1:          \n"
-        "mv          %[vl], %[w_len]               \n"
-        "bltu        %[w_len], %[max_vl], 2f       \n"
-        "mv          %[vl], %[max_vl]              \n"
-        "2:          \n"
-        "mul         %[tmp], %[vl], %[c6]          \n"
-        "vsetvli     zero, %[tmp], e8, m1, ta, ma  \n"
-        "vle8.v      v0, (%[src_rgb_0])            \n"
-        "vle8.v      v1, (%[src_rgb_1])            \n"
-        "vwaddu.vv   v2, v0, v1                    \n"
-        "vsetvli     zero, %[vl], e16, m2, ta, ma  \n"
-        "vrgather.vv v4, v2, v20                   \n"
-        "vrgather.vv v6, v2, v26                   \n"
-        "vadd.vv     v4, v4, v6                    \n"
-        "vrgather.vv v6, v2, v22                   \n"
-        "vrgather.vv v18, v2, v28                  \n"
-        "vadd.vv     v6, v6, v18                   \n"
-        "vrgather.vv v18, v2, v24                  \n"
-        "vrgather.vv v0, v2, v30                   \n"
-        "vadd.vv     v18, v18, v0                  \n"
-        "vsetvli     zero, %[vl], e8, m1, ta, ma   \n"
-        "vnclipu.wi  v0, v4, 2                     \n"
-        "vnclipu.wi  v1, v6, 2                     \n"
-        "vnclipu.wi  v2, v18, 2                    \n"
-        "vwmulsu.vv  v4, v12, v2                   \n"
-        "vwmaccsu.vv v4, v11, v1                   \n"
-        "vwmaccsu.vv v4, v10, v0                   \n"
-        "vwmulsu.vv  v6, v16, v2                   \n"
-        "vwmaccsu.vv v6, v15, v1                   \n"
-        "vwmaccsu.vv v6, v14, v0                   \n"
-        "vsetvli     zero, %[vl], e16, m2, ta, ma  \n"
-        "vsub.vv     v4, v8, v4                    \n"
-        "vsub.vv     v6, v8, v6                    \n"
-        "vsetvli     zero, %[vl], e8, m1, ta, ma   \n"
-        "vnsrl.wi    v0, v4, 8                     \n"
-        "vnsrl.wi    v1, v6, 8                     \n"
-        "vse8.v      v0, (%[dst_u])                \n"
-        "vse8.v      v1, (%[dst_v])                \n"
-        "sub         %[w_len], %[w_len], %[vl]     \n"
-        "add         %[dst_u], %[dst_u], %[vl]     \n"
-        "add         %[dst_v], %[dst_v], %[vl]     \n"
-        "add         %[src_rgb_0], %[src_rgb_0], %[tmp]\n"
-        "add         %[src_rgb_1], %[src_rgb_1], %[tmp]\n"
-        "bgtz        %[w_len], 1b                  \n"
-        : [src_rgb_0] "+r"(src_rgb_0),  // %[src_rgb_0]
-          [src_rgb_1] "+r"(src_rgb_1),  // %[src_rgb_1]
-          [dst_u] "+r"(dst_u),          // %[dst_u]
-          [dst_v] "+r"(dst_v),          // %[dst_v]
-          [w_len] "+r"(w_len),          // %[w_len]
-          [vl] "=&r"(vl),               // %[vl]
-          [tmp] "=&r"(tmp),             // %[tmp]
-          [max_vl] "=&r"(max_vl)        // %[max_vl]
-        : [c] "r"(c),                   // %[c]
-          [add_uv] "r"(add_uv),         // %[add_uv]
-          [c6] "r"(6)                   // %[c6]
-        : "memory", RVV_VL_CLOBBER "v0", "v1", "v2", "v3", "v4", "v5", "v6",
-          "v7", "v8", "v9", "v10", "v11", "v12", "v14", "v15", "v16", "v18",
-          "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28",
-          "v29", "v30", "v31");
-#endif
   }
   if (width & 1) {
     const int8_t* ku = (const int8_t*)&c->kRGBToU;

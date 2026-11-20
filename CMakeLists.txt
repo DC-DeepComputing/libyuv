@@ -3,7 +3,7 @@
 # Run with -DUNIT_TEST=ON to build unit tests
 
 cmake_minimum_required( VERSION 3.16 )
-project ( YUV C CXX )	# "C" is required even for C++ projects
+project ( YUV C CXX ASM )	# "C" is required even for C++ projects
 option( UNIT_TEST "Built unit tests" OFF )
 option( LIBYUV_DISABLE_JPEG "Disable JPEG support" OFF )
 option( LIBYUV_DISABLE_ASM "Disable inline assembly" OFF )
@@ -76,6 +76,7 @@ set ( ly_common_source_files
   ${ly_src_dir}/row_hvx.cc
   ${ly_src_dir}/row_la.cc
   ${ly_src_dir}/row_rvv.cc
+  ${ly_src_dir}/row_rvv_hb.S
   ${ly_src_dir}/row_wasm.cc
   ${ly_src_dir}/row_win.cc
   ${ly_src_dir}/scale.cc
@@ -206,6 +207,7 @@ int main(void) { return 0; }
         if(NOT CMAKE_C_FLAGS MATCHES "-march=" AND NOT CMAKE_C_FLAGS MATCHES "-mcpu=")
           set(CMAKE_C_FLAGS "${RISCV_COMPILER_FLAGS} -fno-tree-vectorize -fno-tree-slp-vectorize ${CMAKE_C_FLAGS}")
           set(CMAKE_CXX_FLAGS "${RISCV_COMPILER_FLAGS} -fno-tree-vectorize -fno-tree-slp-vectorize ${CMAKE_CXX_FLAGS}")
+          set(CMAKE_ASM_FLAGS "${RISCV_COMPILER_FLAGS} ${CMAKE_ASM_FLAGS}")
         endif()
       else()
         add_definitions(-DLIBYUV_DISABLE_RVV)
